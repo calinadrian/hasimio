@@ -53,7 +53,12 @@ export default function Player({durationHint,preparedStream=false,stream,title,o
     const video=videoRef.current;setSubtitleError('');if(!video||!subtitle)return;
     let live=true,timer:ReturnType<typeof setTimeout>;const controller=new AbortController(),textTrack=subtitleRef.current??video.addTextTrack('subtitles','Subtitles','und');subtitleRef.current=textTrack;textTrack.mode='showing';const seen=new Set<string>();
     async function load(){try{const response=await fetch(subtitle!.url,{signal:controller.signal,cache:'no-store'});if(!response.ok)throw new Error('Subtitles could not load. Choose the track again or load an SRT / VTT file.');const text=await response.text();if(!live)return;for(const cue of parseVtt(text)){const key=cue.start+':'+cue.end+':'+cue.text;if(!seen.has(key)&&cue.end+captionDelay>0){const timedCue=new VTTCue(Math.max(0,cue.start+captionDelay),cue.end+captionDelay,cue.text);timedCue.line=captionLine.current;textTrack.addCue(timedCue);seen.add(key);}}setSubtitleError('');}catch(e){if(live)setSubtitleError(e instanceof Error?e.message:'Subtitles could not load.');}finally{if(live&&!subtitle!.url.startsWith('blob:'))timer=setTimeout(load,4000);}}
-    void load();return()=>{live=false;controller.abort();clearTimeout(timer);textTrack.mode='disabled';while(textTrack.cues?.length)textTrack.removeCue(textTrack.cues[0]);};
+    void load();return()=>{
+      live=false;controller.abort();clearTimeout(timer);
+      // Disabled tracks can hide their cue list. Clear while hidden so reusing this
+      // track for another language cannot make the old cues visible again.
+      textTrack.mode='hidden';while(textTrack.cues?.length)textTrack.removeCue(textTrack.cues[0]);textTrack.mode='disabled';
+    };
   },[url,subtitle?.url,captionDelay,retry]);
   async function loadSubtitle(file?:File){if(!file)return;try{if(file.size>5*1024*1024||!/\.(srt|vtt)$/i.test(file.name))throw new Error('Choose an SRT / VTT file smaller than 5 MB.');const text=await file.text(),vtt=(/^\s*(?:\uFEFF)?WEBVTT/.test(text)?text:srtToVtt(text)).trimEnd()+'\n\n';if(!parseVtt(vtt).length)throw new Error('No timed subtitles were found. Use a UTF-8 SRT / VTT file.');setLocalSubtitle({url:URL.createObjectURL(new Blob([vtt],{type:'text/vtt'})),label:file.name,language:'und'});setSubtitleError('');}catch(e){setSubtitleError(e instanceof Error?e.message:'Could not load subtitles.');}}
   const canPip=typeof document!=='undefined'&&document.pictureInPictureEnabled;

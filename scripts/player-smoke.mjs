@@ -26,9 +26,9 @@ const media=createServer(async(req,res)=>{
     res.setHeader('Content-Type','application/vnd.apple.mpegurl');
     return res.end(lines.slice(0,first+segmentCount*2).join('\n')+'\n');
   }
-  if(name==='captions.vtt'){
+  if(/^captions-(eng|spa)\.vtt$/.test(name)){
     res.setHeader('Content-Type','text/vtt');
-    return res.end('WEBVTT\n\n00:00.100 --> 00:39.000\nLatest flushed subtitle\n');
+    return res.end('WEBVTT\n\n00:00.100 --> 00:39.000\n'+(name.includes('spa')?'Spanish subtitle':'English subtitle')+'\n');
   }
   if(name==='grow'){segmentCount=20;return res.end('ok');}
   if(!/^(?:init\.mp4|movie\d+\.m4s)$/.test(name)){res.writeHead(404);return res.end();}
@@ -42,7 +42,7 @@ try{
   await writeFile(path.join(folder,'fixture.tsx'),`
     import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
     import Player from '/src/Player';import '/src/styles.css';
-    function Fixture(){const [sub,setSub]=useState(true);return <><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions.vtt',label:'Test',language:'eng'}:undefined}}/></>;}createRoot(document.getElementById('root')).render(<Fixture/>);
+    function Fixture(){const [sub,setSub]=useState(true),[language,setLanguage]=useState('eng');return <><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt',label:'Test',language}:undefined}}/></>;}createRoot(document.getElementById('root')).render(<Fixture/>);
   `);
   vite=await createViteServer({server:{host:'127.0.0.1',port:0,strictPort:false}});
   await vite.listen();
@@ -82,6 +82,13 @@ try{
         await js('document.getElementById("toggle-sub").click()');await until('document.querySelector("video").textTracks[0].mode==="disabled"');
         assert.equal(await js('document.querySelector("video").textTracks[0].cues?.length||0'),0);
         await js('document.getElementById("toggle-sub").click()');await until('document.querySelector("video").textTracks[0].activeCues?.length===1');
+        for(let i=0;i<6;i++){
+          await js('document.getElementById("switch-sub").click()');await sleep(150);
+          const expected=i%2===0?'Spanish subtitle':'English subtitle';
+          await until('Array.from(document.querySelector("video").textTracks[0].cues||[]).some(c=>c.text==='+JSON.stringify(expected)+')');
+          const cues=await js('Array.from(document.querySelector("video").textTracks).filter(t=>t.mode==="showing").flatMap(t=>Array.from(t.cues||[]).map(c=>c.text))');
+          assert.deepEqual(cues,[expected],'Switching language must replace all previous cues');
+        }
         await js('document.querySelector(".cinema-player").focus()');
         win.webContents.sendInputEvent({type:'keyDown',keyCode:'Left'});win.webContents.sendInputEvent({type:'keyUp',keyCode:'Left'});
         await until('document.querySelector("video").currentTime<16');
@@ -90,7 +97,7 @@ try{
         await until('document.querySelector(".cinema-play").getAttribute("aria-label")==="Pause video"');
         const resumed=await js('document.querySelector("video").currentTime');assert.ok(resumed>13&&resumed<18,'Resume must keep the requested position, got '+resumed);
         require('node:fs').writeFileSync(${JSON.stringify(path.join(folder,'player.png'))},(await win.webContents.capturePage()).toPNG());
-        console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, and displays/toggles the newest subtitle.');
+        console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, displays/toggles the newest subtitle, and replaces all old cues across repeated English/Spanish switches.');
         app.exit(0);
       }catch(error){console.error(error);console.error(await js('JSON.stringify({body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
     });
