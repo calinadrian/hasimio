@@ -6,7 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root=fileURLToPath(new URL('..',import.meta.url));
-const BACKGROUND=[0x66,0xc0,0xf4],SYMBOL=[0x10,0x24,0x36];
+const BACKGROUND=[0xe0,0xe0,0xe0],SYMBOL=[0x20,0x20,0x20];
 
 function crc32(bytes) {let c=~0;for(const b of bytes){c^=b;for(let k=0;k<8;k++)c=c&1?(c>>>1)^0xedb88320:c>>>1;}return ~c>>>0;}
 function chunk(type,data) {const out=Buffer.alloc(12+data.length);out.writeUInt32BE(data.length,0);out.write(type,4,'ascii');data.copy(out,8);out.writeUInt32BE(crc32(out.subarray(4,8+data.length)),8+data.length);return out;}

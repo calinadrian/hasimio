@@ -1,29 +1,29 @@
 ---
 name: Hasimio
-description: Steam-inspired charcoal and deep-blue media browsing with quality-first playback.
+description: Neutral grey and black media browsing with quality-first playback.
 colors:
-  accent: "#66c0f4"
-  background: "#101820"
-  sidebar: "#171a21"
-  header: "#171d25"
-  panel: "#1b2838"
-  source: "#213448"
-  source-hover: "#263e54"
-  primary: "#236b8e"
-  primary-end: "#245ca3"
-  primary-text: "#f3faff"
-  text: "#e5edf5"
-  muted: "#adbed0"
-  line: "#304153"
-  active-navigation: "#1f3d54"
-  active-navigation-text: "#8bd2fa"
-  field: "#223b51"
-  field-border: "#45627d"
-  tag: "#304b63"
-  tag-text: "#bed5e7"
-  seeders: "#b7d99c"
-  codec-note: "#f4dba7"
-  codec-note-background: "#4b4230"
+  accent: "#e0e0e0"
+  background: "#141414"
+  sidebar: "#1c1c1c"
+  header: "#181818"
+  panel: "#242424"
+  source: "#2b2b2b"
+  source-hover: "#343434"
+  primary: "#424242"
+  primary-end: "#424242"
+  primary-text: "#f9f9f9"
+  text: "#ededed"
+  muted: "#bcbcbc"
+  line: "#3e3e3e"
+  active-navigation: "#383838"
+  active-navigation-text: "#f2f2f2"
+  field: "#2e2e2e"
+  field-border: "#5e5e5e"
+  tag: "#474747"
+  tag-text: "#d1d1d1"
+  seeders: "#cdcdcd"
+  codec-note: "#dddddd"
+  codec-note-background: "#434343"
 typography:
   display:
     fontFamily: "Manrope, sans-serif"
@@ -90,13 +90,13 @@ components:
 
 ## Overview
 
-The user requested a Steam-inspired dark design. The implemented system uses charcoal navigation, deep-blue content surfaces, cyan emphasis and readable typography. Artwork leads discovery; playback controls lead the stream selector. This replaces the earlier lavender theme while retaining library, calendar and extension behavior.
+The user requested a neutral grey/black design across the entire app. The system uses charcoal navigation, grey content surfaces, white emphasis and readable typography. The player stage and letterbox areas are pure black, with black top and bottom control gradients. Video and poster artwork retain their original colors. Artwork leads discovery; playback controls lead the stream selector. This replaces the earlier blue theme while retaining library, calendar and extension behavior.
 
 ## Colors
 
-Cyan marks selection, saved state and keyboard focus. Near-black charcoal separates navigation from blue panels. Source rows use a slightly lighter blue surface; hover increases separation without a floating shadow. Muted text stays readable against those surfaces. Seeders use a pale green status treatment; HEVC uses an amber codec chip, identifying compatibility information rather than promising playback success.
+White marks selection, saved state and keyboard focus. Near-black charcoal separates navigation from grey panels. Source rows use a slightly lighter grey surface; hover increases separation without a floating shadow. Muted text stays readable against those surfaces. Seeders use a light grey status treatment; HEVC uses a grey codec chip, identifying compatibility information rather than promising playback success.
 
-Primary buttons use a restrained horizontal gradient from primary to primary-end with pale text. The gradient is carried in the sidecar CSS preview; the frontmatter records its endpoint colors. Secondary buttons use opaque blue surfaces with fine borders. Do not reintroduce lavender into app chrome.
+Primary buttons use a solid medium grey surface with white text. Secondary buttons use opaque grey surfaces with fine borders. Keep interface colors neutral; do not reintroduce blue or cyan into app chrome.
 
 ## Typography
 
@@ -128,11 +128,11 @@ Each row shows provider, release format and codec where known, then size and see
 
 ### Controls and accessibility
 
-Use native labeled selects with consistent blue field treatment and 48px minimum height. Default action buttons remain 46px high; source Play actions are at least 44px. Focus uses a 2px cyan outline with a 4px offset. Icon-only controls retain accessible names.
+Use native labeled selects with consistent grey field treatment and 48px minimum height. Default action buttons remain 46px high; source Play actions are at least 44px. Focus uses a 2px white outline with a 4px offset. Icon-only controls retain accessible names.
 
 ### Browsing and feedback
 
-Poster shelves retain saved marks, keyboard focus and hover overlays. Toasts, buffering and extension settings inherit the blue surfaces. The torrent buffering screen keeps cancellation visible, supports file selection and shows actionable failure recovery. Its status strip shows actual peer and transfer data.
+Poster shelves retain saved marks, keyboard focus and hover overlays. Toasts, buffering and extension settings inherit the grey surfaces. The torrent buffering screen keeps cancellation visible, supports file selection and shows actionable failure recovery. Its status strip shows actual peer and transfer data.
 
 ## Do's and Don'ts
 
@@ -141,16 +141,16 @@ Poster shelves retain saved marks, keyboard focus and hover overlays. Toasts, bu
 - Do keep original release information accessible without crowding the initial source scan.
 - Do preserve source, calendar and library behavior when changing appearance.
 - Don't suggest that seeder counts or codec badges guarantee playback.
-- Don't replace the chosen charcoal/blue system with unrelated color themes.
+- Don't replace the chosen grey/black system with unrelated color themes.
 
 ### Audio and dub selection
 
-The torrent player places a labeled native Audio / dub select above the video, using the existing blue fields, 48px control height and cyan keyboard focus. Options come from embedded tracks, with language, title and codec when present; untagged tracks use numbered labels. Show language-discovery progress and a retry action on failure. State that audio changes restart playback and explain when a file contains only one track. The controls stack on mobile.
+The torrent player places a labeled native Audio / dub select above the video, using the existing grey fields, 48px control height and white keyboard focus. Options come from embedded tracks, with language, title and codec when present; untagged tracks use numbered labels. Show language-discovery progress and a retry action on failure. State that audio changes restart playback and explain when a file contains only one track. The controls stack on mobile.
 
 The player pairs Audio / dub and Subtitles selects in two equal columns, stacking on narrow screens. A local SRT / VTT chooser sits with subtitle controls; preparation and failures stay visible without blocking video. Source rows show concise audio/subtitle information below transfer facts. Visible torrent sources automatically inspect file headers. Rows show queued/checking progress, confirmed counts with “Checked in file,” or a specific failure with Retry track check. Audio and subtitle language names appear directly on separate labeled lines, with track counts; full codec/title details remain under Release details. Duplicate languages are grouped, while untagged tracks say Unspecified. Compatible audio is the default on every device; original audio remains an explicit option.
 
 ## Unified cinema player
 
-Player.tsx and player.css replace the native control strip and detached settings bar with one near-black video stage. The title/back control sits at the top, transfer status stays compact on desktop, and bottom controls combine a buffered seek bar, transport/volume/time, audio, subtitles, download, settings, picture-in-picture and fullscreen. Cyan marks the active track/menu and playback progress. Controls fade during playback, returning on pointer or keyboard input; keyboard focus and open menus keep them visible.
+Player.tsx and player.css replace the native control strip and detached settings bar with one black video stage. The title/back control sits at the top, transfer status stays compact on desktop, and bottom controls combine a buffered seek bar, transport/volume/time, audio, subtitles, download, settings, picture-in-picture and fullscreen. White marks the active track/menu and playback progress. Controls fade during playback, returning on pointer or keyboard input; keyboard focus and open menus keep them visible.
 
-Menus are solid deep-blue panels anchored above the toolbar, with readable native fields, an explicit close action, visible keyboard focus and internal scrolling. The subtitle panel includes file loading, size and timing. Downloads explain original-file contents and session lifetime. Mobile uses two control rows with 44px targets and a full-width menu, retaining a separate landscape layout. The playback dialog expands around the stage and hides its redundant outer close button; Back to sources remains inside the player. Fullscreen keeps all menus inside the fullscreen element.
+Menus are solid dark grey panels anchored above the toolbar, with readable native fields, an explicit close action, visible keyboard focus and internal scrolling. The subtitle panel includes file loading, size and timing. Downloads explain original-file contents and session lifetime. Mobile uses two control rows with 44px targets and a full-width menu, retaining a separate landscape layout. The playback dialog expands around the stage and hides its redundant outer close button; Back to sources remains inside the player. Fullscreen keeps all menus inside the fullscreen element.

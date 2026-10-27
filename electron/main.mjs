@@ -67,7 +67,7 @@ function showWindow() {
 
 function createWindow() {
   win=new BrowserWindow({
-    width:1280,height:820,minWidth:900,minHeight:600,show:false,title:'Hasimio',backgroundColor:'#101820',icon,autoHideMenuBar:true,
+    width:1280,height:820,minWidth:900,minHeight:600,show:false,title:'Hasimio',backgroundColor:'#141414',icon,autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true},
   });
   // Links to other sites open in the browser; the window only ever shows the app.
