@@ -55,10 +55,12 @@ function main() {
   fs.writeFileSync(notesFile,releaseNotes(subjects)+'\n');
 
   // No publication happens until a complete installer and manifest exist.
+  // Vite only exports its package.json, so find its CLI from there.
+  const vite=path.join(path.dirname(require.resolve('vite/package.json')),'bin','vite.js');
   const built=
     node(path.join(ROOT,'scripts','make-icon.mjs'),[])&&
     node(require.resolve('typescript/bin/tsc'),['-b'])&&
-    node(require.resolve('vite/bin/vite.js'),['build'])&&
+    node(vite,['build'])&&
     node(require.resolve('electron-builder/cli.js'),['--win','--publish','never','-c.releaseInfo.releaseNotesFile='+notesFile]);
   if(!built)throw Error('Installer build failed; nothing was published.');
   const installer=path.join(DIST,`Hasimio-Setup-${version}.exe`);
