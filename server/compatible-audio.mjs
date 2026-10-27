@@ -18,6 +18,10 @@ function parseTracks(log,type) {
 }
 export const parseAudioTracks=log=>parseTracks(log,'Audio');
 export const parseSubtitleTracks=log=>parseTracks(log,'Subtitle');
+export function parseMediaDuration(log) {
+  const match=/Duration:\s*(\d+):(\d{2}):(\d{2}(?:\.\d+)?)/.exec(log);
+  return match?Number(match[1])*3600+Number(match[2])*60+Number(match[3]):undefined;
+}
 export function probeAudioTracks(input,signal,{fast=false}={}) {
   return new Promise((resolve,reject)=>{
     // FFmpeg exits with code 1 after printing input metadata when no output is specified.
@@ -25,7 +29,7 @@ export function probeAudioTracks(input,signal,{fast=false}={}) {
       if(signal?.aborted)return reject(new Error('Track check cancelled.'));
       if(error&&(error.killed||error.code!==1))return reject(new Error('Could not read audio languages. Retry once more video has buffered.'));
       if(!/Stream #0:\d+.*(?:Video|Audio):/.test(stderr))return reject(new Error('Audio information is not ready. Retry once more video has buffered.'));
-      const tracks={audioTracks:parseAudioTracks(stderr),subtitleTracks:parseSubtitleTracks(stderr)};
+      const tracks={duration:parseMediaDuration(stderr),audioTracks:parseAudioTracks(stderr),subtitleTracks:parseSubtitleTracks(stderr)};
       // Header-based containers declare their streams up front. Fall back if the short probe found no audio.
       if(fast&&!tracks.audioTracks.length)return resolve(probeAudioTracks(input,signal));
       resolve(tracks);

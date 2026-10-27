@@ -11,7 +11,7 @@
     "url": "https://github.com/calinadrian/hasimio.git"
   },
   "main": "electron/main.mjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -26,7 +26,8 @@
     "release": "node scripts/release.mjs",
     "test": "vitest run",
     "test:streaming": "node server/smoke.mjs",
-    "test:audio": "node server/smoke.mjs --audio"
+    "test:audio": "node server/smoke.mjs --audio",
+    "test:player": "node scripts/player-smoke.mjs"
   },
   "dependencies": {
     "electron-updater": "^6.8.11",

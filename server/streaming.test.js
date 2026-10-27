@@ -84,7 +84,7 @@ describe('Hasimio Engine options and cache folder',()=>{
   });
 });
 
-import {parseAudioTracks,parseSubtitleTracks,audioArguments} from './compatible-audio.mjs';
+import {parseAudioTracks,parseSubtitleTracks,audioArguments,parseMediaDuration} from './compatible-audio.mjs';
 describe('embedded audio discovery',()=>{
   it('keeps language, commentary titles and defaults without borrowing video metadata',()=>{const tracks=parseAudioTracks('  Stream #0:0: Video: h264\n    Metadata:\n      title : Video title\n  Stream #0:1(eng): Audio: aac, 48000 Hz, stereo (default)\n    Metadata:\n      title : English dub\n  Stream #0:2[0x3](jpn): Audio: ac3, stereo\n    Metadata:\n      title : Commentary\n  Stream #0:3: Subtitle: subrip\n    Metadata:\n      title : Subtitles');expect(tracks).toEqual([{index:0,language:'eng',codec:'aac',default:true,title:'English dub'},{index:1,language:'jpn',codec:'ac3',default:false,title:'Commentary'}]);});
   it('preserves untagged tracks and silent video',()=>{expect(parseAudioTracks('  Stream #0:1: Audio: aac, stereo')[0].language).toBe('und');expect(parseAudioTracks('  Stream #0:0: Video: h264')).toEqual([]);});
@@ -92,3 +92,10 @@ describe('embedded audio discovery',()=>{
 });
 
 describe('subtitle formats',()=>{it('distinguishes text subtitles from image subtitles',()=>{expect(parseSubtitleTracks('  Stream #0:3(eng): Subtitle: subrip\n  Stream #0:4(jpn): Subtitle: hdmv_pgs_subtitle')).toMatchObject([{index:0,supported:true,language:'eng'},{index:1,supported:false,language:'jpn'}]);});});
+
+describe('source movie duration',()=>{
+  it('reads the complete duration without relying on the growing playlist',()=>{
+    expect(parseMediaDuration('  Duration: 02:03:04.56, start: 0.000000')).toBe(7384.56);
+    expect(parseMediaDuration('  Duration: N/A, start: 0')).toBeUndefined();
+  });
+});

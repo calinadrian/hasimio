@@ -22,3 +22,15 @@ describe('subtitle and source track information',()=>{
     expect(trackLabel({index:1,language:'und',codec:'pgs',default:false,supported:false},'Subtitle')).toContain('Image format (unsupported)');
   });
 });
+
+describe('progressively extracted subtitles',()=>{
+  it('shows the newest flushed FFmpeg cue before the next cue arrives',()=>{
+    expect(parseVtt('WEBVTT\n\n00:01.000 --> 00:03.000\nFirst cue\n')).toEqual([{start:1,end:3,text:'First cue'}]);
+  });
+  it('accepts whitespace separators and CRLF while preserving multiline text',()=>{
+    expect(parseVtt('WEBVTT\r\n\r\n00:01.000 --> 00:03.000\r\nFirst\r\nline\r\n  \r\n00:04.000 --> 00:05.000\r\nSecond\r\n')).toEqual([{start:1,end:3,text:'First\nline'},{start:4,end:5,text:'Second'}]);
+  });
+  it('ignores comment blocks even when they contain arrows',()=>{
+    expect(parseVtt('WEBVTT\n\nNOTE\n00:01.000 --> 00:03.000\nComment\n\n')).toEqual([]);
+  });
+});

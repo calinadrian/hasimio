@@ -27,8 +27,9 @@ export function sourceTrackInfo(stream:Stream,videoId:string){
 export function srtToVtt(text:string){return `WEBVTT\n\n${text.replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n').replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g,'$1.$2')}`;}
 function timestamp(value:string){const parts=value.split(':').map(Number);if(parts.length<2||parts.length>3||parts.some(n=>!Number.isFinite(n)||n<0))return NaN;return parts.reduce((total,n)=>total*60+n,0);}
 export function parseVtt(text:string){
-  const blocks=text.replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n').split('\n\n');
-  // Ignore the unfinished last cue while an embedded track is still being extracted.
-  if(!text.endsWith('\n\n')&&!text.endsWith('\r\n\r\n'))blocks.pop();
-  return blocks.flatMap(block=>{const lines=block.split('\n'),line=lines.findIndex(l=>l.includes('-->'));if(line<0)return [];const timing=lines[line].match(/^(\S+)\s+-->\s+(\S+)/);if(!timing)return [];const start=timestamp(timing[1]),end=timestamp(timing[2]),content=lines.slice(line+1).join('\n');return Number.isFinite(start)&&Number.isFinite(end)&&end>start&&content?[{start,end,text:content}]:[];});
+  const blocks=text.replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n').split(/\n[ \t]*\n/);
+  // FFmpeg flushes each complete cue with a newline; the blank separator arrives with the next cue.
+  // Waiting for two newlines makes the newest subtitle appear one cue late.
+  if(!text.endsWith('\n'))blocks.pop();
+  return blocks.flatMap(block=>{if(/^(?:WEBVTT|NOTE|STYLE|REGION)(?:\s|$)/.test(block))return [];const lines=block.trimEnd().split('\n'),line=lines.findIndex(l=>l.includes('-->'));if(line<0)return [];const timing=lines[line].match(/^(\S+)\s+-->\s+(\S+)/);if(!timing)return [];const start=timestamp(timing[1]),end=timestamp(timing[2]),content=lines.slice(line+1).join('\n');return Number.isFinite(start)&&Number.isFinite(end)&&end>start&&content?[{start,end,text:content}]:[];});
 }
