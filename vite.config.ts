@@ -1,0 +1,8 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import {createMediaService} from './server/service.mjs';
+export default defineConfig({ plugins: [react(),{
+  name:'hasimio-local-streaming',
+  configureServer(server) {const service=createMediaService();server.middlewares.use((req,res,next)=>{void service.handle(req,res,next);});server.httpServer?.once('close',()=>{void service.close();});},
+  configurePreviewServer(server) {const service=createMediaService();server.middlewares.use((req,res,next)=>{void service.handle(req,res,next);});server.httpServer.once('close',()=>{void service.close();});},
+}] });

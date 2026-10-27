@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 2,
+  "title": "Design System: Hasimio",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Steam-inspired cyan"
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Dark charcoal blue"
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Deep blue panel"
+      }
+    },
+    "motion": {
+      "duration": "150ms",
+      "reducedMotion": "Disable decorative movement and smooth scrolling"
+    },
+    "breakpoints": {
+      "wide": "1600px",
+      "desktop": "1150px",
+      "mobile": "760px",
+      "small": "440px"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "html": "<button class=\"ds-primary\">Play</button>",
+      "css": ".ds-primary{font:600 15px \"DM Sans\",sans-serif;min-height:46px;padding:11px 19px;border:1px solid #3e86ac;border-radius:5px;background:linear-gradient(100deg,#236b8e,#245ca3);color:#f3faff}.ds-primary:focus-visible{outline:2px solid #66c0f4;outline-offset:4px}"
+    },
+    {
+      "name": "Source row",
+      "kind": "card",
+      "refersTo": "source-row",
+      "html": "<div class=\"ds-source\"><strong>The Pirate Bay</strong><span>1080p · 2.0 GB · 942 seeders</span></div>",
+      "css": ".ds-source{padding:20px;background:#213448;color:#e5edf5;border-radius:5px;font-family:\"DM Sans\",sans-serif}.ds-source span{display:block;font-size:14px;margin-top:8px;color:#b7d99c}"
+    }
+  ],
+  "narrative": {
+    "overview": "User-approved Steam-inspired charcoal navigation, deep-blue surfaces and cyan emphasis with quality-first playback.",
+    "keyCharacteristics": [
+      "Readable 16px body and poster titles",
+      "Native quality dropdown, then compact source selection",
+      "Real size, seeders, codec and release-format metadata",
+      "Responsive media shelves, calendar and extension rows"
+    ],
+    "dos": [
+      "Retain accessible focus and labeled selects",
+      "Offer only available quality tiers",
+      "Keep release details accessible"
+    ],
+    "donts": [
+      "Do not invent unavailable resolutions",
+      "Do not equate seeders with guaranteed playback",
+      "Do not reintroduce the superseded lavender theme"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+appId: app.hasimio.desktop
+productName: Hasimio
+copyright: Copyright © 2026 calinadrian
+directories:
+  buildResources: build
+  output: release/desktop
+files:
+  - dist/**
+  - electron/**
+  - "!electron/**/*.test.js"
+  - server/**/*.mjs
+  - "!server/smoke.mjs"
+  - shared/**/*.mjs
+  - resources/**
+  - package.json
+# Windows cannot run ffmpeg.exe from inside app.asar (server/ffmpeg.mjs points at the unpacked copy).
+asarUnpack:
+  - node_modules/ffmpeg-static/**
+# WebTorrent's native modules ship N-API prebuilds that work in Electron as they are.
+npmRebuild: false
+electronLanguages:
+  - en-US
+win:
+  target: nsis
+  icon: resources/icon.png
+  executableName: Hasimio
+# One click, per user, no admin rights; Hasimio opens when it's done (same as SaveMe).
+nsis:
+  oneClick: true
+  perMachine: false
+  runAfterFinish: true
+  artifactName: Hasimio-Setup-${version}.${ext}
+  shortcutName: Hasimio
+  uninstallDisplayName: Hasimio
+# Installed copies update from GitHub releases (electron/updates.mjs, scripts/release.mjs).
+publish:
+  provider: github
+  owner: calinadrian
+  repo: hasimio
+  releaseType: release
