@@ -6,18 +6,18 @@ import {createSyncRelay} from '../server/sync-relay.mjs';
 import {DeviceSync} from './device-sync';
 import {saveProgress,resumePosition} from './playback-progress';
 
-let relay:ReturnType<typeof createSyncRelay>,directory:string,storage:Map<string,string>,offline=false;
+let relay:ReturnType<typeof createSyncRelay>,directory:string,storage:Map<string,string>,offline=false,requests:string[]=[],responses:string[]=[];
 const server='http://127.0.0.1:8787';
 beforeEach(async()=>{
-  await mkdir('.cache',{recursive:true});directory=await mkdtemp(path.resolve('.cache/sync-client-'));relay=createSyncRelay({dataDir:directory,publicUrl:server});offline=false;storage=new Map();
+  await mkdir('.cache',{recursive:true});directory=await mkdtemp(path.resolve('.cache/sync-client-'));relay=createSyncRelay({dataDir:directory,publicUrl:server});offline=false;storage=new Map();requests=[];responses=[];
   vi.stubGlobal('localStorage',{getItem:(key:string)=>storage.get(key)??null,setItem:(key:string,value:string)=>storage.set(key,value),removeItem:(key:string)=>storage.delete(key)});
   vi.stubGlobal('window',new EventTarget());
   vi.stubGlobal('fetch',async(url:string,options:RequestInit={})=>{
     if(offline)throw Error('Offline');const parsed=new URL(url),req=Readable.from(options.body?[String(options.body)]:[]);
-    Object.assign(req,{url:parsed.pathname,method:options.method??'GET',headers:Object.fromEntries(new Headers(options.headers).entries()),socket:{remoteAddress:'127.0.0.1'}});
+    requests.push(parsed.pathname+parsed.search);Object.assign(req,{url:parsed.pathname+parsed.search,method:options.method??'GET',headers:Object.fromEntries(new Headers(options.headers).entries()),socket:{remoteAddress:'127.0.0.1'}});
     let status=200,text='';const headers:Record<string,string>={};
     const res={setHeader:(key:string,value:string)=>headers[key]=value,writeHead:(code:number,extra:Record<string,string>={})=>{status=code;Object.assign(headers,extra);},end:(body='')=>text=body};
-    await relay.handle(req as never,res as never);return new Response(text,{status,headers});
+    await relay.handle(req as never,res as never);responses.push(text);return new Response(text,{status,headers});
   });
 });
 afterEach(async()=>{await relay.close();await rm(directory,{recursive:true,force:true});vi.unstubAllGlobals();});
@@ -28,6 +28,16 @@ describe('complete device sync',()=>{
     storage=new Map();storage.set('hasimio:settings',JSON.stringify({volume:0.6}));const phoneStorage=storage,phone=new DeviceSync();await phone.join(invite.url,'Phone');
     storage=desktopStorage;await desktop.sync();const filename=path.join(directory,desktop.status.identity!.spaceId+'.json'),before=JSON.parse(await readFile(filename,'utf8')).revision;
     storage=phoneStorage;await phone.sync();storage=desktopStorage;await desktop.sync();expect(JSON.parse(await readFile(filename,'utf8')).revision).toBe(before);
+  });
+  it('polls without downloading the snapshot while idle and still uploads local changes',async()=>{
+    const desktop=new DeviceSync(),desktopStorage=storage;await desktop.create(server,'Desktop');const invite=await desktop.invitation();
+    storage=new Map();const phoneStorage=storage,phone=new DeviceSync();await phone.join(invite.url,'Phone');
+    storage=desktopStorage;await desktop.sync();const states:string[]=[];desktop.subscribe(()=>states.push(desktop.status.state));
+    requests=[];responses=[];await desktop.sync();
+    expect(requests).toEqual(['/api/sync/spaces/'+desktop.status.identity!.spaceId+'?since='+JSON.parse(responses[0]).revision]);expect(JSON.parse(responses[0])).toMatchObject({unchanged:true});expect(responses[0]).not.toContain('"data"');
+    expect(states).toEqual(['ready']);
+    storage.set('hasimio:settings',JSON.stringify({volume:0.3}));await desktop.sync();expect(desktop.status.state).toBe('ready');
+    storage=phoneStorage;await phone.sync();expect(JSON.parse(storage.get('hasimio:settings')!).volume).toBe(0.3);
   });
   it('pairs independent devices, syncs progress/settings, merges offline removals, and survives restart',async()=>{
     const desktop=new DeviceSync(),desktopStorage=storage;

@@ -12,18 +12,20 @@ function source(value:unknown):value is Addon{
   if(value.url!=='builtin:open-cinema'&&value.url!=='/api/extensions/piratebay/manifest.json'){try{const url=new URL(value.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)return false;}catch{return false;}}
   try{validateManifest(value.manifest);return true;}catch{return false;}
 }
+// Values this version understands. Other records stay in the document untouched,
+// so data synced by a newer app version survives on older devices.
+function validValue(key:string,value:unknown){
+  if(key.startsWith('library:'))return title(value)&&key==='library:'+value.type+':'+value.id;
+  if(key.startsWith('addon:'))return source(value)&&key==='addon:'+value.manifest.id;
+  if(key.startsWith('progress:'))return !!playbackHistory(JSON.stringify({entry:value})).entry;
+  if(key.startsWith('setting:'))return validSetting(key.slice(8),value);
+  return false;
+}
 export function validDocument(value:unknown):SyncDocument{
   if(!plain(value)||value.v!==1||!plain(value.records)||Object.keys(value.records).length>10000)throw Error('Invalid sync data.');
   const records:Record<string,SyncRecord>={};
   for(const [key,item] of Object.entries(value.records)){
-    if(!plain(item)||!Number.isSafeInteger(item.stamp)||Number(item.stamp)<0||typeof item.device!=='string'||!/^[a-f\d]{32}$/.test(item.device)||key.length>800)throw Error('Invalid sync record.');
-    if(item.value!==null){
-      if(key.startsWith('library:')){if(!title(item.value)||key!=='library:'+item.value.type+':'+item.value.id)throw Error('Invalid saved title.');}
-      else if(key.startsWith('addon:')){if(!source(item.value)||key!=='addon:'+item.value.manifest.id)throw Error('Invalid extension.');}
-      else if(key.startsWith('progress:')){if(!playbackHistory(JSON.stringify({entry:item.value})).entry)throw Error('Invalid playback progress.');}
-      else if(key.startsWith('setting:')){if(!validSetting(key.slice(8),item.value))throw Error('Invalid setting.');}
-      else throw Error('Unknown sync record.');
-    }else if(!/^(library:|addon:|progress:|setting:)/.test(key))throw Error('Unknown sync record.');
+    if(!plain(item)||!Number.isSafeInteger(item.stamp)||Number(item.stamp)<0||typeof item.device!=='string'||!/^[a-f\d]{32}$/.test(item.device)||key.length>800||item.value===undefined)throw Error('Invalid sync record.');
     records[key]={stamp:Number(item.stamp),device:item.device,value:item.value};
   }
   return {v:1,records};
@@ -36,7 +38,7 @@ const tombstoneAge=90*24*60*60*1000;
 export function compactDocument(document:SyncDocument,clock=Date.now()):SyncDocument{
   const entries=Object.entries(document.records).filter(([key,record])=>record.value!==null||(!key.startsWith('progress:')&&record.stamp>clock-tombstoneAge));
   // Mirror the local playback history cap so evicted entries are not restored.
-  const evicted=new Set(entries.filter(([key])=>key.startsWith('progress:')).map(([key,record]):[string,PlaybackProgress]=>[key.slice(9),record.value as PlaybackProgress]).sort(newestFirst).slice(progressLimit).map(([key])=>'progress:'+key));
+  const evicted=new Set(entries.filter(([key])=>key.startsWith('progress:')).map(([key,record]):[string,PlaybackProgress]=>[key.slice(9),{...record.value as PlaybackProgress,updatedAt:Number((record.value as PlaybackProgress).updatedAt)||0}]).sort(newestFirst).slice(progressLimit).map(([key])=>'progress:'+key));
   return {v:1,records:Object.fromEntries(entries.filter(([key])=>!evicted.has(key)))};
 }
 export function sameDocument(a:SyncDocument,b:SyncDocument){const keys=Object.keys(a.records);return keys.length===Object.keys(b.records).length&&keys.every(key=>{const left=a.records[key],right=b.records[key];return right&&left.stamp===right.stamp&&left.device===right.device&&JSON.stringify(left.value)===JSON.stringify(right.value);});}
@@ -61,7 +63,7 @@ export function applyDocument(document:SyncDocument){
   const existing=read('hasimio:library',[]) as Meta[];const metadata=new Map((Array.isArray(existing)?existing:[]).filter(title).map(meta=>[meta.type+':'+meta.id,meta]));
   const saved=new Map<string,Meta>(),addons:Addon[]=[],progress:Record<string,unknown>={},settings:Record<string,unknown>={};
   for(const [key,record] of Object.entries(document.records)){
-    if(record.value===null)continue;
+    if(record.value===null||!validValue(key,record.value))continue;
     if(key.startsWith('library:')){const value=record.value as Meta,id=value.type+':'+value.id;saved.set(id,{...metadata.get(id),...value});}
     else if(key.startsWith('addon:'))addons.push(record.value as Addon);
     else if(key.startsWith('progress:'))progress[key.slice(9)]=record.value;

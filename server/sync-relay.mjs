@@ -26,7 +26,7 @@ export function createSyncRelay({dataDir,publicUrl='',uiRoot,now=Date.now,trustP
   function prune(){for(const map of [pairs,invites])for(const [key,value] of map)if(value.expires<=now())map.delete(key);for(const [key,value] of limits)if(value.until<=now())limits.delete(key);}
   // The trusted proxy appends the address it saw, so only the last entry is not client-controlled.
   function limit(req,bucket,max=12,period=60000){prune();const ip=trustProxy?String(req.headers['x-forwarded-for']??req.socket?.remoteAddress??'unknown').split(',').at(-1).trim():req.socket?.remoteAddress??'unknown',key=bucket+':'+ip;let entry=limits.get(key);if(!entry){if(limits.size>=10000)limits.delete(limits.keys().next().value);entry={count:0,until:now()+period};limits.set(key,entry);}if(++entry.count>max)fail(429,'Too many attempts. Please wait a minute and try again.');}
-  async function body(req){if(!req.headers['content-type']?.startsWith('application/json'))fail(415,'Send JSON.');const chunks=[];let size=0;for await(const part of req){const chunk=Buffer.from(part);size+=chunk.length;if(size>MAX_BODY)fail(413,'Sync data is too large.');chunks.push(chunk);}try{const value=JSON.parse(Buffer.concat(chunks).toString('utf8'));if(!value||typeof value!=='object'||Array.isArray(value))fail(400,'Send a JSON object.');return value;}catch{fail(400,'Invalid JSON.');}}
+  async function body(req){if(!req.headers['content-type']?.startsWith('application/json'))fail(415,'Send JSON.');const chunks=[];let size=0;for await(const part of req){const chunk=Buffer.from(part);size+=chunk.length;if(size>MAX_BODY)fail(413,'Sync data is too large.');chunks.push(chunk);}let value;try{value=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{fail(400,'Invalid JSON.');}if(!value||typeof value!=='object'||Array.isArray(value))fail(400,'Send a JSON object.');return value;}
   function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'});res.end(JSON.stringify(data));}
   async function handle(req,res){
     const url=new URL(req.url??'/','http://relay');
@@ -62,7 +62,8 @@ export function createSyncRelay({dataDir,publicUrl='',uiRoot,now=Date.now,trustP
       const route=/^\/api\/sync\/spaces\/([a-f\d]{32})(?:\/(devices|invites|pairings)(?:\/([a-f\d]{32}|\d{6}))?)?$/.exec(url.pathname);
       if(!route)fail(404,'Sync endpoint not found.');
       const [,spaceId,resource,target]=route;
-      if(req.method==='GET'&&!resource){await queue;const space=await load(spaceId);auth(space,req);return json(res,200,{revision:space.revision,data:space.data,devices:space.devices.map(publicDevice)});}
+      // Idle devices poll with ?since=<revision> and skip the snapshot when nothing changed.
+      if(req.method==='GET'&&!resource){await queue;const space=await load(spaceId);auth(space,req);const devices=space.devices.map(publicDevice);return json(res,200,url.searchParams.get('since')===String(space.revision)?{revision:space.revision,unchanged:true,devices}:{revision:space.revision,data:space.data,devices});}
       if(req.method==='GET'&&resource==='pairings'&&target){limit(req,'pair-preview',8);prune();const space=await load(spaceId);auth(space,req);const pair=pairs.get(target);if(!pair||pair.approval)fail(404,'Pairing code expired or was already approved.');return json(res,200,{deviceId:pair.deviceId,name:pair.name,publicKey:pair.publicKey,expires:pair.expires});}
       const input=['POST','PUT'].includes(req.method)?await body(req):{};
       const result=await mutate(async()=>{

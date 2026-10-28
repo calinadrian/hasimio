@@ -24,6 +24,8 @@ describe.skipIf(!syncFetch)('hosted D1 sync relay',()=>{
     const results=await Promise.all([request(route,'PUT',{baseRevision:1,data},owner.deviceToken),request(route,'PUT',{baseRevision:1,data},owner.deviceToken)]);
     expect(results.map(r=>r.status).sort()).toEqual([200,409]);
     const result=await request(route,'GET',undefined,owner.deviceToken);expect(result.body.revision).toBe(2);expect(result.body.data).toEqual(data);
+    const idle=await request(route+'?since=2','GET',undefined,owner.deviceToken);expect(idle.body).toMatchObject({revision:2,unchanged:true});expect(idle.body.data).toBeUndefined();expect(idle.body.devices).toHaveLength(1);
+    expect((await request(route+'?since=1','GET',undefined,owner.deviceToken)).body.data).toEqual(data);
     const dump=JSON.stringify(sql.prepare('SELECT * FROM spaces').all())+JSON.stringify(sql.prepare('SELECT * FROM devices').all());expect(dump).not.toContain(owner.deviceToken);expect(dump).not.toContain(owner.recoveryToken);
   });
   it('makes concurrent QR redemption single-use and revokes new-device access',async()=>{

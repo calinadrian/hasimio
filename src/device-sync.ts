@@ -16,19 +16,21 @@ export async function syncRequest<T>(server:string,route:string,options:{method?
 }
 export class DeviceSync {
   status:Status={state:'off',devices:[]};listeners=new Set<()=>void>();document:SyncDocument=emptyDocument();observed:Record<string,unknown>={};private running=false;private timer:ReturnType<typeof setInterval>|undefined;private scheduled:ReturnType<typeof setTimeout>|undefined;private applied=false;private lastAttempt=0;private dirty=false;
+  // The remote revision this.document already includes, and whether it has local changes not uploaded yet.
+  private revision=0;private pending=true;
   private publish(update:Partial<Status>){this.status={...this.status,...update};for(const listener of this.listeners)listener();}
   subscribe=(listener:()=>void)=>{this.listeners.add(listener);return()=>{this.listeners.delete(listener);};};
   snapshot=()=>this.status;
-  private persist(){localStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:this.document,observed:this.observed}));}
+  private persist(){localStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:this.document,observed:this.observed,revision:this.revision,pending:this.pending}));}
   capture=()=>{
     if(this.applied||!this.status.identity)return;
-    try{const current=localValues();this.document=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);this.observed=current;this.persist();}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
+    try{const current=localValues(),next=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);if(Object.keys(next.records).some(key=>next.records[key]!==this.document.records[key]))this.pending=true;this.document=next;this.observed=current;this.persist();}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
   };
   changed=()=>{if(this.applied)return;this.capture();if(!this.status.identity||this.status.state==='revoked')return;if(this.running)this.dirty=true;if(this.scheduled)return;this.scheduled=setTimeout(()=>{this.scheduled=undefined;void this.sync();},Math.max(1000,5000-(Date.now()-this.lastAttempt)));};
   start(){
     if(this.timer)return;const identity=read(identityKey);
     if(validIdentity(identity)){
-      const saved=read(documentKey);try{if(saved?.spaceId===identity.spaceId){this.document=validDocument(saved.document);this.observed=saved.observed??{};}}catch{/* Rebuild from the device's own data. */}
+      const saved=read(documentKey);try{if(saved?.spaceId===identity.spaceId){this.document=validDocument(saved.document);this.observed=saved.observed??{};this.revision=Number.isSafeInteger(saved.revision)?saved.revision:0;this.pending=saved.pending!==false;}}catch{/* Rebuild from the device's own data. */}
       this.publish({identity,state:'syncing'});void this.sync();
     }
     this.timer=setInterval(()=>{if(this.status.identity&&this.status.state!=='revoked'&&document.visibilityState!=='hidden')void this.sync();},15000);
@@ -37,7 +39,7 @@ export class DeviceSync {
   }
   private visibility=()=>{this.capture();if(document.visibilityState==='visible')void this.sync();};
   private setIdentity(identity:Identity,joining=false){
-    localStorage.setItem(identityKey,JSON.stringify(identity));this.document=captureChanges(emptyDocument(),identity.deviceId,{},localValues(),joining?0:Date.now());this.observed=localValues();this.publish({identity,state:'syncing',error:undefined,devices:[]});this.persist();
+    localStorage.setItem(identityKey,JSON.stringify(identity));this.document=captureChanges(emptyDocument(),identity.deviceId,{},localValues(),joining?0:Date.now());this.observed=localValues();this.revision=0;this.pending=true;this.publish({identity,state:'syncing',error:undefined,devices:[]});this.persist();
   }
   async create(server:string,name:string){
     server=serviceUrl(server);const info=await syncRequest<{version:number;appUrl:string}>(server,'info');if(info.version!==1)throw Error('Unsupported sync service version.');
@@ -47,29 +49,35 @@ export class DeviceSync {
     identity.spaceId=created.spaceId;this.setIdentity(identity);this.publish({appUrl:info.appUrl||server});await this.sync();return this.recoveryCode();
   }
   async sync(){
-    const identity=this.status.identity;if(!identity||this.running)return;this.running=true;this.dirty=false;this.lastAttempt=Date.now();this.publish({state:'syncing',error:undefined});
+    const identity=this.status.identity;if(!identity||this.running)return;this.running=true;this.dirty=false;this.lastAttempt=Date.now();
+    // Background polls with nothing to upload keep the current status instead of flashing "syncing".
+    this.capture();if(this.pending||this.status.state!=='ready')this.publish({state:'syncing',error:undefined});
     try{
       for(let attempt=0;attempt<4;attempt++){
-        this.capture();const remote=await syncRequest<{revision:number;data:Sealed;devices:Device[]}>(identity.server,'spaces/'+identity.spaceId,{token:identity.deviceToken});
-        const incoming=validDocument(await unseal(remote.data,identity.key));this.capture();const merged=compactDocument(mergeDocuments(this.document,incoming));
-        if(!sameDocument(merged,incoming)){
+        this.capture();const pending=this.pending;this.pending=false;
+        const remote=await syncRequest<{revision:number;data?:Sealed;unchanged?:boolean;devices:Device[]}>(identity.server,'spaces/'+identity.spaceId+(this.revision?'?since='+this.revision:''),{token:identity.deviceToken});
+        if(this.status.identity!==identity)return;
+        if(remote.unchanged&&!pending){this.publish({state:'ready',error:undefined,lastSynced:Date.now(),devices:remote.devices});return;}
+        // Unchanged remotely: the local document already contains that revision, so upload it as is.
+        const incoming=remote.unchanged?undefined:validDocument(await unseal(remote.data!,identity.key));this.capture();this.pending=false;const merged=compactDocument(incoming?mergeDocuments(this.document,incoming):this.document);let revision=remote.revision;
+        if(!incoming||!sameDocument(merged,incoming)){
           const data=await seal(merged,identity.key);
-          try{await syncRequest(identity.server,'spaces/'+identity.spaceId,{method:'PUT',token:identity.deviceToken,body:{baseRevision:remote.revision,data}});}catch(error){if((error as {status?:number}).status===409)continue;throw error;}
+          try{revision=(await syncRequest<{revision:number}>(identity.server,'spaces/'+identity.spaceId,{method:'PUT',token:identity.deviceToken,body:{baseRevision:remote.revision,data}})).revision;}catch(error){if((error as {status?:number}).status===409){this.pending=true;continue;}throw error;}
         }
-        if(this.status.identity!==identity)return;this.capture();this.document=compactDocument(mergeDocuments(this.document,merged));
+        if(this.status.identity!==identity)return;this.capture();this.document=compactDocument(mergeDocuments(this.document,merged));this.revision=revision;
         this.applied=true;try{applyDocument(this.document);this.observed=localValues();this.persist();}finally{this.applied=false;}
         this.publish({state:'ready',error:undefined,lastSynced:Date.now(),devices:remote.devices});return;
       }
       throw Error('Other devices are syncing. Your changes are saved and will retry shortly.');
-    }catch(error){if(this.status.identity===identity)this.publish({state:[401,404].includes((error as {status?:number}).status??0)?'revoked':'offline',error:error instanceof Error?error.message:'Sync is offline. Changes stay saved on this device.'});}
+    }catch(error){this.pending=true;if(this.status.identity===identity)this.publish({state:[401,404].includes((error as {status?:number}).status??0)?'revoked':'offline',error:error instanceof Error?error.message:'Sync is offline. Changes stay saved on this device.'});}
     finally{this.running=false;if(this.dirty){this.dirty=false;this.changed();}}
   }
   async invitation(){
     const identity=this.status.identity;if(!identity)throw Error('Enable sync first.');
     const info=await syncRequest<{appUrl:string}>(identity.server,'info');
+    const destination=serviceUrl(info.appUrl||identity.server);if(destination!==identity.server)throw Error('The sync service pairing address must use the same HTTPS origin.');
     const invite=await syncRequest<{invite:string;expires:number}>(identity.server,'spaces/'+identity.spaceId+'/invites',{method:'POST',token:identity.deviceToken,body:{}});
     const fragment=encode(new TextEncoder().encode(JSON.stringify({v:1,server:identity.server,spaceId:identity.spaceId,key:identity.key,invite:invite.invite})));
-    const destination=serviceUrl(info.appUrl||identity.server);if(destination!==identity.server)throw Error('The sync service pairing address must use the same HTTPS origin.');
     const url=new URL(destination);url.hash='sync-link='+fragment;return {url:url.href,expires:invite.expires};
   }
   async join(link:string,name:string){
@@ -108,7 +116,7 @@ export class DeviceSync {
     return pairingFingerprint(keys.publicKey);
   }
   async unlink(deviceId:string){const i=this.status.identity;if(!i)return;await syncRequest(i.server,'spaces/'+i.spaceId+'/devices/'+deviceId,{method:'DELETE',token:i.deviceToken});if(deviceId===i.deviceId)this.forget();else await this.sync();}
-  forget(){localStorage.removeItem(identityKey);localStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
+  forget(){localStorage.removeItem(identityKey);localStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.revision=0;this.pending=true;this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
 }
 export const deviceSync=new DeviceSync();
 export function useDeviceSync(){return useSyncExternalStore(deviceSync.subscribe,deviceSync.snapshot);}

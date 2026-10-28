@@ -24,6 +24,11 @@ describe('encrypted sync relay',()=>{
     expect((await request(route,'PUT',{baseRevision:1,data},owner.deviceToken)).status).toBe(409);
     const disk=await readFile(path.join(directory,owner.spaceId+'.json'),'utf8');expect(disk).not.toContain(owner.deviceToken);expect(disk).not.toContain(owner.recoveryToken);
     await relay.close();relay=createSyncRelay({dataDir:directory});const restored=await request(route,'GET',undefined,owner.deviceToken);expect(restored.body.revision).toBe(2);expect(restored.body.data).toEqual(data);
+    const idle=await request(route+'?since=2','GET',undefined,owner.deviceToken);expect(idle.body).toMatchObject({revision:2,unchanged:true});expect(idle.body.data).toBeUndefined();expect(idle.body.devices).toHaveLength(1);
+    expect((await request(route+'?since=1','GET',undefined,owner.deviceToken)).body.data).toEqual(data);expect((await request(route+'?since=2')).status).toBe(401);
+  });
+  it('reports a JSON value that is not an object as such',async()=>{
+    expect((await request('spaces','POST',[1])).body.error).toBe('Send a JSON object.');
   });
   it('decodes multi-byte device names split across request chunks',async()=>{
     const bytes=Buffer.from(JSON.stringify({...device(),name:'Größe TV',recoveryToken:token(),data})),split=bytes.indexOf(Buffer.from('ö'))+1;

@@ -23,7 +23,15 @@ describe('offline device merging',()=>{
     storage.set('hasimio:library',JSON.stringify([{id:'tt1',type:'movie',name:'Film',description:'Provider metadata',metadataFetchedAt:100}]));
     const doc=validDocument(captureChanges(emptyDocument(),a,{}, {'library:movie:tt1':{id:'tt1',type:'movie',name:'Film'},'setting:volume':0.6},100));applyDocument(doc);
     expect(JSON.parse(storage.get('hasimio:library')!)[0].description).toBe('Provider metadata');expect(localValues()['setting:volume']).toBe(0.6);
-    expect(()=>validDocument({v:1,records:{'setting:volume':{stamp:1,device:a,value:999}}})).toThrow();
+    applyDocument(validDocument({v:1,records:{'setting:volume':{stamp:1,device:a,value:999}}}));expect(localValues()['setting:volume']).toBeUndefined();
+    expect(()=>validDocument({v:1,records:{'setting:volume':{stamp:-1,device:a,value:1}}})).toThrow();
+  });
+  it('keeps records from newer app versions without applying them',()=>{
+    const future={'setting:futureKey':{stamp:50,device:b,value:'x'},'watchlist:movie:tt9':{stamp:51,device:b,value:{id:'tt9'}},'later:tt9':{stamp:52,device:b,value:null}};
+    const remote=validDocument({v:1,records:future}),local=captureChanges(emptyDocument(),a,{},{'setting:volume':0.5},100);
+    const merged=compactDocument(mergeDocuments(local,remote),200);expect(merged.records['setting:futureKey']).toEqual(future['setting:futureKey']);expect(merged.records['watchlist:movie:tt9']).toEqual(future['watchlist:movie:tt9']);
+    applyDocument(merged);expect(JSON.parse(storage.get('hasimio:settings')!)).toEqual({volume:0.5});
+    const next=captureChanges(merged,a,localValues(),{'setting:volume':0.7},300);expect(next.records['setting:futureKey']).toEqual(future['setting:futureKey']);expect(next.records['later:tt9']).toEqual(future['later:tt9']);
   });
   it('keeps the library order of this device and appends titles from others',()=>{
     storage.set('hasimio:library',JSON.stringify([{id:'tt2',type:'movie',name:'Second'},{id:'tt1',type:'movie',name:'First'}]));
