@@ -1,5 +1,11 @@
 # Hasimio
 
+TorrentDownloads is an alternative movie and series episode playback extension. The local engine searches `https://www.torrentdownloads.pro/search/`, matches the resolved title plus movie year or exact season/episode, and reads magnet hashes from up to 16 matching detail pages with three requests at a time. Executable and archive labels are excluded. No remote download URL or script is executed. The source shares the existing torrent player and Extensions controls, including a one-time addition for existing installations and synced enabled settings. HTML layout changes or browser verification can interrupt this provider. PSA is not integrated: its torrent buttons currently require human verification.
+
+EZTV is included as an alternative series playback extension. It uses `https://eztvx.to/api/get-torrents`, reads paginated releases by IMDb show ID, and matches the selected season and episode exactly. Show results are cached for five minutes across episode switches. It shares the existing source picker, track inspection, torrent player, and download flow. Existing installations receive the extension once; disabled settings and subsequent removal are preserved. EZTV does not add discovery catalogs or supply movie sources.
+
+YTS is included as an alternative movie playback extension alongside The Pirate Bay. Movie detail pages combine both providers in the existing quality/source picker; either extension can be disabled or removed from Extensions. Existing installations receive YTS once, keeping an existing disabled setting. YTS matches the exact IMDb movie ID through `https://movies-api.accel.li/api/v2/list_movies.json` and passes validated torrent hashes to the same local player, track inspection, and download flow. Results are cached for five minutes; provider errors remain retryable and do not discard results from other extensions. YTS does not supply series or anime episode sources, or replace Hasimio’s discovery catalogs.
+
 A browser-first media library with discovery, an episode calendar, and Stremio-compatible HTTP extensions. React + TypeScript + Vite.
 
 ## Run

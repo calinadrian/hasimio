@@ -1,11 +1,25 @@
 import {beforeEach,afterEach,describe,it,expect,vi} from 'vitest';
 import {emptyDocument,captureChanges,mergeDocuments,compactDocument,validDocument,localValues,applyDocument} from './sync-state';
 import {seal,unseal,randomKey,pairingKey,pairingFingerprint,sharedKey,serviceUrl} from './sync-crypto';
+import {yts,eztv,torrentDownloads} from './catalogs';
 const a='a'.repeat(32),b='b'.repeat(32);
 let storage:Map<string,string>;
 beforeEach(()=>{storage=new Map();vi.stubGlobal('localStorage',{getItem:(key:string)=>storage.get(key)??null,setItem:(key:string,value:string)=>storage.set(key,value)});vi.stubGlobal('window',new EventTarget());});
 afterEach(()=>vi.unstubAllGlobals());
 describe('offline device merging',()=>{
+  it('syncs the TorrentDownloads extension and its disabled setting',()=>{
+    const source={...torrentDownloads,enabled:false};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+torrentDownloads.manifest.id]:source},100));
+    expect(localValues()['addon:'+torrentDownloads.manifest.id]).toEqual(source);
+  });
+  it('syncs EZTV and preserves its disabled setting',()=>{
+    const source={...eztv,enabled:false};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+eztv.manifest.id]:source},100));
+    expect(localValues()['addon:'+eztv.manifest.id]).toEqual(source);
+  });
+  it('syncs the YTS extension and its disabled setting between devices',()=>{
+    const source={...yts,enabled:false};
+    const doc=captureChanges(emptyDocument(),a,{},{['addon:'+yts.manifest.id]:source},100);
+    applyDocument(doc);expect(localValues()['addon:'+yts.manifest.id]).toEqual(source);
+  });
   it('merges independent edits, preserves removals, and accepts rewinding progress',()=>{
     const initial=captureChanges(emptyDocument(),a,{}, {'library:movie:tt1':{id:'tt1',type:'movie',name:'Film'},'setting:volume':0.8,'setting:rate':1,'progress:movie:tt1':{position:500,duration:1000,updatedAt:1,completed:false}},100);
     const first=captureChanges(initial,a,{'library:movie:tt1':{id:'tt1',type:'movie',name:'Film'},'setting:volume':0.8},{'setting:volume':0.5},200);

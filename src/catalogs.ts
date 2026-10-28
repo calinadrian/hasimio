@@ -13,6 +13,18 @@ export function replaceCinemeta(existing:Addon[]) {
 }
 export const kitsu: Addon = {url:kitsuUrl,enabled:true,manifest:{id:'org.hasimio.kitsu',name:'Hasimio Anime',version:'1.0.0',description:'Hasimio’s own anime integration using Kitsu’s data API directly.',types:['anime','movie','series'],idPrefixes:['kitsu:'],resources:['catalog','meta'],catalogs:[{id:'kitsu-anime-trending',type:'anime',name:'Trending anime'},{id:'kitsu-anime-airing',type:'anime',name:'Airing anime',extra:[{name:'skip'}]},{id:'kitsu-anime-popular',type:'anime',name:'Popular anime',extra:[{name:'skip'}]},{id:'kitsu-anime-rating',type:'anime',name:'Top-rated anime',extra:[{name:'skip'}]},{id:'kitsu-anime-list',type:'anime',name:'Anime search',extra:[{name:'search',isRequired:true},{name:'skip'}]}]}};
 export const pirateBay:Addon={url:'/api/extensions/piratebay/manifest.json',enabled:true,manifest:{id:'org.hasimio.piratebay',name:'The Pirate Bay',version:'1.1.0',description:'Movie, series and anime torrent sources from The Pirate Bay index via APIBay. Streams through Hasimio’s local torrent service.',resources:['stream'],types:['movie','series','anime'],idPrefixes:['tt','kitsu:'],catalogs:[]}};
+export const yts:Addon={url:'/api/extensions/yts/manifest.json',enabled:true,manifest:{id:'org.hasimio.yts',name:'YTS',version:'1.0.0',description:'Alternative movie torrent sources from YTS. Streams through Hasimio’s local torrent service.',resources:['stream'],types:['movie'],idPrefixes:['tt'],catalogs:[]}};
+export function addYtsSource(existing:Addon[]) {
+  return existing.some(a=>a.manifest.id===yts.manifest.id||a.url===yts.url)?existing:[...existing,yts];
+}
+export const eztv:Addon={url:'/api/extensions/eztv/manifest.json',enabled:true,manifest:{id:'org.hasimio.eztv',name:'EZTV',version:'1.0.0',description:'Alternative series episode torrent sources from EZTV. Streams through Hasimio’s local torrent service.',resources:['stream'],types:['series'],idPrefixes:['tt'],catalogs:[]}};
+export function addEztvSource(existing:Addon[]) {
+  return existing.some(a=>a.manifest.id===eztv.manifest.id||a.url===eztv.url)?existing:[...existing,eztv];
+}
+export const torrentDownloads:Addon={url:'/api/extensions/torrentdownloads/manifest.json',enabled:true,manifest:{id:'org.hasimio.torrentdownloads',name:'TorrentDownloads',version:'1.0.0',description:'Alternative movie and series episode torrent sources from TorrentDownloads. Streams through Hasimio’s local torrent service.',resources:['stream'],types:['movie','series'],idPrefixes:['tt'],catalogs:[]}};
+export function addTorrentDownloadsSource(existing:Addon[]) {
+  return existing.some(a=>a.manifest.id===torrentDownloads.manifest.id||a.url===torrentDownloads.url)?existing:[...existing,torrentDownloads];
+}
 export function updatePlaybackAddon(existing:Addon[]) {
   return existing.map(a => a.url === pirateBay.url && a.manifest.id === pirateBay.manifest.id && a.manifest.version !== pirateBay.manifest.version ? {...a,manifest:pirateBay.manifest} : a);
 }
@@ -20,7 +32,7 @@ export function migrateAnimeSource(existing:Addon[]) {
   return existing.map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
     .filter((a,index,all) => all.findIndex(other=>other.manifest.id === a.manifest.id) === index);
 }
-export const defaultAddons = [demoAddon,titles,kitsu,pirateBay];
+export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads];
 export function addDefaultCatalogs(existing: Addon[]) {
   return [...existing,...[titles,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];
 }

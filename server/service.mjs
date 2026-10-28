@@ -3,6 +3,9 @@ import {mkdir,stat,readFile,rm} from 'node:fs/promises';
 import {createReadStream,readFileSync} from 'node:fs';
 import path from 'node:path';
 import {pirateBayManifest,searchPirateBay,validHash} from './piratebay.mjs';
+import {ytsManifest,searchYts} from './yts.mjs';
+import {eztvManifest,createEztvSearch} from './eztv.mjs';
+import {torrentDownloadsManifest,searchTorrentDownloads} from './torrentdownloads.mjs';
 import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
 import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer} from './torrent-utils.mjs';
 import {cacheDir} from './paths.mjs';
@@ -22,9 +25,10 @@ export const UPLOAD_LIMIT=64*1024;
 // A crash skips stop(), so the first torrent of each run clears what an earlier run left behind.
 let swept;
 const sweepCache=()=>swept??=Promise.all([cacheRoot,audioRoot].map(dir=>rm(dir,{recursive:true,force:true,maxRetries:3,retryDelay:200}).catch(()=>{})));
-export function createMediaService({clientFactory,inspectionClientFactory,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')})}={}) {
+export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')})}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
+  const searchEztv=createEztvSearch({fetchImpl});
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
     let promise=inspection?inspectionClientPromise:clientPromise;
@@ -92,8 +96,18 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
     try {
       if(req.method==='GET'&&url.pathname==='/api/streaming/health')return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size});
       if(req.method==='GET'&&url.pathname==='/api/extensions/piratebay/manifest.json')return json(res,200,pirateBayManifest);
-      const source=/^\/api\/extensions\/piratebay\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
-      if(req.method==='GET'&&source){const type=source[1],id=decodeURIComponent(source[2]),key=`${type}:${id}`;let item=searches.get(key);if(!item||item.expires<Date.now()){item={expires:Date.now()+5*60*1000,promise:searchPirateBay(type,id,undefined,titles.title)};searches.set(key,item);item.promise.catch(()=>searches.delete(key));}try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}}
+      if(req.method==='GET'&&url.pathname==='/api/extensions/yts/manifest.json')return json(res,200,ytsManifest);
+      if(req.method==='GET'&&url.pathname==='/api/extensions/eztv/manifest.json')return json(res,200,eztvManifest);
+      if(req.method==='GET'&&url.pathname==='/api/extensions/torrentdownloads/manifest.json')return json(res,200,torrentDownloadsManifest);
+      const source=/^\/api\/extensions\/(piratebay|yts|eztv|torrentdownloads)\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
+      if(req.method==='GET'&&source){
+        const [,provider,type,encoded]=source,id=decodeURIComponent(encoded),key=`${provider}:${type}:${id}`;let item=searches.get(key);
+        if(!item||item.expires<Date.now()){
+          const promise=provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,titles.title):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,titles.title);
+          item={expires:Date.now()+5*60*1000,promise};searches.set(key,item);item.promise.catch(()=>searches.delete(key));
+        }
+        try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}
+      }
       if(req.method==='GET'&&url.pathname==='/api/extensions/titles/manifest.json')return json(res,200,titleIndexManifest);
       const titleRoute=/^\/api\/extensions\/titles\/(catalog|meta)\/(movie|series)\/([^/]+)(?:\/([^/]+))?\.json$/.exec(url.pathname);
       if(req.method==='GET'&&titleRoute){const [,resource,type,id,extras]=titleRoute;try{return json(res,200,resource==='catalog'?await titles.catalog(type,decodeURIComponent(id),Object.fromEntries(new URLSearchParams(extras??''))):await titles.meta(type,decodeURIComponent(id)));}catch(error){return json(res,error.status??502,{error:error.message});}}

@@ -1,9 +1,30 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata} from './catalogs';
 import {calendarEvents, nextRelease, defaultEpisode, episodeLabel, supports, type Meta} from './media';
-import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta} from './catalogs';
+import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource} from './catalogs';
 afterEach(() => vi.unstubAllGlobals());
 describe('default catalogs and anime discovery', () => {
+  it('adds TorrentDownloads for movies and series, preserving disabled settings',()=>{
+    expect(defaultAddons).toContain(torrentDownloads);expect(addTorrentDownloadsSource([yts])).toEqual([yts,torrentDownloads]);
+    expect(addTorrentDownloadsSource([{...torrentDownloads,enabled:false}])).toEqual([{...torrentDownloads,enabled:false}]);
+    expect(supports(torrentDownloads,'stream','series','tt123:1:2')).toBe(true);expect(supports(torrentDownloads,'stream','movie','tt123')).toBe(true);
+    expect(supports(torrentDownloads,'stream','anime','kitsu:1:2')).toBe(false);
+  });
+  it('installs EZTV once for IMDb series while preserving disabled settings',()=>{
+    expect(defaultAddons).toContain(eztv);expect(addEztvSource([yts])).toEqual([yts,eztv]);
+    expect(addEztvSource([{...eztv,enabled:false}])).toEqual([{...eztv,enabled:false}]);
+    expect(supports(eztv,'stream','series','tt123:1:2')).toBe(true);
+    expect(supports(eztv,'stream','movie','tt123')).toBe(false);
+    expect(supports(eztv,'stream','series','kitsu:1:2')).toBe(false);
+  });
+  it('adds YTS alongside Pirate Bay for movies, preserving existing disabled settings',()=>{
+    expect(defaultAddons).toContain(yts);expect(defaultAddons).toContain(pirateBay);
+    expect(addYtsSource([pirateBay])).toEqual([pirateBay,yts]);
+    expect(addYtsSource([{...yts,enabled:false}])).toEqual([{...yts,enabled:false}]);
+    expect(supports(yts,'stream','movie','tt123')).toBe(true);
+    expect(supports(yts,'stream','series','tt123:1:2')).toBe(false);
+    expect(supports(yts,'stream','movie','kitsu:1')).toBe(false);
+  });
   it('replaces old community sources before use, preserving disabled and removed sources',()=>{
     const old={...kitsu,url:'https://anime-kitsu.strem.fun/manifest.json',enabled:false,manifest:{...kitsu.manifest,id:'community.anime.kitsu'}};
     expect(migrateAnimeSource([old])).toEqual([{...kitsu,enabled:false}]);
