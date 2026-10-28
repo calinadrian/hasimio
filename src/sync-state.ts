@@ -9,7 +9,7 @@ const plain=(value:unknown):value is Record<string,unknown>=>!!value&&typeof val
 function title(value:unknown):value is Meta{return plain(value)&&typeof value.id==='string'&&value.id.length<=300&&typeof value.type==='string'&&value.type.length<=80&&typeof value.name==='string'&&value.name.length<=500;}
 function source(value:unknown):value is Addon{
   if(!plain(value)||typeof value.url!=='string'||typeof value.enabled!=='boolean')return false;
-  if(value.url!=='builtin:open-cinema'&&value.url!=='/api/extensions/piratebay/manifest.json'){try{const url=new URL(value.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)return false;}catch{return false;}}
+  if(!['builtin:open-cinema','/api/extensions/piratebay/manifest.json','/api/extensions/titles/manifest.json'].includes(value.url)){try{const url=new URL(value.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)return false;}catch{return false;}}
   try{validateManifest(value.manifest);return true;}catch{return false;}
 }
 // Values this version understands. Other records stay in the document untouched,

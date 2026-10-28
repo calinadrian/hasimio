@@ -1,7 +1,7 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata} from './catalogs';
 import {calendarEvents, nextRelease, defaultEpisode, episodeLabel, supports, type Meta} from './media';
-import {pirateBay,updatePlaybackAddon} from './catalogs';
+import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta} from './catalogs';
 afterEach(() => vi.unstubAllGlobals());
 describe('default catalogs and anime discovery', () => {
   it('replaces old community sources before use, preserving disabled and removed sources',()=>{
@@ -22,8 +22,14 @@ describe('default catalogs and anime discovery', () => {
     expect(defaultEpisode({...meta,videos:[meta.videos![1]]})).toBeUndefined();
   });
   it('upgrades existing installations without duplicates or re-enabling disabled sources', () => {
-    const existing=[{...cinemeta,enabled:false}]; const result=addDefaultCatalogs(existing);
+    const existing=[{...titles,enabled:false}]; const result=addDefaultCatalogs(existing);
     expect(result).toHaveLength(2); expect(result[0].enabled).toBe(false); expect(addDefaultCatalogs(result)).toHaveLength(2);
+  });
+  it('replaces Cinemeta with Hasimio Titles once, keeping its enabled state', () => {
+    expect(replaceCinemeta([kitsu,{...cinemeta,enabled:false}])).toEqual([kitsu,{...titles,enabled:false}]);
+    expect(replaceCinemeta([cinemeta,titles])).toEqual([titles]);
+    expect(replaceCinemeta([kitsu])).toEqual([kitsu,titles]);
+    expect(defaultAddons.some(a => a.url === cinemeta.url)).toBe(false);
   });
   it('separates anime catalogs and respects search and required extras', () => {
     expect(catalogSelection(defaultAddons,'','Anime').every(c => c.catalog.type === 'anime')).toBe(true);

@@ -7,6 +7,7 @@ export type Addon = { url: string; manifest: Manifest; enabled: boolean; builtin
 export type Stream = { subtitleTrack?: {url:string;label:string;language:string}; name?: string; title?: string; url?: string; externalUrl?: string; infoHash?: string; ytId?: string; provider?: string;quality?:string;seeders?:number;sizeBytes?:number;codec?:string;filename?:string };
 export const cinemetaUrl = 'https://v3-cinemeta.strem.io/manifest.json';
 export const kitsuUrl = 'https://kitsu.io/api/edge';
+export const titlesUrl = '/api/extensions/titles/manifest.json';
 export function manifestUrl(input: string) {
   const url = new URL(input.trim().replace(/^stremio:\/\//i, 'https://'));
   if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password) throw new Error('Enter an HTTP or HTTPS manifest URL without embedded credentials.');
@@ -28,13 +29,17 @@ export function supports(addon: Addon, resource: string, type: string, id: strin
   });
 }
 export function resourceUrl(base: string, resource: string, type: string, id: string, extras?: Record<string,string>) {
-  // Relative add-on URLs are served by Hasimio Engine (the built-in Pirate Bay source).
+  // Relative add-on URLs are served by Hasimio Engine (the built-in title index and Pirate Bay source).
   const url = new URL(base,engineBase()); url.pathname = url.pathname.replace(/\/manifest.json$/, '') + `/${resource}/${encodeURIComponent(type)}/${encodeURIComponent(id)}` + (extras && Object.keys(extras).length ? '/' + new URLSearchParams(extras).toString().replace(/\+/g,'%20') : '') + '.json'; return url.toString();
 }
 export async function getJson<T>(url: string, signal?: AbortSignal, timeoutMs = 15000): Promise<T> {
   const timeout = AbortSignal.timeout(timeoutMs);
   const response = await fetch(url, { signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
-  if (!response.ok) throw new Error(`Source returned HTTP ${response.status}.`);
+  if (!response.ok) {
+    // Hasimio Engine explains its own failures, such as a title index that is still being built.
+    const detail = response.headers.get('content-type')?.includes('application/json') ? await response.json().then(body => typeof body?.error === 'string' ? body.error : '', () => '') : '';
+    throw new Error(detail || `Source returned HTTP ${response.status}.`);
+  }
   return response.json();
 }
 export const demo: Meta[] = [

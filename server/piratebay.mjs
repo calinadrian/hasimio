@@ -25,7 +25,7 @@ export function torrentResults(rows,imdb) {
       title:`${row.name}\n${Math.max(0,Number(row.seeders)||0)} seeders · ${sizeLabel(row.size)}${/hevc|x265|h265/i.test(row.name) ? ' · HEVC (browser support varies)' : ''}`,
     }));
 }
-export async function searchPirateBay(type,id,fetchImpl=fetch) {
+export async function searchPirateBay(type,id,fetchImpl=fetch,lookupTitle) {
   const video=parseVideoId(type,id);
   let animeNames=[];
   async function search(query) { const url=new URL('https://apibay.org/q.php');url.searchParams.set('q',query);url.searchParams.set('cat','200');const response=await fetchImpl(url,{signal:AbortSignal.timeout(20000)});if(!response.ok)throw new Error(`The Pirate Bay index returned HTTP ${response.status}.`);const rows=await response.json();return torrentResults(Array.isArray(rows)&&animeNames.length ? rows.filter(row=>animeNames.some(name=>{
@@ -39,9 +39,10 @@ export async function searchPirateBay(type,id,fetchImpl=fetch) {
   let meta;
   if(video.kitsu) meta=await kitsuMetadata(video.kitsu,undefined,fetchImpl,video.episode);
   else {
-    const response=await fetchImpl(`https://v3-cinemeta.strem.io/meta/${type}/${video.imdb}.json`,{signal:AbortSignal.timeout(15000)});
-    if(!response.ok)throw new Error('Could not resolve the title for torrent search.');
-    ({meta}=await response.json());
+    // IMDb titles resolve through Hasimio's own index rather than a third-party metadata service.
+    if(!lookupTitle)throw new Error('Could not resolve the title for torrent search.');
+    const row=await lookupTitle(video.imdb);
+    meta={name:row.name,releaseInfo:row.start ? String(row.start) : undefined};
   }
   if(!meta?.name)throw new Error('No title metadata was found.');
   const clean = name => name.replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim();

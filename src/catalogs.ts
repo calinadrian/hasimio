@@ -1,9 +1,16 @@
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
-import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, demoAddon, getJson, resourceUrl, supports } from './media';
+import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl, demoAddon, getJson, resourceUrl, supports } from './media';
 
-// Hasimio owns its anime adapter; Cinemeta remains an external movie/series source.
+// Hasimio owns its catalogs: anime through its Kitsu adapter, movies and series through its own title index.
+// Cinemeta stays recognised so existing installations migrate, and it can still be installed manually.
 const searchAndSkip = [{name:'search'},{name:'skip'}];
 export const cinemeta: Addon = {url:cinemetaUrl,enabled:true,manifest:{id:'com.linvo.cinemeta',name:'Cinemeta',version:'3.0.14',description:'Movie and series catalogs, artwork, descriptions, and episode release dates.',types:['movie','series'],idPrefixes:['tt'],resources:['catalog','meta'],catalogs:[{id:'top',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'top',type:'series',name:'Popular series',extra:searchAndSkip},{id:'imdbRating',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'imdbRating',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}]}};
+export const titles: Addon = {url:titlesUrl,enabled:true,manifest:{id:'org.hasimio.titles',name:'Hasimio Titles',version:'1.0.0',description:'Hasimio’s own movie and series index, built locally from IMDb’s public datasets. Wikipedia adds movie posters; TVmaze adds series artwork and episode air dates.',types:['movie','series'],idPrefixes:['tt'],resources:['catalog','meta'],catalogs:[{id:'popular',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'popular',type:'series',name:'Popular series',extra:searchAndSkip},{id:'top-rated',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'top-rated',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}]}};
+// Runs once: Cinemeta becomes Hasimio Titles, keeping its enabled state. Installations without either receive Hasimio Titles.
+export function replaceCinemeta(existing:Addon[]) {
+  const replaced = existing.map(a => a.url === cinemetaUrl ? {...titles,enabled:a.enabled} : a).filter((a,index,all) => all.findIndex(other => other.manifest.id === a.manifest.id) === index);
+  return replaced.some(a => a.manifest.id === titles.manifest.id) ? replaced : [...replaced,titles];
+}
 export const kitsu: Addon = {url:kitsuUrl,enabled:true,manifest:{id:'org.hasimio.kitsu',name:'Hasimio Anime',version:'1.0.0',description:'Hasimio’s own anime integration using Kitsu’s data API directly.',types:['anime','movie','series'],idPrefixes:['kitsu:'],resources:['catalog','meta'],catalogs:[{id:'kitsu-anime-trending',type:'anime',name:'Trending anime'},{id:'kitsu-anime-airing',type:'anime',name:'Airing anime',extra:[{name:'skip'}]},{id:'kitsu-anime-popular',type:'anime',name:'Popular anime',extra:[{name:'skip'}]},{id:'kitsu-anime-rating',type:'anime',name:'Top-rated anime',extra:[{name:'skip'}]},{id:'kitsu-anime-list',type:'anime',name:'Anime search',extra:[{name:'search',isRequired:true},{name:'skip'}]}]}};
 export const pirateBay:Addon={url:'/api/extensions/piratebay/manifest.json',enabled:true,manifest:{id:'org.hasimio.piratebay',name:'The Pirate Bay',version:'1.1.0',description:'Movie, series and anime torrent sources from The Pirate Bay index via APIBay. Streams through Hasimio’s local torrent service.',resources:['stream'],types:['movie','series','anime'],idPrefixes:['tt','kitsu:'],catalogs:[]}};
 export function updatePlaybackAddon(existing:Addon[]) {
@@ -13,9 +20,9 @@ export function migrateAnimeSource(existing:Addon[]) {
   return existing.map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
     .filter((a,index,all) => all.findIndex(other=>other.manifest.id === a.manifest.id) === index);
 }
-export const defaultAddons = [demoAddon,cinemeta,kitsu,pirateBay];
+export const defaultAddons = [demoAddon,titles,kitsu,pirateBay];
 export function addDefaultCatalogs(existing: Addon[]) {
-  return [...existing,...[cinemeta,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];
+  return [...existing,...[titles,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];
 }
 export type CatalogRow = {key:string;title:string;source:string;items:Meta[];addon:Addon;catalog:Manifest['catalogs'][number];skip:number;hasMore:boolean};
 export function catalogSelection(addons: Addon[], query: string, filter: string) {

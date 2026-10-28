@@ -34,8 +34,9 @@ describe('Pirate Bay source matching',()=>{
     expect(torrentResults([{...row,imdb:'tt999'}],'tt123')).toHaveLength(0);
   });
   it('falls back to a season pack when an individual episode is absent',async()=>{
-    const fetch=vi.fn(async url=>new Response(JSON.stringify(String(url).includes('/meta/')?{meta:{name:'Show: Title'}}:new URL(url).searchParams.get('q')==='Show Title S01'?[{info_hash:hash,name:'Show.Title.S01',category:205}]:[])));
-    expect((await searchPirateBay('series','tt123:1:2',fetch)).streams).toHaveLength(1);
+    const fetch=vi.fn(async url=>new Response(JSON.stringify(new URL(url).searchParams.get('q')==='Show Title S01'?[{info_hash:hash,name:'Show.Title.S01',category:205}]:[])));
+    const lookup=vi.fn(async()=>({name:'Show: Title',start:2020}));
+    expect((await searchPirateBay('series','tt123:1:2',fetch,lookup)).streams).toHaveLength(1);expect(lookup).toHaveBeenCalledWith('tt123');
   });
   it('uses IMDb matches directly for movies without an unnecessary metadata lookup',async()=>{
     const fetch=vi.fn().mockResolvedValue(new Response(JSON.stringify([{info_hash:hash,name:'Film.720p',category:'201',imdb:'tt123',seeders:'5',size:'2000'}])));

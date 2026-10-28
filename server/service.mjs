@@ -3,6 +3,7 @@ import {mkdir,stat,readFile} from 'node:fs/promises';
 import {createReadStream,readFileSync} from 'node:fs';
 import path from 'node:path';
 import {pirateBayManifest,searchPirateBay,validHash} from './piratebay.mjs';
+import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
 import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS} from './torrent-utils.mjs';
 import {cacheDir} from './paths.mjs';
 import {ENGINE_API_VERSION} from '../shared/engine-api.mjs';
@@ -16,7 +17,7 @@ import {inspectionStream} from './inspection-stream.mjs';
 
 const cacheRoot=cacheDir('torrents');
 const trackers=['udp://tracker.opentrackr.org:1337/announce','udp://open.stealth.si:80/announce','udp://tracker.torrent.eu.org:451/announce'];
-export function createMediaService({clientFactory,inspectionClientFactory,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS)}={}) {
+export function createMediaService({clientFactory,inspectionClientFactory,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')})}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
@@ -73,7 +74,10 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
       if(req.method==='GET'&&url.pathname==='/api/streaming/health')return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size});
       if(req.method==='GET'&&url.pathname==='/api/extensions/piratebay/manifest.json')return json(res,200,pirateBayManifest);
       const source=/^\/api\/extensions\/piratebay\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
-      if(req.method==='GET'&&source){const type=source[1],id=decodeURIComponent(source[2]),key=`${type}:${id}`;let item=searches.get(key);if(!item||item.expires<Date.now()){item={expires:Date.now()+5*60*1000,promise:searchPirateBay(type,id)};searches.set(key,item);item.promise.catch(()=>searches.delete(key));}try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}}
+      if(req.method==='GET'&&source){const type=source[1],id=decodeURIComponent(source[2]),key=`${type}:${id}`;let item=searches.get(key);if(!item||item.expires<Date.now()){item={expires:Date.now()+5*60*1000,promise:searchPirateBay(type,id,undefined,titles.title)};searches.set(key,item);item.promise.catch(()=>searches.delete(key));}try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}}
+      if(req.method==='GET'&&url.pathname==='/api/extensions/titles/manifest.json')return json(res,200,titleIndexManifest);
+      const titleRoute=/^\/api\/extensions\/titles\/(catalog|meta)\/(movie|series)\/([^/]+)(?:\/([^/]+))?\.json$/.exec(url.pathname);
+      if(req.method==='GET'&&titleRoute){const [,resource,type,id,extras]=titleRoute;try{return json(res,200,resource==='catalog'?await titles.catalog(type,decodeURIComponent(id),Object.fromEntries(new URLSearchParams(extras??''))):await titles.meta(type,decodeURIComponent(id)));}catch(error){return json(res,error.status??502,{error:error.message});}}
       if(req.method==='POST'&&url.pathname==='/api/torrent-inspections'){
         if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});
         const input=await body(req);if(!validHash(input.infoHash))return json(res,400,{error:'A valid torrent info hash is required.'});
@@ -157,6 +161,6 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
       return json(res,404,{error:'Unknown local streaming endpoint.'});
     }catch(error){if(!res.headersSent)json(res,400,{error:error.message || 'The local streaming service could not complete this request.'});else res.destroy();}
   }
-  async function close() {shuttingDown=true;clearInterval(cleanup);for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
+  async function close() {shuttingDown=true;clearInterval(cleanup);await titles.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
   return {handle,close};
 }
