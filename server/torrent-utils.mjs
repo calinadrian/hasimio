@@ -1,5 +1,14 @@
 import {networkInterfaces} from 'node:os';
 export const VIDEO_EXTENSIONS=/\.(mp4|m4v|webm|mkv|mov|avi)$/i;
+export const CONTAINER_HEADER=12;
+const MP4_ATOMS=new Set(['ftyp','moov','mdat','free','skip','wide','pnot']);
+// A torrent's file name is only a label; its first bytes show what the file really is.
+export function videoContainer(header) {
+  if(header.length<CONTAINER_HEADER)return false;
+  if(header.readUInt32BE(0)===0x1a45dfa3)return true;
+  if(MP4_ATOMS.has(header.toString('latin1',4,8)))return true;
+  return header.toString('latin1',0,4)==='RIFF'&&header.toString('latin1',8,12)==='AVI ';
+}
 export function selectVideo(files,videoId) {
   const videos=files.map((file,index)=>({index,name:file.name,length:file.length})).filter(f=>VIDEO_EXTENSIONS.test(f.name) && !/(^|[\s._-])sample([\s._-]|$)/i.test(f.name));
   const anime=/^kitsu:\d+:(\d+)$/.exec(videoId ?? '');

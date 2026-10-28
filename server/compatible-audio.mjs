@@ -2,7 +2,7 @@ import {spawn,execFile} from 'node:child_process';
 import {mkdir,readFile,rm,access,readdir} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes} from 'node:crypto';
-import {ffmpegPath} from './ffmpeg.mjs';
+import {ffmpegPath,inputGuard} from './ffmpeg.mjs';
 import {cacheDir} from './paths.mjs';
 
 export const audioRoot=cacheDir('compatible-audio');
@@ -26,7 +26,7 @@ export function parseMediaDuration(log) {
 export function probeAudioTracks(input,signal,{fast=false}={}) {
   return new Promise((resolve,reject)=>{
     // FFmpeg exits with code 1 after printing input metadata when no output is specified.
-    execFile(ffmpegPath,['-hide_banner','-nostdin',...(fast?['-nofind_stream_info']:[]),'-i',input],{windowsHide:true,timeout:35000,maxBuffer:1024*1024,signal},(error,stdout,stderr)=>{
+    execFile(ffmpegPath,['-hide_banner','-nostdin',...inputGuard,...(fast?['-nofind_stream_info']:[]),'-i',input],{windowsHide:true,timeout:35000,maxBuffer:1024*1024,signal},(error,stdout,stderr)=>{
       if(signal?.aborted)return reject(new Error('Track check cancelled.'));
       if(error&&(error.killed||error.code!==1))return reject(new Error('Could not read audio languages. Retry once more video has buffered.'));
       if(!/Stream #0:\d+.*(?:Video|Audio):/.test(stderr)){
@@ -48,7 +48,7 @@ export function parseKeyframeTime(log) {
 }
 export function keyframeTime(input,start,signal) {
   return new Promise(resolve=>{
-    execFile(ffmpegPath,['-hide_banner','-nostdin','-ss',String(start),'-i',input,'-map','0:v:0','-c','copy','-copyts','-frames:v','1','-f','framemd5','-'],{windowsHide:true,timeout:15000,maxBuffer:1024*1024,signal},(error,stdout,stderr)=>{
+    execFile(ffmpegPath,['-hide_banner','-nostdin',...inputGuard,'-ss',String(start),'-i',input,'-map','0:v:0','-c','copy','-copyts','-frames:v','1','-f','framemd5','-'],{windowsHide:true,timeout:15000,maxBuffer:1024*1024,signal},(error,stdout,stderr)=>{
       const time=error?undefined:parseKeyframeTime(stdout+'\n'+stderr);
       resolve(Number.isFinite(time)&&time<=start+0.5?Math.max(0,Math.min(start,time)):start);
     });
@@ -57,7 +57,7 @@ export function keyframeTime(input,start,signal) {
 export function audioArguments(input,folder,hevc=false,track=0,start=0) {
   if(!Number.isInteger(track)||track<0)throw new Error('Invalid audio track.');
   if(!Number.isFinite(start)||start<0)throw new Error('Invalid seek position.');
-  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...(start?['-ss',String(start)]:[]),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
+  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...inputGuard,...(start?['-ss',String(start)]:[]),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
 }
 export async function createAudioJob(id,index,input,filename='',track=0,start=0) {
   if(!/^[a-f\d]{36}$/.test(id)||!Number.isInteger(index)||index<0)throw new Error('Invalid audio session.');

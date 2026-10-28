@@ -1,6 +1,6 @@
 import {describe,it,expect,vi} from 'vitest';
 import {torrentResults,parseVideoId,searchPirateBay} from './piratebay.mjs';
-import {byteRange,selectVideo,localRequest,parseOrigins,corsHeaders,preflightHeaders} from './torrent-utils.mjs';
+import {byteRange,selectVideo,localRequest,parseOrigins,corsHeaders,preflightHeaders,videoContainer} from './torrent-utils.mjs';
 import {cacheRoot} from './paths.mjs';
 import {engineOptions,ENGINE_PORT} from './engine.mjs';
 describe('Pirate Bay source matching',()=>{
@@ -133,6 +133,7 @@ describe('embedded audio discovery',()=>{
     expect(args.indexOf('-ss')).toBeLessThan(args.indexOf('-i'));
     expect(args[args.indexOf('-ss')+1]).toBe('1200');
     expect(args[args.indexOf('-avoid_negative_ts')+1]).toBe('make_zero');
+    expect(args[args.indexOf('-protocol_whitelist')+1]).toBe('http,tcp');expect(args.indexOf('-format_whitelist')).toBeLessThan(args.indexOf('-i'));
     expect(()=>audioArguments('input','folder',false,0,-1)).toThrow('Invalid seek position');
     expect(()=>audioArguments('input','folder',false,0,Infinity)).toThrow('Invalid seek position');
   });
@@ -144,5 +145,21 @@ describe('source movie duration',()=>{
   it('reads the complete duration without relying on the growing playlist',()=>{
     expect(parseMediaDuration('  Duration: 02:03:04.56, start: 0.000000')).toBe(7384.56);
     expect(parseMediaDuration('  Duration: N/A, start: 0')).toBeUndefined();
+  });
+});
+describe('video container check',()=>{
+  const bytes=(...parts)=>Buffer.concat(parts.map(part=>typeof part==='string'?Buffer.from(part,'latin1'):Buffer.from(part)));
+  it('accepts Matroska, MP4 / MOV and AVI headers',()=>{
+    expect(videoContainer(bytes([0x1a,0x45,0xdf,0xa3],[0x9f,0x42,0x86,0x81,1,0x42,0xf7,0x81]))).toBe(true);
+    expect(videoContainer(bytes([0,0,0,0x20],'ftypisom',[0]))).toBe(true);
+    expect(videoContainer(bytes([0,0,0,8],'wide','mdat'))).toBe(true);
+    expect(videoContainer(bytes('RIFF',[0,0,0,0],'AVI LIST'))).toBe(true);
+  });
+  it('rejects programs, playlists, archives and short reads named like videos',()=>{
+    expect(videoContainer(bytes('MZ',[0x90,0,3,0,0,0,4,0,0,0]))).toBe(false);
+    expect(videoContainer(bytes('#EXTM3U\n#EXT-X'))).toBe(false);
+    expect(videoContainer(bytes('PK',[3,4,20,0,0,0,8,0,0,0]))).toBe(false);
+    expect(videoContainer(bytes('RIFF',[0,0,0,0],'WAVEfmt '))).toBe(false);
+    expect(videoContainer(bytes([0x1a,0x45,0xdf,0xa3]))).toBe(false);
   });
 });

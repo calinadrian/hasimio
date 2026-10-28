@@ -1,15 +1,15 @@
 import {randomBytes} from 'node:crypto';
-import {mkdir,stat,readFile} from 'node:fs/promises';
+import {mkdir,stat,readFile,rm} from 'node:fs/promises';
 import {createReadStream,readFileSync} from 'node:fs';
 import path from 'node:path';
 import {pirateBayManifest,searchPirateBay,validHash} from './piratebay.mjs';
 import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
-import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS} from './torrent-utils.mjs';
+import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer} from './torrent-utils.mjs';
 import {cacheDir} from './paths.mjs';
 import {ENGINE_API_VERSION} from '../shared/engine-api.mjs';
 
 const engineVersion=(()=>{try {return JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;}catch {return 'unknown';}})();
-import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks} from './compatible-audio.mjs';
+import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks,audioRoot} from './compatible-audio.mjs';
 
 import {createSubtitleJob,subtitleStatus} from './subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
@@ -17,13 +17,18 @@ import {inspectionStream} from './inspection-stream.mjs';
 
 const cacheRoot=cacheDir('torrents');
 const trackers=['udp://tracker.opentrackr.org:1337/announce','udp://open.stealth.si:80/announce','udp://tracker.torrent.eu.org:451/announce'];
+// Bytes per second sent back to peers. A little keeps them trading pieces with us; every uploaded byte is sharing.
+export const UPLOAD_LIMIT=64*1024;
+// A crash skips stop(), so the first torrent of each run clears what an earlier run left behind.
+let swept;
+const sweepCache=()=>swept??=Promise.all([cacheRoot,audioRoot].map(dir=>rm(dir,{recursive:true,force:true,maxRetries:3,retryDelay:200}).catch(()=>{})));
 export function createMediaService({clientFactory,inspectionClientFactory,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')})}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
     let promise=inspection?inspectionClientPromise:clientPromise;
-    if(!promise){promise=(async()=>{await mkdir(cacheRoot,{recursive:true});const {default:WebTorrent}=await import('webtorrent');const factory=inspection?inspectionClientFactory:clientFactory;const instance=factory?factory():new WebTorrent({natUpnp:false,natPmp:false,lsd:false,utp:false,maxConns:inspection?12:40});instance.on('error',error=>{for(const session of sessions.values())if(session.inspection===inspection)session.error=error.message;if(inspection)inspectionClientPromise=undefined;else clientPromise=undefined;});return instance;})().catch(error=>{if(inspection)inspectionClientPromise=undefined;else clientPromise=undefined;throw error;});if(inspection)inspectionClientPromise=promise;else clientPromise=promise;}
+    if(!promise){promise=(async()=>{await sweepCache();await mkdir(cacheRoot,{recursive:true});const {default:WebTorrent}=await import('webtorrent');const factory=inspection?inspectionClientFactory:clientFactory;const instance=factory?factory():new WebTorrent({natUpnp:false,natPmp:false,lsd:false,utp:false,maxConns:inspection?12:40,uploadLimit:UPLOAD_LIMIT});instance.on('error',error=>{for(const session of sessions.values())if(session.inspection===inspection)session.error=error.message;if(inspection)inspectionClientPromise=undefined;else clientPromise=undefined;});return instance;})().catch(error=>{if(inspection)inspectionClientPromise=undefined;else clientPromise=undefined;throw error;});if(inspection)inspectionClientPromise=promise;else clientPromise=promise;}
     return promise;
   }
   async function clearAudio(session){if(session.audioPending){try{await session.audioPending;}catch{/* Failed startup still needs any completed job cleaned. */}}await stopAudioJob(session.audioJob);session.audioJob=undefined;}
@@ -44,6 +49,20 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
     torrent.on('error',error=>{clearTimeout(session.timer);session.error=error.message;});
     torrent.once('ready',()=>{clearTimeout(session.timer);const selection=selectVideo(torrent.files,input.videoId);session.files=selection.files;session.selected=selection.selected;if(!session.files.length){session.error='This torrent contains no supported video files.';return;}session.ready=true;for(const file of torrent.files)file.deselect();if(!inspection&&session.selected!=null)torrent.files[session.selected].select();});
     return snapshot(session);
+  }
+  // Every read of a file, FFmpeg's included, waits for its first bytes to prove it is a video container.
+  function checkContainer(session,index){
+    session.checks??=new Map();
+    if(!session.checks.has(index))session.checks.set(index,(async()=>{
+      const file=session.torrent.files[index];const stream=file.createReadStream({start:0,end:Math.min(file.length,CONTAINER_HEADER)-1});session.readers.add(stream);
+      const waiting=setTimeout(()=>stream.destroy(new Error('Peers connected, but no video data arrived. Try a source with more active seeders.')),45000);waiting.unref();
+      const chunks=[];
+      try{for await(const chunk of stream)chunks.push(chunk);}
+      catch(error){session.checks.delete(index);throw error;}
+      finally{clearTimeout(waiting);session.readers.delete(stream);}
+      if(!videoContainer(Buffer.concat(chunks))){session.error='This file is not a real video, so Hasimio will not open it. Choose another source.';throw new Error(session.error);}
+    })());
+    return session.checks.get(index);
   }
   async function inspect(input,port,controller){
     if(!validHash(input.infoHash))throw new Error('A valid torrent info hash is required.');
@@ -151,6 +170,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
         if(req.method==='GET'&&!sessionRoute[2])return json(res,200,snapshot(session));
         if(req.method==='PATCH'&&!sessionRoute[2]){const input=await body(req);const file=session.files.find(f=>f.index===input.fileIndex);if(!file)return json(res,400,{error:'Choose a video file from this torrent.'});session.probeController?.abort();session.probePending=undefined;session.duration=undefined;session.audioTracks=undefined;session.subtitleTracks=undefined;await clearSubtitles(session);if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);for(const f of session.torrent.files)f.deselect();session.selected=file.index;session.torrent.files[file.index].select();return json(res,200,snapshot(session));}
         if(['GET','HEAD'].includes(req.method)&&sessionRoute[2]){const index=Number(sessionRoute[2]),file=session.torrent?.files[index];if(!session.ready||!file||!VIDEO_EXTENSIONS.test(file.name))return json(res,404,{error:'Video file is not ready.'});session.touched=Date.now();
+          try{await checkContainer(session,index);}catch(error){return json(res,415,{error:error.message});}
           const range=byteRange(req.headers.range,file.length);if(!range){res.writeHead(416,{'Content-Range':`bytes */${file.length}`});return res.end();}
           const ext=path.extname(file.name).toLowerCase();const mime={'.mp4':'video/mp4','.m4v':'video/mp4','.webm':'video/webm','.mkv':'video/x-matroska','.mov':'video/quicktime','.avi':'video/x-msvideo'}[ext];
           const headers={'Content-Type':mime,'Content-Length':range.end-range.start+1,'Accept-Ranges':'bytes','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};if(range.partial)headers['Content-Range']=`bytes ${range.start}-${range.end}/${file.length}`;
