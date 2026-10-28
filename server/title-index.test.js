@@ -47,6 +47,17 @@ describe('Hasimio title index',()=>{
     expect(meta.videos).toEqual([{id:'tt3:1:1',season:1,episode:1,title:'Pilot'},{id:'tt3:1:2',season:1,episode:2,title:undefined}]);
     await titles.close();
   });
+  it('finds grey, apostrophe variants and out-of-order words in an existing title index',async()=>{
+    const {titles}=await index();await titles.refresh();await titles.close();
+    const {DatabaseSync}=await import('node:sqlite');
+    const db=new DatabaseSync(path.join(dir,'titles.db'));
+    db.prepare('UPDATE titles SET name=?,search=? WHERE id=?').run("Grey's Anatomy",normalize("Grey's Anatomy"),'tt3');db.close();
+    const restarted=createTitleIndex({dir,fetchImpl:async()=>new Response('',{status:404}),now:()=>Date.parse('2026-10-28T00:00:00Z')});open=restarted;
+    for(const search of ['grey',"Grey's Anatomy",'Grey’s Anatomy','greys anatomy','anatomy grey','grey anatomy']){
+      expect((await restarted.catalog('series','popular',{search})).metas.map(m=>m.id),search).toEqual(['tt3']);
+    }
+    expect((await restarted.catalog('series','popular',{search:'grey unrelated'})).metas).toEqual([]);
+  });
   it('adds TVmaze artwork, summaries and air dates to series',async()=>{
     const {titles,fetchImpl}=await index(href=>new Response(JSON.stringify(href.includes('/lookup/shows?imdb=tt3')
       ?{id:7,image:{original:'https://static.tvmaze.com/poster.jpg'},summary:'<p>A <b>show</b> &amp; more.</p>'}

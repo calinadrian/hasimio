@@ -27,14 +27,14 @@ export function torrentResults(rows,imdb) {
 }
 export async function searchPirateBay(type,id,fetchImpl=fetch,lookupTitle) {
   const video=parseVideoId(type,id);
-  let animeNames=[];
+  let animeNames=[],matchesRelease=()=>true;
   async function search(query) { const url=new URL('https://apibay.org/q.php');url.searchParams.set('q',query);url.searchParams.set('cat','200');const response=await fetchImpl(url,{signal:AbortSignal.timeout(20000)});if(!response.ok)throw new Error(`The Pirate Bay index returned HTTP ${response.status}.`);const rows=await response.json();return torrentResults(Array.isArray(rows)&&animeNames.length ? rows.filter(row=>animeNames.some(name=>{
     const normalized=String(row.name ?? '').replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').toLowerCase();
     const title=name.toLowerCase();const offset=normalized.indexOf(title);
     if(offset<0 || (offset>0 && normalized[offset-1]!==' '))return false;
     const rest=normalized.slice(offset+title.length);
     return /^(?:\s+(?:\d|s\d|season\b|complete\b|batch\b|collection\b)|\s*$)/i.test(rest);
-  })) : rows,video.imdb); }
+  })) : Array.isArray(rows) ? rows.filter(row=>matchesRelease(String(row?.name ?? ''))) : rows,video.imdb); }
   if (type === 'movie' && video.imdb) {const exact=await search(video.imdb);if(exact.length)return {streams:exact};}
   let meta;
   if(video.kitsu) meta=await kitsuMetadata(video.kitsu,undefined,fetchImpl,video.episode);
@@ -45,7 +45,7 @@ export async function searchPirateBay(type,id,fetchImpl=fetch,lookupTitle) {
     meta={name:row.name,releaseInfo:row.start ? String(row.start) : undefined};
   }
   if(!meta?.name)throw new Error('No title metadata was found.');
-  const clean = name => name.replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim();
+  const clean = name => name.replace(/['’]/g,'').replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim();
   const name=clean(meta.name);
   if(video.kitsu){
     animeNames=[...new Set([name,...(meta.aliases ?? []).filter(n=>typeof n==='string').map(clean)])];
@@ -59,10 +59,31 @@ export async function searchPirateBay(type,id,fetchImpl=fetch,lookupTitle) {
     }
   }
   const episodic=type !== 'movie';
+  if(episodic && !video.kitsu){
+    const compact=value=>clean(value).replace(/\s/g,'').toLowerCase();
+    const title=compact(name),season=video.season,episode=video.episode;
+    matchesRelease=release=>{
+      // Broad searches must still describe this title and the requested episode/season.
+      if(!compact(release).startsWith(title))return false;
+      release=release.replace(/_/g,'.');
+      const episodes=[...release.matchAll(/(?:\bs(\d{1,2})[ ._-]*e(\d{1,3})\b|\b(\d{1,2})x(\d{1,3})\b)/gi)];
+      if(episodes.length)return episodes.some(m=>Number(m[1]??m[3])===season && Number(m[2]??m[4])===episode);
+      const range=/\b(?:seasons?[ ._-]*|s)(\d{1,2})[ ._]*[-–][ ._]*(?:s)?(\d{1,2})\b/i.exec(release);
+      if(range)return season>=Number(range[1]) && season<=Number(range[2]);
+      const seasons=[...release.matchAll(/(?:\bs(\d{1,2})\b|\bseason[ ._-]*(\d{1,2})\b)/gi)];
+      if(seasons.length)return seasons.some(m=>Number(m[1]??m[2])===season);
+      return /\bcomplete[ ._-]+series\b/i.test(release);
+    };
+  }
   const suffix=episodic ? `S${String(video.season).padStart(2,'0')}E${String(video.episode).padStart(2,'0')}` : (meta.releaseInfo?.match(/^\d{4}/)?.[0] ?? '');
   let streams=await search(`${name} ${suffix}`);
   if(!streams.length && episodic){
     const queries=[`${name} S${String(video.season).padStart(2,'0')}`];
+    if(!video.kitsu){
+      queries.push(`${name} Season ${video.season}`,name);
+      const original=meta.name.replace(/’/g,"'");
+      if(original!==name)queries.push(`${original} Season ${video.season}`,original);
+    }
     if(video.kitsu)queries.push(...animeNames.slice(0,2).map(n=>`${n} ${String(video.absolute).padStart(2,'0')}`));
     const results=await Promise.allSettled(queries.map(search));
     streams=[...new Map(results.flatMap(r=>r.status==='fulfilled'?r.value:[]).map(s=>[s.infoHash,s])).values()];

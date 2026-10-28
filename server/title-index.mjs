@@ -246,7 +246,14 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
     const index=await ready();
     const skip=Math.max(0,Number(extras.skip)||0),query=normalize(extras.search ?? '');
     let found;
-    if (query) found=index.prepare("SELECT * FROM titles WHERE type=? AND search LIKE ? ESCAPE '\\' ORDER BY votes DESC LIMIT ? OFFSET ?").all(type,`%${query.replace(/[\\%_]/g,'\\$&')}%`,PAGE,skip);
+    if (query) {
+      // Ignore punctuation/spacing differences, including old indexes storing “Grey's” as “grey s”.
+      // Match all query words independently so “anatomy grey” works too.
+      const words=normalize(String(extras.search).replace(/['’]/g,'')).split(' ').filter(Boolean).slice(0,12);
+      const compact=words.join('');
+      const clauses=words.map(()=>"instr(replace(search,' ',''),?)>0").join(' AND ');
+      found=index.prepare(`SELECT * FROM titles WHERE type=? AND ${clauses} ORDER BY (replace(search,' ','')=?) DESC,(instr(replace(search,' ',''),?)=1) DESC,votes DESC LIMIT ? OFFSET ?`).all(type,...words,compact,compact,PAGE,skip);
+    }
     else if (id === 'popular') found=index.prepare('SELECT * FROM titles WHERE type=? AND start>=? ORDER BY votes DESC LIMIT ? OFFSET ?').all(type,new Date(now()).getFullYear()-2,PAGE,skip);
     else if (id === 'top-rated') found=index.prepare('SELECT * FROM titles WHERE type=? AND votes>=25000 ORDER BY rating DESC,votes DESC LIMIT ? OFFSET ?').all(type,PAGE,skip);
     else throw Object.assign(new Error('Unknown Hasimio catalog.'),{status:404});

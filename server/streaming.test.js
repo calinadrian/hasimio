@@ -42,6 +42,19 @@ describe('Pirate Bay source matching',()=>{
     const fetch=vi.fn().mockResolvedValue(new Response(JSON.stringify([{info_hash:hash,name:'Film.720p',category:'201',imdb:'tt123',seeders:'5',size:'2000'}])));
     expect((await searchPirateBay('movie','tt123',fetch)).streams).toHaveLength(1);expect(fetch).toHaveBeenCalledTimes(1);expect(String(fetch.mock.calls[0][0])).toContain('q=tt123');
   });
+  it('finds apostrophized titles in spelled-out season packs without leaking other seasons or episodes',async()=>{
+    const queries=[];
+    const fetch=vi.fn(async url=>{
+      const query=new URL(url).searchParams.get('q');queries.push(query);
+      const names=query==='Greys Anatomy' ? ["Grey's Anatomy Season 1 Complete HDTV",'Greys.Anatomy.S01E02.720p','Greys Anatomy Season 16','Greys Anatomy Seasons 1-12 Complete','Unrelated Season 1'] : [];
+      return new Response(JSON.stringify(names.map((name,i)=>({info_hash:String(i+1).repeat(40),name,category:205,seeders:20-i}))));
+    });
+    const result=await searchPirateBay('series','tt0413573:1:1',fetch,async()=>({name:"Grey’s Anatomy"}));
+    expect(queries).toContain('Greys Anatomy S01E01');
+    expect(queries).toContain('Greys Anatomy Season 1');
+    expect(queries).toContain("Grey's Anatomy Season 1");
+    expect(result.streams.map(s=>s.filename)).toEqual(["Grey's Anatomy Season 1 Complete HDTV",'Greys Anatomy Seasons 1-12 Complete']);
+  });
   it('surfaces upstream failures instead of pretending there are no sources',async()=>{await expect(searchPirateBay('movie','tt123',vi.fn().mockResolvedValue(new Response('',{status:503})))).rejects.toThrow('HTTP 503');});
 });
 describe('torrent video selection',()=>{
