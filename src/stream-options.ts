@@ -1,4 +1,4 @@
-import {type Stream} from './media';
+import {type Stream,safeHttp} from './media';
 import {detectQuality,detectCodec,detectRelease,QUALITY_ORDER,type Quality} from '../shared/stream-info.mjs';
 export type StreamOption={stream:Stream;quality:Quality;provider:string;release?:string;codec?:string;seeders?:number;sizeBytes?:number;filename:string;detail:string};
 export function describeStream(stream:Stream):StreamOption {
@@ -15,3 +15,5 @@ export function availableQualities(options:StreamOption[]) {return QUALITY_ORDER
 export function defaultQuality(qualities:Quality[]):Quality {return qualities.includes('1080p')?'1080p':qualities.includes('720p')?'720p':qualities[0] ?? 'Other';}
 export function formatSize(bytes?:number) {if(bytes==null||!Number.isFinite(bytes)||bytes<0)return 'Size unknown';return bytes>=1024**3?`${(bytes/1024**3).toFixed(1)} GB`:`${Math.round(bytes/1024**2)} MB`;}
 export function sortSources(options:StreamOption[],sort:string) {return [...options].sort((a,b)=>sort==='size'?(a.sizeBytes??Infinity)-(b.sizeBytes??Infinity):(b.seeders??-1)-(a.seeders??-1));}
+// One-click playback picks what the picker would show first, skipping torrents nobody seeds.
+export function bestSource(streams:Stream[]) {const options=streams.map(describeStream).filter(o=>o.stream.infoHash||safeHttp(o.stream.url));const ranked=sortSources(options.filter(o=>o.quality===defaultQuality(availableQualities(options))),'seeders');return (ranked.find(o=>!o.stream.infoHash||(o.seeders??0)>0)??ranked[0])?.stream;}

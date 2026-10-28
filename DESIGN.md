@@ -134,6 +134,16 @@ Use native labeled selects with consistent grey field treatment and 48px minimum
 
 Poster shelves retain saved marks, keyboard focus and hover overlays. Toasts, buffering and extension settings inherit the grey surfaces. The torrent buffering screen keeps cancellation visible, supports file selection and shows actionable failure recovery. Its status strip shows actual peer and transfer data.
 
+Removing a library title or an extension shows a toast with Undo; the toast pauses while hovered or focused and renders inside the details dialog when it is open.
+
+### Resume and one-click play
+
+Discover and Library open with a Continue watching shelf built from playback history, newest first; finished movies and series whose last episode is finished drop out. Only titles already known from the library or loaded catalogs can appear. The spotlight shows the most recent unfinished title with a backdrop, labelled Continue watching with its episode and a thin white progress line, and offers Resume. Otherwise it shows the first live catalog title with a backdrop and description, labelled Featured pick; the offline starter pick appears only when no catalog loaded. Spotlight data comes from the title itself, the description is clamped to two lines, and titles longer than six characters use a compact untracked heading.
+
+Title details place a primary Play (or Resume S2 · E3) button beside Save. It plays the most-seeded source of the default quality, skipping unseeded torrents when another source exists, and shows Finding sources… while loading. The full quality-first selector stays below for any other choice.
+
+Series list episodes by season: a Season select (Specials last) above a scrollable, divider-free list with episode number, title, air date or Date unannounced, an Upcoming chip, and a watched check or progress bar. The selected episode has a white inset edge and is scrolled into view.
+
 ## Do's and Don'ts
 
 - Do retain the readable type scale and compact title/year grouping.

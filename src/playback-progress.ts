@@ -60,3 +60,15 @@ export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefi
   }
   return {...latest,episode,percent:latest.completed?100:Math.min(100,Math.max(0,Math.floor(latest.position/latest.duration*100)))};
 }
+// Titles with unfinished playback, newest first. Only titles the app already knows can be shown.
+export function continueWatching(history:ProgressMap,metas:Meta[],limit=20):Meta[] {
+  const known=new Map(metas.map(m=>[progressKey(m.type,m.id),m]));
+  const seen=new Set<string>(),result:Meta[]=[];
+  for(const [key,p] of Object.entries(history).sort(newestFirst)){
+    const titleKey=p.titleKey??key;if(seen.has(titleKey))continue;seen.add(titleKey);
+    const meta=known.get(titleKey);if(!meta||(!p.completed&&p.position===0))continue;
+    if(p.completed&&(meta.type==='movie'||meta.videos?.filter(v=>v.episode!=null).at(-1)?.id===p.videoId))continue;
+    result.push(meta);if(result.length>=limit)break;
+  }
+  return result;
+}

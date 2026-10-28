@@ -1,5 +1,5 @@
 import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
-import {lastPlayedEpisode,progressKey,resumePosition,savedProgress,saveProgress,titleProgress,playbackHistory,subscribeProgress} from './playback-progress';
+import {lastPlayedEpisode,progressKey,resumePosition,savedProgress,saveProgress,titleProgress,playbackHistory,subscribeProgress,continueWatching} from './playback-progress';
 
 let data:Map<string,string>;
 beforeEach(()=>{
@@ -64,5 +64,18 @@ describe('persistent playback progress',()=>{
     expect(resumePosition('movie:tt123')).toBe(10);
     vi.stubGlobal('localStorage',{getItem:()=>{throw Error('blocked');},setItem:()=>{throw Error('full');}});
     expect(()=>saveProgress('movie:tt123',10,100)).not.toThrow();expect(resumePosition('movie:tt123')).toBe(0);
+  });
+  it('lists unfinished titles newest first, once each, and drops finished ones',()=>{
+    const film={id:'tt1',type:'movie',name:'Film'},done={id:'tt2',type:'movie',name:'Done'},show={id:'tt3',type:'series',name:'Show',videos:[{id:'tt3:1:1',episode:1},{id:'tt3:1:2',episode:2}]};
+    const history={
+      'movie:tt1':{position:30,duration:100,updatedAt:1,completed:false},
+      'movie:tt2':{position:100,duration:100,updatedAt:5,completed:true},
+      'series:tt3:1:1':{position:100,duration:100,updatedAt:3,completed:true,titleKey:'series:tt3',videoId:'tt3:1:1'},
+      'series:tt3:1:2':{position:0,duration:100,updatedAt:2,completed:false,titleKey:'series:tt3',videoId:'tt3:1:2'},
+      'movie:tt9':{position:10,duration:100,updatedAt:9,completed:false},
+    };
+    expect(continueWatching(history,[film,done,show]).map(m=>m.id)).toEqual(['tt3','tt1']);
+    history['series:tt3:1:2']={...history['series:tt3:1:2'],position:100,completed:true,updatedAt:4};
+    expect(continueWatching(history,[film,done,show]).map(m=>m.id)).toEqual(['tt1']);
   });
 });

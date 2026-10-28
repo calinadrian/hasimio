@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {describeStream,availableQualities,defaultQuality,sortSources} from './stream-options';
+import {describeStream,availableQualities,defaultQuality,sortSources,bestSource} from './stream-options';
 import {detectQuality} from '../shared/stream-info.mjs';
 import {torrentResults} from '../server/piratebay.mjs';
 describe('quality-first stream selection',()=>{
@@ -18,5 +18,11 @@ describe('quality-first stream selection',()=>{
   it('retains lower-seeded quality tiers instead of truncating them behind all 1080p sources',()=>{
     const rows=Array.from({length:24},(_,i)=>({info_hash:i.toString(16).padStart(40,'0'),name:'Film.1080p',category:'201',seeders:String(100-i),size:'100'}));rows.push({info_hash:'f'.repeat(40),name:'Film.2160p',category:'201',seeders:'1',size:'1000'});
     const result=torrentResults(rows,'tt123');expect(result.filter(r=>r.quality==='1080p')).toHaveLength(8);expect(result.some(r=>r.quality==='4K')).toBe(true);
+  });
+  it('plays the most-seeded default-quality source and skips unplayable entries',()=>{
+    const hash=(c:string)=>c.repeat(40);
+    expect(bestSource([{infoHash:hash('a'),quality:'4K',seeders:90},{infoHash:hash('b'),quality:'1080p',seeders:5},{infoHash:hash('c'),quality:'1080p',seeders:40},{externalUrl:'https://example.org',quality:'1080p'}])?.infoHash).toBe(hash('c'));
+    expect(bestSource([{infoHash:hash('d'),quality:'720p',seeders:0},{url:'https://example.org/a.mp4',quality:'720p'}])?.url).toBe('https://example.org/a.mp4');
+    expect(bestSource([{externalUrl:'https://example.org'}])).toBeUndefined();
   });
 });

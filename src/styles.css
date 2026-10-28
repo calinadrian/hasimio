@@ -78,3 +78,38 @@ main{margin-left:240px}.topbar{height:92px}.search{width:380px;min-height:48px;p
 .poster-playback-track>span{display:block;height:100%;background:#dedede;border-radius:inherit}
 .poster-playback>small{display:block;margin-top:6px;color:#d0d0d0;font-size:12px;line-height:1.5}
 .poster-playback>small>span{color:#bcbcbc}
+
+/* Continue-watching spotlight, one-click play, episode list and undo toast */
+.hero-kicker{display:inline-block;margin-top:6px;color:#d6d6d6;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.hero h1.long{font-size:clamp(34px,4.2vw,56px);letter-spacing:-.5px;line-height:1.12;margin:14px 0 16px;max-width:760px}
+.hero p{max-width:560px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-meta:empty{display:none}
+.hero-progress{position:absolute;left:0;right:0;bottom:0;height:4px;background:#ffffff26}
+.hero-progress>span{display:block;height:100%;background:#e6e6e6}
+.hero-placeholder{background:linear-gradient(100deg,#222 30%,#2a2a2a 50%,#222 70%) 0 0/300% 100%;animation:hero-shimmer 1.6s linear infinite}
+@keyframes hero-shimmer{to{background-position:-150% 0}}
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap}
+.detail-actions .button{min-height:44px}
+.detail-actions .button.primary:disabled{background:#3a3a3a;color:#bdbdbd;cursor:default}
+.episode-list{margin:26px 0 6px}
+.episode-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.episode-list-heading h3{font-size:19px;font-weight:600}
+.episode-list-heading select{min-height:44px;background:#2e2e2e;color:#ededed;border:1px solid #5e5e5e;border-radius:4px;padding:0 12px;font:inherit;font-size:14px}
+.episode-list ol{list-style:none;margin:0;padding:4px;max-height:312px;overflow-y:auto;border:1px solid var(--line);border-radius:5px;background:#1f1f1f;position:relative}
+.episode-list li+li{margin-top:2px}
+.episode-list li button{width:100%;min-height:52px;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px 12px;border-radius:4px;text-align:left;color:#e6e6e6;background:transparent}
+.episode-list li button:hover{background:#2b2b2b}
+.episode-list li button[aria-current="true"]{background:#343434;box-shadow:inset 3px 0 0 #f2f2f2}
+.episode-number{font-family:Manrope,sans-serif;font-size:16px;font-weight:700;color:#cfcfcf;text-align:center}
+.episode-text{min-width:0;display:flex;flex-direction:column;gap:2px}
+.episode-text strong{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.episode-text small{font-size:13px;color:#b5b5b5;display:flex;gap:8px;align-items:center}
+.episode-text em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;background:#474747;color:#e0e0e0;border-radius:3px;padding:1px 6px}
+.episode-watched{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#e6e6e6;color:#191919}
+.episode-progress{width:56px;height:4px;border-radius:2px;background:#484848;overflow:hidden}
+.episode-progress>span{display:block;height:100%;background:#dedede}
+.toast-action{margin-left:6px;padding:6px 12px;min-height:32px;border-radius:5px;background:#ffffff1a;color:#f4f4f4;font-weight:600;font-size:14px}
+.toast-action:hover{background:#ffffff2e}
+@media(max-width:760px){.hero{min-height:0}.hero-content{padding:24px 21px 30px}.hero h1.long{font-size:34px}.hero-actions{flex-wrap:wrap}.hero-placeholder{min-height:260px}.detail-actions{width:100%}.detail-actions .button.primary{flex:1}.episode-list ol{max-height:260px}}
+@media(prefers-reduced-motion:reduce){.hero-placeholder{animation:none}}
+.detail-dialog .toast{left:50%}
