@@ -4,6 +4,7 @@ import {type Stream,safeHttp} from './media';
 import {engineUrl} from './engine';
 import {EnginePanel,useEngine} from './EngineStatus';
 import {type Quality} from '../shared/stream-info.mjs';
+import {INSPECTION_CONCURRENCY} from '../shared/inspection-policy.mjs';
 import {describeStream,availableQualities,defaultQuality,formatSize,sortSources} from './stream-options';
 
 import {sourceTrackInfo,saveTrackSummary,type MediaTrack} from './playback-tracks';
@@ -25,7 +26,7 @@ export default function StreamPicker({streams,loading,error,onPlay,onRetry,onMan
       setChecks(previous=>({...previous,[hash]:'Checking audio and subtitles…'}));
       try{const response=await fetch(engineUrl('/api/torrent-inspections'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:hash,videoId}),signal:controller.signal});const result=await response.json();if(!response.ok)throw new Error(result.error||'Track inspection failed.');if(!Array.isArray(result.audioTracks)||!Array.isArray(result.subtitleTracks))throw new Error('Track information was incomplete.');if(!live)return;saveTrackSummary(hash,videoId,result.audioTracks as MediaTrack[],result.subtitleTracks as MediaTrack[]);setChecks(previous=>({...previous,[hash]:''}));setRevision(n=>n+1);}catch(e){if(!live)return;setChecks(previous=>({...previous,[hash]:e instanceof Error?e.message:'Could not inspect this source.'}));}
     }}
-    if(!loading&&engine.state==='ready')void Promise.all([checkSources(),checkSources()]);return()=>{live=false;controller.abort();};
+    if(!loading&&engine.state==='ready')void Promise.all(Array.from({length:INSPECTION_CONCURRENCY},checkSources));return()=>{live=false;controller.abort();};
   },[sourceHashes,videoId,quality,loading,checkAttempt,engine.state]);
   return <section className="stream-picker" aria-label="Playback sources">
     <div className="stream-picker-heading"><div><h3>Choose your stream</h3><p>Pick a quality, then choose a source to play. Audio and subtitle tracks are checked automatically before playback.</p></div><button className="icon-button" aria-label="Refresh stream sources" onClick={onRetry} disabled={loading}><RefreshCw size={18} className={loading?'spin':''}/></button></div>

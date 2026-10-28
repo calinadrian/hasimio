@@ -70,3 +70,11 @@ main{margin-left:240px}.topbar{height:92px}.search{width:380px;min-height:48px;p
 .update-notes strong{display:block;margin-top:8px;color:#efefef}
 .update-notes ul{margin:4px 0 0 18px;line-height:1.7}
 @media(max-width:760px){.update-banner{flex-wrap:wrap}.update-banner .button{margin-left:0}}
+.poster-playback{margin-top:10px;width:100%;text-align:left;font-variant-numeric:tabular-nums}
+.poster-playback-caption{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:13px;line-height:1.5;color:#e0e0e0}
+.poster-playback-caption>span:first-child{min-width:0;overflow-wrap:anywhere}
+.poster-playback-caption>span:last-child{flex-shrink:0;color:#c2c2c2}
+.poster-playback-track{height:4px;margin-top:7px;background:#484848;border-radius:2px;overflow:hidden}
+.poster-playback-track>span{display:block;height:100%;background:#dedede;border-radius:inherit}
+.poster-playback>small{display:block;margin-top:6px;color:#d0d0d0;font-size:12px;line-height:1.5}
+.poster-playback>small>span{color:#bcbcbc}

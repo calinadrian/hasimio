@@ -12,11 +12,12 @@ import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks} from './compat
 
 import {createSubtitleJob,subtitleStatus} from './subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
+import {inspectionStream} from './inspection-stream.mjs';
 
 const cacheRoot=cacheDir('torrents');
 const trackers=['udp://tracker.opentrackr.org:1337/announce','udp://open.stealth.si:80/announce','udp://tracker.torrent.eu.org:451/announce'];
 export function createMediaService({clientFactory,inspectionClientFactory,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS)}={}) {
-  let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler(2);let shuttingDown=false;const inspectionCache=new Map();
+  let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
@@ -71,7 +72,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
     try {
       if(req.method==='GET'&&url.pathname==='/api/streaming/health')return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size});
       if(req.method==='GET'&&url.pathname==='/api/extensions/piratebay/manifest.json')return json(res,200,pirateBayManifest);
-      const source=/^\/api\/extensions\/piratebay\/stream\/(movie|series)\/([^/]+)\.json$/.exec(url.pathname);
+      const source=/^\/api\/extensions\/piratebay\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
       if(req.method==='GET'&&source){const type=source[1],id=decodeURIComponent(source[2]),key=`${type}:${id}`;let item=searches.get(key);if(!item||item.expires<Date.now()){item={expires:Date.now()+5*60*1000,promise:searchPirateBay(type,id)};searches.set(key,item);item.promise.catch(()=>searches.delete(key));}try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}}
       if(req.method==='POST'&&url.pathname==='/api/torrent-inspections'){
         if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});
@@ -114,6 +115,14 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
       }
       const audioRoute=/^\/api\/torrents\/([a-f\d]{36})\/audio(?:\/(main\.m3u8|init\.mp4|segment-\d{6}\.m4s))?$/.exec(url.pathname);
       if(audioRoute){const session=sessions.get(audioRoute[1]);if(!session)return json(res,404,{error:'This streaming session has ended.'});session.touched=Date.now();
+        if(['GET','HEAD'].includes(req.method)&&audioRoute[2]){
+          const job=session.audioJob;
+          if(url.searchParams.has('job')&&url.searchParams.get('job')!==job?.generation)return json(res,409,{error:'The playback position changed.'});
+          if(audioRoute[2]==='main.m3u8'&&job?.state==='ready'){
+            const playlist=(await readFile(path.join(job.folder,'main.m3u8'),'utf8')).replace(/(init\.mp4|segment-\d{6}\.m4s)/g,`$1?job=${job.generation}`);
+            res.writeHead(200,{'Content-Type':'application/vnd.apple.mpegurl','Cache-Control':'no-store'});return res.end(req.method==='HEAD'?undefined:playlist);
+          }
+        }
         if(['POST','DELETE'].includes(req.method)&&!audioRoute[2]){
           const input=req.method==='POST'&&req.headers['content-type']?.startsWith('application/json')?await body(req):{};
           const mutate=async()=>{
@@ -121,9 +130,11 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
             if(req.method==='DELETE'){await clearAudio(session);return;}
             if(!session.ready||session.selected==null)throw new Error('Choose a ready video file first.');
             const track=input.track??0;
+            const start=input.start??0;
+            if(!Number.isFinite(start)||start<0||(session.duration && start>=session.duration))throw new Error('Choose a time within the video.');
             if(!Number.isInteger(track)||track<0||(track!==0&&!session.audioTracks?.some(item=>item.index===track)))throw new Error('Choose an available audio track.');
-            if(session.audioJob?.track!==track)await clearAudio(session);
-            if(!session.audioJob){const index=session.selected;const mediaInput='http://127.0.0.1:'+req.socket.localPort+'/api/torrents/'+session.id+'/files/'+index;session.audioPending=createAudioJob(session.id,index,mediaInput,session.torrent.files[index].name,track).then(job=>{session.audioJob=job;}).finally(()=>{session.audioPending=undefined;});await session.audioPending;}
+            if(session.audioJob?.track!==track||session.audioJob?.start!==start)await clearAudio(session);
+            if(!session.audioJob){const index=session.selected;const mediaInput='http://127.0.0.1:'+req.socket.localPort+'/api/torrents/'+session.id+'/files/'+index;session.audioPending=createAudioJob(session.id,index,mediaInput,session.torrent.files[index].name,track,start).then(job=>{session.audioJob=job;}).finally(()=>{session.audioPending=undefined;});await session.audioPending;}
           };
           const operation=(session.audioQueue??Promise.resolve()).catch(()=>{}).then(mutate);session.audioQueue=operation;await operation;
           return json(res,req.method==='POST'?202:200,snapshot(session));
@@ -140,7 +151,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,allowe
           const ext=path.extname(file.name).toLowerCase();const mime={'.mp4':'video/mp4','.m4v':'video/mp4','.webm':'video/webm','.mkv':'video/x-matroska','.mov':'video/quicktime','.avi':'video/x-msvideo'}[ext];
           const headers={'Content-Type':mime,'Content-Length':range.end-range.start+1,'Accept-Ranges':'bytes','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};if(range.partial)headers['Content-Range']=`bytes ${range.start}-${range.end}/${file.length}`;
           if(url.searchParams.get('download')==='1')headers['Content-Disposition']="attachment; filename*=UTF-8''"+encodeURIComponent(path.basename(file.name)).replace(/['()*]/g,char=>'%'+char.charCodeAt(0).toString(16).toUpperCase());
-          res.writeHead(range.partial?206:200,headers);if(req.method==='HEAD')return res.end();const stream=file.createReadStream({start:range.start,end:range.end});session.readers.add(stream);const waiting=setTimeout(()=>{session.error='Peers connected, but no video data arrived. Try a source with more active seeders.';stream.destroy(new Error(session.error));},45000);waiting.unref();stream.once('data',()=>clearTimeout(waiting));stream.on('error',()=>{clearTimeout(waiting);res.destroy();});res.once('close',()=>{clearTimeout(waiting);session.readers.delete(stream);stream.destroy();});stream.pipe(res);return;
+          res.writeHead(range.partial?206:200,headers);if(req.method==='HEAD')return res.end();const stream=session.inspection?inspectionStream(file,range):file.createReadStream({start:range.start,end:range.end});session.readers.add(stream);const waiting=setTimeout(()=>{session.error='Peers connected, but no video data arrived. Try a source with more active seeders.';stream.destroy(new Error(session.error));},45000);waiting.unref();stream.once('data',()=>clearTimeout(waiting));stream.on('error',()=>{clearTimeout(waiting);res.destroy();});res.once('close',()=>{clearTimeout(waiting);session.readers.delete(stream);stream.destroy();});stream.pipe(res);return;
         }
       }
       return json(res,404,{error:'Unknown local streaming endpoint.'});

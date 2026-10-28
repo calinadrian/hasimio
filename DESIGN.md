@@ -108,7 +108,7 @@ Desktop uses a 240px fixed rail and 92px header. The rail narrows to 216px, then
 
 The quality-first selector sits inside title details. Its order is heading and explanation, Quality and Sort by dropdowns, selected-tier count, then source rows. Desktop dropdowns are side by side; mobile stacks them. Source rows use icon, information and Play columns; Play moves below information on mobile. The close button stays visible as the dialog scrolls.
 
-The calendar keeps a seven-column month grid and readable agenda. Its tracked-title list retains movie, series and anime entries; on mobile each release date moves below its title. Extensions continue to use divider-separated rows and a stacking installation form.
+The calendar begins with a compact three-title Coming up strip, followed by month navigation and a seven-column month grid. On desktop, a poster-led agenda sits beside the grid; narrower screens place it below. Month-grid release tiles pair a small poster thumbnail with the title and episode label; missing artwork falls back to a film icon. Selected days use a light inset outline, today uses a white date circle, and mobile release days use up to three white dots. The full tracked-title list stays in a native disclosure below the month, including titles without announced dates. Agenda entries open the specific episode. Day cells support arrow-key navigation across month boundaries. Extensions continue to use divider-separated rows and a stacking installation form.
 
 ## Elevation & Depth
 
@@ -154,3 +154,11 @@ The player pairs Audio / dub and Subtitles selects in two equal columns, stackin
 Player.tsx and player.css replace the native control strip and detached settings bar with one black video stage. The title/back control sits at the top, transfer status stays compact on desktop, and bottom controls combine a buffered seek bar, transport/volume/time, audio, subtitles, download, settings, picture-in-picture and fullscreen. White marks the active track/menu and playback progress. Controls fade during playback, returning on pointer or keyboard input; keyboard focus and open menus keep them visible.
 
 Menus are solid dark grey panels anchored above the toolbar, with readable native fields, an explicit close action, visible keyboard focus and internal scrolling. The subtitle panel includes file loading, size and timing. Downloads explain original-file contents and session lifetime. Mobile uses two control rows with 44px targets and a full-width menu, retaining a separate landscape layout. The playback dialog expands around the stage and hides its redundant outer close button; Back to sources remains inside the player. Fullscreen keeps all menus inside the fullscreen element.
+
+
+### Device sync
+
+Sync devices has a dedicated sidebar entry. An explanatory row introduces encrypted sync, followed by native setup fields and explicit enable, pairing-link, TV-code and recovery choices. Linked devices show connection state, QR/link pairing, a six-digit TV approval flow and divider-separated device rows with Unlink actions. Keep recovery codes behind an explicit disclosure after initial creation. Pairing QR codes use a white quiet zone for scan reliability; no other saturated colors are introduced. On mobile the pairing columns stack, input fields remain full-width and device actions stay reachable. Offline and revoked states retain local data and explain recovery.
+
+
+Sync onboarding is progressive: Start syncing is the first-device action; Connect this device is the returning-user action. A publisher default or same-origin relay is discovered automatically, with device names suggested locally. Scanned links open a clean confirmation instead of exposing encoded keys. QR instructions, TV approval and recovery files use plain language; technical fields remain in Advanced settings. An unavailable service is explained beside the disabled action, while local progress remains intact.

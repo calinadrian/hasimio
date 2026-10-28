@@ -7,3 +7,7 @@ release/
 out/
 *.log
 *.tsbuildinfo
+
+.sync-data/
+# The hosted sync site is its own git repository.
+sites/hasimio-sync/

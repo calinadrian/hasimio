@@ -6,7 +6,7 @@ export type Manifest = { id: string; name: string; version: string; description:
 export type Addon = { url: string; manifest: Manifest; enabled: boolean; builtin?: boolean };
 export type Stream = { subtitleTrack?: {url:string;label:string;language:string}; name?: string; title?: string; url?: string; externalUrl?: string; infoHash?: string; ytId?: string; provider?: string;quality?:string;seeders?:number;sizeBytes?:number;codec?:string;filename?:string };
 export const cinemetaUrl = 'https://v3-cinemeta.strem.io/manifest.json';
-export const kitsuUrl = 'https://anime-kitsu.strem.fun/manifest.json';
+export const kitsuUrl = 'https://kitsu.io/api/edge';
 export function manifestUrl(input: string) {
   const url = new URL(input.trim().replace(/^stremio:\/\//i, 'https://'));
   if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password) throw new Error('Enter an HTTP or HTTPS manifest URL without embedded credentials.');
@@ -31,8 +31,8 @@ export function resourceUrl(base: string, resource: string, type: string, id: st
   // Relative add-on URLs are served by Hasimio Engine (the built-in Pirate Bay source).
   const url = new URL(base,engineBase()); url.pathname = url.pathname.replace(/\/manifest.json$/, '') + `/${resource}/${encodeURIComponent(type)}/${encodeURIComponent(id)}` + (extras && Object.keys(extras).length ? '/' + new URLSearchParams(extras).toString().replace(/\+/g,'%20') : '') + '.json'; return url.toString();
 }
-export async function getJson<T>(url: string, signal?: AbortSignal): Promise<T> {
-  const timeout = AbortSignal.timeout(15000);
+export async function getJson<T>(url: string, signal?: AbortSignal, timeoutMs = 15000): Promise<T> {
+  const timeout = AbortSignal.timeout(timeoutMs);
   const response = await fetch(url, { signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
   if (!response.ok) throw new Error(`Source returned HTTP ${response.status}.`);
   return response.json();
@@ -73,6 +73,12 @@ export function calendarEvents(library: Meta[], month: Date) {
 }
 export function nextRelease(meta: Meta, now = Date.now()) {
   return datedVideos(meta).filter(v => Date.parse(v.released!) >= now).sort((a,b) => Date.parse(a.released!) - Date.parse(b.released!))[0];
+}
+export function defaultEpisode(meta: Meta, now = Date.now()) {
+  const episodes = meta.videos?.filter(v => v.episode != null) ?? [];
+  return episodes.find(v => v.season !== 0 && validRelease(v.released) && Date.parse(v.released!) <= now)
+    ?? episodes.find(v => validRelease(v.released) && Date.parse(v.released!) <= now)
+    ?? episodes.find(v => !validRelease(v.released));
 }
 export function episodeLabel(meta: Meta, video: Video) {
   if (meta.type === 'movie') return 'Movie release';

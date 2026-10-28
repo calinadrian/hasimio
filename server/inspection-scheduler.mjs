@@ -1,5 +1,6 @@
 // Keep header checks bounded and never add the same hash twice to WebTorrent.
-export function createInspectionScheduler(limit=2){
+import {INSPECTION_CONCURRENCY} from '../shared/inspection-policy.mjs';
+export function createInspectionScheduler(limit=INSPECTION_CONCURRENCY){
   const pending=[],active=new Set();let running=0;
   function pump(){
     while(running<limit){

@@ -1,0 +1,20 @@
+// Dependency-free Node relay + built UI for upload to a server.
+import {cp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=fileURLToPath(new URL('..',import.meta.url)),project=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
+const out=path.join(root,'release','sync-service-'+project.version),zip=path.join(root,'release','Hasimio-Sync-'+project.version+'.zip');
+if(path.dirname(path.resolve(out))!==path.resolve(root,'release')||!/^\d+\.\d+\.\d+$/.test(project.version))throw Error('Refusing staging cleanup outside the versioned release directory.');
+await rm(path.resolve(out),{recursive:true,force:true});
+await mkdir(path.join(out,'server'),{recursive:true});
+for(const file of ['sync-relay.mjs','static-ui.mjs'])await cp(path.join(root,'server',file),path.join(out,'server',file));
+await mkdir(path.join(out,'shared'),{recursive:true});await cp(path.join(root,'shared','sync-protocol.mjs'),path.join(out,'shared','sync-protocol.mjs'));
+await cp(path.join(root,'dist'),path.join(out,'dist'),{recursive:true});
+await writeFile(path.join(out,'package.json'),JSON.stringify({name:'hasimio-sync-service',version:project.version,private:true,type:'module',engines:{node:'>=24'},scripts:{start:'node server/sync-relay.mjs'}},null,2)+'\n');
+await writeFile(path.join(out,'README.md'),`# Hasimio Sync ${project.version}\n\nRequires Node.js 24 or newer. No npm install is needed.\n\nSet HASIMIO_SYNC_PUBLIC_URL to your public HTTPS origin, then run npm start. Configure your HTTPS reverse proxy on the same server to forward to 127.0.0.1:8787 (or PORT); set HASIMIO_SYNC_HOST only if the proxy runs elsewhere, and set HASIMIO_SYNC_TRUST_PROXY=1 only when the relay is reachable exclusively through your trusted proxy. Persist and back up HASIMIO_SYNC_DATA_DIR (default .sync-data).\n\nThis package includes the web UI and encrypted sync API. It does not include or expose the torrent engine. Never put device keys or recovery codes into server configuration.\n\nThe complete deployment, pairing, storage, and security guide is in DEPLOYMENT.md.\n`);
+await cp(path.join(root,'deploy','sync','README.md'),path.join(out,'DEPLOYMENT.md'));
+if(process.platform==='win32')await promisify(execFile)(path.join(process.env.SystemRoot||'C:/Windows','System32','tar.exe'),['-a','-c','-f',zip,'-C',out,'.'],{windowsHide:true});
+else await promisify(execFile)('zip',['-qr',zip,'.'],{cwd:out});
+console.log('Created '+zip);

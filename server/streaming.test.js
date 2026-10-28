@@ -11,6 +11,32 @@ describe('Pirate Bay source matching',()=>{
     expect(result).toHaveLength(2);expect(result[0].infoHash).toBe('b'.repeat(40));expect(result[0].title).toContain('30 seeders');expect(result[0].title).toContain('1.0 GB');
   });
   it('requires a specific episode for series searches',()=>{expect(()=>parseVideoId('series','tt123')).toThrow();expect(parseVideoId('series','tt123:1:2')).toEqual({imdb:'tt123',season:1,episode:2});});
+  it('resolves Kitsu episodes and falls back to absolute anime numbering and aliases',async()=>{
+    const queries=[];
+    const fetch=vi.fn(async url=>{
+      if(String(url).includes('/anime/11/episodes'))return new Response(JSON.stringify({data:[{type:'episodes',attributes:{number:14,seasonNumber:2}}]}));
+      if(String(url).includes('/anime/11'))return new Response(JSON.stringify({data:{type:'anime',id:'11',attributes:{canonicalTitle:'English: Title',titles:{ja_jp:'Japanese Title'}}}}));
+      const query=new URL(url).searchParams.get('q');queries.push(query);
+      return new Response(JSON.stringify(query==='Japanese Title 14'?[{info_hash:hash,name:'Japanese.Title.-.14.1080p',category:207,imdb:'0'}]:[]));
+    });
+    expect((await searchPirateBay('series','kitsu:11:14',fetch)).streams).toHaveLength(1);
+    expect(queries).toContain('English Title S02E14');expect(queries).toContain('Japanese Title 14');
+    expect(()=>parseVideoId('series','kitsu:11')).toThrow();
+  });
+  it('excludes anime sequels with unknown IMDb IDs from an original series search',async()=>{
+    const fetch=vi.fn(async url=>new Response(JSON.stringify(String(url).includes('/anime/11/episodes')?{data:[{type:'episodes',attributes:{number:1,seasonNumber:1}}]}:String(url).includes('/anime/11')?{data:{type:'anime',id:'11',attributes:{canonicalTitle:'Naruto'}}}:[{info_hash:hash,name:'Naruto.Shippuden.S01E01',category:207,imdb:''},{info_hash:'b'.repeat(40),name:'Naruto - 01 [720p]',category:207,imdb:''}])));
+    const result=await searchPirateBay('series','kitsu:11:1',fetch);
+    expect(result.streams.map(s=>s.filename)).toEqual(['Naruto - 01 [720p]']);
+  });
+  it('keeps unknown IMDb markers but rejects an explicit different title',()=>{
+    const row={info_hash:hash,name:'Show.S01E01',category:'205',imdb:'0'};
+    expect(torrentResults([row],'tt123')).toHaveLength(1);
+    expect(torrentResults([{...row,imdb:'tt999'}],'tt123')).toHaveLength(0);
+  });
+  it('falls back to a season pack when an individual episode is absent',async()=>{
+    const fetch=vi.fn(async url=>new Response(JSON.stringify(String(url).includes('/meta/')?{meta:{name:'Show: Title'}}:new URL(url).searchParams.get('q')==='Show Title S01'?[{info_hash:hash,name:'Show.Title.S01',category:205}]:[])));
+    expect((await searchPirateBay('series','tt123:1:2',fetch)).streams).toHaveLength(1);
+  });
   it('uses IMDb matches directly for movies without an unnecessary metadata lookup',async()=>{
     const fetch=vi.fn().mockResolvedValue(new Response(JSON.stringify([{info_hash:hash,name:'Film.720p',category:'201',imdb:'tt123',seeders:'5',size:'2000'}])));
     expect((await searchPirateBay('movie','tt123',fetch)).streams).toHaveLength(1);expect(fetch).toHaveBeenCalledTimes(1);expect(String(fetch.mock.calls[0][0])).toContain('q=tt123');
@@ -18,6 +44,11 @@ describe('Pirate Bay source matching',()=>{
   it('surfaces upstream failures instead of pretending there are no sources',async()=>{await expect(searchPirateBay('movie','tt123',vi.fn().mockResolvedValue(new Response('',{status:503})))).rejects.toThrow('HTTP 503');});
 });
 describe('torrent video selection',()=>{
+  it('matches absolute anime episodes and leaves unmatched packs for manual selection',()=>{
+    const files=[{name:'[Group] Naruto - 01 [1080p].mkv',length:300},{name:'[Group] Naruto - 14 [1080p].mkv',length:200}];
+    expect(selectVideo(files,'kitsu:11:14').selected).toBe(1);
+    expect(selectVideo(files,'kitsu:11:7').selected).toBeUndefined();
+  });
   const files=[{name:'sample.mp4',length:1000},{name:'Show.S01E01.mkv',length:300},{name:'Show.S01E02.mp4',length:200},{name:'readme.exe',length:100}];
   it('selects the requested episode rather than the biggest unrelated file',()=>{expect(selectVideo(files,'tt123:1:2').selected).toBe(2);});
   it('asks for a file when an episode cannot be matched inside a season pack',()=>{const result=selectVideo(files,'tt123:1:3');expect(result.selected).toBeUndefined();expect(result.files).toHaveLength(2);});
@@ -89,6 +120,14 @@ describe('embedded audio discovery',()=>{
   it('keeps language, commentary titles and defaults without borrowing video metadata',()=>{const tracks=parseAudioTracks('  Stream #0:0: Video: h264\n    Metadata:\n      title : Video title\n  Stream #0:1(eng): Audio: aac, 48000 Hz, stereo (default)\n    Metadata:\n      title : English dub\n  Stream #0:2[0x3](jpn): Audio: ac3, stereo\n    Metadata:\n      title : Commentary\n  Stream #0:3: Subtitle: subrip\n    Metadata:\n      title : Subtitles');expect(tracks).toEqual([{index:0,language:'eng',codec:'aac',default:true,title:'English dub'},{index:1,language:'jpn',codec:'ac3',default:false,title:'Commentary'}]);});
   it('preserves untagged tracks and silent video',()=>{expect(parseAudioTracks('  Stream #0:1: Audio: aac, stereo')[0].language).toBe('und');expect(parseAudioTracks('  Stream #0:0: Video: h264')).toEqual([]);});
   it('rejects invalid mapping indices',()=>{expect(()=>audioArguments('input','folder',false,-1)).toThrow('Invalid audio track');});
+  it('seeks the source before reading it and resets converted timestamps',()=>{
+    const args=audioArguments('input','folder',false,1,1200);
+    expect(args.indexOf('-ss')).toBeLessThan(args.indexOf('-i'));
+    expect(args[args.indexOf('-ss')+1]).toBe('1200');
+    expect(args[args.indexOf('-avoid_negative_ts')+1]).toBe('make_zero');
+    expect(()=>audioArguments('input','folder',false,0,-1)).toThrow('Invalid seek position');
+    expect(()=>audioArguments('input','folder',false,0,Infinity)).toThrow('Invalid seek position');
+  });
 });
 
 describe('subtitle formats',()=>{it('distinguishes text subtitles from image subtitles',()=>{expect(parseSubtitleTracks('  Stream #0:3(eng): Subtitle: subrip\n  Stream #0:4(jpn): Subtitle: hdmv_pgs_subtitle')).toMatchObject([{index:0,supported:true,language:'eng'},{index:1,supported:false,language:'jpn'}]);});});

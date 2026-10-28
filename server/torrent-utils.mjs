@@ -2,7 +2,15 @@ import {networkInterfaces} from 'node:os';
 export const VIDEO_EXTENSIONS=/\.(mp4|m4v|webm|mkv|mov|avi)$/i;
 export function selectVideo(files,videoId) {
   const videos=files.map((file,index)=>({index,name:file.name,length:file.length})).filter(f=>VIDEO_EXTENSIONS.test(f.name) && !/(^|[\s._-])sample([\s._-]|$)/i.test(f.name));
-  const episode=/:(\d+):(\d+)$/.exec(videoId ?? '');
+  const anime=/^kitsu:\d+:(\d+)$/.exec(videoId ?? '');
+  if(anime){
+    const number=Number(anime[1]);
+    const pattern=new RegExp(`(?:^|[ ._\\[-])0*${number}(?!\\d)(?:[ ._\\]v-]|$)`,'i');
+    const match=videos.find(f=>pattern.test(f.name));
+    if(match)return {files:videos,selected:match.index};
+    if(videos.length>1)return {files:videos,selected:undefined};
+  }
+  const episode=anime ? null : /:(\d+):(\d+)$/.exec(videoId ?? '');
   if(episode) {
     const season=Number(episode[1]),number=Number(episode[2]);
     const pattern=new RegExp(`(?:s0?${season}[ ._-]*e0?${number}(?!\\d)|(?:^|[ ._-])0?${season}x0?${number}(?!\\d))`,'i');
