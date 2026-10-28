@@ -96,7 +96,7 @@ The user requested a neutral grey/black design across the entire app. The system
 
 White marks selection, saved state and keyboard focus. Near-black charcoal separates navigation from grey panels. Source rows use a slightly lighter grey surface; hover increases separation without a floating shadow. Muted text stays readable against those surfaces. Seeders use a light grey status treatment; HEVC uses a grey codec chip, identifying compatibility information rather than promising playback success.
 
-Primary buttons use a solid medium grey surface with white text. Secondary buttons use opaque grey surfaces with fine borders. Keep interface colors neutral; do not reintroduce blue or cyan into app chrome.
+Primary buttons use the light accent fill (#e0e0e0) with near-black text, so each screen has one clear main action; secondary buttons use opaque grey surfaces with fine borders. Source-row Play buttons are secondary so the title's main Play stays the only light button. Colors, radii and layout sizes are CSS variables on :root in src/shell.css, which also holds every rule for the shell, buttons, spotlight and title details. Keep interface colors neutral; do not reintroduce blue or cyan into app chrome.
 
 ## Typography
 
@@ -104,7 +104,7 @@ Use Manrope for headings and DM Sans for controls and body text. Body and poster
 
 ## Layout
 
-Desktop uses a 240px fixed rail and 92px header. The rail narrows to 216px, then icon rails of 76px and 64px on smaller screens. Media shelves show five posters by default, six at 1600px, four below 1150px, and two on mobile. Swipe, trackpad, keyboard focus and arrow navigation remain available; native horizontal scrollbars are hidden. Poster titles can wrap to two lines without reserving empty height; year/type metadata follows with a 5px margin.
+Desktop uses a 240px fixed rail and a 76px header that holds only search. The rail narrows to 216px below 1150px; at 760px and below it becomes a 64px bottom tab bar with short labels, and the header shows the brand mark beside a full-width search. Pages use plain titles (Library, Calendar, Extensions, Sync devices) without taglines; Discover goes straight from the spotlight to its filters. The sidebar footer shows sync status and links to Sync devices. Shelf arrows appear on hover or focus for pointer devices and are hidden on touch screens. Media shelves show five posters by default, six at 1600px, four below 1150px, and two on mobile. Swipe, trackpad, keyboard focus and arrow navigation remain available; native horizontal scrollbars are hidden. Poster titles can wrap to two lines without reserving empty height; year/type metadata follows with a 5px margin.
 
 The quality-first selector sits inside title details. Its order is heading and explanation, Quality and Sort by dropdowns, selected-tier count, then source rows. Desktop dropdowns are side by side; mobile stacks them. Source rows use icon, information and Play columns; Play moves below information on mobile. The close button stays visible as the dialog scrolls.
 
@@ -138,11 +138,11 @@ Removing a library title or an extension shows a toast with Undo; the toast paus
 
 ### Resume and one-click play
 
-Discover and Library open with a Continue watching shelf built from playback history, newest first; finished movies and series whose last episode is finished drop out. Only titles already known from the library or loaded catalogs can appear. The spotlight shows the most recent unfinished title with a backdrop, labelled Continue watching with its episode and a thin white progress line, and offers Resume. Otherwise it shows the first live catalog title with a backdrop and description, labelled Featured pick; the offline starter pick appears only when no catalog loaded. Spotlight data comes from the title itself, the description is clamped to two lines, and titles longer than six characters use a compact untracked heading.
+Discover and Library open with a Continue watching shelf built from playback history, newest first; finished movies and series whose last episode is finished drop out. Only titles already known from the library or loaded catalogs can appear. A featured spotlight title is left out of the shelves below it. On phones the spotlight puts the artwork above the text, with both actions on one row. The spotlight shows the most recent unfinished title with a backdrop, labelled Continue watching with its episode and a thin white progress line, and offers Resume. Otherwise it shows the first live catalog title with a backdrop and description, labelled Featured pick; the offline starter pick appears only when no catalog loaded. Spotlight data comes from the title itself, the description is clamped to two lines, and titles longer than six characters use a compact untracked heading.
 
-Title details place a primary Play (or Resume S2 · E3) button beside Save. It plays the most-seeded source of the default quality, skipping unseeded torrents when another source exists, and shows Finding sources… while loading. The full quality-first selector stays below for any other choice.
+Title details use a 1040px dialog: backdrop art, then a poster beside the title, facts and actions. A sticky top bar keeps Close available and shows the title once the artwork scrolls away. Title details place a primary Play (or Resume S2 · E3) button beside Save. It plays the most-seeded source of the default quality, skipping unseeded torrents when another source exists, and shows Finding sources… while loading. The full quality-first selector stays below, collapsed to a "N sources in M qualities" row until opened. The provider name appears once in the summary when all sources share it.
 
-Series list episodes by season: a Season select (Specials last) above a scrollable, divider-free list with episode number, title, air date or Date unannounced, an Upcoming chip, and a watched check or progress bar. The selected episode has a white inset edge and is scrolled into view.
+Series list episodes by season: season chips for up to six seasons, otherwise a Season select showing episode counts (Specials last), above a divider-free list that shows ten episodes and expands with Show all, so the dialog keeps a single scroll area. Each row shows the episode number, title, air date or Date unannounced, an Upcoming chip, and a watched check or progress bar. The selected episode has a white inset edge and is scrolled into view.
 
 ## Do's and Don'ts
 

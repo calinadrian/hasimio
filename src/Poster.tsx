@@ -1,4 +1,4 @@
-import {Check,Film,Play} from 'lucide-react';
+import {Check,Film,Info} from 'lucide-react';
 import {type Meta,safeHttp} from './media';
 import {type CardProgress} from './playback-progress';
 import {playbackTime} from './player-utils';
@@ -10,7 +10,7 @@ export default function Poster({meta,onClick,saved,progress}:{meta:Meta;onClick:
     <div className="poster-image">
       {safeHttp(meta.poster)?<img src={safeHttp(meta.poster)} alt="" loading="lazy" onError={e=>{e.currentTarget.style.visibility='hidden';}}/>:null}
       <Film className="poster-placeholder"/>{saved&&<span className="saved-mark"><Check size={14}/></span>}
-      <span className="poster-open"><Play size={24} fill="currentColor"/></span>
+      <span className="poster-open"><Info size={26}/></span>
     </div>
     <strong>{meta.name}</strong><span>{meta.releaseInfo||'Year unavailable'} <i/> {label}</span>
     {progress&&<div className="poster-playback">
