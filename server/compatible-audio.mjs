@@ -40,6 +40,20 @@ export function probeAudioTracks(input,signal,{fast=false}={}) {
     });
   });
 }
+// Copied video can only start on a keyframe, so input seeking lands up to one
+// GOP before the request. Read the first packet's source time to report it.
+export function parseKeyframeTime(log) {
+  const base=/^#tb 0: (\d+)\/(\d+)$/m.exec(log),packet=/^0,\s*(-?\d+),/m.exec(log),origin=/Duration:[^\n]*start: (-?\d+(?:\.\d+)?)/.exec(log);
+  return base&&packet?Number(packet[1])*Number(base[1])/Number(base[2])-(origin?Number(origin[1]):0):undefined;
+}
+export function keyframeTime(input,start,signal) {
+  return new Promise(resolve=>{
+    execFile(ffmpegPath,['-hide_banner','-nostdin','-ss',String(start),'-i',input,'-map','0:v:0','-c','copy','-copyts','-frames:v','1','-f','framemd5','-'],{windowsHide:true,timeout:15000,maxBuffer:1024*1024,signal},(error,stdout,stderr)=>{
+      const time=error?undefined:parseKeyframeTime(stdout+'\n'+stderr);
+      resolve(Number.isFinite(time)&&time<=start+0.5?Math.max(0,Math.min(start,time)):start);
+    });
+  });
+}
 export function audioArguments(input,folder,hevc=false,track=0,start=0) {
   if(!Number.isInteger(track)||track<0)throw new Error('Invalid audio track.');
   if(!Number.isFinite(start)||start<0)throw new Error('Invalid seek position.');
@@ -49,7 +63,8 @@ export async function createAudioJob(id,index,input,filename='',track=0,start=0)
   if(!/^[a-f\d]{36}$/.test(id)||!Number.isInteger(index)||index<0)throw new Error('Invalid audio session.');
   await access(ffmpegPath);
   const folder=path.join(audioRoot,id,String(index),String(track));await mkdir(folder,{recursive:true});
-  const job={folder,index,start,generation:randomBytes(8).toString('hex'),state:'preparing',error:undefined,child:undefined,closed:false,stopping:false,log:'',timer:undefined};
+  const offset=start?await keyframeTime(input,start):0;
+  const job={folder,index,start,offset,generation:randomBytes(8).toString('hex'),state:'preparing',error:undefined,child:undefined,closed:false,stopping:false,log:'',timer:undefined};
   async function check() {try {const playlist=await readFile(path.join(folder,'main.m3u8'),'utf8');if(playlist.includes('#EXTINF:')){await access(path.join(folder,'init.mp4'));job.state='ready';clearInterval(job.timer);}}catch{/* FFmpeg has not produced the first segment yet. */}}
   job.track=track;
   const child=spawn(ffmpegPath,audioArguments(input,folder,/\bhevc\b|[xh][ ._-]?265/i.test(filename),track,start),{cwd:folder,windowsHide:true,stdio:['ignore','ignore','pipe']});job.child=child;
@@ -65,4 +80,4 @@ export async function stopAudioJob(job) {
   if(!target.startsWith(root))throw new Error('Refusing audio cleanup outside the audio cache.');
   await rm(target,{recursive:true,force:true,maxRetries:3,retryDelay:200});
 }
-export function audioStatus(job,id) {return job?{state:job.state,track:job.track,start:job.start,error:job.error,mediaUrl:job.state==='ready'?`/api/torrents/${id}/audio/main.m3u8?track=${job.track}&job=${job.generation}`:undefined}:undefined;}
+export function audioStatus(job,id) {return job?{state:job.state,track:job.track,start:job.start,offset:job.offset,error:job.error,mediaUrl:job.state==='ready'?`/api/torrents/${id}/audio/main.m3u8?track=${job.track}&job=${job.generation}`:undefined}:undefined;}

@@ -25,6 +25,13 @@ describe('encrypted sync relay',()=>{
     const disk=await readFile(path.join(directory,owner.spaceId+'.json'),'utf8');expect(disk).not.toContain(owner.deviceToken);expect(disk).not.toContain(owner.recoveryToken);
     await relay.close();relay=createSyncRelay({dataDir:directory});const restored=await request(route,'GET',undefined,owner.deviceToken);expect(restored.body.revision).toBe(2);expect(restored.body.data).toEqual(data);
   });
+  it('decodes multi-byte device names split across request chunks',async()=>{
+    const bytes=Buffer.from(JSON.stringify({...device(),name:'Größe TV',recoveryToken:token(),data})),split=bytes.indexOf(Buffer.from('ö'))+1;
+    const req=Readable.from([bytes.subarray(0,split),bytes.subarray(split)]);Object.assign(req,{url:'/api/sync/spaces',method:'POST',headers:{'content-type':'application/json'},socket:{remoteAddress:'127.0.0.1'}});
+    let status;const res={setHeader(){},writeHead:code=>status=code,end(){}};await relay.handle(req,res);expect(status,lastError?.stack).toBe(201);
+    const [file]=(await import('node:fs/promises').then(fs=>fs.readdir(directory))).filter(name=>name.endsWith('.json'));
+    expect(JSON.parse(await readFile(path.join(directory,file),'utf8')).devices[0].name).toBe('Größe TV');
+  });
   it('redeems a QR invitation once and revokes the new device without affecting the owner',async()=>{
     const owner=await space(),route='spaces/'+owner.spaceId,newDevice=device();
     const invite=await request(route+'/invites','POST',{},owner.deviceToken);

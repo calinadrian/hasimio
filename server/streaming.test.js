@@ -49,6 +49,12 @@ describe('torrent video selection',()=>{
     expect(selectVideo(files,'kitsu:11:14').selected).toBe(1);
     expect(selectVideo(files,'kitsu:11:7').selected).toBeUndefined();
   });
+  it('ignores audio and codec numbers when matching anime episodes',()=>{
+    const batch=[{name:'Show.E05.1080p.DDP5.1.x264.mkv',length:300},{name:'Show.E01.1080p.DDP5.1.x264.mkv',length:300},{name:'Show 2 - 03 AAC 2.0.mkv',length:300},{name:'Show 2 - 02 AAC 2.0.mkv',length:300}];
+    expect(selectVideo(batch,'kitsu:11:1').selected).toBe(1);
+    expect(selectVideo(batch,'kitsu:11:2').selected).toBe(3);
+    expect(selectVideo(batch,'kitsu:11:264').selected).toBeUndefined();
+  });
   const files=[{name:'sample.mp4',length:1000},{name:'Show.S01E01.mkv',length:300},{name:'Show.S01E02.mp4',length:200},{name:'readme.exe',length:100}];
   it('selects the requested episode rather than the biggest unrelated file',()=>{expect(selectVideo(files,'tt123:1:2').selected).toBe(2);});
   it('asks for a file when an episode cannot be matched inside a season pack',()=>{const result=selectVideo(files,'tt123:1:3');expect(result.selected).toBeUndefined();expect(result.files).toHaveLength(2);});
@@ -115,10 +121,11 @@ describe('Hasimio Engine options and cache folder',()=>{
   });
 });
 
-import {parseAudioTracks,parseSubtitleTracks,audioArguments,parseMediaDuration} from './compatible-audio.mjs';
+import {parseAudioTracks,parseSubtitleTracks,audioArguments,parseMediaDuration,parseKeyframeTime} from './compatible-audio.mjs';
 describe('embedded audio discovery',()=>{
   it('keeps language, commentary titles and defaults without borrowing video metadata',()=>{const tracks=parseAudioTracks('  Stream #0:0: Video: h264\n    Metadata:\n      title : Video title\n  Stream #0:1(eng): Audio: aac, 48000 Hz, stereo (default)\n    Metadata:\n      title : English dub\n  Stream #0:2[0x3](jpn): Audio: ac3, stereo\n    Metadata:\n      title : Commentary\n  Stream #0:3: Subtitle: subrip\n    Metadata:\n      title : Subtitles');expect(tracks).toEqual([{index:0,language:'eng',codec:'aac',default:true,title:'English dub'},{index:1,language:'jpn',codec:'ac3',default:false,title:'Commentary'}]);});
   it('preserves untagged tracks and silent video',()=>{expect(parseAudioTracks('  Stream #0:1: Audio: aac, stereo')[0].language).toBe('und');expect(parseAudioTracks('  Stream #0:0: Video: h264')).toEqual([]);});
+  it('reads the keyframe that a copied-video seek really starts from',()=>{expect(parseKeyframeTime('  Duration: 00:20:00.00, start: 0.500000, bitrate: 1 kb/s\n#tb 0: 1/1000\n0,       5500,       5500,       40,    1234, abc')).toBe(5);expect(parseKeyframeTime('no packets')).toBeUndefined();});
   it('rejects invalid mapping indices',()=>{expect(()=>audioArguments('input','folder',false,-1)).toThrow('Invalid audio track');});
   it('seeks the source before reading it and resets converted timestamps',()=>{
     const args=audioArguments('input','folder',false,1,1200);

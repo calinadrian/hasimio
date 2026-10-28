@@ -47,8 +47,8 @@ describe('complete device sync',()=>{
   it('pairs a TV using ephemeral encryption and blocks it after unlinking',async()=>{
     const desktop=new DeviceSync(),desktopStorage=storage;await desktop.create(server,'Desktop');
     storage=new Map();const tvStorage=storage,tv=new DeviceSync(),request=await tv.requestPairing(server,'Living room TV');expect(await tv.pollPairing(request)).toBe(false);
-    storage=desktopStorage;const preview=await desktop.previewPairing(request.code);expect(preview.name).toBe('Living room TV');expect(preview.fingerprint).toBe(request.fingerprint);await desktop.approvePairing(request.code,preview);
-    storage=tvStorage;expect(await tv.pollPairing(request)).toBe(true);expect(tv.status.identity?.recoveryToken).toBeUndefined();const tvId=tv.status.identity!.deviceId;
+    storage=desktopStorage;const preview=await desktop.previewPairing(request.code);expect(preview.name).toBe('Living room TV');expect(preview.fingerprint).toBe(request.fingerprint);const approver=await desktop.approvePairing(request.code,preview);
+    storage=tvStorage;expect(await tv.pollPairing(request)).toBe(approver);expect(tv.status.identity).toBeUndefined();await tv.finishPairing(request);expect(tv.status.identity?.recoveryToken).toBeUndefined();const tvId=tv.status.identity!.deviceId;
     storage=desktopStorage;await desktop.unlink(tvId);storage=tvStorage;await tv.sync();expect(tv.status.state).toBe('revoked');
   });
   it('rejects malformed recovery codes and pairing links with a readable message',async()=>{

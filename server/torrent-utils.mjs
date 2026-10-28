@@ -5,8 +5,11 @@ export function selectVideo(files,videoId) {
   const anime=/^kitsu:\d+:(\d+)$/.exec(videoId ?? '');
   if(anime){
     const number=Number(anime[1]);
-    const pattern=new RegExp(`(?:^|[ ._\\[-])0*${number}(?!\\d)(?:[ ._\\]v-]|$)`,'i');
-    const match=videos.find(f=>pattern.test(f.name));
+    // Prefer explicit episode markers, then bare numbers that are not part of
+    // decimals such as DDP5.1, AAC 2.0 or H.264.
+    const marked=new RegExp(`(?:\\s-\\s*|\\b(?:e|ep|episode)[ ._]?)0*${number}(?!\\d)(?:v\\d+)?(?![a-z])`,'i');
+    const bare=new RegExp(`(?<!\\d\\.)(?:^|[ ._\\[-])0*${number}(?!\\d|\\.\\d)(?:[ ._\\]v-]|$)`,'i');
+    const match=videos.find(f=>marked.test(f.name))??videos.find(f=>bare.test(f.name));
     if(match)return {files:videos,selected:match.index};
     if(videos.length>1)return {files:videos,selected:undefined};
   }

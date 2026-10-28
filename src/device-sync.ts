@@ -61,7 +61,7 @@ export class DeviceSync {
         this.publish({state:'ready',error:undefined,lastSynced:Date.now(),devices:remote.devices});return;
       }
       throw Error('Other devices are syncing. Your changes are saved and will retry shortly.');
-    }catch(error){if(this.status.identity===identity)this.publish({state:(error as {status?:number}).status===401?'revoked':'offline',error:error instanceof Error?error.message:'Sync is offline. Changes stay saved on this device.'});}
+    }catch(error){if(this.status.identity===identity)this.publish({state:[401,404].includes((error as {status?:number}).status??0)?'revoked':'offline',error:error instanceof Error?error.message:'Sync is offline. Changes stay saved on this device.'});}
     finally{this.running=false;if(this.dirty){this.dirty=false;this.changed();}}
   }
   async invitation(){
@@ -89,18 +89,23 @@ export class DeviceSync {
   async requestPairing(server:string,name:string){
     server=serviceUrl(server);const deviceId=randomDeviceId(),keys=await pairingKey();
     const request=await syncRequest<{code:string;pollToken:string;expires:number}>(server,'pairings',{method:'POST',body:{deviceId,name,publicKey:keys.publicKey}});
-    return {...request,server,name,deviceId,privateKey:keys.privateKey,fingerprint:await pairingFingerprint(keys.publicKey),cancelled:false};
+    return {...request,server,name,deviceId,privateKey:keys.privateKey,fingerprint:await pairingFingerprint(keys.publicKey),cancelled:false,approved:undefined as {identity:Identity;fingerprint:string}|undefined};
   }
+  // Returns the approving device's security check. The relay could approve with
+  // its own key, so the identity is applied only after the user confirms it.
   async pollPairing(request:Awaited<ReturnType<DeviceSync['requestPairing']>>,isActive=()=>!request.cancelled){
     const result=await syncRequest<{status:string;bundle?:Sealed;publicKey?:JsonWebKey}>(request.server,'pairings/'+request.code,{token:request.pollToken});if(!isActive()||result.status!=='approved')return false;
     const key=await sharedKey(request.privateKey,result.publicKey!),identity=await unseal<Identity>(result.bundle!,key,'Hasimio pairing v1');
-    if(!isActive())return false;if(!validIdentity(identity)||identity.server!==request.server||identity.deviceId!==request.deviceId)throw Error('Pairing information does not match this device.');this.setIdentity(identity,true);await this.sync();return true;
+    if(!isActive())return false;if(!validIdentity(identity)||identity.server!==request.server||identity.deviceId!==request.deviceId)throw Error('Pairing information does not match this device.');
+    request.approved={identity,fingerprint:await pairingFingerprint(result.publicKey!)};return request.approved.fingerprint;
   }
+  async finishPairing(request:Awaited<ReturnType<DeviceSync['requestPairing']>>){if(!request.approved)throw Error('Wait for your other device to approve this code.');this.setIdentity(request.approved.identity,true);await this.sync();}
   async previewPairing(code:string){const i=this.status.identity;if(!i)throw Error('Enable sync first.');const preview=await syncRequest<{deviceId:string;name:string;publicKey:JsonWebKey;expires:number}>(i.server,'spaces/'+i.spaceId+'/pairings/'+code,{token:i.deviceToken});return {...preview,fingerprint:await pairingFingerprint(preview.publicKey)};}
   async approvePairing(code:string,preview:Awaited<ReturnType<DeviceSync['previewPairing']>>){
     const i=this.status.identity;if(!i)throw Error('Enable sync first.');const keys=await pairingKey(),key=await sharedKey(keys.privateKey,preview.publicKey),deviceToken=randomKey();
     const bundle=await seal({server:i.server,spaceId:i.spaceId,key:i.key,deviceId:preview.deviceId,deviceToken,name:preview.name},key,'Hasimio pairing v1');
     await syncRequest(i.server,'spaces/'+i.spaceId+'/pairings/'+code,{method:'POST',token:i.deviceToken,body:{deviceToken,bundle,publicKey:keys.publicKey}});await this.sync();
+    return pairingFingerprint(keys.publicKey);
   }
   async unlink(deviceId:string){const i=this.status.identity;if(!i)return;await syncRequest(i.server,'spaces/'+i.spaceId+'/devices/'+deviceId,{method:'DELETE',token:i.deviceToken});if(deviceId===i.deviceId)this.forget();else await this.sync();}
   forget(){localStorage.removeItem(identityKey);localStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
