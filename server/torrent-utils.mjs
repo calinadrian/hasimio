@@ -9,8 +9,9 @@ export function videoContainer(header) {
   if(MP4_ATOMS.has(header.toString('latin1',4,8)))return true;
   return header.toString('latin1',0,4)==='RIFF'&&header.toString('latin1',8,12)==='AVI ';
 }
-export function selectVideo(files,videoId) {
+export function selectVideo(files,videoId,fileIdx) {
   const videos=files.map((file,index)=>({index,name:file.name,length:file.length})).filter(f=>VIDEO_EXTENSIONS.test(f.name) && !/(^|[\s._-])sample([\s._-]|$)/i.test(f.name));
+  if(Number.isSafeInteger(fileIdx)&&videos.some(file=>file.index===fileIdx))return {files:videos,selected:fileIdx};
   const anime=/^kitsu:\d+:(\d+)$/.exec(videoId ?? '');
   if(anime){
     const number=Number(anime[1]);

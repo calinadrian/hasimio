@@ -17,11 +17,11 @@ export default function TorrentPlayer({stream,videoId,onClose,title,progressKey,
   const audioChosen=useRef(false);
   useEffect(()=>{let live=true;let timer:ReturnType<typeof setTimeout>;setError('');setSession(undefined);setCompatible(true);setSeekStart(resumePosition(progressKey));setTrack(0);audioChosen.current=false;setSubtitleChoice('off');setLocalSubtitle(undefined);
     async function poll(id:string){try{const status=await request(`/api/torrents/${id}`);if(!live)return;setSession(status);if(status.state==='error'){setError(status.error || 'Torrent playback failed.');return;}timer=setTimeout(()=>poll(id),1500);}catch(e){if(live)setError(e instanceof Error?e.message:'Could not check buffering status.');}}
-    request('/api/torrents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:stream.infoHash,videoId})}).then(result=>{if(!live){void fetch(engineUrl(`/api/torrents/${result.id}`),{method:'DELETE',keepalive:true});return;}sessionId.current=result.id;setSession(result);void poll(result.id);}).catch(e=>{if(live)setError(e instanceof Error?e.message:'Could not start torrent playback.');});
+    request('/api/torrents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId})}).then(result=>{if(!live){void fetch(engineUrl(`/api/torrents/${result.id}`),{method:'DELETE',keepalive:true});return;}sessionId.current=result.id;setSession(result);void poll(result.id);}).catch(e=>{if(live)setError(e instanceof Error?e.message:'Could not start torrent playback.');});
     const leave=()=>{if(sessionId.current){void fetch(engineUrl(`/api/torrents/${sessionId.current}`),{method:'DELETE',keepalive:true});sessionId.current=undefined;}};
     window.addEventListener('pagehide',leave);
     return()=>{live=false;clearTimeout(timer);leave();window.removeEventListener('pagehide',leave);};
-  },[stream.infoHash,videoId,attempt]);
+  },[stream.infoHash,stream.fileIdx,videoId,attempt]);
   useEffect(()=>{let live=true;const controller=new AbortController();setTracksError('');if(!session?.id||session.selected==null||session.state!=='ready')return;setTracksLoading(true);
     request('/api/torrents/'+session.id+'/audio-tracks',{signal:controller.signal}).then(value=>{if(live){if(!audioChosen.current)setTrack(defaultAudioTrack(value.audioTracks));setSession(value);}}).catch(e=>{if(live)setTracksError(e instanceof Error?e.message:'Could not read audio and subtitle tracks.');}).finally(()=>{if(live)setTracksLoading(false);});
     return()=>{live=false;controller.abort();};

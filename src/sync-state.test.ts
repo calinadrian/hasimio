@@ -8,7 +8,7 @@ beforeEach(()=>{storage=new Map();vi.stubGlobal('localStorage',{getItem:(key:str
 afterEach(()=>vi.unstubAllGlobals());
 describe('offline device merging',()=>{
   it('accepts every built-in source URL and no other relative URL',()=>{
-    expect([...builtinSourceUrls].sort()).toEqual(['/api/extensions/eztv/manifest.json','/api/extensions/piratebay/manifest.json','/api/extensions/titles/manifest.json','/api/extensions/torrentclaw/manifest.json','/api/extensions/torrentdownloads/manifest.json','/api/extensions/yts/manifest.json','builtin:open-cinema']);
+    expect([...builtinSourceUrls].sort()).toEqual(['/api/extensions/comet/manifest.json','/api/extensions/eztv/manifest.json','/api/extensions/piratebay/manifest.json','/api/extensions/titles/manifest.json','/api/extensions/torrentclaw/manifest.json','/api/extensions/torrentdownloads/manifest.json','/api/extensions/torrentio/manifest.json','/api/extensions/yts/manifest.json','builtin:open-cinema']);
     const unknown={...yts,url:'/api/extensions/unknown/manifest.json'};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+yts.manifest.id]:unknown},100));
     expect(localValues()['addon:'+yts.manifest.id]).toBeUndefined();
   });

@@ -1,3 +1,5 @@
+import {stremioManifests} from '../shared/stremio-sources.mjs';
+import {searchStremioSource} from './stremio-sources.mjs';
 import {randomBytes} from 'node:crypto';
 import {mkdir,stat,readFile,rm} from 'node:fs/promises';
 import {createReadStream,readFileSync} from 'node:fs';
@@ -57,7 +59,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     const torrent=engine.add(magnet,{path:path.join(cacheRoot,inspection?'inspections':'playback',hash),addUID:true,destroyStoreOnDestroy:true,deselect:true,strategy:'sequential',announce:trackers});session.torrent=torrent;
     session.timer=setTimeout(()=>{session.error='No torrent metadata arrived within 90 seconds. Try a source with more seeders.';if(!torrent.destroyed)torrent.destroy({destroyStore:true},()=>{});},90000);session.timer.unref();
     torrent.on('error',error=>{clearTimeout(session.timer);session.error=error.message;});
-    torrent.once('ready',()=>{clearTimeout(session.timer);const selection=selectVideo(torrent.files,input.videoId);session.files=selection.files;session.selected=selection.selected;if(!session.files.length){session.error='This torrent contains no supported video files.';return;}session.ready=true;for(const file of torrent.files)file.deselect();if(!inspection&&session.selected!=null)torrent.files[session.selected].select();});
+    torrent.once('ready',()=>{clearTimeout(session.timer);const selection=selectVideo(torrent.files,input.videoId,input.fileIdx);session.files=selection.files;session.selected=selection.selected;if(!session.files.length){session.error='This torrent contains no supported video files.';return;}session.ready=true;for(const file of torrent.files)file.deselect();if(!inspection&&session.selected!=null)torrent.files[session.selected].select();});
     return snapshot(session);
   }
   // Every read of a file, FFmpeg's included, waits for its first bytes to prove it is a video container.
@@ -106,6 +108,8 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       if(req.method==='GET'&&url.pathname==='/api/extensions/eztv/manifest.json')return json(res,200,eztvManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/torrentdownloads/manifest.json')return json(res,200,torrentDownloadsManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/torrentclaw/manifest.json')return json(res,200,torrentClawManifest);
+      const stremioManifest=/^\/api\/extensions\/(torrentio|comet)\/manifest\.json$/.exec(url.pathname);
+      if(req.method==='GET'&&stremioManifest)return json(res,200,stremioManifests[stremioManifest[1]]);
       const clawRoute=/^\/api\/extensions\/torrentclaw\/(catalog|meta)\/(movie|series)\/([^/]+)(?:\/([^/]+))?\.json$/.exec(url.pathname);
       if(req.method==='GET'&&clawRoute){
         const [,resource,type,encoded,extras]=clawRoute,key=url.pathname;let item=searches.get(key);
@@ -115,11 +119,11 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
         }
         try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}
       }
-      const source=/^\/api\/extensions\/(piratebay|yts|eztv|torrentdownloads|torrentclaw)\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
+      const source=/^\/api\/extensions\/(piratebay|yts|eztv|torrentdownloads|torrentclaw|torrentio|comet)\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
       if(req.method==='GET'&&source){
         const [,provider,type,encoded]=source,id=decodeURIComponent(encoded),key=`${provider}:${type}:${id}`;let item=searches.get(key);
         if(!item||item.expires<Date.now()){
-          const promise=provider==='torrentclaw'?searchTorrentClaw(type,id,fetchImpl):provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,lookupTitle):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,lookupTitle);
+          const promise=['torrentio','comet'].includes(provider)?searchStremioSource(provider,type,id,fetchImpl):provider==='torrentclaw'?searchTorrentClaw(type,id,fetchImpl):provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,lookupTitle):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,lookupTitle);
           item={expires:Date.now()+5*60*1000,promise};searches.set(key,item);item.promise.catch(()=>searches.delete(key));
         }
         try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}
