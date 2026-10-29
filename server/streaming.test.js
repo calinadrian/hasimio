@@ -145,6 +145,9 @@ describe('embedded audio discovery',()=>{
     const args=audioArguments('input','folder',false,1,1200);
     expect(args.indexOf('-ss')).toBeLessThan(args.indexOf('-i'));
     expect(args[args.indexOf('-ss')+1]).toBe('1200');
+    expect(args.indexOf('-noaccurate_seek')).toBeLessThan(args.indexOf('-i'));
+    expect(args).toContain('aresample=async=1');
+    expect(args[args.indexOf('-ar')+1]).toBe('48000');
     expect(args[args.indexOf('-avoid_negative_ts')+1]).toBe('make_zero');
     expect(args[args.indexOf('-protocol_whitelist')+1]).toBe('http,tcp');expect(args.indexOf('-format_whitelist')).toBeLessThan(args.indexOf('-i'));
     expect(()=>audioArguments('input','folder',false,0,-1)).toThrow('Invalid seek position');

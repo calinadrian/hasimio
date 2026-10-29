@@ -1,12 +1,21 @@
 import {beforeEach,afterEach,describe,it,expect,vi} from 'vitest';
 import {emptyDocument,captureChanges,mergeDocuments,compactDocument,validDocument,localValues,applyDocument} from './sync-state';
 import {seal,unseal,randomKey,pairingKey,pairingFingerprint,sharedKey,serviceUrl} from './sync-crypto';
-import {yts,eztv,torrentDownloads} from './catalogs';
+import {yts,eztv,torrentDownloads,torrentClaw,builtinSourceUrls} from './catalogs';
 const a='a'.repeat(32),b='b'.repeat(32);
 let storage:Map<string,string>;
 beforeEach(()=>{storage=new Map();vi.stubGlobal('localStorage',{getItem:(key:string)=>storage.get(key)??null,setItem:(key:string,value:string)=>storage.set(key,value)});vi.stubGlobal('window',new EventTarget());});
 afterEach(()=>vi.unstubAllGlobals());
 describe('offline device merging',()=>{
+  it('accepts every built-in source URL and no other relative URL',()=>{
+    expect([...builtinSourceUrls].sort()).toEqual(['/api/extensions/eztv/manifest.json','/api/extensions/piratebay/manifest.json','/api/extensions/titles/manifest.json','/api/extensions/torrentclaw/manifest.json','/api/extensions/torrentdownloads/manifest.json','/api/extensions/yts/manifest.json','builtin:open-cinema']);
+    const unknown={...yts,url:'/api/extensions/unknown/manifest.json'};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+yts.manifest.id]:unknown},100));
+    expect(localValues()['addon:'+yts.manifest.id]).toBeUndefined();
+  });
+  it('syncs TorrentClaw and its disabled setting',()=>{
+    const source={...torrentClaw,enabled:false};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+torrentClaw.manifest.id]:source},100));
+    expect(localValues()['addon:'+torrentClaw.manifest.id]).toEqual(source);
+  });
   it('syncs the TorrentDownloads extension and its disabled setting',()=>{
     const source={...torrentDownloads,enabled:false};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+torrentDownloads.manifest.id]:source},100));
     expect(localValues()['addon:'+torrentDownloads.manifest.id]).toEqual(source);

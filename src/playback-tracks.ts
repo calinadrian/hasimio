@@ -1,6 +1,17 @@
 import type {Stream} from './media';
 
 export type MediaTrack={index:number;language:string;title?:string;codec:string;default:boolean;supported?:boolean};
+export function defaultAudioTrack(tracks?:MediaTrack[]){return tracks?.find(track=>track.default)?.index??tracks?.[0]?.index??0;}
+// Compatible audio waits for the track list so it converts the file's default dub, not
+// track 0. A failed track check still starts conversion rather than blocking playback.
+export type AudioAction={action:'wait'|'start'|'stop'}|{action:'fail';message:string};
+export function audioAction({ready,compatible,audioTracks,tracksError}:{ready:boolean;compatible:boolean;audioTracks?:MediaTrack[];tracksError?:string}):AudioAction{
+  if(!ready)return {action:'wait'};
+  if(!compatible)return {action:'stop'};
+  if(audioTracks===undefined&&!tracksError)return {action:'wait'};
+  if(audioTracks?.length===0)return {action:'fail',message:'This file contains no embedded audio tracks. Choose another source.'};
+  return {action:'start'};
+}
 const codes:Record<string,string>={eng:'en',jpn:'ja',spa:'es',fre:'fr',fra:'fr',ger:'de',deu:'de',ita:'it',por:'pt',rum:'ro',ron:'ro',chi:'zh',zho:'zh',kor:'ko',rus:'ru',hin:'hi',ara:'ar'};
 export function trackLabel(track:MediaTrack,kind='Audio'){
   let language=`${kind} track ${track.index+1}`;

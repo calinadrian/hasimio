@@ -57,7 +57,9 @@ export function keyframeTime(input,start,signal) {
 export function audioArguments(input,folder,hevc=false,track=0,start=0) {
   if(!Number.isInteger(track)||track<0)throw new Error('Invalid audio track.');
   if(!Number.isFinite(start)||start<0)throw new Error('Invalid seek position.');
-  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...inputGuard,...(start?['-ss',String(start)]:[]),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
+  // Copied video retains keyframe preroll. Keep the same audio preroll instead
+  // of trimming only the transcoded track to the requested seek position.
+  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...inputGuard,...(start?['-ss',String(start),'-noaccurate_seek']:[]),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-ar','48000','-af','aresample=async=1','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
 }
 export async function createAudioJob(id,index,input,filename='',track=0,start=0) {
   if(!/^[a-f\d]{36}$/.test(id)||!Number.isInteger(index)||index<0)throw new Error('Invalid audio session.');

@@ -29,6 +29,8 @@
     "test": "vitest run",
     "test:streaming": "node server/smoke.mjs",
     "test:audio": "node server/smoke.mjs --audio",
+    "test:audio-sync": "node scripts/audio-sync-smoke.mjs",
+    "test:torrentclaw": "node scripts/torrentclaw-smoke.mjs",
     "test:inspections": "node scripts/inspection-smoke.mjs",
     "test:player": "node scripts/player-smoke.mjs"
   },

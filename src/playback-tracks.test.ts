@@ -1,7 +1,23 @@
 import {describe,it,expect,vi,afterEach} from 'vitest';
-import {parseVtt,srtToVtt,sourceTrackInfo,trackLabel,saveTrackSummary} from './playback-tracks';
+import {parseVtt,srtToVtt,sourceTrackInfo,trackLabel,saveTrackSummary,defaultAudioTrack,audioAction} from './playback-tracks';
 
 describe('subtitle and source track information',()=>{
+  it('selects a file’s marked default dub even when it is not the first audio track',()=>{
+    const tracks=[{index:0,language:'eng',codec:'ac3',default:false,title:'Commentary'},{index:1,language:'eng',codec:'eac3',default:true}];
+    expect(defaultAudioTrack(tracks)).toBe(1);
+    expect(defaultAudioTrack([{...tracks[0],index:2}])).toBe(2);
+    expect(defaultAudioTrack([])).toBe(0);
+  });
+  it('starts compatible audio only once the track list is known or its check failed',()=>{
+    const tracks=[{index:0,language:'eng',codec:'aac',default:true}];
+    expect(audioAction({ready:false,compatible:true,audioTracks:tracks})).toEqual({action:'wait'});
+    expect(audioAction({ready:true,compatible:true})).toEqual({action:'wait'});
+    expect(audioAction({ready:true,compatible:true,audioTracks:tracks})).toEqual({action:'start'});
+    expect(audioAction({ready:true,compatible:true,tracksError:'Could not read tracks.'})).toEqual({action:'start'});
+    expect(audioAction({ready:true,compatible:true,audioTracks:[]})).toMatchObject({action:'fail',message:expect.stringContaining('no embedded audio')});
+    expect(audioAction({ready:true,compatible:false})).toEqual({action:'stop'});
+    expect(audioAction({ready:true,compatible:false,audioTracks:[]})).toEqual({action:'stop'});
+  });
   afterEach(()=>vi.unstubAllGlobals());
   it('shows verified track counts even when browser storage is blocked',()=>{vi.stubGlobal('localStorage',{getItem(){throw new Error('Blocked');},setItem(){throw new Error('Blocked');}});const stream={infoHash:'c'.repeat(40)};saveTrackSummary(stream.infoHash,'blocked-storage',[{index:0,language:'jpn',codec:'aac',default:true}],[{index:0,language:'eng',codec:'subrip',default:false}]);expect(sourceTrackInfo(stream,'blocked-storage')).toMatchObject({verified:true,audio:'1 audio / dub track',subtitles:'1 subtitle track'});expect(sourceTrackInfo(stream,'blocked-storage').detail).toContain('Japanese');expect(sourceTrackInfo(stream,'blocked-storage')).toMatchObject({audioNames:['Japanese'],subtitleNames:['English'],audioCount:1,subtitleCount:1});});
   it('groups duplicate languages while keeping the actual number of tracks',()=>{const hash='b'.repeat(40);saveTrackSummary(hash,'language-summary',[{index:0,language:'eng',codec:'aac',default:true},{index:1,language:'eng',codec:'aac',default:false,title:'Commentary'},{index:2,language:'jpn',codec:'aac',default:false}],[{index:0,language:'und',codec:'subrip',default:false}]);expect(sourceTrackInfo({infoHash:hash},'language-summary')).toMatchObject({audioNames:['English','Japanese'],audioCount:3,subtitleNames:['Unspecified'],subtitleCount:1});});

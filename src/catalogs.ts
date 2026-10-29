@@ -1,4 +1,8 @@
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
+import {manualTitles as bundledTitles} from '../shared/manual-titles.mjs';
+import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
+// searchName is engine-only; keep it out of saved and synced library entries.
+export const manualTitles:Meta[] = bundledTitles.map(({searchName:_searchName,...meta}) => meta);
 import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl, demoAddon, getJson, resourceUrl, supports } from './media';
 
 // Hasimio owns its catalogs: anime through its Kitsu adapter, movies and series through its own title index.
@@ -25,16 +29,32 @@ export const torrentDownloads:Addon={url:'/api/extensions/torrentdownloads/manif
 export function addTorrentDownloadsSource(existing:Addon[]) {
   return existing.some(a=>a.manifest.id===torrentDownloads.manifest.id||a.url===torrentDownloads.url)?existing:[...existing,torrentDownloads];
 }
+// Off by default: TorrentClaw's network refuses some connections (HTTP 403), so users opt in from Extensions.
+export const torrentClaw:Addon={url:'/api/extensions/torrentclaw/manifest.json',enabled:false,manifest:torrentClawManifest};
+export function addTorrentClawSource(existing:Addon[]) {
+  return existing.some(a=>a.manifest.id===torrentClaw.manifest.id||a.url===torrentClaw.url)?existing:[...existing,torrentClaw];
+}
 export function updatePlaybackAddon(existing:Addon[]) {
-  return existing.map(a => a.url === pirateBay.url && a.manifest.id === pirateBay.manifest.id && a.manifest.version !== pirateBay.manifest.version ? {...a,manifest:pirateBay.manifest} : a);
+  return existing.map(a => a.url === torrentClaw.url && a.manifest.id === torrentClaw.manifest.id && a.manifest.version !== torrentClaw.manifest.version ? {...a,manifest:torrentClaw.manifest} : a.url === pirateBay.url && a.manifest.id === pirateBay.manifest.id && a.manifest.version !== pirateBay.manifest.version ? {...a,manifest:pirateBay.manifest} : a);
 }
 export function migrateAnimeSource(existing:Addon[]) {
   return existing.map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
     .filter((a,index,all) => all.findIndex(other=>other.manifest.id === a.manifest.id) === index);
 }
-export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads];
+export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw];
+// Sources served by Hasimio itself. Synced records may use these non-HTTP URLs.
+export const builtinSourceUrls = defaultAddons.map(a => a.url).filter(url => !/^https?:/.test(url));
+// One-time additions for existing installations, applied in order. A flag is set once, so later removals are preserved.
+export const sourceMigrations:[flag:string,apply:(existing:Addon[])=>Addon[]][] = [
+  ['hasimio:piratebay-v1',existing => existing.some(a => a.manifest.id === pirateBay.manifest.id) ? existing : [...existing,pirateBay]],
+  ['hasimio:yts-v1',addYtsSource],['hasimio:eztv-v1',addEztvSource],['hasimio:torrentdownloads-v1',addTorrentDownloadsSource],
+  ['hasimio:torrentclaw-v1',addTorrentClawSource],['hasimio:titles-v1',replaceCinemeta],
+];
 export function addDefaultCatalogs(existing: Addon[]) {
   return [...existing,...[titles,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];
+}
+export function addManualTitles(existing:Meta[]) {
+  return [...existing,...manualTitles.filter(meta=>!existing.some(saved=>saved.id===meta.id&&saved.type===meta.type))];
 }
 export type CatalogRow = {key:string;title:string;source:string;items:Meta[];addon:Addon;catalog:Manifest['catalogs'][number];skip:number;hasMore:boolean};
 export function catalogSelection(addons: Addon[], query: string, filter: string) {
@@ -45,7 +65,7 @@ export function catalogSelection(addons: Addon[], query: string, filter: string)
     if (filter === 'Series' && c.type !== 'series') return false;
     if (query && !c.extra?.some(e => e.name === 'search')) return false;
     return !c.extra?.some(e => e.isRequired && (e.name !== 'search' || !query));
-  }).slice(0,6).map(catalog => ({addon,catalog})));
+  }).map(catalog => ({addon,catalog})));
 }
 export async function loadCatalog(addon:Addon, catalog:Manifest['catalogs'][number], query:string, skip = 0, signal?:AbortSignal): Promise<CatalogRow> {
   const extras:Record<string,string> = {};
@@ -53,18 +73,20 @@ export async function loadCatalog(addon:Addon, catalog:Manifest['catalogs'][numb
   if (skip) extras.skip = String(skip);
   const result = addon.manifest.id === kitsu.manifest.id
     ? await kitsuCatalog(catalog.id,query,skip,signal)
-    : await getJson<{metas:Meta[];hasMore?:boolean}>(resourceUrl(addon.url,'catalog',catalog.type,catalog.id,extras),signal);
+    : await getJson<{metas:Meta[];hasMore?:boolean;nextSkip?:number}>(resourceUrl(addon.url,'catalog',catalog.type,catalog.id,extras),signal);
   if (!Array.isArray(result.metas)) throw new Error(`${addon.manifest.name} returned an invalid catalog.`);
   const anime = catalog.type === 'anime' || addon.manifest.id === kitsu.manifest.id;
   const items = result.metas.filter(m => m && typeof m.id === 'string' && typeof m.name === 'string').map(m => ({...m,type:m.type || catalog.type,category:anime ? 'anime' as const : m.category,sourceUrl:addon.url}));
   const label = anime ? 'Anime' : catalog.type === 'series' ? 'Series' : catalog.type === 'movie' ? 'Movies' : catalog.type;
   const title = catalog.name ? /movie|series|anime/i.test(catalog.name) ? catalog.name : `${catalog.name} · ${label}` : `${addon.manifest.name} · ${label}`;
-  return {key:`${addon.manifest.id}:${catalog.type}:${catalog.id}`,title,source:addon.manifest.name,items,addon,catalog,skip:skip+result.metas.length,hasMore:(result.hasMore ?? items.length > 0) && !!catalog.extra?.some(e => e.name === 'skip')};
+  return {key:`${addon.manifest.id}:${catalog.type}:${catalog.id}`,title,source:addon.manifest.name,items,addon,catalog,skip:'nextSkip' in result && Number.isSafeInteger(result.nextSkip) && Number(result.nextSkip)>skip ? Number(result.nextSkip) : skip+result.metas.length,hasMore:(result.hasMore ?? items.length > 0) && !!catalog.extra?.some(e => e.name === 'skip')};
 }
 export function needsMetadata(meta:Meta, now = Date.now()) {
   return !meta.metadataFetchedAt || now - meta.metadataFetchedAt >= (meta.metadataError ? 10*60*1000 : 6*60*60*1000);
 }
 export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSignal): Promise<Meta> {
+  const manual=manualTitles.find(title=>title.id===meta.id&&title.type===meta.type);
+  if(manual)return {...meta,...manual,metadataFetchedAt:Date.now(),metadataError:undefined};
   if (meta.id.startsWith('open:')) return {...meta,metadataFetchedAt:Date.now(),metadataError:undefined};
   const sources = migrateAnimeSource(addons).filter(a => !a.builtin && supports(a,'meta',meta.type,meta.id)).sort((a,b) => Number(b.url === meta.sourceUrl)-Number(a.url === meta.sourceUrl));
   for (const source of sources) {

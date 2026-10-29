@@ -1,9 +1,54 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata} from './catalogs';
 import {calendarEvents, nextRelease, defaultEpisode, episodeLabel, supports, type Meta} from './media';
-import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource} from './catalogs';
+import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource,torrentClaw,addTorrentClawSource,sourceMigrations} from './catalogs';
+import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
+const enabledClaw = {...torrentClaw,enabled:true};
 afterEach(() => vi.unstubAllGlobals());
 describe('default catalogs and anime discovery', () => {
+  it('runs each one-time source addition under its own flag, preserving later removals',()=>{
+    const flags=sourceMigrations.map(([flag])=>flag);
+    expect(new Set(flags).size).toBe(flags.length);
+    expect(flags).toEqual(['hasimio:piratebay-v1','hasimio:yts-v1','hasimio:eztv-v1','hasimio:torrentdownloads-v1','hasimio:torrentclaw-v1','hasimio:titles-v1']);
+    const migrated=sourceMigrations.reduce((existing,[,apply])=>apply(existing),[] as typeof defaultAddons);
+    expect(migrated.map(a=>a.manifest.id)).toEqual([pirateBay,yts,eztv,torrentDownloads,torrentClaw,titles].map(a=>a.manifest.id));
+    expect(migrated.find(a=>a.manifest.id===torrentClaw.manifest.id)?.enabled).toBe(false);
+  });
+  it('ships TorrentClaw disabled and shares the engine manifest',()=>{
+    expect(torrentClaw.enabled).toBe(false);
+    expect(catalogSelection(defaultAddons,'','All').filter(c=>c.addon===torrentClaw)).toHaveLength(0);
+    expect(torrentClaw.manifest).toBe(torrentClawManifest);
+  });
+  it('keeps TorrentClaw discovery visible once enabled and upgrades saved playback-only manifests',()=>{
+    const addons=defaultAddons.map(a=>a===torrentClaw?enabledClaw:a);
+    expect(catalogSelection(addons,'','All').filter(c=>c.addon===enabledClaw)).toHaveLength(2);
+    expect(catalogSelection(addons,'Temptation Island RO','Series').filter(c=>c.addon===enabledClaw)).toHaveLength(1);
+    const old={...torrentClaw,enabled:false,manifest:{...torrentClaw.manifest,version:'1.0.0',resources:['stream'],catalogs:[]}};
+    expect(updatePlaybackAddon([old])).toEqual([{...torrentClaw,enabled:false}]);
+    expect(updatePlaybackAddon([yts])).toEqual([yts]);
+    expect(supports(enabledClaw,'meta','series','tmdb:62767')).toBe(true);
+    expect(supports(enabledClaw,'stream','series','tmdb:62767:1:2')).toBe(true);
+  });
+  it('advances provider pagination even when some remote entries cannot be mapped',async()=>{
+    vi.stubGlobal('fetch',vi.fn(async()=>new Response(JSON.stringify({metas:[{id:'tmdb:62767',name:'Show',type:'series'}],nextSkip:50,hasMore:true}))));
+    const row=await loadCatalog(torrentClaw,torrentClaw.manifest.catalogs[1],'Show');
+    expect(row).toMatchObject({skip:50,hasMore:true,source:'TorrentClaw'});
+    expect(row.items[0].sourceUrl).toBe(torrentClaw.url);
+  });
+  it('loads TorrentClaw metadata first for titles discovered there',async()=>{
+    const fetch=vi.fn(async(_url:string)=>new Response(JSON.stringify({meta:{id:'tt123',name:'Show',type:'series',videos:[{id:'tt123:1:2',season:1,episode:2}]}})));
+    vi.stubGlobal('fetch',fetch);
+    const meta=await loadMetadata({id:'tt123',name:'Show',type:'series',sourceUrl:torrentClaw.url},defaultAddons.map(a=>a===torrentClaw?enabledClaw:a));
+    expect(meta.videos?.[0].id).toBe('tt123:1:2');expect(fetch.mock.calls[0][0]).toContain('/torrentclaw/meta/series/tt123.json');
+  });
+  it('adds TorrentClaw once and preserves disabled settings',()=>{
+    expect(defaultAddons).toContain(torrentClaw);
+    expect(addTorrentClawSource([yts])).toEqual([yts,torrentClaw]);
+    expect(addTorrentClawSource([{...torrentClaw,enabled:false}])).toEqual([{...torrentClaw,enabled:false}]);
+    expect(supports(enabledClaw,'stream','series','tt123:1:2')).toBe(true);
+    expect(supports(enabledClaw,'stream','movie','tt123')).toBe(true);
+    expect(supports(enabledClaw,'stream','anime','kitsu:1:2')).toBe(false);
+  });
   it('adds TorrentDownloads for movies and series, preserving disabled settings',()=>{
     expect(defaultAddons).toContain(torrentDownloads);expect(addTorrentDownloadsSource([yts])).toEqual([yts,torrentDownloads]);
     expect(addTorrentDownloadsSource([{...torrentDownloads,enabled:false}])).toEqual([{...torrentDownloads,enabled:false}]);

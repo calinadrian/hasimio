@@ -1,6 +1,7 @@
 import {type Meta,type Addon,validateManifest} from './media';
 import {playbackHistory,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
 import {validSetting,settingsKey} from './preferences';
+import {builtinSourceUrls} from './catalogs';
 
 export type SyncRecord={stamp:number;device:string;value:unknown|null};
 export type SyncDocument={v:1;records:Record<string,SyncRecord>};
@@ -9,7 +10,7 @@ const plain=(value:unknown):value is Record<string,unknown>=>!!value&&typeof val
 function title(value:unknown):value is Meta{return plain(value)&&typeof value.id==='string'&&value.id.length<=300&&typeof value.type==='string'&&value.type.length<=80&&typeof value.name==='string'&&value.name.length<=500;}
 function source(value:unknown):value is Addon{
   if(!plain(value)||typeof value.url!=='string'||typeof value.enabled!=='boolean')return false;
-  if(!['builtin:open-cinema','/api/extensions/piratebay/manifest.json','/api/extensions/yts/manifest.json','/api/extensions/eztv/manifest.json','/api/extensions/torrentdownloads/manifest.json','/api/extensions/titles/manifest.json'].includes(value.url)){try{const url=new URL(value.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)return false;}catch{return false;}}
+  if(!builtinSourceUrls.includes(value.url)){try{const url=new URL(value.url);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)return false;}catch{return false;}}
   try{validateManifest(value.manifest);return true;}catch{return false;}
 }
 // Values this version understands. Other records stay in the document untouched,
