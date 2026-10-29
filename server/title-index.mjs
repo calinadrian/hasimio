@@ -35,6 +35,8 @@ function image(value) {
   try { const url=new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : undefined; } catch { return undefined; }
 }
 function date(value) { return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) ? value : undefined; }
+// TVmaze airstamps carry the broadcast time, so countdowns can show hours rather than whole days.
+function stamp(value) { return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value) && Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : undefined; }
 // Posters come only from Wikimedia's upload host, without the tracking parameters the API appends.
 function wikiImage(value) {
   const href=image(value);if (!href) return undefined;
@@ -99,7 +101,7 @@ export function titleMeta(row, art) {
 export function tvmazeEpisodes(imdb, episodes) {
   if (!Array.isArray(episodes)) throw new Error('TVmaze returned invalid episodes.');
   return episodes.filter(e => Number.isSafeInteger(e?.season) && e.season > 0 && Number.isSafeInteger(e?.number) && e.number > 0)
-    .map(e => ({id:`${imdb}:${e.season}:${e.number}`,season:e.season,episode:e.number,title:typeof e.name === 'string' ? e.name : undefined,released:date(e.airdate),thumbnail:image(e.image?.medium ?? e.image?.original)}));
+    .map(e => ({id:`${imdb}:${e.season}:${e.number}`,season:e.season,episode:e.number,title:typeof e.name === 'string' ? e.name : undefined,released:stamp(e.airstamp) ?? date(e.airdate),thumbnail:image(e.image?.medium ?? e.image?.original)}));
 }
 
 export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {

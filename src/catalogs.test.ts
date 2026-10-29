@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata} from './catalogs';
-import {calendarEvents, nextRelease, defaultEpisode, episodeLabel, supports, type Meta} from './media';
+import {calendarEvents, nextRelease, releaseCountdown, defaultEpisode, episodeLabel, supports, type Meta} from './media';
 import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource,torrentClaw,addTorrentClawSource,torrentio,comet,addStremioSource,sourceMigrations} from './catalogs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
 const enabledClaw = {...torrentClaw,enabled:true};
@@ -153,5 +153,24 @@ describe('movie and episode release semantics', () => {
     const episode={id:'ep',episode:0,season:0,released:'2026-11-03T12:00:00Z'};
     expect(calendarEvents([{id:'anime',name:'Anime',type:'anime',videos:[episode,episode,{id:'unknown',released:'invalid'}]}],new Date(2026,10,1))).toHaveLength(1);
     expect(nextRelease({id:'past',name:'Past',type:'series',videos:[episode]},Date.parse('2027-01-01'))).toBeUndefined();
+  });
+});
+
+describe('release countdown',()=>{
+  const now=Date.parse('2026-10-29T12:00:00Z');
+  it('counts timed releases down to days, hours and minutes',()=>{
+    expect(releaseCountdown('2026-10-30T17:00:00.000Z',now)).toBe('In 1 day, 5 hours');
+    expect(releaseCountdown('2026-11-05T12:00:00.000Z',now)).toBe('In 7 days');
+    expect(releaseCountdown('2026-10-29T17:30:00.000Z',now)).toBe('In 5 hours, 30 minutes');
+    expect(releaseCountdown('2026-10-29T12:00:20.000Z',now)).toBe('In 1 minute');
+    expect(releaseCountdown('2026-10-29T11:00:00.000Z',now)).toBeUndefined();
+  });
+  it('counts date-only releases in whole local days',()=>{
+    const local=new Date(2026,9,29,12).getTime();
+    expect(releaseCountdown('2026-10-29',local)).toBe('Today');
+    expect(releaseCountdown('2026-10-30',local)).toBe('Tomorrow');
+    expect(releaseCountdown('2026-11-05',local)).toBe('In 7 days');
+    expect(releaseCountdown('2026-10-28',local)).toBeUndefined();
+    expect(releaseCountdown('2026',local)).toBeUndefined();
   });
 });

@@ -113,5 +113,6 @@ describe('Hasimio title index',()=>{
     expect(normalize('  Amélie: Part II! ')).toBe('amelie part ii');
     expect(tvmazeEpisodes('tt1',[{season:1,number:2,airdate:'not a date',image:{medium:'http://insecure.example/x.jpg'}}])).toEqual([{id:'tt1:1:2',season:1,episode:2,title:undefined,released:undefined,thumbnail:undefined}]);
     expect(()=>tvmazeEpisodes('tt1',{})).toThrow();
+    expect(tvmazeEpisodes('tt1',[{season:1,number:3,airdate:'2026-11-05',airstamp:'2026-11-05T01:00:00+00:00'}])[0].released).toBe('2026-11-05T01:00:00.000Z');
   });
 });

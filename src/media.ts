@@ -71,6 +71,21 @@ export function validRelease(value?: string): boolean {
   // A year alone is not a release date. Never invent January 1 for unknown dates.
   return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}(T|$)/.test(value) && Number.isFinite(Date.parse(value));
 }
+// Date-only releases count whole days in local time; timed releases count down to the minute.
+export function releaseCountdown(released: string, now = Date.now()): string | undefined {
+  if (!validRelease(released)) return undefined;
+  const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'}`;
+  if (!released.includes('T')) {
+    const [y, m, d] = released.split('-').map(Number), today = new Date(now);
+    const days = Math.round((Date.UTC(y, m - 1, d) - Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())) / 864e5);
+    return days < 0 ? undefined : days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : 'In ' + plural(days, 'day');
+  }
+  const minutes = Math.ceil((Date.parse(released) - now) / 60000);
+  if (minutes <= 0) return undefined;
+  const days = Math.floor(minutes / 1440), hours = Math.floor(minutes % 1440 / 60), rest = minutes % 60;
+  const parts = days ? [plural(days, 'day'), hours && plural(hours, 'hour')] : hours ? [plural(hours, 'hour'), rest && plural(rest, 'minute')] : [plural(rest, 'minute')];
+  return 'In ' + parts.filter(Boolean).join(', ');
+}
 export function calendarEvents(library: Meta[], month: Date) {
   return library.flatMap(meta => datedVideos(meta).filter(v => {
     const date = new Date(v.released!); return date.getFullYear() === month.getFullYear() && date.getMonth() === month.getMonth();
