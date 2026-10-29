@@ -35,6 +35,10 @@ const media=createServer(async(req,res)=>{
   }
   if(/^captions-(eng|spa)\.vtt$/.test(name)){
     res.setHeader('Content-Type','text/vtt');
+    if(new URL(req.url,'http://localhost').searchParams.has('changing')){
+      const stamp=seconds=>'00:'+String(Math.floor(seconds/60)).padStart(2,'0')+':'+(seconds%60).toFixed(3).padStart(6,'0');
+      return res.end('WEBVTT\n\n'+Array.from({length:120},(_,i)=>stamp(i/3)+' --> '+stamp((i+1)/3)+'\n'+(i%2?'Short subtitle':'A longer subtitle line\nWith another line\nAnd a third line')+'\n\n').join(''));
+    }
     return res.end('WEBVTT\n\n00:00.100 --> 00:39.000\n'+(name.includes('spa')?'Spanish subtitle':'English subtitle')+'\n');
   }
   if(name==='grow'){segmentCount=20;return res.end('ok');}
@@ -49,7 +53,7 @@ try{
   await writeFile(path.join(folder,'fixture.tsx'),`
     import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
     import Player from '/src/Player';import '/src/styles.css';
-    function Fixture(){const [sub,setSub]=useState(true),[language,setLanguage]=useState('eng');return <dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt',label:'Test',language}:undefined}}/></dialog>;}createRoot(document.getElementById('root')).render(<Fixture/>);
+    function Fixture(){const [sub,setSub]=useState(true),[language,setLanguage]=useState('eng'),[changing,setChanging]=useState(false);return <dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><button id="changing-sub" onClick={()=>setChanging(true)}>Changing subtitles</button><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt'+(changing?'?changing=1':''),label:'Test',language}:undefined}}/></dialog>;}createRoot(document.getElementById('root')).render(<Fixture/>);
   `);
   vite=await createViteServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,strictPort:false}});
   await vite.listen();
@@ -113,6 +117,8 @@ try{
         await until('document.querySelector(".cinema-play").getAttribute("aria-label")==="Pause video"');
         const resumed=await js('document.querySelector("video").currentTime');assert.ok(resumed>13&&resumed<18,'Resume must keep the requested position, got '+resumed);
         // Match the app's modal dialog and repeat fullscreen wake/hide cycles.
+        await js('document.getElementById("changing-sub").click()');
+        await until('document.querySelector(".cinema-caption")?.textContent.includes("subtitle")');
         if(nativePointer){win.show();win.focus();await sleep(500);}
         await js('document.querySelector("video").loop=true;document.querySelector(".cinema-player").requestFullscreen()');
         await until('document.fullscreenElement===document.querySelector(".cinema-player")');
@@ -128,6 +134,16 @@ try{
           await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
           assert.ok(pointerMessages>i,'OS watcher must send the wake message');
           await until('Number(getComputedStyle(document.querySelector(".cinema-bottom")).opacity)===1');
+          if(i===0){
+            await sleep(2400);
+            await js('document.querySelectorAll("[data-player-menu]")[1].focus()');
+            // A hidden Electron window changes activeElement without dispatching
+            // focus events; deliver the browser event explicitly in headless mode.
+            if(!nativePointer)await js('document.activeElement.dispatchEvent(new FocusEvent("focusin",{bubbles:true}))');
+            await sleep(900);
+            assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),true,'Focusing controls must give a fresh idle timeout while subtitle cues keep changing');
+            await js('document.activeElement.blur()');
+          }
         }
         if(!nativePointer){
           await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
