@@ -4,7 +4,7 @@ import {version as appVersion} from '../package.json';
 
 import { Compass, Library, CalendarDays, Puzzle, Search, Play, Plus, Check, ChevronLeft, ChevronRight, X, ArrowUpRight, Film, Info, RefreshCw, ExternalLink, Trash2, LoaderCircle, SlidersHorizontal, Download, Upload, MonitorSmartphone } from 'lucide-react';
 import { type Meta, type Addon, type Stream, demo, openFilms, getJson, manifestUrl, validateManifest, resourceUrl, supports, demoStreams, safeHttp, nextRelease, episodeLabel } from './media';
-import {manualTitles, addManualTitles, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
+import {removeBundledTitle, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
 import {defaultEpisode} from './media';
 import Calendar from './Calendar';
 import TorrentPlayer from './TorrentPlayer';
@@ -42,7 +42,8 @@ export default function App() {
   const sync = useDeviceSync(); const syncLabel = sync.state === 'off' ? 'Saved on this device' : sync.state === 'syncing' ? 'Syncing…' : sync.state === 'offline' ? 'Sync offline' : sync.state === 'revoked' ? 'Sync disconnected' : `Synced · ${sync.devices.length} device${sync.devices.length === 1 ? '' : 's'}`;
   const engine = useEngine(); const update = useUpdates(); const importInput = useRef<HTMLInputElement>(null);
   const detailRequest = useRef(0); const streamRequest = useRef(0); const catalogRequest = useRef(0); const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {try {if(localStorage.getItem('hasimio:manual-insula-iubirii-v1') !== 'done'){setLibrary(addManualTitles);localStorage.setItem('hasimio:manual-insula-iubirii-v1','done');}}catch{/* The title remains available in Discover when storage is blocked. */}},[setLibrary]);
+  // Earlier versions saved a bundled Insula Iubirii entry into every library; take it back out once.
+  useEffect(() => {try {if(localStorage.getItem('hasimio:manual-insula-iubirii-v1') === 'done'){setLibrary(removeBundledTitle);localStorage.setItem('hasimio:manual-insula-iubirii-v1','removed');}}catch{/* Storage is blocked; nothing was added either. */}},[setLibrary]);
   useEffect(() => {for (const [flag,apply] of sourceMigrations) {try {if(localStorage.getItem(flag) !== 'done'){setAddons(apply);localStorage.setItem(flag,'done');}}catch{/* New sessions still receive the default sources. */}}},[setAddons]);
   useEffect(() => {window.scrollTo(0,0);},[page]);
   const libraryKeys = library.map(m => `${m.type}:${m.id}`).sort().join('|');
@@ -112,7 +113,7 @@ export default function App() {
   const filtered = (items:Meta[]) => items.filter(m => `${m.type}:${m.id}` !== spotlightKey).filter(m => (filter === 'All' || (filter === 'Anime' ? mediaLabel(m) === 'Anime' : m.type === (filter === 'Movies' ? 'movie' : 'series'))) && (genre === 'All genres' || m.genres?.includes(genre)));
   const saved = (meta:Meta) => library.some(m => m.id === meta.id && m.type === meta.type);
   const allGenres = [...new Set([...demo,...catalogs.flatMap(c => c.items),...library].flatMap(m => m.genres ?? []))].sort();
-  const localRows = page === 'Library' ? [{title:'Your collection',items:library.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : [{title:'Added manually',items:manualTitles.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))},...(!loading && !catalogs.length && filter !== 'Anime' ? [{title:'Starter picks · Offline selection',items:demo.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : []),...(addons.some(a => a.builtin && a.enabled) && !query.trim() ? [{title:'Open Cinema · Ready to play',items:openFilms}] : [])];
+  const localRows = page === 'Library' ? [{title:'Your collection',items:library.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : [...(!loading && !catalogs.length && filter !== 'Anime' ? [{title:'Starter picks · Offline selection',items:demo.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : []),...(addons.some(a => a.builtin && a.enabled) && !query.trim() ? [{title:'Open Cinema · Ready to play',items:openFilms}] : [])];
   const continueItems = useMemo(() => continueWatching(history,[...demo,...openFilms,...catalogs.flatMap(c => c.items),...library]),[history,catalogs,library]);
   const continueRow = query.trim() ? [] : [{title:'Continue watching',key:'continue',items:page === 'Library' ? continueItems.filter(saved) : continueItems}].filter(row => row.items.length);
   const rows:{title:string;items:Meta[];key?:string;source?:string;hasMore?:boolean}[] = page === 'Library' ? [...continueRow,...localRows] : [...continueRow,...catalogs,...localRows];

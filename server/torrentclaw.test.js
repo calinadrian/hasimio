@@ -84,15 +84,6 @@ describe('TorrentClaw',()=>{
     for(const [type,id] of [['anime','kitsu:1'],['series','tt123'],['movie','tt123:1:2']])await expect(searchTorrentClaw(type,id,fetch)).rejects.toThrow();
     expect(fetch).not.toHaveBeenCalled();
   });
-  it('resolves the bundled manual title by its short search name for title-based providers',async()=>{
-    const fetch=vi.fn(async()=>new Response('[]'));
-    const service=createMediaService({fetchImpl:fetch,titles:{close:async()=>{},title:async()=>{throw new Error('not indexed');}},allowedOrigins:new Set()});
-    try{
-      await service.handle({method:'GET',url:'/api/extensions/piratebay/stream/series/tt28504410%3A1%3A1.json',headers:{host:'127.0.0.1:11475'},socket:{remoteAddress:'127.0.0.1'}},{setHeader(){},writeHead(){},end(){}});
-      const searched=fetch.mock.calls.map(([url])=>decodeURIComponent(String(url)).replace(/\+/g,' ')).join('\n');
-      expect(searched).toContain('Insula Iubirii');expect(searched).not.toContain('Temptation');
-    }finally{await service.close();}
-  });
   it('serves its manifest, caches success, and retries failed requests through the local service',async()=>{
     const fetch=vi.fn().mockResolvedValueOnce(new Response('Forbidden',{status:403})).mockImplementation(async()=>new Response(JSON.stringify(payload())));
     const service=createMediaService({fetchImpl:fetch,titles:{close:async()=>{}},allowedOrigins:new Set()});

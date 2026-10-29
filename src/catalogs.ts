@@ -1,9 +1,6 @@
 import {stremioSources,stremioManifests} from '../shared/stremio-sources.mjs';
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
-import {manualTitles as bundledTitles} from '../shared/manual-titles.mjs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
-// searchName is engine-only; keep it out of saved and synced library entries.
-export const manualTitles:Meta[] = bundledTitles.map(({searchName:_searchName,...meta}) => meta);
 import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl, demoAddon, getJson, resourceUrl, supports } from './media';
 
 // Hasimio owns its catalogs: anime through its Kitsu adapter, movies and series through its own title index.
@@ -61,8 +58,8 @@ export const sourceMigrations:[flag:string,apply:(existing:Addon[])=>Addon[]][] 
 export function addDefaultCatalogs(existing: Addon[]) {
   return [...existing,...[titles,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];
 }
-export function addManualTitles(existing:Meta[]) {
-  return [...existing,...manualTitles.filter(meta=>!existing.some(saved=>saved.id===meta.id&&saved.type===meta.type))];
+export function removeBundledTitle(existing:Meta[]) {
+  return existing.filter(meta=>!(meta.id==='tt28504410'&&meta.type==='series'));
 }
 export type CatalogRow = {key:string;title:string;source:string;items:Meta[];addon:Addon;catalog:Manifest['catalogs'][number];skip:number;hasMore:boolean};
 export function catalogSelection(addons: Addon[], query: string, filter: string) {
@@ -93,8 +90,6 @@ export function needsMetadata(meta:Meta, now = Date.now()) {
   return !meta.metadataFetchedAt || now - meta.metadataFetchedAt >= (meta.metadataError ? 10*60*1000 : 6*60*60*1000);
 }
 export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSignal): Promise<Meta> {
-  const manual=manualTitles.find(title=>title.id===meta.id&&title.type===meta.type);
-  if(manual)return {...meta,...manual,metadataFetchedAt:Date.now(),metadataError:undefined};
   if (meta.id.startsWith('open:')) return {...meta,metadataFetchedAt:Date.now(),metadataError:undefined};
   const sources = migrateAnimeSource(addons).filter(a => !a.builtin && supports(a,'meta',meta.type,meta.id)).sort((a,b) => Number(b.url === meta.sourceUrl)-Number(a.url === meta.sourceUrl));
   for (const source of sources) {

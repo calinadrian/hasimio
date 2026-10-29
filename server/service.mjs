@@ -8,7 +8,6 @@ import {pirateBayManifest,searchPirateBay,validHash} from './piratebay.mjs';
 import {ytsManifest,searchYts} from './yts.mjs';
 import {eztvManifest,createEztvSearch} from './eztv.mjs';
 import {torrentClawManifest,searchTorrentClaw,catalogTorrentClaw,metadataTorrentClaw} from './torrentclaw.mjs';
-import {manualTitles} from '../shared/manual-titles.mjs';
 import {torrentDownloadsManifest,searchTorrentDownloads} from './torrentdownloads.mjs';
 import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
 import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer} from './torrent-utils.mjs';
@@ -34,10 +33,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
   const searchEztv=createEztvSearch({fetchImpl});
-  const lookupTitle=async id=>{
-    const manual=manualTitles.find(meta=>meta.id===id);
-    return manual?{id,name:manual.searchName??manual.name,start:Number.parseInt(manual.releaseInfo,10)||undefined,type:manual.type}:titles.title(id);
-  };
+  const lookupTitle=id=>titles.title(id);
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
     let promise=inspection?inspectionClientPromise:clientPromise;

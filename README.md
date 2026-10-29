@@ -1,7 +1,5 @@
 # Hasimio
 
-Insula Iubirii (Temptation Island RO) is also bundled as a manually added title, with IMDb ID `tt28504410` and 186 dated episode entries from TheTVDB. It appears in Discover under Added manually and is added to the library once. Its title and episode list work without TorrentClaw; playback still requires a reachable source and available peers.
-
 TorrentClaw supplies movie and series discovery, title search, metadata and episode lists through its documented `https://torrentclaw.com/api/v1/search` API. These catalogs are independent of the local IMDb index and its vote threshold. IMDb IDs are shared with other providers; titles without one use TMDB IDs. Episode details come from TorrentClaw’s season metadata, falling back to known torrent episode numbers when unavailable. Playback searches match exact IDs and episodes; season packs remain excluded from playback. API responses are cached for five minutes and HTTP errors are reported.
 
 TorrentClaw is off by default; turn it on in Extensions. Its network refuses connections from some IP addresses with HTTP 403, and the source then shows that error. Anonymous use has low, IP-based rate limits. To use a TorrentClaw API key, set `HASIMIO_TORRENTCLAW_API_KEY` for the engine; it is sent as `Authorization: Bearer <key>`. Run `npm run test:torrentclaw` to check live access from your computer.
