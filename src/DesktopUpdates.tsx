@@ -35,8 +35,8 @@ export function UpdatePanel({ state }: { state?: UpdateState }) {
       <p>{status}</p>
       <Notes state={state}/>
       <div className="engine-actions">
-        {state.status === 'ready' ? <button className="button primary" onClick={() => void desktop?.installUpdate()}><RotateCw size={16}/> Restart to update</button>
-          : <button className="button secondary" disabled={busy || state.status === 'dev'} onClick={() => void desktop?.checkForUpdates()}><RefreshCw size={16}/> Check for updates</button>}
+        {state.status === 'ready' && <button className="button primary" onClick={() => void desktop?.installUpdate()}><RotateCw size={16}/> Restart to update</button>}
+        <button className="button secondary" disabled={busy || state.status === 'dev'} onClick={() => void desktop?.checkForUpdates()}><RefreshCw size={16}/> Check for updates</button>
       </div>
     </div>
   </section>;

@@ -97,7 +97,8 @@ async function start() {
   ipcMain.handle('hasimio:update-install',()=>installUpdate());
   createWindow();
   if(afterUpdate&&afterUpdate.from!==app.getVersion())console.log(`[hasimio] updated from ${afterUpdate.from} to ${app.getVersion()}`);
-  if(updates.get().status!=='dev'){setTimeout(()=>updates.check(),10_000);setInterval(()=>updates.check(),6*HOUR).unref();}
+  // Check soon after starting, hourly, and when Hasimio comes back to the front, so releases reach open copies quickly.
+  if(updates.get().status!=='dev'){setTimeout(()=>updates.check(),10_000);setInterval(()=>updates.check(),HOUR).unref();app.on('browser-window-focus',()=>{if(Date.now()-(updates.get().checkedAt??0)>HOUR/4)updates.check();});}
 }
 
 if(!primary)app.quit();

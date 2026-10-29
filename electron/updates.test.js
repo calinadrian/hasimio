@@ -20,10 +20,24 @@ describe('desktop updates',()=>{
       updater.emit('download-progress',{percent:42.4});expect(updates.get().percent).toBe(42);
       updater.emit('update-downloaded',{version:'0.2.0'});
       expect(updates.get()).toMatchObject({status:'ready',version:'0.2.0',notes:[{title:'New',items:['Faster starts']}]});
-      expect(updates.check().status).toBe('ready');
+      expect(updates.get().status).toBe('ready');
       updates.install();expect(beforeInstall).toHaveBeenCalled();expect(updater.quitAndInstall).toHaveBeenCalledWith(true,true);
       expect(published).toContain('installing');
     });
+  });
+  it('keeps a downloaded update ready while checking for a newer one',async()=>{
+    const updater=fakeUpdater(),updates=createUpdates({current:'0.1.0',updater});
+    updates.check();await Promise.resolve();
+    updater.emit('update-available',{version:'0.1.1'});updater.emit('update-downloaded',{version:'0.1.1'});
+    expect(updates.check()).toMatchObject({status:'ready',version:'0.1.1'});await Promise.resolve();
+    expect(updater.checkForUpdates).toHaveBeenCalledTimes(2);
+    updates.check();expect(updater.checkForUpdates).toHaveBeenCalledTimes(2); // one check at a time
+    updater.emit('update-not-available');expect(updates.get()).toMatchObject({status:'ready',version:'0.1.1'});
+    await Promise.resolve();updates.check();await Promise.resolve();
+    updater.emit('error',new Error('net::ERR_INTERNET_DISCONNECTED'));expect(updates.get()).toMatchObject({status:'ready',version:'0.1.1'});
+    updates.check();await Promise.resolve();
+    updater.emit('update-available',{version:'0.1.2'});expect(updates.get()).toMatchObject({status:'downloading',version:'0.1.2'});
+    updater.emit('update-downloaded',{version:'0.1.2'});expect(updates.get()).toMatchObject({status:'ready',version:'0.1.2'});
   });
   it('treats an empty release list as up to date and explains network errors',()=>{
     const updater=fakeUpdater(),updates=createUpdates({current:'0.1.0',updater});

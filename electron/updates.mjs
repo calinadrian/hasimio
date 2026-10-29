@@ -28,29 +28,33 @@ export function releaseSections(raw) {
  * update panel, or when Hasimio quits. Development runs (status 'dev') never update.
  */
 export function createUpdates({current,updater,publish=()=>undefined,beforeInstall=()=>undefined}) {
-  let state={current,status:updater?'idle':'dev'};
+  let state={current,status:updater?'idle':'dev'},downloaded,pending=false;
   const set=patch=>{state={...state,...patch};publish(state);};
-  const fail=error=>
+  // A downloaded update stays ready to install while later checks look for an even newer release.
+  const keepReady=()=>{set({status:'ready',percent:100,version:downloaded.version,notes:downloaded.notes,checkedAt:Date.now(),message:undefined});};
+  const fail=error=>{pending=false;if(downloaded)keepReady();else failed(error);};
+  const failed=error=>
     // Before the first release GitHub has nothing to offer, which just means this is the latest version.
     /No published versions/i.test(error.message)
       ?set({status:'latest',checkedAt:Date.now(),version:undefined,notes:[],message:undefined})
       :set({status:'error',checkedAt:Date.now(),message:/net::|ENOTFOUND|ETIMEDOUT|ECONN|EAI_AGAIN/i.test(error.message)?'No connection to GitHub. Check your connection and try again.':'The update failed. Check for updates to try again.'});
   if(updater){
     updater.autoDownload=true;updater.autoInstallOnAppQuit=true;updater.autoRunAppAfterInstall=true;
-    updater.on('checking-for-update',()=>set({status:'checking',message:undefined}));
-    updater.on('update-not-available',()=>set({status:'latest',checkedAt:Date.now(),version:undefined,notes:[]}));
-    updater.on('update-available',info=>set({status:'downloading',percent:0,version:info.version,notes:releaseSections(info.releaseNotes),checkedAt:Date.now()}));
+    updater.on('checking-for-update',()=>{if(!downloaded)set({status:'checking',message:undefined});});
+    updater.on('update-not-available',()=>{pending=false;if(downloaded)keepReady();else set({status:'latest',checkedAt:Date.now(),version:undefined,notes:[]});});
+    updater.on('update-available',info=>{pending=false;set({status:'downloading',percent:0,version:info.version,notes:releaseSections(info.releaseNotes),checkedAt:Date.now()});});
     updater.on('download-progress',p=>set({status:'downloading',percent:Math.max(0,Math.min(100,Math.round(p.percent)||0))}));
-    updater.on('update-downloaded',info=>set({status:'ready',percent:100,version:info.version,notes:info.releaseNotes==null?state.notes:releaseSections(info.releaseNotes)}));
+    updater.on('update-downloaded',info=>{downloaded={version:info.version,notes:info.releaseNotes==null?state.notes:releaseSections(info.releaseNotes)};keepReady();});
     updater.on('error',fail);
   }
   return {
     get:()=>state,
     check(){
-      if(!updater||['checking','downloading','ready','installing'].includes(state.status))return state;
-      set({status:'checking',message:undefined});
+      if(!updater||pending||['checking','downloading','installing'].includes(state.status))return state;
+      pending=true;
+      if(!downloaded)set({status:'checking',message:undefined});
       // Also handle synchronous failures and rejected checks that don't emit an error event.
-      Promise.resolve().then(()=>updater.checkForUpdates()).catch(fail);
+      Promise.resolve().then(()=>updater.checkForUpdates()).then(()=>{pending=false;},fail);
       return state;
     },
     install(){
