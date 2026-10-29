@@ -25,8 +25,8 @@ describe('Hasimio Kitsu adapter trust boundaries',()=>{
     await expect(kitsuCatalog('kitsu-anime-popular','',0,undefined,async()=>response({data:{}}))).rejects.toThrow('invalid catalog');
   });
   it('lists the most popular search matches first',async()=>{
-    const record=(id,popularityRank)=>({...anime,id,attributes:{...anime.attributes,popularityRank}});
-    const result=await kitsuCatalog('kitsu-anime-list','naruto',0,undefined,async()=>response({data:[record('1',900),record('2',null),record('3',12)]}));
-    expect(result.metas.map(m=>m.id)).toEqual(['kitsu:3','kitsu:1','kitsu:2']);
+    const record=(id,canonicalTitle,popularityRank)=>({...anime,id,attributes:{...anime.attributes,canonicalTitle,popularityRank}});
+    const result=await kitsuCatalog('kitsu-anime-list','gray',0,undefined,async()=>response({data:[record('1','D.Gray-man',900),record('2','Unrelated hit',3),record('3','Gray Area',null),record('4','Grayscale',12),record('5','Other',1)]}));
+    expect(result.metas.map(m=>m.id)).toEqual(['kitsu:4','kitsu:1','kitsu:3','kitsu:2','kitsu:5']);
   });
 });

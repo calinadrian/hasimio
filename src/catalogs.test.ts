@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
-import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata} from './catalogs';
+import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata, topResults} from './catalogs';
 import {calendarEvents, nextRelease, releaseCountdown, defaultEpisode, episodeLabel, supports, type Meta} from './media';
 import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource,torrentClaw,addTorrentClawSource,torrentio,comet,addStremioSource,sourceMigrations} from './catalogs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
@@ -172,5 +172,15 @@ describe('release countdown',()=>{
     expect(releaseCountdown('2026-11-05',local)).toBe('In 7 days');
     expect(releaseCountdown('2026-10-28',local)).toBeUndefined();
     expect(releaseCountdown('2026',local)).toBeUndefined();
+  });
+});
+
+describe('search top results',()=>{
+  const item=(id:string,type:string,name:string,votes?:number):Meta=>({id,type,name,votes});
+  it('merges movies and series by popularity, ahead of mid-word matches, without duplicates',()=>{
+    const movies={items:[item('m1','movie','The Grey',300000),item('m2','movie','Fifty Shades of Grey',330000),item('m3','movie','Greyhound',110000)]};
+    const series={items:[item('s1','series',"Grey's Anatomy",350000),item('s2','series','Greyzone',4000),item('k1','series','Grey anime')]};
+    expect(topResults([movies,series,{items:[movies.items[0]]}],'grey').map(m=>m.id)).toEqual(['s1','m2','m1','m3','s2']);
+    expect(topResults([{items:[item('a','movie','Spirited Away',900000),item('b','movie','It',500000)]}],'it').map(m=>m.id)).toEqual(['b','a']);
   });
 });

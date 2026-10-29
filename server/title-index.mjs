@@ -94,6 +94,7 @@ export function titleMeta(row, art) {
   return {id:row.id,type:row.type,name:row.name,
     releaseInfo:row.type === 'series' && year && row.end !== row.start ? `${year}–${row.end ?? ''}` : year,
     imdbRating:typeof row.rating === 'number' ? row.rating.toFixed(1) : undefined,
+    votes:Number.isSafeInteger(row.votes) ? row.votes : undefined,
     genres:row.genres ? row.genres.split(',') : undefined,
     runtime:row.runtime ? `${row.runtime} min` : undefined,
     poster:art?.poster,background:art?.background,description:art?.description};

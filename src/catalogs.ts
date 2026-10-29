@@ -58,6 +58,16 @@ export const sourceMigrations:[flag:string,apply:(existing:Addon[])=>Addon[]][] 
 export function addDefaultCatalogs(existing: Addon[]) {
   return [...existing,...[titles,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];
 }
+// Search shows one row of the most popular matches across movies and series. Like the title index,
+// names whose words start with the query words come first, so “it” lists It ahead of Spirited Away.
+export function topResults(rows:{items:Meta[]}[], query:string, limit = 12) {
+  const words = (text:string) => text.normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/['’]/g,'').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const wanted = words(query);
+  const wordStart = (meta:Meta) => { const name = words(meta.name); return wanted.every(word => name.some(part => part.startsWith(word))); };
+  const seen = new Set<string>();
+  return rows.flatMap(row => row.items).filter(meta => typeof meta.votes === 'number' && !seen.has(`${meta.type}:${meta.id}`) && seen.add(`${meta.type}:${meta.id}`))
+    .sort((a,b) => Number(wordStart(b))-Number(wordStart(a)) || b.votes!-a.votes!).slice(0,limit);
+}
 export function removeBundledTitle(existing:Meta[]) {
   return existing.filter(meta=>!(meta.id==='tt28504410'&&meta.type==='series'));
 }

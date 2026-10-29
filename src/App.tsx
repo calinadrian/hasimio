@@ -4,7 +4,7 @@ import {version as appVersion} from '../package.json';
 
 import { Compass, Library, CalendarDays, Puzzle, Search, Play, Plus, Check, ChevronLeft, ChevronRight, X, ArrowUpRight, Film, Info, RefreshCw, ExternalLink, Trash2, LoaderCircle, SlidersHorizontal, Download, Upload, MonitorSmartphone } from 'lucide-react';
 import { type Meta, type Addon, type Stream, demo, openFilms, getJson, manifestUrl, validateManifest, resourceUrl, supports, demoStreams, safeHttp, nextRelease, episodeLabel } from './media';
-import {removeBundledTitle, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
+import {removeBundledTitle, topResults, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
 import {defaultEpisode} from './media';
 import Calendar from './Calendar';
 import TorrentPlayer from './TorrentPlayer';
@@ -74,7 +74,8 @@ export default function App() {
       // Hasimio Titles explains a first-time index build; say so and check again shortly instead of asking for a manual refresh.
       const building = reasons.find(reason => reason.startsWith('Building Hasimio’s title index'));
       if (building) { setCatalogError(building); retry = setTimeout(() => setRefresh(n => n+1),15000); }
-      else if (failures) setCatalogError(`${failures} catalog${failures === 1 ? '' : 's'} could not load. ${[...new Set(reasons)].slice(0,2).join(' ')} Other sources remain available. Try refreshing.`.replace(/\s+/g,' '));
+      // One unreachable source is not worth a warning while others still show titles.
+      else if (failures && failures === results.length) setCatalogError(`Catalogs could not load. ${[...new Set(reasons)].slice(0,2).join(' ')} Try refreshing.`.replace(/\s+/g,' '));
       setLoading(false); },250);
     let retry: ReturnType<typeof setTimeout> | undefined;
     return () => { live = false; controller.abort(); clearTimeout(timer); clearTimeout(retry); };
@@ -116,7 +117,8 @@ export default function App() {
   const localRows = page === 'Library' ? [{title:'Your collection',items:library.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : [...(!loading && !catalogs.length && filter !== 'Anime' ? [{title:'Starter picks · Offline selection',items:demo.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : []),...(addons.some(a => a.builtin && a.enabled) && !query.trim() ? [{title:'Open Cinema · Ready to play',items:openFilms}] : [])];
   const continueItems = useMemo(() => continueWatching(history,[...demo,...openFilms,...catalogs.flatMap(c => c.items),...library]),[history,catalogs,library]);
   const continueRow = query.trim() ? [] : [{title:'Continue watching',key:'continue',items:page === 'Library' ? continueItems.filter(saved) : continueItems}].filter(row => row.items.length);
-  const rows:{title:string;items:Meta[];key?:string;source?:string;hasMore?:boolean}[] = page === 'Library' ? [...continueRow,...localRows] : [...continueRow,...catalogs,...localRows];
+  const topRow = query.trim() && page !== 'Library' ? [{title:'Top results',key:'top',source:'Most popular',items:topResults(catalogs,query)}].filter(row => row.items.length > 1) : [];
+  const rows:{title:string;items:Meta[];key?:string;source?:string;hasMore?:boolean}[] = page === 'Library' ? [...continueRow,...localRows] : [...continueRow,...topRow,...catalogs,...localRows];
   // The spotlight follows what you are watching, then live catalogs; the starter pick only covers offline use.
   const resuming = continueItems.find(m => safeHttp(m.background));
   const featured = resuming ?? catalogs.flatMap(c => c.items).find(m => safeHttp(m.background) && m.description) ?? (loading ? undefined : demo[0]);

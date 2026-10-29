@@ -31,7 +31,7 @@ describe('Hasimio title index',()=>{
     expect(titles.status()).toEqual({state:'ready'});
     const popular=await titles.catalog('movie','popular');
     expect(popular.metas.map(m=>m.id)).toEqual(['tt1']);
-    expect(popular.metas[0]).toEqual({id:'tt1',type:'movie',name:'Amélie',releaseInfo:'2025',imdbRating:'8.1',genres:['Comedy','Romance'],runtime:'122 min'});
+    expect(popular.metas[0]).toEqual({id:'tt1',type:'movie',name:'Amélie',releaseInfo:'2025',imdbRating:'8.1',votes:50000,genres:['Comedy','Romance'],runtime:'122 min'});
     expect((await titles.catalog('movie','top-rated')).metas.map(m=>m.id)).toEqual(['tt1']);
     expect((await titles.catalog('movie','popular',{search:'amelie'})).metas.map(m=>m.id)).toEqual(['tt1']);
     expect((await titles.catalog('movie','popular',{search:'%_'})).metas.map(m=>m.id)).toEqual(['tt1']);
