@@ -24,4 +24,9 @@ describe('Hasimio Kitsu adapter trust boundaries',()=>{
     await expect(kitsuMetadata('kitsu:12',undefined,async()=>response({data:{...anime,id:'99'}}))).rejects.toThrow('different anime');
     await expect(kitsuCatalog('kitsu-anime-popular','',0,undefined,async()=>response({data:{}}))).rejects.toThrow('invalid catalog');
   });
+  it('lists the most popular search matches first',async()=>{
+    const record=(id,popularityRank)=>({...anime,id,attributes:{...anime.attributes,popularityRank}});
+    const result=await kitsuCatalog('kitsu-anime-list','naruto',0,undefined,async()=>response({data:[record('1',900),record('2',null),record('3',12)]}));
+    expect(result.metas.map(m=>m.id)).toEqual(['kitsu:3','kitsu:1','kitsu:2']);
+  });
 });

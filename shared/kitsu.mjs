@@ -37,7 +37,10 @@ export async function kitsuCatalog(catalog, query='', skip=0, signal, fetchImpl=
   }
   const result = await request(path,params,signal,fetchImpl);
   if (!Array.isArray(result.data)) throw new Error('Kitsu returned an invalid catalog.');
-  return {metas:result.data.map(animeMeta),hasMore:typeof result.links?.next === 'string'};
+  // Kitsu's fuzzy text search picks the matches; show the most popular of them first.
+  const rank = record => positive(record?.attributes?.popularityRank) ? record.attributes.popularityRank : Infinity;
+  const records = catalog === 'kitsu-anime-list' ? [...result.data].sort((a,b) => rank(a)-rank(b)) : result.data;
+  return {metas:records.map(animeMeta),hasMore:typeof result.links?.next === 'string'};
 }
 export async function kitsuMetadata(id, signal, fetchImpl=fetch, episodeNumber) {
   const match = /^kitsu:(\d+)$/.exec(id);

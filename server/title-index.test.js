@@ -58,6 +58,17 @@ describe('Hasimio title index',()=>{
     }
     expect((await restarted.catalog('series','popular',{search:'grey unrelated'})).metas).toEqual([]);
   });
+  it('lists the most popular search matches first, ahead of mid-word matches',async()=>{
+    const {titles}=await index();await titles.refresh();await titles.close();
+    const {DatabaseSync}=await import('node:sqlite');
+    const db=new DatabaseSync(path.join(dir,'titles.db')),add=db.prepare('INSERT INTO titles(id,type,name,search,start,votes) VALUES(?,?,?,?,?,?)');
+    for(const [id,name,votes] of [['tt50','Dune',150000],['tt51','Dune: Part Two',600000],['tt52','Dune',900000],['tt53','Spirited Away',800000],['tt54','It',500000],['tt55','It Follows',250000]])add.run(id,'movie',name,normalize(name),2020,votes);
+    db.close();
+    const restarted=createTitleIndex({dir,fetchImpl:async()=>new Response('',{status:404}),now:()=>Date.parse('2026-10-28T00:00:00Z')});open=restarted;
+    const search=async(text)=>(await restarted.catalog('movie','popular',{search:text})).metas.map(m=>m.id);
+    expect(await search('dune')).toEqual(['tt52','tt51','tt50']);
+    expect(await search('it')).toEqual(['tt54','tt55','tt53']);
+  });
   it('adds TVmaze artwork, summaries and air dates to series',async()=>{
     const {titles,fetchImpl}=await index(href=>new Response(JSON.stringify(href.includes('/lookup/shows?imdb=tt3')
       ?{id:7,image:{original:'https://static.tvmaze.com/poster.jpg'},summary:'<p>A <b>show</b> &amp; more.</p>'}
