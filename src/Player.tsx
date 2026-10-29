@@ -64,18 +64,19 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
     const seek=seekRef.current?.getBoundingClientRect(),header=topRef.current?.querySelector('.cinema-title')?.getBoundingClientRect();setChrome(previous=>{const next={header:header?header.bottom-rect.top+12:0,controls:seek?seek.top-rect.top-10:Infinity};return previous.header===next.header&&previous.controls===next.controls?previous:next;});}
   useEffect(()=>{measure();const observer=new ResizeObserver(()=>measure());if(root.current)observer.observe(root.current);if(seekRef.current?.parentElement)observer.observe(seekRef.current.parentElement);return()=>observer.disconnect();},[]);
   useEffect(()=>{if(panel){menuRef.current?.querySelector<HTMLElement>('select,input,button,a')?.focus();}else if(trigger.current?.isConnected){trigger.current.focus();trigger.current=null;}},[panel]);
-  // Desktop builds get real OS cursor movement through the main process, which still works when Chromium
+  // Desktop builds also get real OS cursor movement through the main process, which still works when Chromium
   // stops delivering mousemove (unfocused windows, hidden fullscreen cursors, modal top layers). DOM movement
-  // is ignored there so layout changes under a still cursor cannot wake the controls. Browsers keep DOM events.
+  // always counts too, since the main-process feed can miss fullscreen hover. It is deduplicated on screen
+  // coordinates, which layout changes and fullscreen toggles under a still cursor leave unchanged.
   useEffect(()=>{
     const inside=(x:number,y:number)=>{const box=root.current?.getBoundingClientRect();return !!box&&x>=box.left&&x<=box.right&&y>=box.top&&y<=box.bottom;};
+    let last='';const move=(event:MouseEvent)=>{const at=event.screenX+':'+event.screenY;if(at===last)return;last=at;if(inside(event.clientX,event.clientY)||document.fullscreenElement===root.current)reveal();};
+    window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});
     // The main process reports movement over the window (and over the whole display in fullscreen), so the
     // player still ignores the rest of the app around its dialog. Fullscreen skips the test in case page
     // zoom or display scaling makes the reported point disagree with the player's rect.
-    if(desktopPointer?.onPlayerPointer)return desktopPointer.onPlayerPointer(point=>{if(!point||inside(point.x,point.y)||document.fullscreenElement===root.current)reveal();});
-    let last='';const move=(event:MouseEvent)=>{const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;if(inside(event.clientX,event.clientY))reveal();};
-    window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});
-    return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};
+    const stop=desktopPointer?.onPlayerPointer?.(point=>{if(!point||inside(point.x,point.y)||document.fullscreenElement===root.current)reveal();});
+    return()=>{stop?.();window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};
   },[]);
   useEffect(()=>{const update=()=>setFullscreen(document.fullscreenElement===root.current);document.addEventListener('fullscreenchange',update);return()=>document.removeEventListener('fullscreenchange',update);},[]);
   useEffect(()=>{const video=videoRef.current;if(video){video.volume=volume;video.muted=muted;video.defaultPlaybackRate=rate;video.playbackRate=rate;}},[volume,muted,rate,url]);
