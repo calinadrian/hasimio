@@ -66,7 +66,9 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   // is ignored there so layout changes under a still cursor cannot wake the controls. Browsers keep DOM events.
   useEffect(()=>{
     const inside=(x:number,y:number)=>{const box=root.current?.getBoundingClientRect();return !!box&&x>=box.left&&x<=box.right&&y>=box.top&&y<=box.bottom;};
-    if(desktopPointer?.onPlayerPointer)return desktopPointer.onPlayerPointer(point=>{if(!point||inside(point.x,point.y))reveal();});
+    // The main process already limits reports to the window (and to the whole display in fullscreen),
+    // so any report is a hover. Comparing coordinates here could drop movement on zoomed or scaled screens.
+    if(desktopPointer?.onPlayerPointer)return desktopPointer.onPlayerPointer(()=>reveal());
     let last='';const move=(event:MouseEvent)=>{const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;if(inside(event.clientX,event.clientY))reveal();};
     window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});
     return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};

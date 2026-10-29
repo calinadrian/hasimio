@@ -14,9 +14,11 @@ export function watchPointerActivity(win,screen) {
       // movement while another window is focused or fullscreen has lost focus.
       if(!moved||win.isMinimized())return;
       const box=win.getContentBounds();
-      if(point.x>=box.x&&point.x<box.x+box.width&&point.y>=box.y&&point.y<box.y+box.height)
+      // A fullscreen player fills a whole display, so every movement is over the player. Skipping the
+      // bounds test there keeps hover working when page zoom or mixed-DPI bounds disagree with the cursor.
+      if(win.isFullScreen()||(point.x>=box.x&&point.x<box.x+box.width&&point.y>=box.y&&point.y<box.y+box.height))
         win.webContents.send('hasimio:player-pointer',{x:point.x-box.x,y:point.y-box.y});
-    },100);
+    },50);
     timer.unref?.();
   };
   start();
