@@ -2,7 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {app,BrowserWindow,dialog,ipcMain,Menu,session,shell,utilityProcess} from 'electron';
+import {app,BrowserWindow,dialog,ipcMain,Menu,screen,session,shell,utilityProcess} from 'electron';
+import {watchFullscreenPointer} from './player-activity.mjs';
 import electronUpdater from 'electron-updater';
 import {createUpdates} from './updates.mjs';
 import {ENGINE_PORT} from '../server/engine.mjs';
@@ -70,6 +71,7 @@ function createWindow() {
     width:1280,height:820,minWidth:900,minHeight:600,show:false,title:'Hasimio',backgroundColor:'#141414',icon,autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true},
   });
+  watchFullscreenPointer(win,screen);
   // Links to other sites open in the browser; the window only ever shows the app.
   win.webContents.setWindowOpenHandler(({url})=>{if(/^https?:\/\//i.test(url))void shell.openExternal(url);return {action:'deny'};});
   win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith(origin+'/')){event.preventDefault();if(/^https?:\/\//i.test(url))void shell.openExternal(url);}});

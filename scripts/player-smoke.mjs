@@ -8,6 +8,7 @@ import {once} from 'node:events';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {createServer as createViteServer} from 'vite';
+import react from '@vitejs/plugin-react';
 import ffmpeg from 'ffmpeg-static';
 
 const require=createRequire(import.meta.url);
@@ -42,9 +43,9 @@ try{
   await writeFile(path.join(folder,'fixture.tsx'),`
     import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
     import Player from '/src/Player';import '/src/styles.css';
-    function Fixture(){const [sub,setSub]=useState(true),[language,setLanguage]=useState('eng');return <><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt',label:'Test',language}:undefined}}/></>;}createRoot(document.getElementById('root')).render(<Fixture/>);
+    function Fixture(){const [sub,setSub]=useState(true),[language,setLanguage]=useState('eng');return <dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt',label:'Test',language}:undefined}}/></dialog>;}createRoot(document.getElementById('root')).render(<Fixture/>);
   `);
-  vite=await createViteServer({server:{host:'127.0.0.1',port:0,strictPort:false}});
+  vite=await createViteServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,strictPort:false}});
   await vite.listen();
   const url=`http://127.0.0.1:${vite.httpServer.address().port}/.cache/player-smoke/index.html`;
   const runner=path.join(folder,'electron.cjs');
@@ -52,9 +53,9 @@ try{
     const {app,BrowserWindow}=require('electron');const assert=require('node:assert/strict');
     app.commandLine.appendSwitch('autoplay-policy','no-user-gesture-required');
     const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-    app.whenReady().then(async()=>{const win=new BrowserWindow({show:false,width:1280,height:820,webPreferences:{backgroundThrottling:false}});
+    app.whenReady().then(async()=>{const win=new BrowserWindow({show:false,width:1280,height:820,webPreferences:{backgroundThrottling:false,preload:${JSON.stringify(path.resolve('electron/preload.cjs'))}}});
       win.webContents.on('console-message',event=>{if(event.level==='warning'||event.level==='error')console.error(event.message);});
-      const js=s=>win.webContents.executeJavaScript(s);
+      const js=s=>win.webContents.executeJavaScript(s,true);
       async function until(s){for(let i=0;i<100;i++){if(await js(s))return;await sleep(100);}throw Error('Timed out: '+s);}
       try{
         await win.loadURL(${JSON.stringify(url)});
@@ -97,7 +98,24 @@ try{
         await until('document.querySelector(".cinema-time").textContent.startsWith("0:1")');
         await until('document.querySelector(".cinema-play").getAttribute("aria-label")==="Pause video"');
         const resumed=await js('document.querySelector("video").currentTime');assert.ok(resumed>13&&resumed<18,'Resume must keep the requested position, got '+resumed);
+        // Match the app's modal dialog and repeat fullscreen wake/hide cycles.
+        await js('document.querySelector("video").loop=true;document.querySelector(".cinema-player").requestFullscreen()');
+        await until('document.fullscreenElement===document.querySelector(".cinema-player")');
+        await js('document.activeElement.blur()');
+        for(let i=0;i<2;i++){
+          await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
+          await sleep(500);
+          await js('window.dispatchEvent(new MouseEvent("mousemove",{clientX:200,clientY:200}))');
+          await sleep(200);
+          assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'Still cursor must not repeatedly reveal controls');
+          // Exercise the real preload subscription even when Chromium delivers no DOM move.
+          win.webContents.send('hasimio:player-pointer');
+          await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
+          await until('Number(getComputedStyle(document.querySelector(".cinema-bottom")).opacity)===1');
+        }
+        await js('document.exitFullscreen()');
         require('node:fs').writeFileSync(${JSON.stringify(path.join(folder,'player.png'))},(await win.webContents.capturePage()).toPNG());
+        console.log('PASS: Fullscreen controls wake across repeated cycles through the desktop bridge and stay hidden with a still cursor.');
         console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, displays/toggles the newest subtitle, and replaces all old cues across repeated English/Spanish switches.');
         app.exit(0);
       }catch(error){console.error(error);console.error(await js('JSON.stringify({body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
@@ -106,7 +124,7 @@ try{
   const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
   const child=spawn(require('electron'),[runner],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
   child.stdout.pipe(process.stdout);child.stderr.pipe(process.stderr);
-  const watchdog=setTimeout(()=>child.kill(),45000);
+  const watchdog=setTimeout(()=>child.kill(),60000);
   const [code]=await once(child,'exit');clearTimeout(watchdog);
   assert.equal(code,0,'Electron player smoke test failed');
 }finally{await vite?.close();media.closeAllConnections();await new Promise(resolve=>media.close(resolve));}

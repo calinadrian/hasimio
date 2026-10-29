@@ -2,6 +2,11 @@
 const {contextBridge,ipcRenderer}=require('electron');
 
 contextBridge.exposeInMainWorld('hasimioDesktop',{
+  onPlayerPointer(listener){
+    const handler=()=>listener();
+    ipcRenderer.on('hasimio:player-pointer',handler);
+    return ()=>ipcRenderer.removeListener('hasimio:player-pointer',handler);
+  },
   getUpdate:()=>ipcRenderer.invoke('hasimio:update-state'),
   checkForUpdates:()=>ipcRenderer.invoke('hasimio:update-check'),
   installUpdate:()=>ipcRenderer.invoke('hasimio:update-install'),

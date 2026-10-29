@@ -11,6 +11,7 @@ import './player.css';
 type Panel='audio'|'subtitles'|'download'|'settings';
 type Props={episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode};
 const captionSettings=():CaptionSettings=>{const {volume:_v,muted:_m,rate:_r,...captions}=playerSettings();return captions;};
+const desktopPointer=(globalThis as {hasimioDesktop?:{onPlayerPointer?:(listener:()=>void)=>()=>void}}).hasimioDesktop;
 const panelNames:Record<Panel,string>={audio:'Audio & dubs',subtitles:'Subtitles',download:'Download',settings:'Playback settings'};
 
 export default function Player({episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,embeddedSubtitleLanguages=panels?.subtitles?undefined:[],download,status,loading}:Props){
@@ -59,8 +60,10 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   // Watch movement on the whole document: in fullscreen and modal dialogs, moves over the player can target
   // top-layer elements rather than it, so check the pointer position against the player instead. Chromium also
   // repeats moves for a still cursor whenever layout changes; only a changed position counts.
-  useEffect(()=>{let last='';const move=(event:MouseEvent)=>{const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;const box=root.current?.getBoundingClientRect();if(box&&event.clientX>=box.left&&event.clientX<=box.right&&event.clientY>=box.top&&event.clientY<=box.bottom)reveal();};window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};},[]);
+  // Desktop fullscreen uses the OS watcher exclusively to avoid those phantom reveals.
+  useEffect(()=>{let last='';const move=(event:MouseEvent)=>{if(desktopPointer?.onPlayerPointer&&document.fullscreenElement===root.current)return;const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;const box=root.current?.getBoundingClientRect();if(box&&event.clientX>=box.left&&event.clientX<=box.right&&event.clientY>=box.top&&event.clientY<=box.bottom)reveal();};window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};},[]);
   useEffect(()=>{const update=()=>setFullscreen(document.fullscreenElement===root.current);document.addEventListener('fullscreenchange',update);return()=>document.removeEventListener('fullscreenchange',update);},[]);
+  useEffect(()=>{return desktopPointer?.onPlayerPointer?.(()=>{if(document.fullscreenElement===root.current)reveal();});},[]);
   useEffect(()=>{const video=videoRef.current;if(video){video.volume=volume;video.muted=muted;video.defaultPlaybackRate=rate;video.playbackRate=rate;}},[volume,muted,rate,url]);
   useEffect(()=>{
     const video=videoRef.current;scrubbing.current=false;setScrubPosition(undefined);setError('');setNotice('');resume.current=resumePosition(progressKey);restoring.current=false;setPosition(timeOffset);setDuration(durationHint||0);setBufferEnd(timeOffset);setPlaying(false);setBuffering(!!url);if(!video||!url)return;
