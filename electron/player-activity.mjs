@@ -8,7 +8,9 @@ export function watchFullscreenPointer(win,screen) {
     timer=setInterval(()=>{
       const point=screen.getCursorScreenPoint(),moved=point.x!==last.x||point.y!==last.y;
       last=point;
-      if(!moved||win.isDestroyed()||!win.isFocused())return;
+      // Hover must work even when fullscreen has lost keyboard focus (for
+      // example after Alt-Tab). Revealing controls does not require activation.
+      if(!moved||win.isDestroyed())return;
       const box=win.getContentBounds();
       if(point.x>=box.x&&point.x<box.x+box.width&&point.y>=box.y&&point.y<box.y+box.height)
         win.webContents.send('hasimio:player-pointer');

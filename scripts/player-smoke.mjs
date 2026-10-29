@@ -13,7 +13,13 @@ import ffmpeg from 'ffmpeg-static';
 
 const require=createRequire(import.meta.url);
 const folder=path.resolve('.cache/player-smoke');
+const nativePointer=process.argv.includes('--native-pointer');
 await mkdir(folder,{recursive:true});
+const cursorScript=path.join(folder,'cursor.ps1');
+if(nativePointer)await writeFile(cursorScript,`param([int]$x,[int]$y)
+Add-Type -TypeDefinition 'using System.Runtime.InteropServices; public class PlayerCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y); }'
+[PlayerCursor]::SetCursorPos($x,$y) | Out-Null
+`);
 await promisify(execFile)(ffmpeg,['-hide_banner','-loglevel','error','-y','-f','lavfi','-i','testsrc2=size=320x180:rate=12','-f','lavfi','-i','sine=frequency=440:sample_rate=48000','-t','40','-c:v','libx264','-preset','ultrafast','-g','24','-pix_fmt','yuv420p','-c:a','aac','-f','hls','-hls_segment_type','fmp4','-hls_time','2','-hls_list_size','0','-hls_playlist_type','event',path.join(folder,'movie.m3u8')],{cwd:folder,windowsHide:true});
 const playlist=await readFile(path.join(folder,'movie.m3u8'),'utf8');
 let segmentCount=8;
@@ -50,10 +56,18 @@ try{
   const url=`http://127.0.0.1:${vite.httpServer.address().port}/.cache/player-smoke/index.html`;
   const runner=path.join(folder,'electron.cjs');
   await writeFile(runner,`
-    const {app,BrowserWindow}=require('electron');const assert=require('node:assert/strict');
+    const {app,BrowserWindow,screen}=require('electron');const assert=require('node:assert/strict');
     app.commandLine.appendSwitch('autoplay-policy','no-user-gesture-required');
     const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     app.whenReady().then(async()=>{const win=new BrowserWindow({show:false,width:1280,height:820,webPreferences:{backgroundThrottling:false,preload:${JSON.stringify(path.resolve('electron/preload.cjs'))}}});
+      let cursor={x:0,y:0},pointerMessages=0;
+      const {watchFullscreenPointer}=await import(${JSON.stringify(new URL('../electron/player-activity.mjs',import.meta.url).href)});
+      const nativePointer=${nativePointer},originalCursor=screen.getCursorScreenPoint();
+      const moveCursor=async point=>{if(nativePointer)await require('node:util').promisify(require('node:child_process').execFile)('powershell.exe',['-NoProfile','-File',${JSON.stringify(cursorScript)},String(point.x),String(point.y)],{windowsHide:true});else cursor=point;};
+      const actualFocus=win.isFocused.bind(win);
+      watchFullscreenPointer(win,nativePointer?screen:{getCursorScreenPoint:()=>({...cursor})});
+      const send=win.webContents.send.bind(win.webContents);win.webContents.send=(channel,...args)=>{if(channel==='hasimio:player-pointer')pointerMessages++;return send(channel,...args);};
+      win.on('enter-html-full-screen',()=>console.log('Fullscreen watcher started, focused='+actualFocus()));
       win.webContents.on('console-message',event=>{if(event.level==='warning'||event.level==='error')console.error(event.message);});
       const js=s=>win.webContents.executeJavaScript(s,true);
       async function until(s){for(let i=0;i<100;i++){if(await js(s))return;await sleep(100);}throw Error('Timed out: '+s);}
@@ -99,6 +113,7 @@ try{
         await until('document.querySelector(".cinema-play").getAttribute("aria-label")==="Pause video"');
         const resumed=await js('document.querySelector("video").currentTime');assert.ok(resumed>13&&resumed<18,'Resume must keep the requested position, got '+resumed);
         // Match the app's modal dialog and repeat fullscreen wake/hide cycles.
+        if(nativePointer){win.show();win.focus();await sleep(500);}
         await js('document.querySelector("video").loop=true;document.querySelector(".cinema-player").requestFullscreen()');
         await until('document.fullscreenElement===document.querySelector(".cinema-player")');
         await js('document.activeElement.blur()');
@@ -108,17 +123,26 @@ try{
           await js('window.dispatchEvent(new MouseEvent("mousemove",{clientX:200,clientY:200}))');
           await sleep(200);
           assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'Still cursor must not repeatedly reveal controls');
-          // Exercise the real preload subscription even when Chromium delivers no DOM move.
-          win.webContents.send('hasimio:player-pointer');
+          // Go through the actual watcher and fullscreen lifecycle, not a direct IPC injection.
+          const bounds=win.getContentBounds();await moveCursor({x:bounds.x+200+i*20,y:bounds.y+200});
           await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
+          assert.ok(pointerMessages>i,'OS watcher must send the wake message');
           await until('Number(getComputedStyle(document.querySelector(".cinema-bottom")).opacity)===1');
         }
+        if(!nativePointer){
+          await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
+          win.webContents.sendInputEvent({type:'mouseMove',x:300,y:300});
+          win.webContents.sendInputEvent({type:'mouseMove',x:310,y:300});
+          await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
+          console.log('PASS: Trusted browser movement independently wakes controls with the OS cursor unchanged.');
+        }
         await js('document.exitFullscreen()');
+        if(nativePointer)await moveCursor(originalCursor);
         require('node:fs').writeFileSync(${JSON.stringify(path.join(folder,'player.png'))},(await win.webContents.capturePage()).toPNG());
         console.log('PASS: Fullscreen controls wake across repeated cycles through the desktop bridge and stay hidden with a still cursor.');
         console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, displays/toggles the newest subtitle, and replaces all old cues across repeated English/Spanish switches.');
         app.exit(0);
-      }catch(error){console.error(error);console.error(await js('JSON.stringify({body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
+      }catch(error){console.error(error);console.error('pointerMessages='+pointerMessages+', cursor='+JSON.stringify(screen.getCursorScreenPoint()));if(nativePointer)await moveCursor(originalCursor);console.error(await js('JSON.stringify({body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
     });
   `);
   const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;

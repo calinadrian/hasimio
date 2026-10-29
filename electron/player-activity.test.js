@@ -17,7 +17,7 @@ describe('fullscreen pointer activity',()=>{
       vi.advanceTimersByTime(3500);expect(win.webContents.send).toHaveBeenCalledTimes(i+1);
     }
     point={x:99,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(3);
-    win.isFocused.mockReturnValue(false);point={x:150,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(3);
+    win.isFocused.mockReturnValue(false);point={x:150,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(4);
     win.emit('leave-html-full-screen');expect(vi.getTimerCount()).toBe(0);
     win.emit('enter-html-full-screen');win.emit('enter-html-full-screen');expect(vi.getTimerCount()).toBe(1);
     win.emit('closed');expect(vi.getTimerCount()).toBe(0);
