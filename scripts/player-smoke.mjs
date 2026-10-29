@@ -65,13 +65,13 @@ try{
     const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     app.whenReady().then(async()=>{const win=new BrowserWindow({show:false,width:1280,height:820,webPreferences:{backgroundThrottling:false,preload:${JSON.stringify(path.resolve('electron/preload.cjs'))}}});
       let cursor={x:0,y:0},pointerMessages=0;
-      const {watchFullscreenPointer}=await import(${JSON.stringify(new URL('../electron/player-activity.mjs',import.meta.url).href)});
+      const {watchPointerActivity}=await import(${JSON.stringify(new URL('../electron/player-activity.mjs',import.meta.url).href)});
       const nativePointer=${nativePointer},originalCursor=screen.getCursorScreenPoint();
       const moveCursor=async point=>{if(nativePointer)await require('node:util').promisify(require('node:child_process').execFile)('powershell.exe',['-NoProfile','-File',${JSON.stringify(cursorScript)},String(point.x),String(point.y)],{windowsHide:true});else cursor=point;};
       const actualFocus=win.isFocused.bind(win);
-      watchFullscreenPointer(win,nativePointer?screen:{getCursorScreenPoint:()=>({...cursor})});
+      watchPointerActivity(win,nativePointer?screen:{getCursorScreenPoint:()=>({...cursor})});
       const send=win.webContents.send.bind(win.webContents);win.webContents.send=(channel,...args)=>{if(channel==='hasimio:player-pointer')pointerMessages++;return send(channel,...args);};
-      win.on('enter-html-full-screen',()=>console.log('Fullscreen watcher started, focused='+actualFocus()));
+      console.log('Pointer watcher started, focused='+actualFocus());
       win.webContents.on('console-message',event=>{if(event.level==='warning'||event.level==='error')console.error(event.message);});
       const js=s=>win.webContents.executeJavaScript(s,true);
       async function until(s){for(let i=0;i<100;i++){if(await js(s))return;await sleep(100);}throw Error('Timed out: '+s);}
@@ -120,19 +120,31 @@ try{
         await js('document.getElementById("changing-sub").click()');
         await until('document.querySelector(".cinema-caption")?.textContent.includes("subtitle")');
         if(nativePointer){win.show();win.focus();await sleep(500);}
+        // The OS watcher must work outside fullscreen too, where Chromium can stop
+        // reporting mousemove while the window is unfocused.
+        // A real cursor on a busy machine can move on its own, so still-cursor checks
+        // only run with the deterministic fake pointer.
+        if(!nativePointer)await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
+        const windowBounds=win.getContentBounds(),windowPointer=pointerMessages;
+        await moveCursor({x:windowBounds.x+300,y:windowBounds.y+300});
+        await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
+        if(!nativePointer)assert.ok(pointerMessages>windowPointer,'Windowed hover must wake controls through the desktop bridge');
         await js('document.querySelector("video").loop=true;document.querySelector(".cinema-player").requestFullscreen()');
         await until('document.fullscreenElement===document.querySelector(".cinema-player")');
         await js('document.activeElement.blur()');
         for(let i=0;i<2;i++){
-          await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
-          await sleep(500);
-          await js('window.dispatchEvent(new MouseEvent("mousemove",{clientX:200,clientY:200}))');
-          await sleep(200);
-          assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'Still cursor must not repeatedly reveal controls');
-          // Go through the actual watcher and fullscreen lifecycle, not a direct IPC injection.
-          const bounds=win.getContentBounds();await moveCursor({x:bounds.x+200+i*20,y:bounds.y+200});
+          if(!nativePointer){
+            await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
+            await sleep(500);
+            await js('window.dispatchEvent(new MouseEvent("mousemove",{clientX:200,clientY:200}))');
+            await sleep(200);
+            assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'Still cursor must not repeatedly reveal controls');
+          }
+          // Go through the actual watcher, not a direct IPC injection.
+          const bounds=win.getContentBounds(),before=pointerMessages;
+          await moveCursor({x:bounds.x+200+i*20,y:bounds.y+200});
           await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
-          assert.ok(pointerMessages>i,'OS watcher must send the wake message');
+          if(!nativePointer)assert.ok(pointerMessages>before,'OS watcher must send the wake message');
           await until('Number(getComputedStyle(document.querySelector(".cinema-bottom")).opacity)===1');
           if(i===0){
             await sleep(2400);
@@ -147,15 +159,26 @@ try{
         }
         if(!nativePointer){
           await until('!document.querySelector(".cinema-player").classList.contains("controls-visible")');
+          // Torrent buffering flips waiting/canplay often; that must not pop the
+          // controls back up while the pointer is still.
+          await js('document.querySelector("video").dispatchEvent(new Event("waiting"))');
+          await sleep(300);
+          assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'Buffering must not reveal controls over a still cursor');
+          await js('document.querySelector("video").dispatchEvent(new Event("canplay"))');
+          await sleep(300);
+          assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'Finishing a buffer must not reveal controls over a still cursor');
+          const before=pointerMessages;
           win.webContents.sendInputEvent({type:'mouseMove',x:300,y:300});
           win.webContents.sendInputEvent({type:'mouseMove',x:310,y:300});
-          await until('document.querySelector(".cinema-player").classList.contains("controls-visible")');
-          console.log('PASS: Trusted browser movement independently wakes controls with the OS cursor unchanged.');
+          await sleep(300);
+          assert.equal(pointerMessages,before,'DOM movement must not be needed while the desktop watcher is active');
+          assert.equal(await js('document.querySelector(".cinema-player").classList.contains("controls-visible")'),false,'DOM movement under a still cursor must not wake controls');
+          console.log('PASS: Renderer mouse events and buffer changes are ignored when the desktop pointer watcher is active.');
         }
         await js('document.exitFullscreen()');
         if(nativePointer)await moveCursor(originalCursor);
         require('node:fs').writeFileSync(${JSON.stringify(path.join(folder,'player.png'))},(await win.webContents.capturePage()).toPNG());
-        console.log('PASS: Fullscreen controls wake across repeated cycles through the desktop bridge and stay hidden with a still cursor.');
+        console.log('PASS: Fullscreen controls wake across repeated cycles through the desktop bridge.'+(nativePointer?'':' They stay hidden with a still cursor.'));
         console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, displays/toggles the newest subtitle, and replaces all old cues across repeated English/Spanish switches.');
         app.exit(0);
       }catch(error){console.error(error);console.error('pointerMessages='+pointerMessages+', cursor='+JSON.stringify(screen.getCursorScreenPoint()));if(nativePointer)await moveCursor(originalCursor);console.error(await js('JSON.stringify({body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}

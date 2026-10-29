@@ -3,7 +3,7 @@ const {contextBridge,ipcRenderer}=require('electron');
 
 contextBridge.exposeInMainWorld('hasimioDesktop',{
   onPlayerPointer(listener){
-    const handler=()=>listener();
+    const handler=(_event,point)=>listener(point);
     ipcRenderer.on('hasimio:player-pointer',handler);
     return ()=>ipcRenderer.removeListener('hasimio:player-pointer',handler);
   },

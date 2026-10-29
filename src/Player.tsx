@@ -11,7 +11,8 @@ import './player.css';
 type Panel='audio'|'subtitles'|'download'|'settings';
 type Props={episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode};
 const captionSettings=():CaptionSettings=>{const {volume:_v,muted:_m,rate:_r,...captions}=playerSettings();return captions;};
-const desktopPointer=(globalThis as {hasimioDesktop?:{onPlayerPointer?:(listener:()=>void)=>()=>void}}).hasimioDesktop;
+type DesktopPointer={onPlayerPointer?:(listener:(point?:{x:number;y:number})=>void)=>()=>void};
+const desktopPointer=(globalThis as {hasimioDesktop?:DesktopPointer}).hasimioDesktop;
 const panelNames:Record<Panel,string>={audio:'Audio & dubs',subtitles:'Subtitles',download:'Download',settings:'Playback settings'};
 
 export default function Player({episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,embeddedSubtitleLanguages=panels?.subtitles?undefined:[],download,status,loading}:Props){
@@ -50,20 +51,27 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
     const key=event.key.toLowerCase();if(event.repeat&&[' ','k','m','f','c'].includes(key))return;if(![' ','k','arrowleft','arrowright','arrowup','arrowdown','m','f','c'].includes(key))return;event.preventDefault();reveal();
     if(key===' '||key==='k')togglePlay();else if(key==='arrowleft')seek(position-10);else if(key==='arrowright')seek(position+10);else if(key==='m')setMuted(value=>!value);else if(key==='f')void toggleFullscreen();else if(key==='c')setPanel(previous=>previous==='subtitles'?undefined:'subtitles');else{setVolume(value=>Math.max(0,Math.min(1,value+(key==='arrowup'?0.05:-0.05))));setMuted(false);}
   }
-  useEffect(()=>{setVisible(true);if(!playing||panel||focused||buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),3000);return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
+  // Buffering comes and goes while a torrent fills its buffer; it must not pop
+  // the controls back up over a still cursor. Pausing, focusing or opening a
+  // panel does show them.
+  useEffect(()=>{if(panel||focused||!playing){setVisible(true);return;}if(buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),3000);return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
   // Subtitles follow the visible picture (object-fit: contain), not the letterboxed player.
   function measure(){const box=root.current,video=videoRef.current;if(!box||!video)return;const width=box.clientWidth,height=box.clientHeight,ratio=video.videoWidth&&video.videoHeight?video.videoWidth/video.videoHeight:16/9,w=Math.min(width,height*ratio),h=w/ratio,rect=box.getBoundingClientRect();
     setFrame(previous=>previous&&Math.abs(previous.width-w)<0.5&&Math.abs(previous.height-h)<0.5&&Math.abs(previous.top-(height-h)/2)<0.5?previous:{left:(width-w)/2,top:(height-h)/2,width:w,height:h});
     const seek=seekRef.current?.getBoundingClientRect(),header=topRef.current?.querySelector('.cinema-title')?.getBoundingClientRect();setChrome(previous=>{const next={header:header?header.bottom-rect.top+12:0,controls:seek?seek.top-rect.top-10:Infinity};return previous.header===next.header&&previous.controls===next.controls?previous:next;});}
   useEffect(()=>{measure();const observer=new ResizeObserver(()=>measure());if(root.current)observer.observe(root.current);if(seekRef.current?.parentElement)observer.observe(seekRef.current.parentElement);return()=>observer.disconnect();},[]);
   useEffect(()=>{if(panel){menuRef.current?.querySelector<HTMLElement>('select,input,button,a')?.focus();}else if(trigger.current?.isConnected){trigger.current.focus();trigger.current=null;}},[panel]);
-  // Watch movement on the whole document: in fullscreen and modal dialogs, moves over the player can target
-  // top-layer elements rather than it, so check the pointer position against the player instead. Chromium also
-  // repeats moves for a still cursor whenever layout changes; only a changed position counts.
-  // Keep trusted physical DOM movement as a fallback even when the desktop watcher is available.
-  useEffect(()=>{let last='';const move=(event:MouseEvent)=>{if(desktopPointer?.onPlayerPointer&&document.fullscreenElement===root.current&&!event.isTrusted)return;const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;const box=root.current?.getBoundingClientRect();if(box&&event.clientX>=box.left&&event.clientX<=box.right&&event.clientY>=box.top&&event.clientY<=box.bottom)reveal();};window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};},[]);
+  // Desktop builds get real OS cursor movement through the main process, which still works when Chromium
+  // stops delivering mousemove (unfocused windows, hidden fullscreen cursors, modal top layers). DOM movement
+  // is ignored there so layout changes under a still cursor cannot wake the controls. Browsers keep DOM events.
+  useEffect(()=>{
+    const inside=(x:number,y:number)=>{const box=root.current?.getBoundingClientRect();return !!box&&x>=box.left&&x<=box.right&&y>=box.top&&y<=box.bottom;};
+    if(desktopPointer?.onPlayerPointer)return desktopPointer.onPlayerPointer(point=>{if(!point||inside(point.x,point.y))reveal();});
+    let last='';const move=(event:MouseEvent)=>{const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;if(inside(event.clientX,event.clientY))reveal();};
+    window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});
+    return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};
+  },[]);
   useEffect(()=>{const update=()=>setFullscreen(document.fullscreenElement===root.current);document.addEventListener('fullscreenchange',update);return()=>document.removeEventListener('fullscreenchange',update);},[]);
-  useEffect(()=>{return desktopPointer?.onPlayerPointer?.(()=>{if(document.fullscreenElement===root.current)reveal();});},[]);
   useEffect(()=>{const video=videoRef.current;if(video){video.volume=volume;video.muted=muted;video.defaultPlaybackRate=rate;video.playbackRate=rate;}},[volume,muted,rate,url]);
   useEffect(()=>{
     const video=videoRef.current;scrubbing.current=false;setScrubPosition(undefined);setError('');setNotice('');resume.current=resumePosition(progressKey);restoring.current=false;setPosition(timeOffset);setDuration(durationHint||0);setBufferEnd(timeOffset);setPlaying(false);setBuffering(!!url);if(!video||!url)return;
@@ -97,7 +105,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   const canPip=typeof document!=='undefined'&&document.pictureInPictureEnabled;
   const displayPosition=scrubPosition??position;
   const progress=duration?Math.min(100,displayPosition/duration*100):0,buffer=duration?Math.min(100,bufferEnd/duration*100):0;
-  return <div ref={root} className={`cinema-player ${visible?'controls-visible':''}`} role="region" aria-label={`${name} video player`} tabIndex={0} onKeyDown={keyDown} onPointerDown={event=>{setFocused(false);reveal();if(panel&&!menuRef.current?.contains(event.target as Node)&&!(event.target as HTMLElement).closest('[data-player-menu]'))setPanel(undefined);}} onFocusCapture={event=>{setFocused((event.target as HTMLElement).matches(':focus-visible'));reveal();}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setFocused(false);}}>
+  return <div ref={root} className={`cinema-player ${visible?'controls-visible':''}`} role="region" aria-label={`${name} video player`} tabIndex={0} onKeyDown={keyDown} onPointerDown={event=>{setFocused(false);reveal();if(panel&&!menuRef.current?.contains(event.target as Node)&&!(event.target as HTMLElement).closest('[data-player-menu]'))setPanel(undefined);}} onFocusCapture={event=>{const target=event.target as HTMLElement;setFocused(target!==event.currentTarget&&target.matches(':focus-visible'));reveal();}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setFocused(false);}}>
     <video ref={videoRef} className="cinema-video" autoPlay playsInline aria-label={name} onClick={togglePlay} onDoubleClick={()=>void toggleFullscreen()} onTimeUpdate={sync} onDurationChange={sync} onProgress={sync} onLoadedMetadata={()=>{restore();measure();}} onResize={measure} onSeeked={()=>{restoring.current=false;sync();persist(true);}} onLoadedData={()=>{sync();setBuffering(false);}} onCanPlay={()=>setBuffering(false)} onWaiting={()=>setBuffering(true)} onPlaying={()=>{setPlaying(true);setBuffering(false);}} onPlay={()=>setPlaying(true)} onPause={()=>{setPlaying(false);sync();persist(true);}} onEnded={()=>{setPlaying(false);sync();persist(true);}} onVolumeChange={()=>{if(videoRef.current){setVolume(videoRef.current.volume);setMuted(videoRef.current.muted);}}} onError={()=>{if(!videoRef.current?.currentSrc)return;setBuffering(false);if(onRecoverAudio)onRecoverAudio();else setError('This browser could not decode the video. Retry playback or choose another source.');}}/>
     {(subtitle||panel==='subtitles')&&<CaptionOverlay cues={subtitle?cues:[]} settings={captions} frame={frame} preview={panel==='subtitles'} lift={visible&&frame?{top:Math.max(0,chrome.header-frame.top),bottom:Math.max(0,frame.top+frame.height-chrome.controls)}:{top:0,bottom:0}}/>}
     <div ref={topRef} className="cinema-top cinema-chrome"><button className="cinema-icon cinema-back" onClick={onClose} title="Back to sources" aria-label="Back to sources"><ArrowLeft size={24}/></button><div className="cinema-title"><h2>{name}</h2><p>{stream.name&&stream.name!==name?stream.name:'Your cinema, your way.'}</p></div>{status&&<div className="cinema-connection">{status}</div>}</div>

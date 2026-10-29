@@ -1,25 +1,30 @@
 import {describe,it,expect,vi,afterEach} from 'vitest';
 import {EventEmitter} from 'node:events';
-import {watchFullscreenPointer} from './player-activity.mjs';
+import {watchPointerActivity} from './player-activity.mjs';
 
 afterEach(()=>vi.useRealTimers());
-describe('fullscreen pointer activity',()=>{
-  it('wakes on real movement without DOM events, stays quiet at rest, and stops on exit',()=>{
+describe('player pointer activity',()=>{
+  it('reports movement inside the window without needing focus, stays quiet at rest, and stops when closed',()=>{
     vi.useFakeTimers();
     let point={x:120,y:80};
-    const win=Object.assign(new EventEmitter(),{isDestroyed:()=>false,isFocused:vi.fn(()=>true),getContentBounds:()=>({x:100,y:50,width:800,height:600}),webContents:{send:vi.fn()}});
-    watchFullscreenPointer(win,{getCursorScreenPoint:()=>point});
-    win.emit('enter-html-full-screen');
+    const win=Object.assign(new EventEmitter(),{isDestroyed:()=>false,isMinimized:()=>false,getContentBounds:()=>({x:100,y:50,width:800,height:600}),webContents:{send:vi.fn()}});
+    watchPointerActivity(win,{getCursorScreenPoint:()=>point});
     vi.advanceTimersByTime(4000);expect(win.webContents.send).not.toHaveBeenCalled();
-    for(let i=0;i<3;i++){
-      point={x:point.x+1,y:point.y};vi.advanceTimersByTime(100);
-      expect(win.webContents.send).toHaveBeenCalledTimes(i+1);
-      vi.advanceTimersByTime(3500);expect(win.webContents.send).toHaveBeenCalledTimes(i+1);
-    }
-    point={x:99,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(3);
-    win.isFocused.mockReturnValue(false);point={x:150,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(4);
-    win.emit('leave-html-full-screen');expect(vi.getTimerCount()).toBe(0);
-    win.emit('enter-html-full-screen');win.emit('enter-html-full-screen');expect(vi.getTimerCount()).toBe(1);
+    point={x:121,y:80};vi.advanceTimersByTime(100);
+    expect(win.webContents.send).toHaveBeenCalledWith('hasimio:player-pointer',{x:21,y:30});
+    vi.advanceTimersByTime(3500);expect(win.webContents.send).toHaveBeenCalledTimes(1);
+    point={x:99,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(1);
+    point={x:150,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(2);
     win.emit('closed');expect(vi.getTimerCount()).toBe(0);
+    point={x:160,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(2);
+  });
+  it('ignores movement while minimized and stops if the window is destroyed',()=>{
+    vi.useFakeTimers();
+    let point={x:120,y:80},minimized=false,destroyed=false;
+    const win=Object.assign(new EventEmitter(),{isDestroyed:()=>destroyed,isMinimized:()=>minimized,getContentBounds:()=>({x:100,y:50,width:800,height:600}),webContents:{send:vi.fn()}});
+    watchPointerActivity(win,{getCursorScreenPoint:()=>point});
+    minimized=true;point={x:130,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).not.toHaveBeenCalled();
+    minimized=false;point={x:140,y:80};vi.advanceTimersByTime(100);expect(win.webContents.send).toHaveBeenCalledTimes(1);
+    destroyed=true;point={x:150,y:80};vi.advanceTimersByTime(100);expect(vi.getTimerCount()).toBe(0);
   });
 });
