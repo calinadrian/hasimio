@@ -1,5 +1,5 @@
 import {describe,it,expect,vi,afterEach} from 'vitest';
-import {parseVtt,srtToVtt,sourceTrackInfo,trackLabel,saveTrackSummary,defaultAudioTrack,audioAction} from './playback-tracks';
+import {parseVtt,srtToVtt,sourceTrackInfo,trackLabel,saveTrackSummary,defaultAudioTrack,audioAction,captionLines} from './playback-tracks';
 
 describe('subtitle and source track information',()=>{
   it('selects a file’s marked default dub even when it is not the first audio track',()=>{
@@ -48,5 +48,17 @@ describe('progressively extracted subtitles',()=>{
   });
   it('ignores comment blocks even when they contain arrows',()=>{
     expect(parseVtt('WEBVTT\n\nNOTE\n00:01.000 --> 00:03.000\nComment\n\n')).toEqual([]);
+  });
+});
+
+describe('caption markup',()=>{
+  it('keeps italic, bold and underline runs across lines and drops other tags',()=>{
+    expect(captionLines('<i>Where are you\ngoing?</i> <font color="#ff0">Home</font>').lines).toEqual([[{text:'Where are you',italic:true}],[{text:'going?',italic:true},{text:' '},{text:'Home'}]]);
+    expect(captionLines('<v Bob><b>Run</b> &amp; hide</v>').lines).toEqual([[{text:'Run',bold:true},{text:' & hide'}]]);
+  });
+  it('moves {\an8} cues to the top and removes other override blocks',()=>{
+    expect(captionLines(String.raw`{\an8}Sign text`)).toEqual({top:true,lines:[[{text:'Sign text'}]]});
+    expect(captionLines(String.raw`{\pos(10,20)}Hello\NWorld`)).toEqual({top:false,lines:[[{text:'Hello'}],[{text:'World'}]]});
+    expect(captionLines('<i></i>\n ').lines).toEqual([]);
   });
 });

@@ -3,7 +3,7 @@
 .cinema-player{--player-ink:#ededed;--player-muted:#bcbcbc;--player-accent:#e0e0e0;position:relative;isolation:isolate;width:100%;aspect-ratio:16/9;min-height:min(420px,calc(100dvh - 32px));max-height:calc(100dvh - 32px);overflow:hidden;background:#000000;color:var(--player-ink);font:16px/1.5 'DM Sans',sans-serif;border-radius:8px;outline-offset:-3px}
 .cinema-player:fullscreen{width:100%;height:100%;max-height:none;aspect-ratio:auto;border-radius:0}
 .cinema-player .cinema-video{display:block;width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:#000000;cursor:pointer}
-.cinema-video::cue{font-size:var(--caption-size,24px);color:#ffffff;background:rgba(0,0,0,.75)}
+.cinema-video::cue{color:transparent;background:transparent}
 .cinema-chrome{position:absolute;left:0;right:0;z-index:3;opacity:0;pointer-events:none;transition:opacity .2s ease}
 .controls-visible .cinema-chrome{opacity:1;pointer-events:auto}
 .cinema-player:not(.controls-visible){cursor:none}
@@ -85,3 +85,46 @@
 
 .cinema-menu .subtitle-file input::file-selector-button{min-height:44px}
 @media(max-height:500px) and (orientation:landscape) and (max-width:650px){.cinema-skip{display:none}}
+
+/* Subtitles: drawn over the visible picture and sized from it, so they scale with the player. */
+.cinema-captions{position:absolute;z-index:3;pointer-events:none;line-height:1.28;letter-spacing:.005em;font-kerning:normal;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+.cinema-caption-group{position:absolute;left:4%;right:4%;display:flex;flex-direction:column;align-items:center;gap:.25em;transition:bottom .22s ease,top .22s ease}
+.cinema-caption{margin:0;max-width:100%;text-align:center;text-wrap:balance;overflow-wrap:anywhere;border-radius:.16em;padding:.06em .38em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.cinema-caption-line{display:block}
+.cinema-captions.is-preview .cinema-caption{outline:1px dashed rgba(255,255,255,.28);outline-offset:.3em}
+.caption-section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.cinema-menu .caption-section-heading h4{display:flex;align-items:center;gap:7px;margin:0}
+.caption-section-heading>span{font-size:13px;color:var(--player-muted)}
+.caption-presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-bottom:20px}
+.caption-preset{position:relative;display:grid;gap:7px;padding:0 0 8px;border:1px solid #3e3e3e;border-radius:6px;background:#1a1a1a;color:var(--player-muted);font-size:12.5px;cursor:pointer;overflow:hidden;transition:border-color .15s,color .15s}
+.caption-preset:hover{border-color:#6a6a6a;color:var(--player-ink)}
+.cinema-player .caption-preset.selected{border-color:#e0e0e0;background:#1a1a1a;color:var(--player-ink)}
+.caption-preset-sample{display:grid;place-items:center;height:50px;background:linear-gradient(135deg,#4a5a6a,#2b2f36 55%,#6b5a48);font-size:21px;line-height:1.1}
+.caption-preset-sample>span{padding:.05em .3em;border-radius:.16em}
+.caption-preset-label{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.caption-preset-check{position:absolute;top:5px;right:5px;padding:2px;border-radius:50%;background:#e0e0e0;color:#141414;width:16px;height:16px}
+.caption-range-row{display:flex;align-items:center;gap:12px}
+.caption-range-row input{flex:1;min-width:0;height:32px;accent-color:var(--player-accent);cursor:pointer}
+.caption-range-row output{min-width:44px;text-align:right;font-size:14px;font-variant-numeric:tabular-nums;color:var(--player-muted)}
+.caption-customize{margin:0 0 16px;border:1px solid #3e3e3e;border-radius:6px;padding:0 14px}
+.caption-customize>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:15px;font-weight:500;list-style:none}
+.caption-customize>summary::-webkit-details-marker{display:none}
+.caption-customize>summary::after{content:'';margin-left:auto;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .15s}
+.caption-customize[open]>summary::after{transform:rotate(-135deg)}
+.caption-customize[open]{padding-bottom:14px}
+.caption-colors{display:flex;flex-wrap:wrap;gap:8px}
+.caption-colors>button,.caption-color-custom{width:30px;height:30px;border-radius:50%;border:2px solid #222222;box-shadow:0 0 0 1px #5e5e5e;cursor:pointer;padding:0}
+.cinema-player .caption-colors>button.selected{box-shadow:0 0 0 2px #e0e0e0}
+.caption-color-custom{position:relative;overflow:hidden;background:conic-gradient(#ff5f5f,#ffd84a,#7cff7c,#5fd4ff,#a87cff,#ff5f5f)}
+.caption-color-custom input{position:absolute;inset:-6px;opacity:0;cursor:pointer}
+.caption-toggle{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.45;color:var(--player-ink);cursor:pointer;margin:4px 0 0}
+.caption-toggle input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--player-accent);flex-shrink:0}
+.caption-reset{display:inline-flex;align-items:center;gap:6px;margin-top:6px}
+.caption-online-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cinema-menu .caption-online-status p{margin:0}
+.cinema-menu .caption-online-action{margin-bottom:6px}
+.cinema-menu .caption-online-active{display:flex;align-items:center;gap:7px;margin:0 0 6px;color:var(--player-ink);font-size:14px}
+.caption-online-current{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 4px 4px 12px;margin-bottom:14px;border-radius:5px;background:#2e2e2e;font-size:14px}
+.caption-online-current>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.caption-online-current .cinema-text-action{min-height:36px;padding:4px 8px}
+@media(prefers-reduced-motion:reduce){.cinema-caption-group{transition:none}}

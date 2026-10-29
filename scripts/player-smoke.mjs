@@ -86,8 +86,9 @@ try{
           await js('document.getElementById("switch-sub").click()');await sleep(150);
           const expected=i%2===0?'Spanish subtitle':'English subtitle';
           await until('Array.from(document.querySelector("video").textTracks[0].cues||[]).some(c=>c.text==='+JSON.stringify(expected)+')');
-          const cues=await js('Array.from(document.querySelector("video").textTracks).filter(t=>t.mode==="showing").flatMap(t=>Array.from(t.cues||[]).map(c=>c.text))');
+          const cues=await js('Array.from(document.querySelector("video").textTracks).filter(t=>t.mode==="hidden").flatMap(t=>Array.from(t.cues||[]).map(c=>c.text))');
           assert.deepEqual(cues,[expected],'Switching language must replace all previous cues');
+          await until('document.querySelector(".cinema-caption")?.textContent==='+JSON.stringify(expected));
         }
         await js('document.querySelector(".cinema-player").focus()');
         win.webContents.sendInputEvent({type:'keyDown',keyCode:'Left'});win.webContents.sendInputEvent({type:'keyUp',keyCode:'Left'});

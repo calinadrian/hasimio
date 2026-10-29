@@ -12,10 +12,12 @@ export function audioAction({ready,compatible,audioTracks,tracksError}:{ready:bo
   if(audioTracks?.length===0)return {action:'fail',message:'This file contains no embedded audio tracks. Choose another source.'};
   return {action:'start'};
 }
-const codes:Record<string,string>={eng:'en',jpn:'ja',spa:'es',fre:'fr',fra:'fr',ger:'de',deu:'de',ita:'it',por:'pt',rum:'ro',ron:'ro',chi:'zh',zho:'zh',kor:'ko',rus:'ru',hin:'hi',ara:'ar'};
+const codes:Record<string,string>={eng:'en',jpn:'ja',spa:'es',spn:'es',fre:'fr',fra:'fr',ger:'de',deu:'de',ita:'it',por:'pt',pob:'pt-BR',rum:'ro',ron:'ro',chi:'zh',zho:'zh',zht:'zh-Hant',kor:'ko',rus:'ru',hin:'hi',ara:'ar',dut:'nl',nld:'nl',pol:'pl',tur:'tr',gre:'el',ell:'el',heb:'he',swe:'sv',dan:'da',fin:'fi',nor:'no',cze:'cs',ces:'cs',hun:'hu',bul:'bg',hrv:'hr',scc:'sr',srp:'sr',slv:'sl',slo:'sk',slk:'sk',ukr:'uk',vie:'vi',tha:'th',ind:'id',may:'ms',msa:'ms',per:'fa',fas:'fa',est:'et',lav:'lv',lit:'lt',ice:'is',isl:'is',alb:'sq',sqi:'sq',mac:'mk',mkd:'mk',bos:'bs',cat:'ca',baq:'eu',eus:'eu',glg:'gl',ben:'bn',tam:'ta',tel:'te',mal:'ml',urd:'ur',kur:'ku',geo:'ka',kat:'ka',arm:'hy',hye:'hy'};
+export function sameLanguage(a:string,b:string){return (codes[a]||a)===(codes[b]||b);}
+export function languageName(code:string){try{return new Intl.DisplayNames(['en'],{type:'language'}).of(codes[code]||code)||code;}catch{return code;}}
 export function trackLabel(track:MediaTrack,kind='Audio'){
   let language=`${kind} track ${track.index+1}`;
-  if(track.language!=='und'){try{language=new Intl.DisplayNames(['en'],{type:'language'}).of(codes[track.language]||track.language)||language;}catch{language=track.language;}}
+  if(track.language!=='und')language=languageName(track.language);
   return `${language}${track.title&&track.title.toLowerCase()!==language.toLowerCase()?' · '+track.title:''} · ${track.codec}${track.default?' · Default':''}${track.supported===false?' · Image format (unsupported)':''}`;
 }
 export type TrackSummary={audio:number;subtitles:number;audioLanguages:string[];subtitleLanguages:string[]};
@@ -44,3 +46,21 @@ export function parseVtt(text:string){
   if(!text.endsWith('\n'))blocks.pop();
   return blocks.flatMap(block=>{if(/^(?:WEBVTT|NOTE|STYLE|REGION)(?:\s|$)/.test(block))return [];const lines=block.trimEnd().split('\n'),line=lines.findIndex(l=>l.includes('-->'));if(line<0)return [];const timing=lines[line].match(/^(\S+)\s+-->\s+(\S+)/);if(!timing)return [];const start=timestamp(timing[1]),end=timestamp(timing[2]),content=lines.slice(line+1).join('\n');return Number.isFinite(start)&&Number.isFinite(end)&&end>start&&content?[{start,end,text:content}]:[];});
 }
+export type CaptionSegment={text:string;italic?:boolean;bold?:boolean;underline?:boolean};
+// Turns cue markup into plain styled runs. Only italic, bold and underline survive; colours,
+// fonts and voice tags give way to the viewer's subtitle style. {\an7}–{\an9} move a cue to the top.
+export function captionLines(text:string){
+  const top=/\{\\an[789]\}/.test(text),lines:CaptionSegment[][]=[],state={italic:0,bold:0,underline:0};
+  for(const raw of text.replace(/\{\\[^}]*\}/g,'').replace(/<br\s*\/?>|\\N/gi,'\n').split('\n')){
+    const line:CaptionSegment[]=[];
+    for(const part of raw.split(/(<\/?[a-z][^>]*>)/i)){
+      const tag=/^<(\/?)([a-z]+)/i.exec(part);
+      if(tag){const key=({i:'italic',b:'bold',u:'underline'} as Record<string,keyof typeof state>)[tag[2].toLowerCase()];if(key)state[key]=Math.max(0,state[key]+(tag[1]?-1:1));continue;}
+      const value=part.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&');
+      if(value)line.push({text:value,...(state.italic?{italic:true}:{}),...(state.bold?{bold:true}:{}),...(state.underline?{underline:true}:{})});
+    }
+    if(line.some(segment=>segment.text.trim()))lines.push(line);
+  }
+  return {top,lines};
+}
+

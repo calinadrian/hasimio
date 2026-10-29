@@ -19,6 +19,7 @@ const engineVersion=(()=>{try {return JSON.parse(readFileSync(new URL('../packag
 import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks,audioRoot} from './compatible-audio.mjs';
 
 import {createSubtitleJob,subtitleStatus} from './subtitles.mjs';
+import {searchOnlineSubtitles,downloadOnlineSubtitle} from './online-subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
 import {inspectionStream} from './inspection-stream.mjs';
 
@@ -131,6 +132,14 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       if(req.method==='GET'&&url.pathname==='/api/extensions/titles/manifest.json')return json(res,200,titleIndexManifest);
       const titleRoute=/^\/api\/extensions\/titles\/(catalog|meta)\/(movie|series)\/([^/]+)(?:\/([^/]+))?\.json$/.exec(url.pathname);
       if(req.method==='GET'&&titleRoute){const [,resource,type,id,extras]=titleRoute;try{return json(res,200,resource==='catalog'?await titles.catalog(type,decodeURIComponent(id),Object.fromEntries(new URLSearchParams(extras??''))):await titles.meta(type,decodeURIComponent(id)));}catch(error){return json(res,error.status??502,{error:error.message});}}
+      if(req.method==='GET'&&url.pathname==='/api/subtitles/search'){
+        const id=url.searchParams.get('id')??'',filename=(url.searchParams.get('filename')??'').slice(0,300);
+        try{return json(res,200,await searchOnlineSubtitles(id,filename));}catch(e){return json(res,502,{error:e instanceof Error?e.message:'Online subtitles are unavailable.'});}
+      }
+      const onlineSubtitle=/^\/api\/subtitles\/files\/(\d{1,12})$/.exec(url.pathname);
+      if(req.method==='GET'&&onlineSubtitle){
+        try{const text=await downloadOnlineSubtitle(onlineSubtitle[1]);res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'private, max-age=86400','X-Content-Type-Options':'nosniff'});return res.end(text);}catch(e){return json(res,502,{error:e instanceof Error?e.message:'This subtitle could not be downloaded.'});}
+      }
       if(req.method==='POST'&&url.pathname==='/api/torrent-inspections'){
         if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});
         const input=await body(req);if(!validHash(input.infoHash))return json(res,400,{error:'A valid torrent info hash is required.'});
