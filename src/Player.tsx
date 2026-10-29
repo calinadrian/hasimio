@@ -21,7 +21,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   const resume=useRef(resumePosition(progressKey)),restoring=useRef(false),lastSave=useRef(0);
   const latestProgress=useRef<{position:number;duration:number;completed:boolean}|undefined>(undefined);
   const [scrubPosition,setScrubPosition]=useState<number>();
-  const subtitleRef=useRef<TextTrack|undefined>(undefined),lastActivity=useRef(0);
+  const subtitleRef=useRef<TextTrack|undefined>(undefined),lastActivity=useRef(0),hideAt=useRef(Infinity);
   const [cues,setCues]=useState<string[]>([]),[frame,setFrame]=useState<Frame>(),[chrome,setChrome]=useState({header:0,controls:Infinity});
   const [playing,setPlaying]=useState(false),[buffering,setBuffering]=useState(false),[position,setPosition]=useState(0),[duration,setDuration]=useState(0),[bufferEnd,setBufferEnd]=useState(0);
   const [volume,setVolume]=useState(()=>playerSettings().volume),[muted,setMuted]=useState(()=>playerSettings().muted),[rate,setRate]=useState(()=>playerSettings().rate),[fullscreen,setFullscreen]=useState(false);
@@ -35,7 +35,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   // Online backup subtitles are searched when the panel opens, or up front when they may load automatically.
   const needsOnline=captions.autoSubtitles&&!subtitle&&!!url&&embeddedSubtitleLanguages!==undefined&&!embeddedSubtitleLanguages.some(language=>sameLanguage(language,captions.subtitleLanguage));
   const online=useOnlineSubtitles(videoId,download?.filename||stream.filename,panel==='subtitles'||(needsOnline&&!autoOnline.current));
-  function reveal(){const now=performance.now();if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
+  function reveal(){const now=performance.now();hideAt.current=now+2500;if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
   function openPanel(next:Panel,button:HTMLButtonElement){trigger.current=button;setPanel(previous=>previous===next?undefined:next);reveal();}
   function persist(force=false){if(!progressKey||!latestProgress.current||(!force&&Date.now()-lastSave.current<2000))return;const p=latestProgress.current;saveProgress(progressKey,p.position,p.duration,{completed:p.completed,titleKey,videoId,episodeLabel});lastSave.current=Date.now();}
   function sync(){const video=videoRef.current;if(!video)return;const position=(video.currentTime||0)+timeOffset,duration=timelineDuration(video.duration+timeOffset,durationHint,video.seekable.length?video.seekable.end(video.seekable.length-1)+timeOffset:0);setPosition(position);setDuration(duration);setBufferEnd(video.buffered.length?video.buffered.end(video.buffered.length-1)+timeOffset:0);if(!restoring.current&&!loading&&video.readyState>=2&&!video.seeking&&video.currentTime>0){latestProgress.current={position,duration,completed:video.ended};persist();}}
@@ -54,7 +54,10 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   // Buffering comes and goes while a torrent fills its buffer; it must not pop
   // the controls back up over a still cursor. Pausing, focusing or opening a
   // panel does show them.
-  useEffect(()=>{if(panel||focused||!playing){setVisible(true);return;}if(buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),3000);return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
+  // Controls hide 2.5s after the last reveal. Buffering, focus or an open panel can postpone hiding, but
+  // leaving them must not restart the countdown: torrent streams buffer often, and each restart would keep
+  // the controls up long after the cursor stopped.
+  useEffect(()=>{if(panel||focused||!playing){setVisible(true);hideAt.current=Infinity;return;}if(buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),hideAt.current===Infinity?2500:Math.max(0,hideAt.current-performance.now()));return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
   // Subtitles follow the visible picture (object-fit: contain), not the letterboxed player.
   function measure(){const box=root.current,video=videoRef.current;if(!box||!video)return;const width=box.clientWidth,height=box.clientHeight,ratio=video.videoWidth&&video.videoHeight?video.videoWidth/video.videoHeight:16/9,w=Math.min(width,height*ratio),h=w/ratio,rect=box.getBoundingClientRect();
     setFrame(previous=>previous&&Math.abs(previous.width-w)<0.5&&Math.abs(previous.height-h)<0.5&&Math.abs(previous.top-(height-h)/2)<0.5?previous:{left:(width-w)/2,top:(height-h)/2,width:w,height:h});
@@ -66,9 +69,10 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   // is ignored there so layout changes under a still cursor cannot wake the controls. Browsers keep DOM events.
   useEffect(()=>{
     const inside=(x:number,y:number)=>{const box=root.current?.getBoundingClientRect();return !!box&&x>=box.left&&x<=box.right&&y>=box.top&&y<=box.bottom;};
-    // The main process already limits reports to the window (and to the whole display in fullscreen),
-    // so any report is a hover. Comparing coordinates here could drop movement on zoomed or scaled screens.
-    if(desktopPointer?.onPlayerPointer)return desktopPointer.onPlayerPointer(()=>reveal());
+    // The main process reports movement over the window (and over the whole display in fullscreen), so the
+    // player still ignores the rest of the app around its dialog. Fullscreen skips the test in case page
+    // zoom or display scaling makes the reported point disagree with the player's rect.
+    if(desktopPointer?.onPlayerPointer)return desktopPointer.onPlayerPointer(point=>{if(!point||inside(point.x,point.y)||document.fullscreenElement===root.current)reveal();});
     let last='';const move=(event:MouseEvent)=>{const at=event.clientX+':'+event.clientY;if(at===last)return;last=at;if(inside(event.clientX,event.clientY))reveal();};
     window.addEventListener('pointermove',move,{capture:true,passive:true});window.addEventListener('mousemove',move,{capture:true,passive:true});
     return()=>{window.removeEventListener('pointermove',move,true);window.removeEventListener('mousemove',move,true);};
