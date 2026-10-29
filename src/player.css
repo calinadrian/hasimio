@@ -6,8 +6,9 @@
 .cinema-video::cue{color:transparent;background:transparent}
 .cinema-chrome{position:absolute;left:0;right:0;z-index:3;opacity:0;pointer-events:none;transition:opacity .2s ease}
 .controls-visible .cinema-chrome{opacity:1;pointer-events:auto}
-/* A transparent image cursor rather than cursor:none, which some Windows/Chromium setups stop reporting moves for. */
-.cinema-player:not(.controls-visible){cursor:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=") 0 0,none}
+/* Hide the pointer with a 1x1 cursor that is 1/255 opaque. With cursor:none or a fully transparent image, Chromium on
+   Windows drops small mouse moves in fullscreen, so moving the mouse would not bring the controls back. */
+.cinema-player:not(.controls-visible){cursor:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgBAAABgACpSjotQAAAABJRU5ErkJggg==") 0 0,none}
 .cinema-player:not(.controls-visible) .cinema-video{cursor:inherit}
 .cinema-top{top:0;display:flex;align-items:center;gap:16px;padding:22px 24px 52px;background:linear-gradient(180deg,rgba(0,0,0,.95),rgba(0,0,0,.6) 60%,transparent)}
 .cinema-title{min-width:0;flex:1}
