@@ -1,5 +1,11 @@
 # Hasimio
 
+Episode watch controls use compact **Watched / Unwatched** pairs for **All seasons** and the currently displayed season. Season actions include Specials when selected, leave other seasons alone, and support Undo.
+
+Progress supports **Import TV Time ZIP**. Preview watched-episode history from a TV Time personal-data export, review exact show matches or enter an IMDb ID, then merge without overwriting existing Hasimio progress. Re-importing does not duplicate episodes. Account and token CSVs are not read.
+
+EXT is available as an optional playback source, off by default because its browser verification currently blocks automated HTTP access. The standalone development flow in [scripts/browser-auth.md](scripts/browser-auth.md) supports manual verification and persistent Playwright state, but is not connected to playback requests.
+
 TorrentClaw supplies movie and series discovery, title search, metadata and episode lists through its documented `https://torrentclaw.com/api/v1/search` API. These catalogs are independent of the local IMDb index and its vote threshold. IMDb IDs are shared with other providers; titles without one use TMDB IDs. Episode details come from TorrentClaw’s season metadata, falling back to known torrent episode numbers when unavailable. Playback searches match exact IDs and episodes; season packs remain excluded from playback. API responses are cached for five minutes and HTTP errors are reported.
 
 TorrentClaw is off by default; turn it on in Extensions. Its network refuses connections from some IP addresses with HTTP 403, and the source then shows that error. Anonymous use has low, IP-based rate limits. To use a TorrentClaw API key, set `HASIMIO_TORRENTCLAW_API_KEY` for the engine; it is sent as `Authorization: Bearer <key>`. Run `npm run test:torrentclaw` to check live access from your computer.

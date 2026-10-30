@@ -1,3 +1,4 @@
+import {extManifest,searchExt} from './ext.mjs';
 import {createLiveTv} from './live-tv.mjs';
 import {createPeopleIndex} from './people.mjs';
 import {createActorPhotos} from './people-photos.mjs';
@@ -156,6 +157,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       }
       if(req.method==='GET'&&url.pathname==='/api/extensions/piratebay/manifest.json')return json(res,200,pirateBayManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/yts/manifest.json')return json(res,200,ytsManifest);
+      if(req.method==='GET'&&url.pathname==='/api/extensions/ext/manifest.json')return json(res,200,extManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/eztv/manifest.json')return json(res,200,eztvManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/torrentdownloads/manifest.json')return json(res,200,torrentDownloadsManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/torrentclaw/manifest.json')return json(res,200,torrentClawManifest);
@@ -170,11 +172,11 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
         }
         try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}
       }
-      const source=/^\/api\/extensions\/(piratebay|yts|eztv|torrentdownloads|torrentclaw|torrentio|comet)\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
+      const source=/^\/api\/extensions\/(piratebay|yts|eztv|ext|torrentdownloads|torrentclaw|torrentio|comet)\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
       if(req.method==='GET'&&source){
         const [,provider,type,encoded]=source,id=decodeURIComponent(encoded),key=`${provider}:${type}:${id}`;let item=searches.get(key);
         if(!item||item.expires<Date.now()){
-          const promise=['torrentio','comet'].includes(provider)?searchStremioSource(provider,type,id,fetchImpl):provider==='torrentclaw'?searchTorrentClaw(type,id,fetchImpl):provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,lookupTitle):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,lookupTitle);
+          const promise=provider==='ext'?searchExt(type,id,fetchImpl,lookupTitle):['torrentio','comet'].includes(provider)?searchStremioSource(provider,type,id,fetchImpl):provider==='torrentclaw'?searchTorrentClaw(type,id,fetchImpl):provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,lookupTitle):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,lookupTitle);
           item={expires:Date.now()+5*60*1000,promise};searches.set(key,item);item.promise.catch(()=>searches.delete(key));
         }
         try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}

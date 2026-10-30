@@ -1,7 +1,7 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata, topResults} from './catalogs';
 import {calendarEvents, nextRelease, releaseCountdown, defaultEpisode, episodeLabel, supports, type Meta} from './media';
-import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource,torrentClaw,addTorrentClawSource,torrentio,comet,addStremioSource,sourceMigrations} from './catalogs';
+import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource,torrentClaw,addTorrentClawSource,torrentio,comet,addStremioSource,sourceMigrations,ext} from './catalogs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
 const enabledClaw = {...torrentClaw,enabled:true};
 afterEach(() => vi.unstubAllGlobals());
@@ -9,10 +9,11 @@ describe('default catalogs and anime discovery', () => {
   it('runs each one-time source addition under its own flag, preserving later removals',()=>{
     const flags=sourceMigrations.map(([flag])=>flag);
     expect(new Set(flags).size).toBe(flags.length);
-    expect(flags).toEqual(['hasimio:piratebay-v1','hasimio:yts-v1','hasimio:eztv-v1','hasimio:torrentdownloads-v1','hasimio:torrentclaw-v1','hasimio:titles-v1','hasimio:torrentio-v1','hasimio:comet-v1']);
+    expect(flags).toEqual(['hasimio:piratebay-v1','hasimio:yts-v1','hasimio:eztv-v1','hasimio:torrentdownloads-v1','hasimio:torrentclaw-v1','hasimio:titles-v1','hasimio:torrentio-v1','hasimio:comet-v1','hasimio:ext-v1']);
     const migrated=sourceMigrations.reduce((existing,[,apply])=>apply(existing),[] as typeof defaultAddons);
-    expect(migrated.map(a=>a.manifest.id)).toEqual([pirateBay,yts,eztv,torrentDownloads,torrentClaw,titles,torrentio,comet].map(a=>a.manifest.id));
+    expect(migrated.map(a=>a.manifest.id)).toEqual([pirateBay,yts,eztv,torrentDownloads,torrentClaw,titles,torrentio,comet,ext].map(a=>a.manifest.id));
     expect(migrated.find(a=>a.manifest.id===torrentClaw.manifest.id)?.enabled).toBe(false);
+    expect(migrated.find(a=>a.manifest.id===ext.manifest.id)?.enabled).toBe(false);
   });
   it('adds Torrentio and Comet once, preserving configured and disabled sources',()=>{
     expect(defaultAddons).toContain(torrentio);expect(defaultAddons).toContain(comet);

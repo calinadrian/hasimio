@@ -5,7 +5,7 @@ import {episodesBefore,progressKey,type ProgressMap} from './playback-progress';
 
 const visibleEpisodes=10;
 const seasonName=(season:number|undefined)=>season==null?'Episodes':season===0?'Specials':`Season ${season}`;
-export default function EpisodeList({meta,episode,history,onSelect,onToggleWatched,onMarkPrevious,onMarkAll}:{meta:Meta;episode?:string;history:ProgressMap;onSelect:(id:string)=>void;onToggleWatched:(id:string,watched:boolean)=>void;onMarkPrevious:(id:string)=>void;onMarkAll:()=>void}){
+export default function EpisodeList({meta,episode,history,onSelect,onToggleWatched,onMarkPrevious,onMarkAll,onMarkAllUnwatched,onMarkSeason}:{meta:Meta;episode?:string;history:ProgressMap;onSelect:(id:string)=>void;onToggleWatched:(id:string,watched:boolean)=>void;onMarkPrevious:(id:string)=>void;onMarkAll:()=>void;onMarkAllUnwatched:()=>void;onMarkSeason:(season:number|undefined,watched:boolean)=>void}){
   const episodes=meta.videos?.filter(v=>v.episode!=null)??[];
   // Specials sort after the numbered seasons, as most providers list them.
   const seasons=[...new Set(episodes.map(v=>v.season))].sort((a,b)=>(a===0?Infinity:a??-1)-(b===0?Infinity:b??-1));
@@ -30,7 +30,8 @@ export default function EpisodeList({meta,episode,history,onSelect,onToggleWatch
   const unwatchedBefore=(id:string)=>episodesBefore(meta,id).filter(v=>!history[progressKey(meta.type,v.id)]?.completed).length;
   const unmarked=previous.filter(v=>!history[progressKey(meta.type,v.id)]?.completed).length;
   const promptVideo=prompt?episodes.find(v=>v.id===prompt.id):undefined,promptCount=promptVideo?unwatchedBefore(promptVideo.id):0;
-  const allWatched=episodes.every(v=>history[progressKey(meta.type,v.id)]?.completed);
+  const allWatched=episodes.every(v=>history[progressKey(meta.type,v.id)]?.completed),allUnwatched=!episodes.some(v=>history[progressKey(meta.type,v.id)]?.completed);
+  const seasonWatched=!inSeason.length||inSeason.every(v=>history[progressKey(meta.type,v.id)]?.completed),seasonUnwatched=!inSeason.some(v=>history[progressKey(meta.type,v.id)]?.completed);
   function changeWatched(video:Video,watched:boolean) {
     onToggleWatched(video.id,watched);
     // Checking an episode offers to catch up everything before it, as TV Time does.
@@ -39,7 +40,10 @@ export default function EpisodeList({meta,episode,history,onSelect,onToggleWatch
   function markPrevious(id:string) {onMarkPrevious(id);setPrompt(undefined);}
   return <section className="episode-list" aria-label="Episodes">
     <div className="episode-list-heading"><h3>Episodes</h3>{seasons.length>1&&seasons.length<=6&&<div className="season-tabs" role="group" aria-label="Season">{seasons.map(s=><button key={s??'none'} type="button" aria-pressed={s===season} title={`${count(s)} ${count(s)===1?'episode':'episodes'}`} onClick={()=>setSeason(s)}>{seasonName(s)}</button>)}</div>}{seasons.length>6&&<select aria-label="Season" value={season??''} onChange={e=>setSeason(e.target.value===''?undefined:Number(e.target.value))}>{seasons.map(s=><option key={s??'none'} value={s??''}>{seasonName(s)} ({count(s)} {count(s)===1?'episode':'episodes'})</option>)}</select>}</div>
-    <div className="episode-bulk"><span>{allWatched?'All episodes watched':'Across all seasons'}</span><button type="button" disabled={allWatched} onClick={()=>{onMarkAll();setPrompt(undefined);}}>Mark all as watched</button></div>
+    <div className="episode-bulk-controls">
+      <div className="episode-bulk episode-bulk-scope" role="group" aria-label="All seasons watch status"><span title={allWatched?'All episodes watched':allUnwatched?'No episodes watched':'Some episodes watched'}>All seasons</span><div className="episode-bulk-actions"><button type="button" aria-label="Mark all episodes as watched" disabled={allWatched} onClick={()=>{onMarkAll();setPrompt(undefined);}}>Watched</button><button type="button" aria-label="Mark all episodes as unwatched" disabled={allUnwatched} onClick={()=>{onMarkAllUnwatched();setPrompt(undefined);}}>Unwatched</button></div></div>
+      <div className="episode-bulk episode-bulk-scope" role="group" aria-label={`${seasonName(season)} watch status`}><span>{seasonName(season)}</span><div className="episode-bulk-actions"><button type="button" aria-label={`Mark ${seasonName(season)} as watched`} disabled={seasonWatched} onClick={()=>{onMarkSeason(season,true);setPrompt(undefined);}}>Watched</button><button type="button" aria-label={`Mark ${seasonName(season)} as unwatched`} disabled={seasonUnwatched} onClick={()=>{onMarkSeason(season,false);setPrompt(undefined);}}>Unwatched</button></div></div>
+    </div>
     {promptVideo&&promptCount>0?<div className="episode-bulk episode-prompt" role="group" aria-label="Mark earlier episodes as watched"><span role="status"><strong>{promptCount}</strong> earlier {promptCount===1?'episode is':'episodes are'} not watched. Mark {promptCount===1?'it':'them'} as watched too?</span><div className="episode-prompt-actions"><button type="button" className="primary" onClick={()=>markPrevious(promptVideo.id)}>Mark {promptCount===1?'it':'them'}</button><button type="button" onClick={()=>setPrompt(undefined)}>Not now</button></div></div>:selectedVideo&&unmarked>0?<div className="episode-bulk"><span><strong>{unmarked}</strong> earlier {unmarked===1?'episode':'episodes'} not watched</span><button type="button" aria-label={`Mark ${unmarked} earlier ${unmarked===1?'episode':'episodes'} as watched`} title={`Mark every episode before ${episodeLabel(meta,selectedVideo)} as watched`} onClick={()=>markPrevious(selectedVideo.id)}>Mark previous as watched</button></div>:null}
     <ol>{shown.map(v=>{
       const progress=history[progressKey(meta.type,v.id)],countdown=v.released?releaseCountdown(v.released,now):undefined;

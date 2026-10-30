@@ -106,6 +106,10 @@
 .episode-bulk button{min-height:44px;padding:6px 12px;border-radius:4px;background:#3a3a3a;color:#ededed;font-size:14px;font-weight:600}
 .episode-bulk button:disabled{opacity:.5;cursor:default}
 .episode-bulk button:hover{background:#484848}
+.episode-bulk-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.episode-bulk-scope{justify-content:flex-start;flex:1 1 330px;margin-bottom:0;gap:8px 12px}
+.episode-bulk-scope>span{min-width:88px}
+.episode-bulk-actions{display:flex;gap:8px;flex-wrap:wrap}
 .episode-prompt{align-items:flex-start;border-color:#5e5e5e;background:#2e2e2e}
 .episode-prompt>span{flex:1 1 220px;line-height:1.5}
 .episode-prompt-actions{display:flex;gap:8px;flex-wrap:wrap}

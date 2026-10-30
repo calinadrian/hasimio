@@ -27,6 +27,9 @@ export const torrentDownloads:Addon={url:'/api/extensions/torrentdownloads/manif
 export function addTorrentDownloadsSource(existing:Addon[]) {
   return existing.some(a=>a.manifest.id===torrentDownloads.manifest.id||a.url===torrentDownloads.url)?existing:[...existing,torrentDownloads];
 }
+// EXT requires manual browser verification; keep it optional until browser playback access is integrated.
+export const ext:Addon={url:'/api/extensions/ext/manifest.json',enabled:false,manifest:{id:'org.hasimio.ext',name:'EXT',version:'1.0.0',description:'Movie and series torrents from ext.to. Availability depends on EXT’s browser verification.',resources:['stream'],types:['movie','series'],idPrefixes:['tt'],catalogs:[]}};
+export function addExtSource(existing:Addon[]){return existing.some(a=>a.manifest.id===ext.manifest.id||a.url===ext.url)?existing:[...existing,ext];}
 // Off by default: TorrentClaw's network refuses some connections (HTTP 403), so users opt in from Extensions.
 export const torrentClaw:Addon={url:'/api/extensions/torrentclaw/manifest.json',enabled:false,manifest:torrentClawManifest};
 export function addTorrentClawSource(existing:Addon[]) {
@@ -45,7 +48,7 @@ export function migrateAnimeSource(existing:Addon[]) {
   return existing.map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
     .filter((a,index,all) => all.findIndex(other=>other.manifest.id === a.manifest.id) === index);
 }
-export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw,torrentio,comet];
+export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw,torrentio,comet,ext];
 // Sources served by Hasimio itself. Synced records may use these non-HTTP URLs.
 export const builtinSourceUrls = defaultAddons.map(a => a.url).filter(url => !/^https?:/.test(url));
 // One-time additions for existing installations, applied in order. A flag is set once, so later removals are preserved.
@@ -53,7 +56,7 @@ export const sourceMigrations:[flag:string,apply:(existing:Addon[])=>Addon[]][] 
   ['hasimio:piratebay-v1',existing => existing.some(a => a.manifest.id === pirateBay.manifest.id) ? existing : [...existing,pirateBay]],
   ['hasimio:yts-v1',addYtsSource],['hasimio:eztv-v1',addEztvSource],['hasimio:torrentdownloads-v1',addTorrentDownloadsSource],
   ['hasimio:torrentclaw-v1',addTorrentClawSource],['hasimio:titles-v1',replaceCinemeta],
-  ['hasimio:torrentio-v1',existing=>addStremioSource(existing,torrentio)],['hasimio:comet-v1',existing=>addStremioSource(existing,comet)],
+  ['hasimio:torrentio-v1',existing=>addStremioSource(existing,torrentio)],['hasimio:comet-v1',existing=>addStremioSource(existing,comet)],['hasimio:ext-v1',addExtSource],
 ];
 export function addDefaultCatalogs(existing: Addon[]) {
   return [...existing,...[titles,kitsu].filter(source => !existing.some(a => a.manifest.id === source.manifest.id || a.url === source.url))];

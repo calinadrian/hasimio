@@ -11,7 +11,7 @@
     "url": "https://github.com/calinadrian/hasimio.git"
   },
   "main": "electron/main.mjs",
-  "version": "0.1.35",
+  "version": "0.1.36",
   "private": true,
   "type": "module",
   "scripts": {
@@ -32,7 +32,8 @@
     "test:audio-sync": "node scripts/audio-sync-smoke.mjs",
     "test:torrentclaw": "node scripts/torrentclaw-smoke.mjs",
     "test:inspections": "node scripts/inspection-smoke.mjs",
-    "test:player": "node scripts/player-smoke.mjs"
+    "test:player": "node scripts/player-smoke.mjs",
+    "auth:ext": "node scripts/ext-auth.mjs"
   },
   "dependencies": {
     "electron-updater": "^6.8.11",
@@ -50,6 +51,7 @@
     "hls.js": "^1.7.3",
     "js-yaml": "^4.3.2",
     "lucide-react": "^0.468.0",
+    "playwright": "^1.64.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "typescript": "~5.9.3",
