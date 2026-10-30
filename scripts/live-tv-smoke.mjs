@@ -52,7 +52,27 @@ async function run({url,profile,shots,live}){
     await fs.writeFile(shots+'/live-tv-mobile.png',(await win.webContents.capturePage(undefined,{stayHidden:true})).toPNG());
     await click('[...document.querySelectorAll(".live-tv-actions button")].find(e=>e.textContent==="Stop")');
     assert.equal(await js('document.querySelectorAll(".live-tv-video").length'),0,'Stop removes video and HLS session');
-    console.log(`PASS: ${live?'Actual channel':'Generated HLS fixture'} decoded ${video.width}x${video.height}; native video only, both servers, Stop, no website button, mobile layout.`);
+    for(const [index,name,servers] of [[1,'A1',2],[2,'TLC',1]]){
+      await js(`(()=>{const s=document.querySelector('.live-tv-channel-picker select');s.value='${index}';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+      await wait(`document.querySelector('.live-tv-channel-title h2')?.textContent==='${name}'`);
+      assert.equal(await js('document.querySelectorAll(".live-tv-video").length'),0,'Changing channels stops the previous player');
+      assert.equal(await js('document.querySelector(".live-tv-server select").value'),'0','Channel starts with first server');
+      assert.equal(await js('document.querySelector(".live-tv-server select").options.length'),servers);
+      for(let server=0;server<servers;server++){
+        if(server===0)await click('document.querySelector(".live-tv-idle .primary")');
+        else{
+          await js(`(()=>{window.previousLiveVideo=document.querySelector('.live-tv-video');const s=document.querySelector('.live-tv-server select');s.value='${server}';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+          await wait('document.querySelector(".live-tv-video")!==window.previousLiveVideo');
+        }
+        await wait('document.querySelector(".live-tv-video")?.readyState>=3');
+        await js('document.querySelector(".live-tv-video").play()');
+        await wait('document.querySelector(".live-tv-video")?.currentTime>0.5');
+      }
+      assert.equal(await js('document.documentElement.scrollWidth<=innerWidth'),true,'Channel picker fits mobile');
+      win.webContents.invalidate();await new Promise(r=>setTimeout(r,250));
+      await fs.writeFile(shots+'/live-tv-'+name.toLowerCase()+'.png',(await win.webContents.capturePage(undefined,{stayHidden:true})).toPNG());
+    }
+    console.log(`PASS: ${live?'Actual broadcasts':'Generated HLS fixture'} decoded; Cartoon Network and A1 both servers, TLC, channel switching, Stop, native video only, mobile layout.`);
     app.exit(0);
   }catch(error){console.error(error);console.error(await js('document.querySelector(".live-tv-stage")?.textContent'));app.exit(1);}
 }

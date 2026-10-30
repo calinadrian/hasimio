@@ -1,5 +1,7 @@
 .live-tv-page{width:100%;max-width:1440px}
 .live-tv-page>.section-intro{margin-bottom:28px}
+.live-tv-channel-picker{display:flex;align-items:center;gap:12px;margin-bottom:24px;font-size:14px;color:var(--muted)}
+.live-tv-channel-picker select{min-height:46px;max-width:100%;padding:10px 36px 10px 12px;background:var(--field);color:var(--text);border:1px solid var(--field-border);border-radius:var(--radius-control);font:inherit}
 .live-tv-heading{display:flex;align-items:center;gap:16px;margin-bottom:20px}
 .live-tv-channel-icon{display:grid;place-items:center;width:52px;height:52px;flex-shrink:0;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--panel);color:var(--text)}
 .live-tv-channel-title{min-width:0}

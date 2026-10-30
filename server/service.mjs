@@ -111,10 +111,10 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     if(!localRequest(req,undefined,allowedOrigins))return json(res,403,{error:'Streaming requests must come from this app on localhost, this PC’s private LAN address, or an allowed Hasimio site.'});
     for(const [name,value] of Object.entries(corsHeaders(req,allowedOrigins)))res.setHeader(name,value);
     try {
-      const liveRoute=/^\/api\/live-tv\/cartoon-network\/(main|alternative)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
+      const liveRoute=/^\/api\/live-tv\/(cartoon-network|a1|tlc)\/(main|alternative)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
       if(req.method==='GET'&&liveRoute){
         const controller=new AbortController();const cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
-        try{const output=await liveTv.resource(liveRoute[1],liveRoute[2].replace('asset/',''),controller.signal);res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);}
+        try{const output=await liveTv.resource(liveRoute[1],liveRoute[2],liveRoute[3].replace('asset/',''),controller.signal);res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);}
         catch(error){if(!controller.signal.aborted)json(res,error.status??502,{error:error.message});}
         finally{res.removeListener('close',cancel);}return;
       }
