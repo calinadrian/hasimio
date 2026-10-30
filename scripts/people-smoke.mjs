@@ -10,6 +10,9 @@ const require=createRequire(import.meta.url),folder=path.resolve('.cache/people-
 const person={id:'nm1',name:'Bryan Cranston',titles:24};
 const vite=await createServer({configFile:false,plugins:[react(),{name:'people-fixture',configureServer(server){server.middlewares.use((req,res,next)=>{
   if(!req.url.startsWith('/api/people/'))return next();
+  if(req.url==='/api/people/test-photo.svg'){res.setHeader('Content-Type','image/svg+xml');return res.end('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280"><rect width="200" height="280" fill="#777"/></svg>');}
+  if(req.url.startsWith('/api/people/photos?')){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({photos:{nm1:{image:'http://'+req.headers.host+'/api/people/test-photo.svg',source:'https://commons.wikimedia.org/wiki/File:Example.jpg',credit:'Test photographer',license:'CC BY-SA 4.0'},nm2:{image:'http://'+req.headers.host+'/api/people/missing-photo.svg',source:'https://commons.wikimedia.org/wiki/File:Missing.jpg'}}}));}
+  if(req.url==='/api/people/missing-photo.svg'){res.statusCode=404;return res.end('Missing');}
   res.setHeader('Content-Type','application/json');const url=new URL(req.url,'http://fixture');
   if(url.pathname.includes('/cast'))return res.end(JSON.stringify({cast:[{...person,role:'Walter White'},{id:'nm2',name:'Aaron Paul',role:'Jesse Pinkman'}]}));
   if(url.pathname.endsWith('/search'))return res.end(JSON.stringify({people:[person]}));
@@ -28,10 +31,15 @@ async function run({url,folder}){
     await click('document.querySelector(\'.nav-item[aria-label="Library"]\')');await wait('!!document.querySelector(".poster-card")');
     await click('document.querySelector(".poster-card")');await wait('document.querySelectorAll(".person-button").length===2');
     assert.match(await js('document.querySelector(".people-section").textContent'),/Walter White/);
+    await wait('document.querySelector(".person-avatar img")?.naturalWidth>0');
+    await wait('document.querySelectorAll(".person-avatar img")[1]?.style.display==="none"');
+    await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
     await fs.writeFile(folder+'/cast.png',(await win.webContents.capturePage()).toPNG());
     await click('document.querySelector(".person-button")');await wait('document.querySelector(".actor-page h1")?.textContent==="Bryan Cranston"');
     await wait('document.querySelectorAll(".actor-page .poster-card").length===12');
     assert.equal(await js('document.querySelector("dialog").open'),false);
+    await wait('document.querySelector(".person-avatar-large img")?.naturalWidth>0');
+    assert.match(await js('document.querySelector(".actor-photo-credit").textContent'),/Test photographer/);
     await js('(()=>{const select=document.querySelector(\'[aria-label="Filter actor titles"]\');select.value="series";select.dispatchEvent(new Event("change",{bubbles:true}));})()');
     await wait('document.querySelector(".actor-page .poster-card>span")?.textContent.includes("Series")');
     await fs.writeFile(folder+'/actor.png',(await win.webContents.capturePage()).toPNG());

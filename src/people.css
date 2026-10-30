@@ -3,7 +3,13 @@
 .people-list{display:flex;gap:10px;overflow:auto;padding:3px 0 8px;overscroll-behavior-x:contain;scrollbar-width:thin}
 .person-button{display:flex;align-items:center;gap:12px;flex:0 0 220px;min-width:0;padding:12px;text-align:left;background:#242424;color:#ededed;border-radius:12px}
 .person-button:hover{background:#303030}
-.person-avatar{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:50%;background:#373737;color:#c7c7c7}
+.person-avatar{position:relative;display:grid;place-items:center;width:48px;height:48px;flex-shrink:0;border-radius:50%;overflow:hidden;background:#373737;color:#c7c7c7}
+.person-avatar img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center 25%}
+.person-avatar-large{width:80px;height:80px}
+.actor-heading{display:flex;align-items:center;gap:18px;min-width:0}
+.actor-heading>div{min-width:0}
+.actor-photo-credit{display:block;font-size:12px;line-height:1.5;color:#bcbcbc;margin-top:6px;max-width:60ch}
+.actor-photo-credit:hover{text-decoration:underline;text-underline-offset:3px}
 .person-button>span:last-child{display:flex;flex-direction:column;gap:5px;min-width:0}
 .person-button strong{font-size:14px;line-height:1.5}
 .person-button small{font-size:12px;line-height:1.5;color:#bcbcbc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

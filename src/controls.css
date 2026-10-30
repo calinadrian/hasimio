@@ -31,6 +31,9 @@
 :root :is(.episode-more,.toast-action):hover{background:var(--control-hover)}
 :root :is(button,select,summary):focus-visible{outline:2px solid #dedede;outline-offset:3px}
 :root button:disabled{cursor:default}
+/* Use a simple rounded thumb instead of Windows scrollbar arrow buttons. */
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+::-webkit-scrollbar-thumb{border-radius:10px}
 
 /* Native form semantics remain intact, including labels, type-ahead, arrows,
    Escape, change events and fullscreen/top-layer behavior. */
@@ -44,7 +47,11 @@
   :root select:not([multiple]){gap:20px;align-items:center;white-space:nowrap;overflow:clip;text-overflow:ellipsis}
   :root select::picker-icon{color:#c7c7c7;font-size:12px;margin-left:auto;transition:rotate .15s}
   :root select:open::picker-icon{rotate:180deg}
-  :root select:not([multiple])::picker(select){margin-block:6px;padding:6px;max-block-size:min(360px,60dvh);max-inline-size:min(440px,calc(100vw - 24px));overflow:auto;border:1px solid #4b4b4b;border-radius:16px;background:#292929;color:#ededed;font:inherit;font-size:14px;box-shadow:0 12px 36px #0008;scrollbar-width:thin;scrollbar-color:#666 transparent}
+  :root select:not([multiple])::picker(select){margin-block:6px;padding:8px;max-block-size:min(360px,60dvh);max-inline-size:min(440px,calc(100vw - 24px));overflow:auto;overscroll-behavior:contain;border:1px solid #4b4b4b;border-radius:16px;background:#292929;color:#ededed;font:inherit;font-size:14px;box-shadow:0 12px 36px #0008;scrollbar-width:auto;scrollbar-color:auto}
+  select::picker(select)::-webkit-scrollbar{width:8px;height:8px}
+  select::picker(select)::-webkit-scrollbar-track{margin-block:12px;background:transparent}
+  select::picker(select)::-webkit-scrollbar-thumb{background:#686868;border:2px solid transparent;background-clip:padding-box;border-radius:10px}
+  select::picker(select)::-webkit-scrollbar-button{display:none;width:0;height:0}
   :root select option{display:flex;align-items:center;gap:12px;min-height:38px;padding:8px 12px;border-radius:9px;background:transparent;color:#ededed;font-size:14px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
   :root select option:checked{background:#3d3d3d;color:#fff;font-weight:600}
   :root select option:is(:hover,:focus){background:#494949;color:#fff;outline:none}

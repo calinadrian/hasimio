@@ -1,5 +1,6 @@
 import {createLiveTv} from './live-tv.mjs';
 import {createPeopleIndex} from './people.mjs';
+import {createActorPhotos} from './people-photos.mjs';
 import {stremioManifests} from '../shared/stremio-sources.mjs';
 import {searchStremioSource} from './stremio-sources.mjs';
 import {randomBytes} from 'node:crypto';
@@ -43,6 +44,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   const skipSegments=createSkipSegmentLookup({fetchImpl});
   const liveTv=createLiveTv({fetchImpl});
   const people=createPeopleIndex({dir:cacheDir('people'),titleRows:()=>titles.peopleRows(),fetchImpl});
+  const actorPhotos=createActorPhotos({dir:cacheDir('people'),fetchImpl});
   const lookupTitle=id=>titles.title(id);
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
@@ -181,6 +183,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
         try{
           if(req.method==='POST'&&url.pathname==='/api/people/retry'){void people.refresh();return json(res,202,{state:'building'});}
           if(req.method!=='GET')return json(res,405,{error:'Method not allowed.'});
+          if(url.pathname==='/api/people/photos')return json(res,200,await actorPhotos.photos((url.searchParams.get('ids')??'').split(',')));
           if(url.pathname==='/api/people/search')return json(res,200,await people.search((url.searchParams.get('q')??'').slice(0,200)));
           if(url.pathname==='/api/people/status')return json(res,200,people.status());
           const cast=/^\/api\/people\/title\/(tt\d+)\/cast$/.exec(url.pathname);
@@ -285,6 +288,6 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       return json(res,404,{error:'Unknown local streaming endpoint.'});
     }catch(error){if(!res.headersSent)json(res,400,{error:error.message || 'The local streaming service could not complete this request.'});else res.destroy();}
   }
-  async function close() {shuttingDown=true;clearInterval(cleanup);await people.close();await titles.close();if(castController)await castController.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
+  async function close() {shuttingDown=true;clearInterval(cleanup);await actorPhotos.close();await people.close();await titles.close();if(castController)await castController.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
   return {handle,close};
 }
