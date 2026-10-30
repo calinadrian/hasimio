@@ -7,6 +7,10 @@ let storage:Map<string,string>;
 beforeEach(()=>{storage=new Map();vi.stubGlobal('localStorage',{getItem:(key:string)=>storage.get(key)??null,setItem:(key:string,value:string)=>storage.set(key,value)});vi.stubGlobal('window',new EventTarget());});
 afterEach(()=>vi.unstubAllGlobals());
 describe('offline device merging',()=>{
+  it('keeps watched history beyond the unfinished bookmark cap',()=>{
+    const records=Object.fromEntries(Array.from({length:600},(_,i)=>[`progress:series:show:${i}`,{stamp:i,device:a,value:{position:1,duration:1,completed:true,manual:true,updatedAt:i}}]));
+    expect(Object.keys(compactDocument({v:1,records}).records)).toHaveLength(600);
+  });
   it('accepts every built-in source URL and no other relative URL',()=>{
     expect([...builtinSourceUrls].sort()).toEqual(['/api/extensions/comet/manifest.json','/api/extensions/eztv/manifest.json','/api/extensions/piratebay/manifest.json','/api/extensions/titles/manifest.json','/api/extensions/torrentclaw/manifest.json','/api/extensions/torrentdownloads/manifest.json','/api/extensions/torrentio/manifest.json','/api/extensions/yts/manifest.json','builtin:open-cinema']);
     const unknown={...yts,url:'/api/extensions/unknown/manifest.json'};applyDocument(captureChanges(emptyDocument(),a,{},{['addon:'+yts.manifest.id]:unknown},100));

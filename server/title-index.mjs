@@ -60,7 +60,7 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{}}={}
   try {
     db.exec(`PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;
       CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT NOT NULL,name TEXT NOT NULL,search TEXT NOT NULL,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER NOT NULL) WITHOUT ROWID;
-      CREATE TABLE episodes(id TEXT PRIMARY KEY,parent TEXT NOT NULL,season INTEGER NOT NULL,episode INTEGER NOT NULL,name TEXT) WITHOUT ROWID;
+      CREATE TABLE episodes(id TEXT PRIMARY KEY,parent TEXT NOT NULL,season INTEGER NOT NULL,episode INTEGER NOT NULL,name TEXT,runtime INTEGER) WITHOUT ROWID;
       CREATE TABLE info(key TEXT PRIMARY KEY,value TEXT);`);
     onStep('Downloading ratings');
     const ratings=new Map();
@@ -74,9 +74,9 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{}}={}
     }
     onStep('Downloading titles');
     const addTitle=db.prepare('INSERT OR IGNORE INTO titles VALUES(?,?,?,?,?,?,?,?,?,?)');
-    const nameEpisode=db.prepare('UPDATE episodes SET name=? WHERE id=?');
+    const nameEpisode=db.prepare('UPDATE episodes SET name=?,runtime=? WHERE id=?');
     for await (const [id,kind,name,,adult,start,end,runtime,genres] of rows('title.basics.tsv.gz',fetchImpl,signal)) {
-      if (kind === 'tvEpisode') { if (field(name)) nameEpisode.run(name,id); continue; }
+      if (kind === 'tvEpisode') { nameEpisode.run(field(name)??null,count(runtime)??null,id); continue; }
       const type=kind === 'movie' ? 'movie' : kind === 'tvSeries' || kind === 'tvMiniSeries' ? 'series' : undefined;
       const rated=ratings.get(id);
       if (!type || !rated || adult === '1' || !field(name)) continue;
@@ -102,13 +102,14 @@ export function titleMeta(row, art) {
 export function tvmazeEpisodes(imdb, episodes) {
   if (!Array.isArray(episodes)) throw new Error('TVmaze returned invalid episodes.');
   return episodes.filter(e => Number.isSafeInteger(e?.season) && e.season > 0 && Number.isSafeInteger(e?.number) && e.number > 0)
-    .map(e => ({id:`${imdb}:${e.season}:${e.number}`,season:e.season,episode:e.number,title:typeof e.name === 'string' ? e.name : undefined,released:stamp(e.airstamp) ?? date(e.airdate),thumbnail:image(e.image?.medium ?? e.image?.original)}));
+    .map(e => ({id:`${imdb}:${e.season}:${e.number}`,season:e.season,episode:e.number,title:typeof e.name === 'string' ? e.name : undefined,released:stamp(e.airstamp) ?? date(e.airdate),thumbnail:image(e.image?.medium ?? e.image?.original),...(typeof e.runtime==='number'&&e.runtime>0?{runtime:e.runtime}:{} )}));
 }
 
 export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
   const file=path.join(dir,'titles.db');
   let db,building,status={state:'idle'},closed=false;
   const artPending=new Map(),controller=new AbortController();
+  const seriesMetadata=new Map(),seriesPending=new Map();
   let lastRequest=0,artDb;
   // Artwork survives restarts and weekly rebuilds in its own file, so each title is looked up once a month at most.
   function artCache() {
@@ -278,15 +279,31 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
       art=await movieSummary(id,art).catch(()=>art);
       return {meta:titleMeta(row,art && {...art,description:art.description || undefined})};
     }
-    const info=await seriesArt(id,'high').catch(()=>undefined);
-    let videos;
-    if (info) { try { videos=tvmazeEpisodes(id,await tvmaze(`/shows/${info.tvmaze}/episodes`,'high')); } catch { /* IMDb episode list below has no air dates but stays usable. */ } }
-    if (!videos?.length) videos=(await ready()).prepare('SELECT * FROM episodes WHERE parent=? ORDER BY season,episode').all(id).map(e=>({id:`${id}:${e.season}:${e.episode}`,season:e.season,episode:e.episode,title:e.name ?? undefined}));
-    return {meta:{...titleMeta(row,info),videos}};
+    const cached=seriesMetadata.get(id);
+    if(cached&&cached.expires>now())return cached.value;
+    const fallback=(await ready()).prepare('SELECT * FROM episodes WHERE parent=? ORDER BY season,episode').all(id).map(e=>({id:`${id}:${e.season}:${e.episode}`,season:e.season,episode:e.episode,title:e.name ?? undefined,...(e.runtime>0?{runtime:e.runtime}:{})}));
+    let pending=seriesPending.get(id);
+    if(!pending){
+      pending=(async()=>{
+        const info=await seriesArt(id,'high');
+        const episodes=info?tvmazeEpisodes(id,await tvmaze(`/shows/${info.tvmaze}/episodes`,'high')):[];
+        const value={meta:{...titleMeta(row,info),videos:episodes.length?episodes:fallback}};
+        seriesMetadata.delete(id);seriesMetadata.set(id,{value,expires:now()+60*60*1000});
+        if(seriesMetadata.size>100)seriesMetadata.delete(seriesMetadata.keys().next().value);
+        return value;
+      })().catch(()=>({meta:{...titleMeta(row,cachedArt(id)?.value),videos:fallback,metadataPartial:true}})).finally(()=>seriesPending.delete(id));
+      seriesPending.set(id,pending);
+    }
+    // Episode IDs are already in IMDb. Slow optional enrichment must not block
+    // selecting an episode and starting source searches; keep enriching for the next refresh.
+    if(!fallback.length)return pending;
+    let timer;
+    try{return await Promise.race([pending,new Promise(resolve=>{timer=setTimeout(()=>resolve({meta:{...titleMeta(row,cachedArt(id)?.value),videos:fallback,metadataPartial:true}}),1200);})]);}
+    finally{clearTimeout(timer);}
   }
   async function close() { closed=true; controller.abort(); await building?.catch(()=>{});
     // Release queued lookups at once; their requests fail on the aborted signal instead of waiting their turn.
     for (const turn of [...queues.high.splice(0),...queues.low.splice(0)]) turn();
-    await Promise.allSettled([...artPending.values()].map(pending=>pending.promise)); db?.close(); db=undefined; artDb?.close(); artDb=undefined; }
+    await Promise.allSettled([...artPending.values()].map(pending=>pending.promise).concat([...seriesPending.values()])); db?.close(); db=undefined; artDb?.close(); artDb=undefined; }
   return {catalog,meta,title,status:()=>status,refresh,close};
 }

@@ -24,6 +24,22 @@ async function index(tvmaze=()=>new Response('',{status:404})) {
 }
 
 describe('Hasimio title index',()=>{
+  it('returns local episodes within 1.2 seconds while slow TVmaze enrichment continues, then reuses the full result',async()=>{
+    let finishLookup;
+    const {titles,fetchImpl}=await index(href=>href.includes('/lookup/')?new Promise(resolve=>{finishLookup=resolve;}):new Response(JSON.stringify([{season:1,number:1,name:'Pilot',airdate:'2024-01-02'}])));
+    await titles.refresh();
+    const started=performance.now(),partial=await titles.meta('series','tt3');
+    expect(performance.now()-started).toBeLessThan(2000);
+    expect(partial.meta.metadataPartial).toBe(true);
+    expect(partial.meta.videos.map(v=>v.id)).toEqual(['tt3:1:1','tt3:1:2']);
+    finishLookup(new Response(JSON.stringify({id:7,summary:'<p>A show.</p>'})));
+    const full=await titles.meta('series','tt3');
+    expect(full.meta.metadataPartial).toBeUndefined();
+    expect(full.meta.videos[0].released).toBe('2024-01-02');
+    const requests=fetchImpl.mock.calls.length;
+    expect(await titles.meta('series','tt3')).toEqual(full);
+    expect(fetchImpl.mock.calls).toHaveLength(requests);
+  });
   it('explains that the index is building, then serves ranked catalogs without adult or rarely rated titles',async()=>{
     const {titles}=await index();
     await expect(titles.catalog('movie','popular')).rejects.toMatchObject({status:503});
@@ -44,7 +60,7 @@ describe('Hasimio title index',()=>{
     const {titles}=await index();await titles.refresh();
     const {meta}=await titles.meta('series','tt3');
     expect(meta).toMatchObject({name:'The Show',releaseInfo:'2024–'});
-    expect(meta.videos).toEqual([{id:'tt3:1:1',season:1,episode:1,title:'Pilot'},{id:'tt3:1:2',season:1,episode:2,title:undefined}]);
+    expect(meta.videos).toEqual([{id:'tt3:1:1',season:1,episode:1,title:'Pilot',runtime:50},{id:'tt3:1:2',season:1,episode:2,title:undefined}]);
     await titles.close();
   });
   it('finds grey, apostrophe variants and out-of-order words in an existing title index',async()=>{
@@ -72,11 +88,11 @@ describe('Hasimio title index',()=>{
   it('adds TVmaze artwork, summaries and air dates to series',async()=>{
     const {titles,fetchImpl}=await index(href=>new Response(JSON.stringify(href.includes('/lookup/shows?imdb=tt3')
       ?{id:7,image:{original:'https://static.tvmaze.com/poster.jpg'},summary:'<p>A <b>show</b> &amp; more.</p>'}
-      :[{season:1,number:1,name:'Pilot',airdate:'2024-01-02',image:{medium:'https://static.tvmaze.com/e1.jpg'}},{season:1,number:null,name:'Special'}])));
+      :[{season:1,number:1,name:'Pilot',runtime:59,airdate:'2024-01-02',image:{medium:'https://static.tvmaze.com/e1.jpg'}},{season:1,number:null,name:'Special'}])));
     await titles.refresh();
     const {meta}=await titles.meta('series','tt3');
     expect(meta).toMatchObject({poster:'https://static.tvmaze.com/poster.jpg',description:'A show & more.'});
-    expect(meta.videos).toEqual([{id:'tt3:1:1',season:1,episode:1,title:'Pilot',released:'2024-01-02',thumbnail:'https://static.tvmaze.com/e1.jpg'}]);
+    expect(meta.videos).toEqual([{id:'tt3:1:1',season:1,episode:1,title:'Pilot',released:'2024-01-02',thumbnail:'https://static.tvmaze.com/e1.jpg',runtime:59}]);
     expect((await titles.catalog('series','popular')).metas[0].poster).toBe('https://static.tvmaze.com/poster.jpg');
     expect(fetchImpl.mock.calls.filter(([url])=>String(url).includes('/lookup/')).length).toBe(1);
     await titles.close();

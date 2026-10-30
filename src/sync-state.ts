@@ -38,8 +38,8 @@ export function mergeDocuments(a:SyncDocument,b:SyncDocument):SyncDocument{
 const tombstoneAge=90*24*60*60*1000;
 export function compactDocument(document:SyncDocument,clock=Date.now()):SyncDocument{
   const entries=Object.entries(document.records).filter(([key,record])=>record.value!==null||(!key.startsWith('progress:')&&record.stamp>clock-tombstoneAge));
-  // Mirror the local playback history cap so evicted entries are not restored.
-  const evicted=new Set(entries.filter(([key])=>key.startsWith('progress:')).map(([key,record]):[string,PlaybackProgress]=>[key.slice(9),{...record.value as PlaybackProgress,updatedAt:Number((record.value as PlaybackProgress).updatedAt)||0}]).sort(newestFirst).slice(progressLimit).map(([key])=>'progress:'+key));
+  // Mirror the local unfinished-bookmark cap; completed entries keep watched totals intact.
+  const evicted=new Set(entries.filter(([key,record])=>key.startsWith('progress:')&&!(record.value as PlaybackProgress).completed).map(([key,record]):[string,PlaybackProgress]=>[key.slice(9),{...record.value as PlaybackProgress,updatedAt:Number((record.value as PlaybackProgress).updatedAt)||0}]).sort(newestFirst).slice(progressLimit).map(([key])=>'progress:'+key));
   return {v:1,records:Object.fromEntries(entries.filter(([key])=>!evicted.has(key)))};
 }
 export function sameDocument(a:SyncDocument,b:SyncDocument){const keys=Object.keys(a.records);return keys.length===Object.keys(b.records).length&&keys.every(key=>{const left=a.records[key],right=b.records[key];return right&&left.stamp===right.stamp&&left.device===right.device&&JSON.stringify(left.value)===JSON.stringify(right.value);});}

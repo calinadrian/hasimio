@@ -1,12 +1,13 @@
 import {useEffect,useRef,useState,type KeyboardEvent} from 'react';
 import {CalendarDays,ChevronLeft,ChevronRight,ChevronDown,RefreshCw,ArrowUpRight,Library,Clock3,Film} from 'lucide-react';
-import {type Meta,calendarEvents,datedVideos,nextRelease,episodeLabel,safeHttp} from './media';
+import {type Meta,calendarEvents,datedVideos,nextRelease,episodeLabel} from './media';
+import PosterImage from './PosterImage';
 import './calendar.css';
 
 const mediaType=(meta:Meta)=>meta.category==='anime'||meta.type==='anime'?'Anime':meta.type==='movie'?'Movie':'Series';
 const time=(value:string)=>new Date(value).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
 const dateLabel=(date:Date)=>date.toLocaleDateString(undefined,{month:'short',day:'numeric',...(date.getFullYear()!==new Date().getFullYear()?{year:'numeric' as const}:{})});
-function Artwork({meta}:{meta:Meta}){return <span className="cal-artwork"><Film size={18}/>{safeHttp(meta.poster)&&<img src={safeHttp(meta.poster)} alt="" loading="lazy" onError={event=>{event.currentTarget.style.display='none';}}/>}</span>;}
+function Artwork({meta}:{meta:Meta}){return <span className="cal-artwork"><Film size={18}/><PosterImage meta={meta}/></span>;}
 export default function Calendar({library,syncing,onRefresh,onOpen,onDiscover}:{library:Meta[];syncing:boolean;onRefresh:()=>void;onOpen:(meta:Meta,videoId?:string)=>void;onDiscover:()=>void}){
   const today=new Date();
   const grid=useRef<HTMLDivElement>(null),focusDay=useRef<number|undefined>(undefined);

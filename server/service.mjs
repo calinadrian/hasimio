@@ -1,3 +1,4 @@
+import {createLiveTv} from './live-tv.mjs';
 import {stremioManifests} from '../shared/stremio-sources.mjs';
 import {searchStremioSource} from './stremio-sources.mjs';
 import {randomBytes} from 'node:crypto';
@@ -39,6 +40,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   const cast=()=>castController??=createCastController({fetchImpl,mediaOrigins:castMediaOrigins});
   const searchEztv=createEztvSearch({fetchImpl});
   const skipSegments=createSkipSegmentLookup({fetchImpl});
+  const liveTv=createLiveTv({fetchImpl});
   const lookupTitle=id=>titles.title(id);
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
@@ -105,6 +107,13 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     if(!localRequest(req,undefined,allowedOrigins))return json(res,403,{error:'Streaming requests must come from this app on localhost, this PC’s private LAN address, or an allowed Hasimio site.'});
     for(const [name,value] of Object.entries(corsHeaders(req,allowedOrigins)))res.setHeader(name,value);
     try {
+      const liveRoute=/^\/api\/live-tv\/cartoon-network\/(main|alternative)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
+      if(req.method==='GET'&&liveRoute){
+        const controller=new AbortController();const cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
+        try{const output=await liveTv.resource(liveRoute[1],liveRoute[2].replace('asset/',''),controller.signal);res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);}
+        catch(error){if(!controller.signal.aborted)json(res,error.status??502,{error:error.message});}
+        finally{res.removeListener('close',cancel);}return;
+      }
       if(req.method==='GET'&&url.pathname==='/api/streaming/health'){
         let port='';try {port=new URL(`http://${req.headers.host ?? ''}`).port;}catch{/* A malformed Host header was already rejected by localRequest. */}
         return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size,...(lan?{lanOrigins:lanOrigins(port)}:{})});

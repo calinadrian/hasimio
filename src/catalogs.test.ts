@@ -123,6 +123,45 @@ describe('default catalogs and anime discovery', () => {
   });
 });
 describe('automatic library release hydration', () => {
+  it('retains known air dates while local episode metadata is being enriched and retries partial data sooner',async()=>{
+    vi.stubGlobal('fetch',vi.fn(async()=>new Response(JSON.stringify({meta:{id:'tt557',type:'series',name:'Show',metadataPartial:true,videos:[{id:'tt557:1:1',season:1,episode:1}]}}))));
+    const meta=await loadMetadata({id:'tt557',type:'series',name:'Show',videos:[{id:'tt557:1:1',season:1,episode:1,released:'2026-11-02'}]},[titles]);
+    expect(meta.videos?.[0].released).toBe('2026-11-02');
+    expect(needsMetadata(meta,meta.metadataFetchedAt!+59000)).toBe(false);
+    expect(needsMetadata(meta,meta.metadataFetchedAt!+60000)).toBe(true);
+  });
+  it('uses a fast fallback after 300ms instead of waiting for a stalled metadata provider',async()=>{
+    vi.useFakeTimers();
+    let slowSignal:AbortSignal|undefined;
+    const fetch=vi.fn((url:string,options?:RequestInit)=>{
+      if(url.includes('/torrentclaw/')){
+        slowSignal=options?.signal as AbortSignal;
+        return new Promise<Response>((_resolve,reject)=>slowSignal!.addEventListener('abort',()=>reject(new DOMException('Aborted','AbortError')),{once:true}));
+      }
+      return Promise.resolve(new Response(JSON.stringify({meta:{id:'tt555',type:'series',name:'Fast show',videos:[{id:'tt555:1:1',season:1,episode:1}]}})));
+    });
+    vi.stubGlobal('fetch',fetch);
+    try{
+      const pending=loadMetadata({id:'tt555',type:'series',name:'Show',sourceUrl:torrentClaw.url},[enabledClaw,titles]);
+      expect(fetch).toHaveBeenCalledTimes(1);
+      await vi.advanceTimersByTimeAsync(300);
+      expect((await pending).name).toBe('Fast show');
+      expect(slowSignal?.aborted).toBe(true);
+      expect(fetch).toHaveBeenCalledTimes(2);
+    }finally{vi.useRealTimers();}
+  });
+  it('cancels metadata and delayed fallback requests when details close',async()=>{
+    vi.useFakeTimers();
+    const controller=new AbortController();
+    const fetch=vi.fn((_url:string,options?:RequestInit)=>new Promise<Response>((_resolve,reject)=>options?.signal?.addEventListener('abort',()=>reject(new DOMException('Aborted','AbortError')),{once:true})));
+    vi.stubGlobal('fetch',fetch);
+    try{
+      const pending=loadMetadata({id:'tt556',type:'series',name:'Show',sourceUrl:torrentClaw.url},[enabledClaw,titles],controller.signal);
+      const rejected=expect(pending).rejects.toMatchObject({name:'AbortError'});
+      controller.abort();await rejected;await vi.advanceTimersByTimeAsync(1000);
+      expect(fetch).toHaveBeenCalledTimes(1);
+    }finally{vi.useRealTimers();}
+  });
   const preview:Meta={id:'kitsu:12',type:'series',name:'One Piece',category:'anime',sourceUrl:kitsu.url};
   it('loads full episodes after saving a catalog preview, retaining anime identity', async () => {
     vi.stubGlobal('fetch',vi.fn(async url=>new Response(JSON.stringify(String(url).includes('/episodes') ? {data:[{type:'episodes',attributes:{number:1,seasonNumber:1,airdate:'2026-11-02'}}]} : {data:{id:'12',type:'anime',attributes:{canonicalTitle:'One Piece',subtype:'TV'}}}))));
