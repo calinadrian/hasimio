@@ -16,7 +16,7 @@ import {createRoot} from 'react-dom/client';
 import Poster from '/src/Poster';
 import '/src/styles.css';
 const root=createRoot(document.getElementById('root'));
-window.renderPosters=(items)=>root.render(<div className="poster-row wrap">{items.map(meta=><Poster key={meta.id} meta={meta} saved={false} onClick={()=>{}}/>)}</div>);
+window.renderPosters=(items)=>root.render(<div className="poster-row wrap">{items.map(meta=><Poster key={meta.id} meta={meta} progress={meta.id==='tt1'?{position:600,duration:1200,percent:50,completed:false,episode:'S1 · E3'}:meta.id==='tt2'?{position:1,duration:1,percent:100,completed:true,manual:true}:undefined} saved={false} onClick={()=>{}}/>)}</div>);
 window.renderPosters([
   {id:'tt1',type:'series',name:'Missing cover'},
   {id:'tt2',type:'series',name:'Broken primary',poster:location.origin+'/broken.svg'},
@@ -56,6 +56,9 @@ async function run({url,folder}){
     assert.ok(requests.some(url=>url.includes('/tt2/')));
     assert.ok(!requests.some(url=>url.includes('/tt3/')),'Healthy primary must not request backup');
     assert.equal(requests.filter(url=>url.includes('/tt4/')).length,1,'Exhausted sources must stop retrying');
+    assert.equal(await js('document.querySelectorAll(".poster-playback-track").length'),1,'Only unfinished playback shows a progress bar');
+    assert.equal(await js('document.querySelectorAll(".poster-watched").length'),1,'Finished titles show a compact badge');
+    assert.equal(await js('document.querySelector(".poster-playback small").textContent'),'10:00 left');
     const painted=()=>js('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
     await painted();
     await fs.writeFile(folder+'/desktop.png',(await win.webContents.capturePage()).toPNG());

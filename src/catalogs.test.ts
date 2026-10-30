@@ -219,7 +219,12 @@ describe('search top results',()=>{
   it('merges movies and series by popularity, ahead of mid-word matches, without duplicates',()=>{
     const movies={items:[item('m1','movie','The Grey',300000),item('m2','movie','Fifty Shades of Grey',330000),item('m3','movie','Greyhound',110000)]};
     const series={items:[item('s1','series',"Grey's Anatomy",350000),item('s2','series','Greyzone',4000),item('k1','series','Grey anime')]};
-    expect(topResults([movies,series,{items:[movies.items[0]]}],'grey').map(m=>m.id)).toEqual(['s1','m2','m1','m3','s2']);
+    expect(topResults([movies,series,{items:[movies.items[0]]}],'grey').map(m=>m.id)).toEqual(['s1','m2','m1','m3','s2','k1']);
     expect(topResults([{items:[item('a','movie','Spirited Away',900000),item('b','movie','It',500000)]}],'it').map(m=>m.id)).toEqual(['b','a']);
   });
 });
+
+ it('puts exact names and anime aliases ahead of more popular containing titles',()=>{
+  const items:Meta[]=[{id:'a',type:'movie',name:'From Dusk Till Dawn',votes:999999},{id:'b',type:'series',name:'From',votes:1000},{id:'c',type:'series',name:'Other Name',category:'anime',aliases:['From']}];
+  expect(topResults([{items}],'From').map(m=>m.id)).toEqual(['b','c','a']);
+ });

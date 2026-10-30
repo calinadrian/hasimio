@@ -64,9 +64,10 @@ export function topResults(rows:{items:Meta[]}[], query:string, limit = 12) {
   const words = (text:string) => text.normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/['’]/g,'').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
   const wanted = words(query);
   const wordStart = (meta:Meta) => { const name = words(meta.name); return wanted.every(word => name.some(part => part.startsWith(word))); };
+  const exact = (meta:Meta) => [meta.name,...(meta.aliases??[])].some(name=>words(name).join('')===wanted.join(''));
   const seen = new Set<string>();
-  return rows.flatMap(row => row.items).filter(meta => typeof meta.votes === 'number' && !seen.has(`${meta.type}:${meta.id}`) && seen.add(`${meta.type}:${meta.id}`))
-    .sort((a,b) => Number(wordStart(b))-Number(wordStart(a)) || b.votes!-a.votes!).slice(0,limit);
+  return rows.flatMap(row => row.items).filter(meta => !seen.has(`${meta.type}:${meta.id}`) && seen.add(`${meta.type}:${meta.id}`))
+    .sort((a,b) => Number(exact(b))-Number(exact(a)) || Number(wordStart(b))-Number(wordStart(a)) || (b.votes??0)-(a.votes??0)).slice(0,limit);
 }
 export function removeBundledTitle(existing:Meta[]) {
   return existing.filter(meta=>!(meta.id==='tt28504410'&&meta.type==='series'));
@@ -91,7 +92,8 @@ export async function loadCatalog(addon:Addon, catalog:Manifest['catalogs'][numb
     : await getJson<{metas:Meta[];hasMore?:boolean;nextSkip?:number}>(resourceUrl(addon.url,'catalog',catalog.type,catalog.id,extras),signal);
   if (!Array.isArray(result.metas)) throw new Error(`${addon.manifest.name} returned an invalid catalog.`);
   const anime = catalog.type === 'anime' || addon.manifest.id === kitsu.manifest.id;
-  const items = result.metas.filter(m => m && typeof m.id === 'string' && typeof m.name === 'string').map(m => ({...m,type:m.type || catalog.type,category:anime ? 'anime' as const : m.category,sourceUrl:addon.url}));
+  let items:Meta[] = result.metas.filter(m => m && typeof m.id === 'string' && typeof m.name === 'string').map(m => ({...m,type:m.type || catalog.type,category:anime ? 'anime' as const : m.category,sourceUrl:addon.url}));
+  if(query)items=topResults([{items}],query,items.length);
   const label = anime ? 'Anime' : catalog.type === 'series' ? 'Series' : catalog.type === 'movie' ? 'Movies' : catalog.type;
   const title = catalog.name ? /movie|series|anime/i.test(catalog.name) ? catalog.name : `${catalog.name} · ${label}` : `${addon.manifest.name} · ${label}`;
   return {key:`${addon.manifest.id}:${catalog.type}:${catalog.id}`,title,source:addon.manifest.name,items,addon,catalog,skip:'nextSkip' in result && Number.isSafeInteger(result.nextSkip) && Number(result.nextSkip)>skip ? Number(result.nextSkip) : skip+result.metas.length,hasMore:(result.hasMore ?? items.length > 0) && !!catalog.extra?.some(e => e.name === 'skip')};

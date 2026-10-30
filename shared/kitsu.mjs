@@ -42,7 +42,8 @@ export async function kitsuCatalog(catalog, query='', skip=0, signal, fetchImpl=
   const rank = record => positive(record?.attributes?.popularityRank) ? record.attributes.popularityRank : Infinity;
   const plain = value => String(value ?? '').normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'');
   const wanted = plain(query), named = record => !!wanted && [record?.attributes?.canonicalTitle,...Object.values(record?.attributes?.titles ?? {})].some(title => plain(title).includes(wanted));
-  const records = catalog === 'kitsu-anime-list' ? [...result.data].sort((a,b) => Number(named(b))-Number(named(a)) || (named(a) ? rank(a)-rank(b) : 0)) : result.data;
+  const exact = record => !!wanted && [record?.attributes?.canonicalTitle,...Object.values(record?.attributes?.titles ?? {}),...(record?.attributes?.abbreviatedTitles ?? [])].some(title=>plain(title)===wanted);
+  const records = catalog === 'kitsu-anime-list' ? [...result.data].sort((a,b) => Number(exact(b))-Number(exact(a)) || Number(named(b))-Number(named(a)) || (named(a) ? rank(a)-rank(b) : 0)) : result.data;
   return {metas:records.map(animeMeta),hasMore:typeof result.links?.next === 'string'};
 }
 export async function kitsuMetadata(id, signal, fetchImpl=fetch, episodeNumber) {

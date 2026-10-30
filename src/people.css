@@ -1,0 +1,15 @@
+.people-section{margin:28px 0}
+.people-section>h2,.people-section>h3{font-size:20px;margin-bottom:14px}
+.people-list{display:flex;gap:10px;overflow:auto;padding:3px 0 8px;overscroll-behavior-x:contain;scrollbar-width:thin}
+.person-button{display:flex;align-items:center;gap:12px;flex:0 0 220px;min-width:0;padding:12px;text-align:left;background:#242424;color:#ededed;border-radius:12px}
+.person-button:hover{background:#303030}
+.person-avatar{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:50%;background:#373737;color:#c7c7c7}
+.person-button>span:last-child{display:flex;flex-direction:column;gap:5px;min-width:0}
+.person-button strong{font-size:14px;line-height:1.5}
+.person-button small{font-size:12px;line-height:1.5;color:#bcbcbc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.people-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:#bcbcbc;font-size:14px;line-height:1.6;margin:12px 0;max-width:65ch}
+.people-status p{flex:1;min-width:180px}
+.actor-page{width:100%;min-width:0}
+.actor-filter .sr-only{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
+.actor-page>.section-intro{flex-wrap:wrap}
+@media(max-width:760px){.person-button{flex-basis:200px}.people-section{margin-block:22px}}

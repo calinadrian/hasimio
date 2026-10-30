@@ -30,3 +30,9 @@ describe('Hasimio Kitsu adapter trust boundaries',()=>{
     expect(result.metas.map(m=>m.id)).toEqual(['kitsu:4','kitsu:1','kitsu:3','kitsu:2','kitsu:5']);
   });
 });
+
+it('ranks exact anime titles and aliases above more popular partial matches',async()=>{
+ const record=(id,name,rank,titles={})=>({...anime,id,attributes:{...anime.attributes,canonicalTitle:name,popularityRank:rank,titles}});
+ const result=await kitsuCatalog('kitsu-anime-list','From',0,undefined,async()=>response({data:[record('1','From the Stars',1),record('2','From',1000),record('3','Japanese title',2000,{en:'From'})]}));
+ expect(result.metas.map(m=>m.id)).toEqual(['kitsu:2','kitsu:3','kitsu:1']);
+});

@@ -61,6 +61,14 @@ app.whenReady().then(async()=>{
  await wait('document.querySelectorAll(".progress-stat").length===6');
  const stats=await js('[...document.querySelectorAll(".progress-stat strong")].map(e=>e.textContent)');
  assert.deepEqual(stats,['6','1','1','1','0','6h']);
+ assert.equal(await js('document.querySelectorAll(".progress-search").length'),0,'Progress must use the header search without a duplicate field');
+ await js('(()=>{const input=document.querySelector(".search input");input.focus();Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,"no matching title");input.dispatchEvent(new Event("input",{bubbles:true}));})()');
+ await wait('document.querySelectorAll(".progress-row").length===0');
+ assert.equal(await js('document.querySelector(".nav-item.active").getAttribute("aria-label")'),'Progress','Search must stay in Progress');
+ assert.equal(await js('getComputedStyle(document.querySelector(".search input")).outlineStyle'),'none','The input must not draw a second focus outline');
+ await click('document.querySelector(\'.search button[aria-label="Clear search"]\')');
+ await wait('document.querySelectorAll(".progress-row").length===1');
+
  await click('[...document.querySelectorAll(".progress-filters button")].find(e=>e.textContent.startsWith("Watching"))');
  assert.equal(await js('document.querySelectorAll(".progress-row").length'),0);
  assert.match(await js('document.querySelector(".progress-filter-empty").textContent'),/All caught up/);

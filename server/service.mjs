@@ -1,4 +1,5 @@
 import {createLiveTv} from './live-tv.mjs';
+import {createPeopleIndex} from './people.mjs';
 import {stremioManifests} from '../shared/stremio-sources.mjs';
 import {searchStremioSource} from './stremio-sources.mjs';
 import {randomBytes} from 'node:crypto';
@@ -41,6 +42,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   const searchEztv=createEztvSearch({fetchImpl});
   const skipSegments=createSkipSegmentLookup({fetchImpl});
   const liveTv=createLiveTv({fetchImpl});
+  const people=createPeopleIndex({dir:cacheDir('people'),titleRows:()=>titles.peopleRows(),fetchImpl});
   const lookupTitle=id=>titles.title(id);
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
@@ -175,6 +177,19 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
         }
         try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}
       }
+      if(['GET','POST'].includes(req.method)&&url.pathname.startsWith('/api/people/')){
+        try{
+          if(req.method==='POST'&&url.pathname==='/api/people/retry'){void people.refresh();return json(res,202,{state:'building'});}
+          if(req.method!=='GET')return json(res,405,{error:'Method not allowed.'});
+          if(url.pathname==='/api/people/search')return json(res,200,await people.search((url.searchParams.get('q')??'').slice(0,200)));
+          if(url.pathname==='/api/people/status')return json(res,200,people.status());
+          const cast=/^\/api\/people\/title\/(tt\d+)\/cast$/.exec(url.pathname);
+          const credits=/^\/api\/people\/(nm\d+)\/credits$/.exec(url.pathname);
+          if(cast)return json(res,200,await people.cast(cast[1]));
+          if(credits)return json(res,200,await people.credits(credits[1],url.searchParams.get('skip'),url.searchParams.get('type')));
+          return json(res,404,{error:'Unknown actor resource.'});
+        }catch(error){return json(res,error.status??502,{error:error.message,state:error.state??'error'});}
+      }
       if(req.method==='GET'&&url.pathname==='/api/extensions/titles/manifest.json')return json(res,200,titleIndexManifest);
       const titleRoute=/^\/api\/extensions\/titles\/(catalog|meta)\/(movie|series)\/([^/]+)(?:\/([^/]+))?\.json$/.exec(url.pathname);
       if(req.method==='GET'&&titleRoute){const [,resource,type,id,extras]=titleRoute;try{return json(res,200,resource==='catalog'?await titles.catalog(type,decodeURIComponent(id),Object.fromEntries(new URLSearchParams(extras??''))):await titles.meta(type,decodeURIComponent(id)));}catch(error){return json(res,error.status??502,{error:error.message});}}
@@ -270,6 +285,6 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       return json(res,404,{error:'Unknown local streaming endpoint.'});
     }catch(error){if(!res.headersSent)json(res,400,{error:error.message || 'The local streaming service could not complete this request.'});else res.destroy();}
   }
-  async function close() {shuttingDown=true;clearInterval(cleanup);await titles.close();if(castController)await castController.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
+  async function close() {shuttingDown=true;clearInterval(cleanup);await people.close();await titles.close();if(castController)await castController.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
   return {handle,close};
 }

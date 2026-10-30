@@ -57,7 +57,7 @@ typography:
 rounded:
   tag: "3px"
   field: "4px"
-  control: "5px"
+  control: "12px"
   poster: "7px"
   dialog: "9px"
 spacing:
@@ -96,7 +96,7 @@ The user requested a neutral grey/black design across the entire app. The system
 
 White marks selection, saved state and keyboard focus. Near-black charcoal separates navigation from grey panels. Source rows use a slightly lighter grey surface; hover increases separation without a floating shadow. Muted text stays readable against those surfaces. Seeders use a light grey status treatment; HEVC uses a grey codec chip, identifying compatibility information rather than promising playback success.
 
-Primary buttons use the light accent fill (#e0e0e0) with near-black text, so each screen has one clear main action; secondary buttons use opaque grey surfaces with fine borders. Source-row Play buttons are secondary so the title's main Play stays the only light button. Colors, radii and layout sizes are CSS variables on :root in src/shell.css, which also holds every rule for the shell, buttons, spotlight and title details. Keep interface colors neutral; do not reintroduce blue or cyan into app chrome.
+Primary buttons use the light accent fill (#e0e0e0) with near-black text, so each screen has one clear main action; secondary buttons use opaque grey fills without perimeter borders. Source-row Play buttons are secondary so the title's main Play stays the only light button. Shared control colors and 12px corner radii are defined in src/controls.css, loaded after surface styles from main.tsx. Shell layout, spotlight and title details remain in src/shell.css. Keep interface colors neutral; do not reintroduce blue or cyan into app chrome.
 
 ## Typography
 
@@ -184,3 +184,19 @@ Sync devices has a dedicated sidebar entry. An explanatory row introduces encryp
 
 
 Sync onboarding is progressive: Start syncing is the first-device action; Connect this device is the returning-user action. A publisher default or same-origin relay is discovered automatically, with device names suggested locally. Scanned links open a clean confirmation instead of exposing encoded keys. QR instructions, TV approval and recovery files use plain language; technical fields remain in Advanced settings. An unavailable service is explained beside the disabled action, while local progress remains intact.
+
+
+### Discover shelf browsing
+
+Discovery shelves use compact round arrows beside the shelf heading that advance almost one visible row, touch and trackpad scrolling, and left/right keyboard movement between focused covers. Load the next catalog page automatically near the end; keep a compact loading indicator and explicit retry on failure. Search and Library grids retain their layout and load near the last visible result. Remove Load more from row headings. Title details provide previous/next controls within the originating shelf, fetching another page when needed. Closing details retains shelf scroll; pending navigation must not reopen a closed dialog.
+
+Poster cards keep title and year/type together without reserved blank title rows. Completed playback uses a small Watched badge on the cover, including episode context for series, rather than a 100% track. Unfinished playback shows a thin inset track at the bottom of the artwork and one compact episode/time-left line below the metadata. Controls never cover the artwork with tall side panels.
+
+Shelf headings open a dedicated full collection grid with automatic loading as the last row approaches and Back to Discover. Search orders normalized exact names and anime aliases first, then word matches and popularity. Include anime without IMDb vote counts in Top results; enforce exact priority in the local database before limiting the result page.
+
+
+### Shared Apple-inspired controls
+
+Action buttons use consistent 44px minimum heights, neutral primary/secondary fills, 12px corners and white keyboard focus. Icon actions are 44px circles. Segmented controls use an inset grey selected surface. All single-select dropdowns share the same rounded trigger and a dark 16px-radius, scrollable picker with grey hovered/selected options and white checkmarks; use native customizable select where supported, retaining native keyboard/type-ahead/change semantics and standard select fallback elsewhere. Apply the same system to genres, Live TV servers, seasons, source sorting/quality, Progress sorting, audio, subtitles and playback settings. Keep cards, calendar cells, media artwork, toggles and caption-color swatches semantically distinct.
+
+Cast uses horizontally scrollable neutral person buttons with actor name, character role and a simple avatar. Clicking opens an actor credit grid with a Movies/TV series filter and Back to Discover. Search lists Actors separately above title results. Expose index preparation, errors and Retry without blocking sources, episode selection or ordinary title search.

@@ -12,12 +12,10 @@ export default function Poster({meta,onClick,saved,progress}:{meta:Meta;onClick:
       <PosterImage meta={meta}/>
       <Film className="poster-placeholder"/>{saved&&<span className="saved-mark"><Check size={14}/></span>}
       <span className="poster-open"><Info size={26}/></span>
+      {progress?.completed&&<span className="poster-watched"><Check size={13}/>{status}</span>}
+      {progress&&!progress.completed&&<span className="poster-playback-track" role="progressbar" aria-label={`${meta.name}${progress.episode?` ${progress.episode}`:''} playback progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} aria-valuetext={`${playbackTime(progress.position)} of ${playbackTime(progress.duration)}`}><span style={{width:`${progress.percent}%`}}/></span>}
     </div>
-    <strong>{meta.name}</strong><span>{meta.releaseInfo||'Year unavailable'} <i/> {label}</span>
-    {progress&&<div className="poster-playback">
-      <div className="poster-playback-caption"><span>{status}</span><span>{progress.percent}%</span></div>
-      <div className="poster-playback-track" role="progressbar" aria-label={`${meta.name}${progress.episode?` ${progress.episode}`:''} playback progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} aria-valuetext={progress.completed?'Watched':`${playbackTime(progress.position)} of ${playbackTime(progress.duration)}`}><span style={{width:`${progress.percent}%`}}/></div>
-      {!(progress.completed&&progress.manual)&&<small>{playbackTime(progress.completed?progress.duration:progress.position)} <span>/ {playbackTime(progress.duration)}</span></small>}
-    </div>}
+    <strong title={meta.name}>{meta.name}</strong><span>{meta.releaseInfo||'Year unavailable'} <i/> {label}</span>
+    {progress&&!progress.completed&&<div className="poster-playback"><span>{status}</span><small>{playbackTime(Math.max(0,progress.duration-progress.position))} left</small></div>}
   </button>;
 }

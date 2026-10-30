@@ -26,3 +26,7 @@ Live TV has a dedicated sidebar entry with one Cartoon Network channel from Cool
 A Stremio-inspired cinema player owns the playback controls and in-player audio, subtitle, download and settings menus. Support keyboard controls, buffered seeking, ten-second skips, volume/mute, playback speed, subtitle size/delay, fullscreen and browser-supported picture-in-picture. Torrent downloads save the original selected file with all embedded tracks and require the session to remain open until finished. Direct remote sources expose the original URL without promising forced downloading or HLS export. Retain the existing AAC, subtitle and source inspection behavior.
 
 Integration policy: implement integrations ourselves rather than bundling third-party add-ons. Anime Kitsu and Cinemeta have been replaced by our own Hasimio Anime and Hasimio Titles integrations; manual extension installation, including Cinemeta, remains available.
+
+## Cast and actor discovery
+
+Title details show main cast names and character roles for IMDb-indexed movies and series. Clicking a cast member opens their movie/TV-series credits, with category filtering and scroll pagination. Discover search includes actor-name results as well as title matches. A separate cached IMDb principals/name index supplies actor identities and credits for titles in Hasimio’s catalog; this is not an exhaustive worldwide filmography. Its large one-time download runs independently of title browsing and playback, with visible preparation/retry states.

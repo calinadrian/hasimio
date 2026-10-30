@@ -42,7 +42,8 @@ main{margin-left:var(--rail)}
 .topbar{height:var(--topbar);display:flex;align-items:center;gap:16px;background:var(--header);border-bottom:1px solid #393939;padding:0 var(--gutter)}
 .topbar-brand{display:none}
 .search{display:flex;align-items:center;gap:10px;flex:1;max-width:560px;min-height:46px;background:#191919;border:1px solid #434343;border-radius:var(--radius-control);padding:9px 15px;color:#9c9c9c}
-.search:focus-within{border-color:#8a8a8a}
+.search:focus-within{border-color:transparent;outline:1px solid var(--accent);outline-offset:0}
+.search input:focus-visible{outline:none}
 .search input{border:0;outline:0;background:none;width:100%;min-width:0;color:var(--text);font-size:16px}
 .search input::placeholder{color:#b4b4b4}
 .search button{display:flex;padding:0}

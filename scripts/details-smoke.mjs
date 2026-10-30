@@ -66,8 +66,17 @@ async function run({url,fixture,show,addon,profile}){
     assert.equal(await js('document.querySelector(".progress-row-track").getAttribute("aria-valuenow")'),'50');
     console.log(`PASS: Sources ready in ${first}ms with metadata delayed 2500ms; episode selection preserved; no repeated source/metadata requests.`);
     console.log('PASS: Progress displays unknown totals honestly and hydrates missing episode lists automatically.');
+    await js(`localStorage.setItem('hasimio:library','[]');localStorage.removeItem('hasimio:progress-metadata:v1');`);
+    await win.reload();
+    await wait('!!document.querySelector(\'.nav-item[aria-label="Progress"]\')');
+    await click('document.querySelector(\'.nav-item[aria-label="Progress"]\')');
+    await wait('document.querySelector(".progress-row strong")?.textContent==="Slow metadata fixture"');
+    assert.match(await js('document.querySelector(".progress-row-text small").textContent'),/1 of 2/);
+    assert.equal(await js('JSON.parse(localStorage.getItem("hasimio:library")).length'),0,'Progress lookup must not add titles to the library');
+    assert.ok(await js('JSON.parse(localStorage.getItem("hasimio:progress-metadata:v1")).some(m=>m.id==="perf:show")'),'Progress title metadata must survive reloads');
+    console.log('PASS: Synced watch history hydrates and displays a title absent from library/catalogs, without changing library membership.');
     app.exit(0);
-  }catch(error){console.error(error);app.exit(1);}
+  }catch(error){console.error(error);console.error(await js('document.querySelector(".detail-dialog")?.textContent'));console.error(await(await fetch(fixture+'/stats')).json());app.exit(1);}
 }
 const runner=path.join(folder,'electron.cjs');
 await writeFile(runner,`(${run.toString()})(${JSON.stringify({url:vite.resolvedUrls.local[0],fixture,show,addon,profile:path.join(folder,'profile')})})`);

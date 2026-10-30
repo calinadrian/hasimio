@@ -46,13 +46,14 @@ function wikiImage(value) {
 const articleTitle = href => { try { const url=new URL(href); return url.hostname === 'en.wikipedia.org' && url.pathname.startsWith('/wiki/') ? decodeURIComponent(url.pathname.slice(6)).replace(/_/g,' ') : undefined; } catch { return undefined; } };
 const plainText = html => typeof html === 'string' ? html.replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,'\'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim() || undefined : undefined;
 
-async function* rows(name, fetchImpl, signal) {
+export async function* datasetRows(name, fetchImpl, signal) {
   const response=await fetchImpl(`${datasetBase}/${name}`,{redirect:'error',signal});
   if (!response.ok || !response.body) throw new Error(`IMDb datasets returned HTTP ${response.status} for ${name}.`);
   const lines=createInterface({input:Readable.fromWeb(response.body).pipe(createGunzip()),crlfDelay:Infinity});
   let header=true;
   for await (const line of lines) { if (header) { header=false; continue; } yield line.split('\t'); }
 }
+const rows=datasetRows;
 
 // Builds a fresh index into `file`. Titles need MIN_VOTES ratings; adult titles are skipped.
 export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{}}={}) {
@@ -258,7 +259,7 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
       // Most popular first. Titles whose words start with the query words rank above mid-word
       // matches, so short queries like “it” still find It before Spirited Away.
       const wordStarts=words.map(()=>"instr(' '||search,' '||?)>0").join(' AND ');
-      found=index.prepare(`SELECT * FROM titles WHERE type=? AND ${clauses} ORDER BY (${wordStarts}) DESC,votes DESC LIMIT ? OFFSET ?`).all(type,...words,...words,PAGE,skip);
+      found=index.prepare(`SELECT * FROM titles WHERE type=? AND ${clauses} ORDER BY (replace(search,' ','')=?) DESC,(${wordStarts}) DESC,votes DESC LIMIT ? OFFSET ?`).all(type,...words,words.join(''),...words,PAGE,skip);
     }
     else if (id === 'popular') found=index.prepare('SELECT * FROM titles WHERE type=? AND start>=? ORDER BY votes DESC LIMIT ? OFFSET ?').all(type,new Date(now()).getFullYear()-2,PAGE,skip);
     else if (id === 'top-rated') found=index.prepare('SELECT * FROM titles WHERE type=? AND votes>=25000 ORDER BY rating DESC,votes DESC LIMIT ? OFFSET ?').all(type,PAGE,skip);
@@ -305,5 +306,5 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
     // Release queued lookups at once; their requests fail on the aborted signal instead of waiting their turn.
     for (const turn of [...queues.high.splice(0),...queues.low.splice(0)]) turn();
     await Promise.allSettled([...artPending.values()].map(pending=>pending.promise).concat([...seriesPending.values()])); db?.close(); db=undefined; artDb?.close(); artDb=undefined; }
-  return {catalog,meta,title,status:()=>status,refresh,close};
+  return {catalog,meta,title,peopleRows:async()=> (await ready()).prepare('SELECT * FROM titles').all(),status:()=>status,refresh,close};
 }

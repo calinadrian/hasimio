@@ -79,11 +79,16 @@ describe('Hasimio title index',()=>{
     const {DatabaseSync}=await import('node:sqlite');
     const db=new DatabaseSync(path.join(dir,'titles.db')),add=db.prepare('INSERT INTO titles(id,type,name,search,start,votes) VALUES(?,?,?,?,?,?)');
     for(const [id,name,votes] of [['tt50','Dune',150000],['tt51','Dune: Part Two',600000],['tt52','Dune',900000],['tt53','Spirited Away',800000],['tt54','It',500000],['tt55','It Follows',250000]])add.run(id,'movie',name,normalize(name),2020,votes);
+    add.run('tt56','series','From',normalize('From'),2022,10000);
+    add.run('tt57','series','Letters from the Past',normalize('Letters from the Past'),2022,900000);
     db.close();
     const restarted=createTitleIndex({dir,fetchImpl:async()=>new Response('',{status:404}),now:()=>Date.parse('2026-10-28T00:00:00Z')});open=restarted;
     const search=async(text)=>(await restarted.catalog('movie','popular',{search:text})).metas.map(m=>m.id);
-    expect(await search('dune')).toEqual(['tt52','tt51','tt50']);
+    expect(await search('dune')).toEqual(['tt52','tt50','tt51']);
     expect(await search('it')).toEqual(['tt54','tt55','tt53']);
+    expect((await restarted.catalog('series','popular',{search:'From'})).metas[0].name).toBe('From');
+    // Exact matches must win even against much more popular containing titles.
+    expect((await restarted.catalog('movie','popular',{search:'Dune'})).metas.slice(0,2).every(m=>m.name==='Dune')).toBe(true);
   });
   it('adds TVmaze artwork, summaries and air dates to series',async()=>{
     const {titles,fetchImpl}=await index(href=>new Response(JSON.stringify(href.includes('/lookup/shows?imdb=tt3')

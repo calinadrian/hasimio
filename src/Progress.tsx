@@ -1,4 +1,4 @@
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {BarChart3,Check,ChevronLeft,ChevronRight,Film,LoaderCircle,Play,RefreshCw,Search,X} from 'lucide-react';
 import {type Meta} from './media';
 import PosterImage from './PosterImage';
@@ -40,14 +40,16 @@ function Pagination({label,total,size,page,onPage}:{label:string;total:number;si
     <div><button type="button" disabled={page===0} onClick={()=>onPage(page-1)} aria-label={`Previous ${label.toLowerCase()} page`}><ChevronLeft size={16}/></button><span>{page+1} / {pages}</span><button type="button" disabled={page+1>=pages} onClick={()=>onPage(page+1)} aria-label={`Next ${label.toLowerCase()} page`}><ChevronRight size={16}/></button></div>
   </nav>;
 }
-export default function Progress({history,titles,onOpen,onDiscover,loading=false,onRefresh}:{history:ProgressMap;titles:Meta[];onOpen:(meta:Meta)=>void;onDiscover:()=>void;loading?:boolean;onRefresh?:()=>void}){
+export default function Progress({history,titles,onOpen,onDiscover,loading=false,onRefresh,searchQuery,onSearchChange}:{history:ProgressMap;titles:Meta[];onOpen:(meta:Meta)=>void;onDiscover:()=>void;loading?:boolean;onRefresh?:()=>void;searchQuery?:string;onSearchChange?:(value:string)=>void}){
   const summary=useMemo(()=>progressSummary(history,titles),[history,titles]);
   const [filter,setFilter]=useState('All'),[sort,setSort]=useState('recent');
   const [category,setCategory]=useState('TV Series');
-  const [query,setQuery]=useState(''),[seriesPage,setSeriesPage]=useState(0),[moviePage,setMoviePage]=useState(0);
+  const [localQuery,setQuery]=useState(''),[seriesPage,setSeriesPage]=useState(0),[moviePage,setMoviePage]=useState(0);
+  const query=searchQuery??localQuery;
+  useEffect(()=>{setSeriesPage(0);setMoviePage(0);},[searchQuery]);
   const search=query.trim().toLocaleLowerCase();
   const matches=(item:MediaProgress)=>item.meta.name.toLocaleLowerCase().includes(search);
-  const changeQuery=(value:string)=>{setQuery(value);setSeriesPage(0);setMoviePage(0);};
+  const changeQuery=(value:string)=>{if(onSearchChange)onSearchChange(value);else setQuery(value);setSeriesPage(0);setMoviePage(0);};
   const empty=!summary.seriesStarted&&!summary.moviesWatched&&!summary.recent.length;
   const unknown=summary.series.filter(item=>!item.total).length;
   const tracked=summary.seriesStarted+summary.moviesWatched;
@@ -69,7 +71,7 @@ export default function Progress({history,titles,onOpen,onDiscover,loading=false
     <div className="section-intro"><h1>Progress</h1>{!empty&&<span className="count-label">{number(tracked)} {tracked===1?'title':'titles'} tracked</span>}</div>
     {empty?<div className="empty-state"><BarChart3 size={38}/><h3>Your watch history starts here</h3><p>Play something or mark episodes and movies as watched to start tracking.</p><button className="button primary" onClick={onDiscover}><Play size={17} fill="currentColor"/> Find something to watch</button></div>:<>
       <div className="progress-stats">{stats.map(stat=><article className="progress-stat" key={stat.label}><span>{stat.label}</span><strong>{stat.value}</strong></article>)}</div>
-      <div className="progress-search"><Search size={18} aria-hidden="true"/><input type="search" aria-label="Search tracked titles" placeholder="Search your tracked titles" value={query} onChange={event=>changeQuery(event.target.value)}/>{query&&<button type="button" aria-label="Clear title search" onClick={()=>changeQuery('')}><X size={17}/></button>}</div>
+      {searchQuery===undefined&&<div className="progress-search"><Search size={18} aria-hidden="true"/><input type="search" aria-label="Search tracked titles" placeholder="Search your tracked titles" value={query} onChange={event=>changeQuery(event.target.value)}/>{query&&<button type="button" aria-label="Clear title search" onClick={()=>changeQuery('')}><X size={17}/></button>}</div>}
       <div className="progress-body">
         <div className="progress-main">
           {summary.series.length>0&&<section className="progress-section" aria-label="Series progress">

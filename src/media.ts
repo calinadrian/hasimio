@@ -1,6 +1,6 @@
 import { engineBase } from './engine';
 export type Video = { id: string; title?: string; name?: string; season?: number; episode?: number; released?: string; thumbnail?: string; runtime?:string|number };
-export type Meta = { id: string; type: string; name: string; poster?: string; background?: string; description?: string; releaseInfo?: string; released?: string; imdbRating?: string; votes?: number; genres?: string[]; runtime?: string; videos?: Video[]; category?: 'anime'; sourceUrl?: string; metadataFetchedAt?: number; metadataError?: string; metadataPartial?: boolean };
+export type Meta = { id: string; type: string; name: string; aliases?: string[]; poster?: string; background?: string; description?: string; releaseInfo?: string; released?: string; imdbRating?: string; votes?: number; genres?: string[]; runtime?: string; videos?: Video[]; category?: 'anime'; sourceUrl?: string; metadataFetchedAt?: number; metadataError?: string; metadataPartial?: boolean };
 export type Resource = string | { name: string; types?: string[]; idPrefixes?: string[] };
 export type Manifest = { id: string; name: string; version: string; description: string; resources: Resource[]; types: string[]; idPrefixes?: string[]; catalogs: { id: string; type: string; name?: string; extra?: { name: string; isRequired?: boolean }[] }[] };
 export type Addon = { url: string; manifest: Manifest; enabled: boolean; builtin?: boolean };
