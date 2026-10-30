@@ -1,6 +1,6 @@
 import {describe,it,expect,vi} from 'vitest';
 import {torrentResults,parseVideoId,searchPirateBay} from './piratebay.mjs';
-import {byteRange,selectVideo,localRequest,parseOrigins,corsHeaders,preflightHeaders,videoContainer} from './torrent-utils.mjs';
+import {byteRange,selectVideo,localRequest,parseOrigins,corsHeaders,preflightHeaders,videoContainer,lanOrigins} from './torrent-utils.mjs';
 import {cacheRoot} from './paths.mjs';
 import {engineOptions,ENGINE_PORT} from './engine.mjs';
 describe('Pirate Bay source matching',()=>{
@@ -111,6 +111,17 @@ describe('Hasimio Engine options and cache folder',()=>{
     let status,body;const res={setHeader(){},writeHead(code){status=code;},end(text){body=JSON.parse(text);}};
     await service.handle({method:'GET',url:'/api/streaming/health',headers:{host:'127.0.0.1:11475'},socket:{remoteAddress:'127.0.0.1'}},res);await service.close();
     expect(status).toBe(200);expect(body.apiVersion).toBe(ENGINE_API_VERSION);expect(body.engineVersion).toMatch(/^\d+\.\d+\.\d+/);
+  });
+  it('advertises private LAN media origins for casting only when the service is LAN-bound',async()=>{
+    const {createMediaService}=await import('./service.mjs');
+    const health=async options=>{const service=createMediaService({allowedOrigins:new Set(),...options});let body;const res={setHeader(){},writeHead(){},end(text){body=JSON.parse(text);}};await service.handle({method:'GET',url:'/api/streaming/health',headers:{host:'127.0.0.1:11475'},socket:{remoteAddress:'127.0.0.1'}},res);await service.close();return body;};
+    const lan=await health({lan:true}),loopback=await health({});
+    expect(Array.isArray(lan.lanOrigins)).toBe(true);expect(lan.lanOrigins.every(origin=>/^http:\/\//.test(origin))).toBe(true);
+    expect(loopback).not.toHaveProperty('lanOrigins');
+  });
+  it('turns private IPv4 interfaces into media origins',()=>{
+    expect(lanOrigins(11475,{'Wi-Fi':[{family:'IPv4',address:'192.168.1.5',internal:false}],'Loopback':[{family:'IPv4',address:'127.0.0.1',internal:true}]})).toEqual(['http://192.168.1.5:11475']);
+    expect(lanOrigins(80,{})).toEqual([]);
   });
   it('binds loopback on 11475 by default, with LAN, port and site options',()=>{
     expect(engineOptions([],{})).toEqual({port:ENGINE_PORT,host:'127.0.0.1',allowedOrigins:new Set()});

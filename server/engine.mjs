@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
 import {createMediaService} from './service.mjs';
-import {parseOrigins} from './torrent-utils.mjs';
+import {parseOrigins,lanOrigins} from './torrent-utils.mjs';
 import {cacheRoot} from './paths.mjs';
 import {serveStatic} from './static-ui.mjs';
 
@@ -39,8 +39,30 @@ export function engineOptions(argv,env=process.env,readConfig=file=>JSON.parse(r
 
 // Starts the engine; with uiRoot it also serves that built UI folder, as the desktop app does. Rejects with error.code on listen failures.
 export async function startEngine({port=ENGINE_PORT,host='127.0.0.1',allowedOrigins=new Set(),uiRoot}={}) {
-  const service=createMediaService({allowedOrigins});
-  const server=createServer((req,res)=>{void service.handle(req,res,()=>{
+  let relay;let server;
+  // A loopback-only desktop engine cannot hand a TV its 127.0.0.1 media URL. A second, ephemeral
+  // HTTP server on 0.0.0.0 serves only torrent media paths, and only after the first cast starts.
+  const startRelay=async()=>{
+    if(relay)return relay;
+    const mediaServer=createServer((req,res)=>{
+      let pathname='';
+      try {pathname=new URL(req.url??'/','http://localhost').pathname;} catch {/**/}
+      if(!['GET','HEAD'].includes(req.method)||!/^\/api\/torrents\/[a-f\d]{36}\/(?:files\/\d+|audio\/)/.test(pathname)){
+        res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});return res.end('Not found.\n');
+      }
+      void service.handle(req,res);
+    });
+    try {await new Promise((resolve,reject)=>{mediaServer.once('error',reject);mediaServer.listen(0,'0.0.0.0',resolve);});}
+    catch(error){mediaServer.close();throw error;}
+    relay={server:mediaServer,port:mediaServer.address().port};
+    return relay;
+  };
+  const castMediaOrigins=async()=>{
+    if(host==='0.0.0.0'){const address=server.address();return lanOrigins(typeof address==='object'&&address?address.port:String(port));}
+    return lanOrigins((await startRelay()).port);
+  };
+  const service=createMediaService({allowedOrigins,lan:host==='0.0.0.0',castMediaOrigins});
+  server=createServer((req,res)=>{void service.handle(req,res,()=>{
     if(uiRoot)return void serveStatic(uiRoot,req,res);
     if(req.url==='/'&&['GET','HEAD'].includes(req.method)){res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8'});return res.end('Hasimio Engine is running. Open the Hasimio app to play torrents.\n');}
     res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});res.end('Not found.\n');
@@ -48,7 +70,11 @@ export async function startEngine({port=ENGINE_PORT,host='127.0.0.1',allowedOrig
   try {await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,host,resolve);});}
   catch(error){await service.close();throw error;}
   let closing;
-  const close=()=>closing??=(async()=>{server.close();server.closeAllConnections?.();await service.close();})();
+  const close=()=>closing??=(async()=>{
+    server.close();server.closeAllConnections?.();
+    await service.close();
+    if(relay){relay.server.close();relay.server.closeAllConnections?.();}
+  })();
   return {port:server.address().port,close};
 }
 

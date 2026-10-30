@@ -14,10 +14,10 @@ export const captionPresets:{id:string;label:string;style:CaptionStyle}[]=[
   {id:'film',label:'Film serif',style:{captionFont:'serif',captionColor:'#fff8e7',captionBackground:0,captionEdge:'shadow',captionBold:false}},
 ];
 export const captionColors=['#ffffff','#fff8e7','#ffe14d','#7fe3ff','#a8ff9e','#ffb3c7'];
-export type PlayerSettings={volume:number;muted:boolean;rate:number;captionSize:number;captionDelay:number;captionPosition:number;subtitleLanguage:string;autoSubtitles:boolean}&CaptionStyle;
-export const defaultSettings:PlayerSettings={volume:0.8,muted:false,rate:1,captionSize:100,captionDelay:0,captionPosition:8,subtitleLanguage:'eng',autoSubtitles:false,...captionPresets[0].style};
+export type PlayerSettings={volume:number;muted:boolean;rate:number;captionSize:number;captionDelay:number;captionPosition:number;subtitleLanguage:string;autoSubtitles:boolean;autoPlayNext:boolean}&CaptionStyle;
+export const defaultSettings:PlayerSettings={volume:0.8,muted:false,rate:1,captionSize:100,captionDelay:0,captionPosition:8,subtitleLanguage:'eng',autoSubtitles:false,autoPlayNext:true,...captionPresets[0].style};
 export function validSetting(key:string,value:unknown){
-  if(key==='muted'||key==='captionBold'||key==='autoSubtitles')return typeof value==='boolean';
+  if(key==='muted'||key==='captionBold'||key==='autoSubtitles'||key==='autoPlayNext')return typeof value==='boolean';
   if(key==='captionFont')return typeof value==='string'&&Object.hasOwn(captionFonts,value);
   if(key==='captionEdge')return typeof value==='string'&&Object.hasOwn(captionEdges,value);
   if(key==='captionColor')return typeof value==='string'&&/^#[\da-f]{6}$/i.test(value);

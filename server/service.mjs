@@ -10,7 +10,7 @@ import {eztvManifest,createEztvSearch} from './eztv.mjs';
 import {torrentClawManifest,searchTorrentClaw,catalogTorrentClaw,metadataTorrentClaw} from './torrentclaw.mjs';
 import {torrentDownloadsManifest,searchTorrentDownloads} from './torrentdownloads.mjs';
 import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
-import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer} from './torrent-utils.mjs';
+import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer,lanOrigins} from './torrent-utils.mjs';
 import {cacheDir} from './paths.mjs';
 import {ENGINE_API_VERSION} from '../shared/engine-api.mjs';
 
@@ -18,9 +18,11 @@ const engineVersion=(()=>{try {return JSON.parse(readFileSync(new URL('../packag
 import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks,audioRoot} from './compatible-audio.mjs';
 
 import {createSubtitleJob,subtitleStatus} from './subtitles.mjs';
+import {createCastController} from './cast.mjs';
 import {searchOnlineSubtitles,downloadOnlineSubtitle} from './online-subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
 import {inspectionStream} from './inspection-stream.mjs';
+import {createSkipSegmentLookup,imdbVideoId} from './segments.mjs';
 
 const cacheRoot=cacheDir('torrents');
 const trackers=['udp://tracker.opentrackr.org:1337/announce','udp://open.stealth.si:80/announce','udp://tracker.torrent.eu.org:451/announce'];
@@ -29,10 +31,14 @@ export const UPLOAD_LIMIT=64*1024;
 // A crash skips stop(), so the first torrent of each run clears what an earlier run left behind.
 let swept;
 const sweepCache=()=>swept??=Promise.all([cacheRoot,audioRoot].map(dir=>rm(dir,{recursive:true,force:true,maxRetries:3,retryDelay:200}).catch(()=>{})));
-export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')})}={}) {
+export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')}),lan=false,castMediaOrigins}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
+  // Created on first use so engines that never cast do not open discovery sockets or TLS connections.
+  let castController;
+  const cast=()=>castController??=createCastController({fetchImpl,mediaOrigins:castMediaOrigins});
   const searchEztv=createEztvSearch({fetchImpl});
+  const skipSegments=createSkipSegmentLookup({fetchImpl});
   const lookupTitle=id=>titles.title(id);
   const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
   async function client(inspection=false) {
@@ -99,7 +105,42 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     if(!localRequest(req,undefined,allowedOrigins))return json(res,403,{error:'Streaming requests must come from this app on localhost, this PC’s private LAN address, or an allowed Hasimio site.'});
     for(const [name,value] of Object.entries(corsHeaders(req,allowedOrigins)))res.setHeader(name,value);
     try {
-      if(req.method==='GET'&&url.pathname==='/api/streaming/health')return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size});
+      if(req.method==='GET'&&url.pathname==='/api/streaming/health'){
+        let port='';try {port=new URL(`http://${req.headers.host ?? ''}`).port;}catch{/* A malformed Host header was already rejected by localRequest. */}
+        return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size,...(lan?{lanOrigins:lanOrigins(port)}:{})});
+      }
+      // Native Chromecast control for the desktop app, where the Google Cast sender SDK is unavailable.
+      if(req.method==='GET'&&url.pathname==='/api/cast')return json(res,200,{available:Boolean(castMediaOrigins)});
+      if(req.method==='GET'&&url.pathname==='/api/cast/status'){
+        const status=castController?.status()??{active:false};
+        return json(res,200,{available:Boolean(castMediaOrigins),...status});
+      }
+      if(req.method==='GET'&&url.pathname==='/api/cast/devices'){
+        if(!castMediaOrigins)return json(res,503,{error:'Casting is not available in this engine.'});
+        return json(res,200,{devices:await cast().listDevices({refresh:url.searchParams.get('refresh')==='1'})});
+      }
+      if(req.method==='POST'&&url.pathname==='/api/cast/start'){
+        if(!castMediaOrigins)return json(res,503,{error:'Casting is not available in this engine.'});
+        if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});
+        const input=await body(req);
+        if(typeof input.deviceId!=='string'||!input.deviceId)return json(res,400,{error:'Choose a TV first.'});
+        if(typeof input.url!=='string'||!/^https?:\/\//i.test(input.url))return json(res,400,{error:'This source cannot be cast.'});
+        const position=Number(input.position);
+        return json(res,200,await cast().start({deviceId:input.deviceId,url:input.url,title:typeof input.title==='string'?input.title:undefined,subtitle:typeof input.subtitle==='string'?input.subtitle:undefined,contentType:typeof input.contentType==='string'?input.contentType:undefined,position:Number.isFinite(position)?Math.max(0,position):0}));
+      }
+      if(req.method==='POST'&&url.pathname==='/api/cast/stop'){
+        if(castController)await castController.stop();
+        return json(res,200,{stopped:true});
+      }
+      // Optional intro/credits markers. The player quietly uses its own timing
+      // when this lookup is unavailable or has no data for the episode.
+      if(req.method==='GET'&&url.pathname==='/api/segments'){
+        const videoId=url.searchParams.get('videoId')??'';
+        if(!imdbVideoId(videoId))return json(res,400,{error:'Skip timestamps need an IMDb movie or episode ID.'});
+        const value=Number(url.searchParams.get('durationMs'));
+        try{return json(res,200,{available:true,...await skipSegments(videoId,Number.isFinite(value)&&value>0?value:undefined)});}
+        catch(error){return json(res,502,{error:error.message||'Skip timestamps are unavailable.'});}
+      }
       if(req.method==='GET'&&url.pathname==='/api/extensions/piratebay/manifest.json')return json(res,200,pirateBayManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/yts/manifest.json')return json(res,200,ytsManifest);
       if(req.method==='GET'&&url.pathname==='/api/extensions/eztv/manifest.json')return json(res,200,eztvManifest);
@@ -220,6 +261,6 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       return json(res,404,{error:'Unknown local streaming endpoint.'});
     }catch(error){if(!res.headersSent)json(res,400,{error:error.message || 'The local streaming service could not complete this request.'});else res.destroy();}
   }
-  async function close() {shuttingDown=true;clearInterval(cleanup);await titles.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
+  async function close() {shuttingDown=true;clearInterval(cleanup);await titles.close();if(castController)await castController.close();for(const id of [...sessions.keys()])await stop(id);for(const pending of [clientPromise,inspectionClientPromise])if(pending){const instance=await pending;if(!instance.destroyed)await new Promise(resolve=>instance.destroy(resolve));}}
   return {handle,close};
 }

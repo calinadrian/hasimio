@@ -47,6 +47,11 @@ export function privateIPv4(address) {
   return parts.length===4&&parts.every(p=>Number.isInteger(p)&&p>=0&&p<=255)&&(parts[0]===10||parts[0]===127||(parts[0]===192&&parts[1]===168)||(parts[0]===172&&parts[1]>=16&&parts[1]<=31));
 }
 export function localHosts() {return new Set(['localhost','127.0.0.1','[::1]',...Object.values(networkInterfaces()).flat().filter(i=>i?.family==='IPv4'&&privateIPv4(i.address)).map(i=>i.address)]);}
+// LAN addresses a Chromecast can reach, used when the engine is listening beyond loopback.
+export function lanOrigins(port,interfaces=networkInterfaces()) {
+  const suffix=port&&Number(port)!==80?`:${port}`:'';
+  return [...new Set(Object.values(interfaces).flat().filter(i=>i?.family==='IPv4'&&!i.internal&&privateIPv4(i.address)&&!i.address.startsWith('127.')).map(i=>`http://${i.address}${suffix}`))];
+}
 // Exact origins (scheme://host[:port]) of hosted Hasimio UIs allowed to call this engine.
 export function parseOrigins(value) {
   const origins=new Set();
