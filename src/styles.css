@@ -44,7 +44,7 @@
 /* Hasimio Engine status and library transfer */
 .engine-panel{display:flex;align-items:flex-start;gap:13px;background:#212121;border:1px solid #323232;border-radius:8px;padding:14px 16px;margin:0 0 22px}
 .engine-panel p{font-size:14px;color:#b3b3b3;line-height:1.7}
-.engine-panel h4{font-size:16px;font-weight:650;margin-bottom:4px;color:#efefef}
+.engine-panel h4{font-size:16px;font-weight:650;margin:0 0 4px;color:#efefef}
 .engine-panel small{display:block;margin-top:10px;font-size:13px;color:#a2a2a2;line-height:1.6}
 .engine-panel>div{flex:1;min-width:0}
 .engine-panel.needed{border-color:#e0e0e055;background:#202020}
