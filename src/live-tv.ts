@@ -19,4 +19,17 @@ export const liveChannels=[{
   name:'TLC',
   provider:'Cool-eTv',
   servers:[{id:'main',name:'Server 1',url:'https://www.cool-etv.net/ch/tlc-s1.htm'}],
+},{
+  id:'prima-tv',
+  name:'Prima TV',
+  provider:'Cool-eTv',
+  servers:[
+    {id:'main',name:'Server 1',url:'https://www.cool-etv.net/ch/primatv.htm'},
+    {id:'alternative',name:'Server 2',url:'https://www.cool-etv.net/ch/primatv-s2.htm'},
+  ],
+},{
+  id:'pro-tv',
+  name:'Pro TV',
+  provider:'Cool-eTv',
+  servers:[{id:'alternative',name:'Server 2',url:'https://www.cool-etv.net/ch/protv-s2.htm'}],
 }] as const;

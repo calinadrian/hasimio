@@ -1,11 +1,15 @@
 import {createHash} from 'node:crypto';
 
 const channels={
+  'prima-tv':{pages:{main:'https://www.cool-etv.net/ch/primatv.htm',alternative:'https://www.cool-etv.net/ch/primatv-s2.htm'},players:['https://saruman1.tharen001.cfd/000/prima.html'],origin:'https://saruman1.tharen001.cfd',path:'/prima/',encoding:'prima'},
+  'pro-tv':{pages:{alternative:'https://www.cool-etv.net/ch/protv-s2.htm'},players:['https://ultra3.ronanx001.shop/000/porkys.html'],origin:'https://ultra3.ronanx001.shop',path:'/porky/',encoding:'protv'},
   'cartoon-network':{pages:{main:'https://www.cool-etv.net/ch/cartoon.htm',alternative:'https://www.cool-etv.net/ch/cartoon-s2.htm'},players:['https://saruman1.tharen001.cfd/000/cartun.html'],origin:'https://saruman1.tharen001.cfd',path:'/cartun/',encoding:'cartoon'},
   a1:{pages:{main:'https://www.cool-etv.net/ch/an1.htm',alternative:'https://www.cool-etv.net/ch/an1-s2.htm'},players:['https://canale-tv.net/channel-v2/a1.html','https://canale-tv.net/channel/a1.html','https://alpha1.yozefina.cfd/000/anyone.html'],origin:'https://alpha1.yozefina.cfd',path:'/ah1/',encoding:'a1'},
   tlc:{pages:{main:'https://www.cool-etv.net/ch/tlc-s1.htm'},players:['https://atlantida1.aquax001.shop/000/t1c.html'],origin:'https://atlantida1.aquax001.shop',path:'/telece/',encoding:'tlc'},
 };
 const encodings={
+  prima:{outer:[1119424,532,225,35909,15905,4131133],inner:[532,225,35909,15905,4131133],dictionary:[76,79,81,80,85,82,86,65,88,90,89,66,71,74,94,87,72,70,60,75],prefix:[92,96,32,10,42,39]},
+  protv:{outer:[379391,497,253,36717,30250,1644018],inner:[477,117,23691,21462,1360405],dictionary:[75,90,89,80,76,81,72,88,94,70,82,86,60,65,79,71,85,87,66,74],prefix:[10,92,32,39,42,96]},
   cartoon:{outer:[818886,254,633,21878,43077,2549222],inner:[107,101,50102,38953,4477073],dictionary:[70,94,90,75,86,76,87,74,82,65,81,79,85,80,60,88,66,71,89,72],prefix:[10,32,39,96,42,92]},
   a1:{outer:[3293193,300,106,22960,36563,6421831],inner:[61,340,20120,40325,7001151],dictionary:[94,74,70,79,66,90,71,89,81,82,85,72,75,87,88,60,86,80,65,76],prefix:[96,92,32,10,42,39]},
   tlc:{outer:[2873238,489,391,41997,35660,3782086],inner:[489,391,41997,35660,3782086],dictionary:[74,60,88,85,66,76,70,94,82,86,71,72,87,81,65,79,89,75,80,90],prefix:[92,32,39,10,96,42]},
