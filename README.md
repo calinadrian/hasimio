@@ -43,6 +43,13 @@ Open the localhost URL printed by Vite. `npm run build` creates `dist/`; `npm ru
 
 ## Desktop app
 
+### Standalone Android edition
+
+`npm run package:android` builds a signed ARM64 APK for Android 9+ with an
+on-device torrent engine and GitHub APK updater. Install updates from the
+in-app prompt; Android asks for confirmation. See [Android setup](docs/ANDROID.md)
+for signing, GitHub release workflow, installation and codec limits.
+
 ### MacBook / Apple Silicon edition
 
 Hasimio's Electron desktop app can be built for Apple Silicon Macs, including

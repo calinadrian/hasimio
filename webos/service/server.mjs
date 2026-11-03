@@ -20,10 +20,11 @@ import parseTorrent from 'parse-torrent';
 
 const PORT=11476, ORIGIN='http://127.0.0.1:'+PORT;
 const MiB=1024*1024, metadataLimit=4*MiB;
-const configPath='/media/internal/app.hasimio.tv/settings.json';
+const dataRoot=process.env.HASIMIO_MOBILE_DATA||'/media/internal/app.hasimio.tv';
+const configPath=path.join(dataRoot,'settings.json');
 let cacheMiB=64;
 try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].includes(config.cacheMiB))cacheMiB=config.cacheMiB;}catch{/* New installation. */}
-const filelist=createFileList({filename:'/media/internal/app.hasimio.tv/filelist-account.json',parseTorrent});
+const filelist=createFileList({filename:path.join(dataRoot,'filelist-account.json'),parseTorrent});
 const torrents=createTorrents({cacheMiB:()=>cacheMiB,resolveFilelist:id=>filelist.resolve(id),
   record:(...event)=>monitor.record(...event), onStart:()=>monitor.counters.downloads++, onCleanup:()=>monitor.counters.cleanups++});
 const metadata=new Map(), pending=new Map();
@@ -193,6 +194,8 @@ server.on('error',error=>{monitor.record('error','service-error',error.code);con
 process.on('unhandledRejection',error=>{monitor.record('error','service-rejection',error&&error.message||'An unhandled service rejection occurred.');});
 server.listen(PORT,'127.0.0.1',()=>{if(global.HASIMIO_TV_READY)global.HASIMIO_TV_READY();});
 const Service=global.HASIMIO_TV_SERVICE;
-const service=new Service('app.hasimio.tv.service');
-service.register('start',message=>message.respond({returnValue:true,url:ORIGIN,subscribed:Boolean(message.isSubscription)}),()=>{void torrents.stop();});
+if(Service){
+  const service=new Service('app.hasimio.tv.service');
+  service.register('start',message=>message.respond({returnValue:true,url:ORIGIN,subscribed:Boolean(message.isSubscription)}),()=>{void torrents.stop();});
+}
 for(const signal of ['SIGTERM','SIGINT'])process.on(signal,()=>{monitor.close();void torrents.close().then(()=>{server.close();process.exit(0);});});

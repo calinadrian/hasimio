@@ -1,0 +1,84 @@
+name: Android APK
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the signed APK as an Android GitHub release
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - name: Install Android build tools
+        run: sdkmanager 'platforms;android-34' 'build-tools;34.0.0' 'ndk;27.3.13750724'
+      - run: npm ci
+      - run: npm ci --prefix webos/service --omit=optional --ignore-scripts
+      - name: Restore release signing key
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          for NAME in KEYSTORE STORE_PASSWORD KEY_PASSWORD KEY_ALIAS; do
+            if [ -z "${!NAME}" ]; then
+              echo "::error::Missing Android signing secret: $NAME. See docs/ANDROID.md."
+              exit 1
+            fi
+          done
+          printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/hasimio.jks"
+      - name: Build standalone signed APK
+        env:
+          ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.3.13750724
+          ANDROID_KEYSTORE: ${{ runner.temp }}/hasimio.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: npm run package:android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasimio-Android-arm64
+          path: |
+            release/android/*.apk
+            release/android/hasimio-android-update.json
+          if-no-files-found: error
+      - name: Publish Android release
+        if: inputs.publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p 'JSON.parse(require("fs").readFileSync("package.json", "utf8")).version')
+          TAG="android-v$VERSION"
+          if gh release view "$TAG" --json isDraft --jq '.isDraft' > "$RUNNER_TEMP/release-state"; then
+            if [ "$(cat "$RUNNER_TEMP/release-state")" != true ]; then
+              echo '::error::This Android version is already published. Bump package.json.'
+              exit 1
+            fi
+            # A retried draft must still refer to this exact source commit.
+            git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
+            test "$(git rev-parse "$TAG^{commit}")" = "$GITHUB_SHA"
+          else
+            gh release create "$TAG" --target "$GITHUB_SHA" --draft --title "Hasimio Android $VERSION" --notes 'Standalone Android edition with on-device torrent playback and signed APK updates. Requires Android 9+ and ARM64. Desktop FFmpeg conversion is unavailable.' --latest=false
+          fi
+          gh release upload "$TAG" "release/android/Hasimio-$VERSION-android-arm64.apk" release/android/hasimio-android-update.json --clobber
+          gh release edit "$TAG" --draft=false --latest=false
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/hasimio.jks"
