@@ -18,5 +18,24 @@
 .hasimio-tv .tv-storage small{display:block;color:#bbb}
 .hasimio-tv .poster-card:focus{transform:none}
 .hasimio-tv .shelf-controls{display:none}
+/* Explicit bounds also work on the TV browser, which predates CSS inset,
+   dynamic viewport units and aspect-ratio. */
+.hasimio-tv .sidebar{top:0;bottom:0;left:0}
+.hasimio-tv .hero-backdrop,.hasimio-tv .hero-shade,.hasimio-tv .poster-open,.hasimio-tv .cinema-video,.hasimio-tv .live-tv-video,.hasimio-tv .live-tv-idle{top:0;right:0;bottom:0;left:0}
+.hasimio-tv .detail-dialog{max-height:90vh}
+.hasimio-tv .detail-poster{height:225px}
+.hasimio-tv .detail-dialog.playback-dialog{position:fixed;top:0;right:0;bottom:0;left:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;border-radius:0}
+.hasimio-tv .cinema-player{height:100vh;min-height:0;max-height:none;border-radius:0}
+.hasimio-tv .cinema-wait{top:35%;right:20%;bottom:30%;left:20%}
+.hasimio-tv .cinema-state{top:100px;right:10%;bottom:120px;left:10%}
+.hasimio-tv .cinema-up-next-art{height:50px}
+.hasimio-tv .live-tv-stage{height:440px}
+.hasimio-tv .live-tv-stage:fullscreen{height:100vh}
+.hasimio-tv .live-tv-loading{top:16px;left:16px}
+.hasimio-tv .poster-playback-track{right:12px;bottom:12px;left:12px}
+.hasimio-tv .episode-toggle::before{top:8px;right:8px;bottom:8px;left:8px}
+.hasimio-tv .search kbd{display:none}
+.hasimio-tv .nav-item>*+*,.hasimio-tv .button>*+*,.hasimio-tv .search>*+*,.hasimio-tv .detail-actions>*+*{margin-left:10px}
+.hasimio-tv nav>*+*{margin-top:7px}
 /* Installed apps use a 720p graphics surface; the native video pipeline can
    still play supported 4K sources independently of the interface resolution. */

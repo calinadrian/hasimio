@@ -56,7 +56,9 @@ await fs.writeFile(path.join(bundled,'ca.pem'),rootCertificates.join('\n')+'\n')
 
 const result=await buildService({
   absWorkingDir:root,entryPoints:['webos/service/main.cjs'],outfile:path.join(bundled,'service.bundle.js'),
-  bundle:true,platform:'node',target:'node8',format:'cjs',minify:true,metafile:true,
+  // node-fetch 2 identifies AbortSignal by constructor.name. Renaming the
+  // polyfill class makes every request with a cancellation signal fail.
+  bundle:true,platform:'node',target:'node8',format:'cjs',minify:true,keepNames:true,metafile:true,
   define:{HASIMIO_VERSION:JSON.stringify(pkg.version)},external:['webos-service'],
   plugins:[{
     name:'webos-node8',setup(build){

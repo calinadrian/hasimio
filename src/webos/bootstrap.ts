@@ -50,17 +50,43 @@ document.documentElement.classList.add('hasimio-tv');
 const focusable='button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),summary,[tabindex="0"]';
 function scope(){return document.querySelector<HTMLElement>('.cinema-menu')??document.querySelector<HTMLElement>('.cinema-player')??document.querySelector<HTMLDialogElement>('dialog[open]')??document;}
 function candidates(){return Array.from(scope().querySelectorAll<HTMLElement>(focusable)).filter(element=>element.getClientRects().length&&getComputedStyle(element).visibility!=='hidden'&&!element.closest('[hidden],[aria-hidden="true"]'));}
+const editing='input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),textarea,select';
+let previousControl:HTMLElement|undefined;
+document.addEventListener('focusin',event=>{
+  const element=event.target;
+  if(element instanceof HTMLElement&&!element.matches(editing))previousControl=element;
+});
+function leaveEditor(element:HTMLElement){
+  // Blurring dismisses the LG keyboard. Return to a real control so the next
+  // remote arrow moves through results instead of editing the search text.
+  element.blur();
+  const list=candidates().filter(control=>!control.matches(editing)&&!control.closest('.search'));
+  const target=previousControl&&list.includes(previousControl)?previousControl:list.find(control=>control.matches('.poster-card'))??list[0];
+  target?.focus();
+  target?.scrollIntoView({block:'nearest',inline:'nearest'});
+}
+
 document.addEventListener('keydown',event=>{
   const back=event.key==='Escape'||event.key==='GoBack'||event.keyCode===461;
   if(back){
+    const active=document.activeElement;
+    if(active instanceof HTMLElement&&active.matches(editing)){
+      event.preventDefault();event.stopImmediatePropagation();leaveEditor(active);return;
+    }
     const player=document.querySelector<HTMLButtonElement>('.cinema-menu .cinema-menu-header button')??document.querySelector<HTMLButtonElement>('.cinema-back');
     if(player){event.preventDefault();event.stopImmediatePropagation();player.click();return;}
     const dialog=document.querySelector<HTMLDialogElement>('dialog[open]');
-    if(dialog){event.preventDefault();dialog.dispatchEvent(new Event('cancel',{cancelable:true}));return;}
+    if(dialog){event.preventDefault();event.stopImmediatePropagation();dialog.dispatchEvent(new Event('cancel',{cancelable:true}));return;}
     const search=document.querySelector<HTMLInputElement>('.search input');
-    if(search?.value){event.preventDefault();search.focus();return;}
+    if(search?.value){
+      event.preventDefault();event.stopImmediatePropagation();
+      document.querySelector<HTMLButtonElement>('.search button[aria-label="Clear search"]')?.click();
+      document.querySelector<HTMLButtonElement>('nav button.active')?.focus();return;
+    }
+    const shelfBack=document.querySelector<HTMLButtonElement>('.shelf-back');
+    if(shelfBack){event.preventDefault();event.stopImmediatePropagation();shelfBack.click();return;}
     const home=Array.from(document.querySelectorAll<HTMLButtonElement>('nav button')).find(button=>button.textContent?.includes('Discover'));
-    if(home&&!home.classList.contains('active')){event.preventDefault();home.click();return;}
+    if(home&&!home.classList.contains('active')){event.preventDefault();event.stopImmediatePropagation();home.click();home.focus();return;}
     // At the root, let webOS handle Back and exit normally.
     return;
   }

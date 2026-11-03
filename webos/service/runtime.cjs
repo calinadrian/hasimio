@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 require('core-js/actual/promise/all-settled');
 require('core-js/actual/string/match-all');
+require('core-js/actual/array/at');
 
 global.URL = URL;
 global.URLSearchParams = URLSearchParams;
