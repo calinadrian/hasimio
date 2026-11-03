@@ -1,4 +1,5 @@
 import {profileStorage} from './profile-storage';
+import {readStoredJson} from './compact-json';
 import {type Meta,type Addon,validateManifest} from './media';
 import {playbackHistory,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
 import {validSetting,settingsKey} from './preferences';
@@ -24,7 +25,8 @@ function validValue(key:string,value:unknown){
   return false;
 }
 export function validDocument(value:unknown):SyncDocument{
-  if(!plain(value)||value.v!==1||!plain(value.records)||Object.keys(value.records).length>10000)throw Error('Invalid sync data.');
+  if(typeof value==='string')value=readStoredJson<unknown>(value);
+  if(!plain(value)||value.v!==1||!plain(value.records)||Object.keys(value.records).length>50000)throw Error('Invalid sync data.');
   const records:Record<string,SyncRecord>={};
   for(const [key,item] of Object.entries(value.records)){
     if(!plain(item)||!Number.isSafeInteger(item.stamp)||Number(item.stamp)<0||typeof item.device!=='string'||!/^[a-f\d]{32}$/.test(item.device)||key.length>800||item.value===undefined)throw Error('Invalid sync record.');
@@ -44,6 +46,7 @@ export function compactDocument(document:SyncDocument,clock=Date.now()):SyncDocu
   return {v:1,records:Object.fromEntries(entries.filter(([key])=>!evicted.has(key)))};
 }
 export function sameDocument(a:SyncDocument,b:SyncDocument){const keys=Object.keys(a.records);return keys.length===Object.keys(b.records).length&&keys.every(key=>{const left=a.records[key],right=b.records[key];return right&&left.stamp===right.stamp&&left.device===right.device&&JSON.stringify(left.value)===JSON.stringify(right.value);});}
+export function documentValues(document:SyncDocument):Record<string,unknown>{return Object.fromEntries(Object.entries(document.records).filter(([key,record])=>record.value!==null&&validValue(key,record.value)).map(([key,record])=>[key,record.value]));}
 function read(key:string,fallback:unknown){try{return JSON.parse(profileStorage.getItem(key)??'null')??fallback;}catch{return fallback;}}
 export function localValues():Record<string,unknown>{
   const values:Record<string,unknown>={};const library=read('hasimio:library',[]),addons=read('hasimio:addons',[]),settings=read(settingsKey,{});

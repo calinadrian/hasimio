@@ -1,13 +1,14 @@
 import {profileStorage} from './profile-storage';
+import {readStoredJson,storedJson} from './compact-json';
 import {useSyncExternalStore} from 'react';
 import {randomDeviceId,randomKey,seal,unseal,serviceUrl,pairingKey,pairingFingerprint,sharedKey,encode,decode,type Sealed} from './sync-crypto';
-import {emptyDocument,localValues,captureChanges,mergeDocuments,compactDocument,validDocument,applyDocument,sameDocument,type SyncDocument} from './sync-state';
+import {emptyDocument,localValues,captureChanges,mergeDocuments,compactDocument,validDocument,applyDocument,sameDocument,documentValues,type SyncDocument} from './sync-state';
 
 export type Identity={server:string;spaceId:string;deviceId:string;deviceToken:string;key:string;name:string;recoveryToken?:string};
 type Device={id:string;name:string;addedAt:number;lastSeen:number};
 type Status={identity?:Identity;state:'off'|'syncing'|'ready'|'offline'|'revoked';error?:string;lastSynced?:number;devices:Device[];appUrl?:string};
 const identityKey='hasimio:sync:identity',documentKey='hasimio:sync:document';
-function read(key:string){try{return JSON.parse(profileStorage.getItem(key)??'null');}catch{return null;}}
+function read(key:string){try{return readStoredJson<any>(profileStorage.getItem(key)??'null');}catch{return null;}}
 function validIdentity(value:unknown):value is Identity{const v=value as Identity;try{return !!v&&serviceUrl(v.server)===v.server&&/^[a-f\d]{32}$/.test(v.spaceId)&&/^[a-f\d]{32}$/.test(v.deviceId)&&decode(v.key).length===32&&decode(v.deviceToken).length===32&&typeof v.name==='string'&&(v.recoveryToken===undefined||decode(v.recoveryToken).length===32);}catch{return false;}}
 function payload(text:string,message:string){try{const value=JSON.parse(new TextDecoder().decode(decode(text)));if(value&&typeof value==='object')return value as Record<string,unknown>;}catch{/* Reported below. */}throw Error(message);}
 export async function syncRequest<T>(server:string,route:string,options:{method?:string;body?:unknown;token?:string}={}):Promise<T>{
@@ -22,17 +23,17 @@ export class DeviceSync {
   private publish(update:Partial<Status>){this.status={...this.status,...update};for(const listener of this.listeners)listener();}
   subscribe=(listener:()=>void)=>{this.listeners.add(listener);return()=>{this.listeners.delete(listener);};};
   snapshot=()=>this.status;
-  private persist(){profileStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:this.document,observed:this.observed,revision:this.revision,pending:this.pending}));}
+  private persist(){const packed=storedJson(this.document);profileStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:packed.startsWith('gz1:')?packed:this.document,revision:this.revision,pending:this.pending}));}
   capture=()=>{
     if(this.applied||!this.status.identity)return;
-    try{const current=localValues(),next=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);if(Object.keys(next.records).some(key=>next.records[key]!==this.document.records[key]))this.pending=true;this.document=next;this.observed=current;this.persist();}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
+    try{const current=localValues(),next=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);const changed=Object.keys(next.records).some(key=>next.records[key]!==this.document.records[key]);if(changed){this.pending=true;this.document=next;}this.observed=current;if(changed)this.persist();}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
   };
   changed=()=>{if(this.applied)return;this.capture();if(!this.status.identity||this.status.state==='revoked')return;if(this.running)this.dirty=true;if(this.scheduled)return;this.scheduled=setTimeout(()=>{this.scheduled=undefined;void this.sync();},Math.max(1000,5000-(Date.now()-this.lastAttempt)));};
   start(){
     if(this.timer)return;const identity=read(identityKey);
     if(validIdentity(identity)){
-      const saved=read(documentKey);try{if(saved?.spaceId===identity.spaceId){this.document=validDocument(saved.document);this.observed=saved.observed??{};this.revision=Number.isSafeInteger(saved.revision)?saved.revision:0;this.pending=saved.pending!==false;}}catch{/* Rebuild from the device's own data. */}
-      this.publish({identity,state:'syncing'});void this.sync();
+      const saved=read(documentKey);try{if(saved?.spaceId===identity.spaceId){this.document=validDocument(saved.document);this.observed=saved.observed??documentValues(this.document);this.revision=Number.isSafeInteger(saved.revision)?saved.revision:0;this.pending=saved.pending!==false;}}catch{/* Rebuild from the device's own data. */}
+      this.publish({identity,state:'syncing'});this.capture();try{this.persist();}catch{/* Retain the previous saved document if storage is unavailable. */}void this.sync();
     }
     this.timer=setInterval(()=>{if(this.status.identity&&this.status.state!=='revoked'&&document.visibilityState!=='hidden')void this.sync();},15000);
     window.addEventListener('hasimio:local-data',this.changed);window.addEventListener('hasimio:playback-progress',this.changed);window.addEventListener('online',this.changed);window.addEventListener('pagehide',this.capture);

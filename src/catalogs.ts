@@ -4,7 +4,7 @@ export const filelist:Addon={url:'/api/extensions/filelist/manifest.json',enable
 import {stremioSources,stremioManifests} from '../shared/stremio-sources.mjs';
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
-import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl, demoAddon, getJson, resourceUrl, supports } from './media';
+import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl, demoAddon, getJson, resourceUrl, supports, validRelease } from './media';
 
 // Hasimio owns its catalogs: anime through its Kitsu adapter, movies and series through its own title index.
 // Cinemeta stays recognised so existing installations migrate, and it can still be installed manually.
@@ -128,7 +128,7 @@ export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSigna
         : await getJson<{meta:Meta}>(resourceUrl(source.url,'meta',meta.type,meta.id),requestSignal);
       if (!result.meta || typeof result.meta.id !== 'string' || typeof result.meta.name !== 'string') throw new Error('Invalid metadata response.');
       const knownVideos=new Map(meta.videos?.map(video=>[video.id,video]));
-      const videos=Array.isArray(result.meta.videos)?result.meta.videos.map(video=>result.meta.metadataPartial?{...knownVideos.get(video.id),...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined)),id:video.id}:video):meta.videos;
+      const videos=Array.isArray(result.meta.videos)?result.meta.videos.map(video=>{const known=knownVideos.get(video.id);const merged={...known,...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined&&value!==null)),id:video.id};if(!validRelease(video.released)&&validRelease(known?.released))merged.released=known!.released;return merged;}):meta.videos;
       return {...meta,...result.meta,id:meta.id,type:meta.type,category:meta.category ?? (source.manifest.id === kitsu.manifest.id ? 'anime' : undefined),sourceUrl:source.url,videos,metadataFetchedAt:Date.now(),metadataError:undefined,metadataPartial:result.meta.metadataPartial===true};
     }));
   }catch{if(signal?.aborted)throw new DOMException('Aborted','AbortError');}

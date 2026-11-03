@@ -1,3 +1,4 @@
+import {jsonBytes,readJsonBytes} from './compact-json';
 export type Sealed={v:1;iv:string;data:string};
 export function encode(bytes:Uint8Array){let text='';for(let offset=0;offset<bytes.length;offset+=8192)text+=String.fromCharCode(...bytes.subarray(offset,offset+8192));return btoa(text).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 export function decode(text:string){if(!/^[A-Za-z0-9_-]+$/.test(text))throw Error('Invalid sync key.');return Uint8Array.from(atob(text.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));}
@@ -6,7 +7,7 @@ export function randomDeviceId(){return Array.from(crypto.getRandomValues(new Ui
 export async function seal(value:unknown,key:string,context='Hasimio sync v1'):Promise<Sealed>{
   const raw=decode(key);if(raw.length!==32)throw Error('Invalid sync key.');
   const aes=await crypto.subtle.importKey('raw',raw.buffer,'AES-GCM',false,['encrypt']),iv=crypto.getRandomValues(new Uint8Array(12));
-  const data=await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:new TextEncoder().encode(context)},aes,new TextEncoder().encode(JSON.stringify(value)));
+  const data=await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:new TextEncoder().encode(context)},aes,new Uint8Array(jsonBytes(value)).buffer);
   return {v:1,iv:encode(iv),data:encode(new Uint8Array(data))};
 }
 export async function unseal<T>(value:Sealed,key:string,context='Hasimio sync v1'):Promise<T>{
@@ -14,7 +15,7 @@ export async function unseal<T>(value:Sealed,key:string,context='Hasimio sync v1
     if(value?.v!==1)throw Error();const raw=decode(key);if(raw.length!==32)throw Error();
     const aes=await crypto.subtle.importKey('raw',raw.buffer,'AES-GCM',false,['decrypt']);
     const data=await crypto.subtle.decrypt({name:'AES-GCM',iv:decode(value.iv).buffer,additionalData:new TextEncoder().encode(context)},aes,decode(value.data).buffer);
-    return JSON.parse(new TextDecoder().decode(data));
+    return readJsonBytes<T>(new Uint8Array(data));
   }catch{throw Error('The sync data could not be decrypted. Check your recovery code or pair this device again.');}
 }
 export async function pairingKey(){const keys=await crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true,['deriveKey']);return {privateKey:keys.privateKey,publicKey:await crypto.subtle.exportKey('jwk',keys.publicKey)};}

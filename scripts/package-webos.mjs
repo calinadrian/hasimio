@@ -105,7 +105,7 @@ for(const input of Object.keys(result.metafile.inputs)){
     try{await fs.access(path.join(directory,'package.json'));packages.add(directory);break;}catch{directory=path.dirname(directory);}
   }
 }
-for(const name of ['react','react-dom','scheduler','lucide-react','hls.js','core-js','dialog-polyfill','qrcode']){
+for(const name of ['react','react-dom','scheduler','lucide-react','hls.js','fflate','core-js','dialog-polyfill','qrcode']){
   try{packages.add(path.dirname(require.resolve(name+'/package.json')));}catch{/* A dependency may be tree-shaken away. */}
 }
 const notices=[];

@@ -1,17 +1,17 @@
-Add a startup profile picker to desktop and LG TV.
+Fix large-history sync and misleading episode-date labels.
 
-Each profile has its own library, watch progress, preferences, extension
-selection and device-sync connection. Pair one TV profile with one PC's
-device group and another with a different PC. Existing data and pairing are
-preserved under My profile without copying or clearing storage.
+Large sync documents are compressed before encryption and in the local sync
+cache. The duplicated saved comparison snapshot is removed. Completed watched
+history is retained, and the record guard allows 10,000 watched entries plus
+library/settings records. The relay's storage limit is unchanged.
 
-Add, rename, recolor and remove local profiles through Manage profiles.
-Switch profile in the sidebar returns to the picker. FileList login, buffer
-size and app updates remain device-wide. Existing local TV loading-screen
-improvements are preserved.
+Update every paired app to v0.1.51 or newer for compressed large histories.
+Existing uncompressed data remains readable. Main library/history storage is
+kept unchanged; no watched entries are deleted by this update.
 
-Profile storage uses separate namespaces, including sync credentials and
-pending documents. Switching recreates the app before selecting another
-profile. TV disposable-cache limits also cover profile-scoped metadata.
+Episodes with missing dates show Release date unavailable. Watched episodes
+show Watched · Release date unavailable and no upcoming-release countdown.
+Metadata refreshes preserve known valid dates when providers omit them.
 
-Builds and packaging only. Pairing and navigation remain for user validation.
+Builds and synthetic size calculations only; user pairing/navigation testing
+was not performed. See docs/LARGE-HISTORY-SYNC.md for compatibility details.
