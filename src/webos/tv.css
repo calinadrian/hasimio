@@ -23,7 +23,10 @@
 .hasimio-tv .tv-storage label{display:block}
 .hasimio-tv .tv-storage select{margin-left:20px;background:#303030;color:#fff;font:inherit;padding:8px 12px}
 .hasimio-tv .tv-storage small{display:block;color:#bbb}
-.hasimio-tv .poster-card:focus{transform:none}
+.hasimio-tv .poster-card:focus{transform:none;outline:none!important}
+.hasimio-tv .poster-card .poster-image{transform:none}
+/* Paint above the artwork, rather than behind children on the card button. */
+.hasimio-tv .poster-card:focus .poster-image::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border:3px solid #fff;border-radius:inherit;box-sizing:border-box;z-index:10;pointer-events:none}
 .hasimio-tv .shelf-controls{display:none}
 /* Explicit bounds also work on the TV browser, which predates CSS inset,
    dynamic viewport units and aspect-ratio. */

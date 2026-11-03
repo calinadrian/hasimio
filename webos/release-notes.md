@@ -1,8 +1,6 @@
-Keep TV focus highlights inside controls.
+Fix the clipped focus highlight on TV poster cards.
 
-Replace the shared outward focus outline with an inset outline across the TV
-interface. Light primary buttons use a dark focus ring for contrast. Search
-uses one ring around the field rather than nested parent/input rings. Add
-explicit spacing between hero buttons for the TV browser's flex layout.
-
-Build and packaging completed; remote interaction remains for user testing.
+Poster cards use a rounded overlay border painted above the artwork. Remove
+its parent button outline so the image cannot obscure the focus indicator
+and no frame surrounds the title text. Disable poster hover movement on TV
+so the artwork and highlight keep the same bounds.
