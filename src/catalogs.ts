@@ -1,4 +1,6 @@
 import {isWebOS} from './webos/platform';
+import {filelistManifest} from '../shared/filelist-manifest.mjs';
+export const filelist:Addon={url:'/api/extensions/filelist/manifest.json',enabled:false,manifest:filelistManifest};
 import {stremioSources,stremioManifests} from '../shared/stremio-sources.mjs';
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
@@ -49,11 +51,12 @@ export function migrateAnimeSource(existing:Addon[]) {
   return existing.map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
     .filter((a,index,all) => all.findIndex(other=>other.manifest.id === a.manifest.id) === index);
 }
-export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw,torrentio,comet,ext];
+export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw,torrentio,comet,ext,filelist];
 // Sources served by Hasimio itself. Synced records may use these non-HTTP URLs.
 export const builtinSourceUrls = defaultAddons.map(a => a.url).filter(url => !/^https?:/.test(url));
 // One-time additions for existing installations, applied in order. A flag is set once, so later removals are preserved.
 export const sourceMigrations:[flag:string,apply:(existing:Addon[])=>Addon[]][] = [
+  ['hasimio:filelist-v1',existing=>existing.some(addon=>addon.manifest.id===filelist.manifest.id)?existing:[...existing,filelist]],
   ['hasimio:piratebay-v1',existing => existing.some(a => a.manifest.id === pirateBay.manifest.id) ? existing : [...existing,pirateBay]],
   ['hasimio:yts-v1',addYtsSource],['hasimio:eztv-v1',addEztvSource],['hasimio:torrentdownloads-v1',addTorrentDownloadsSource],
   ['hasimio:torrentclaw-v1',addTorrentClawSource],['hasimio:titles-v1',replaceCinemeta],

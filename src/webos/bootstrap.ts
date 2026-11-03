@@ -77,10 +77,10 @@ function leaveEditor(element:HTMLElement){
 document.addEventListener('keydown',event=>{
   // Leave native keyboard navigation to webOS while it is actually visible.
   if(keyboardVisible)return;
-  const searchInput=document.activeElement instanceof HTMLInputElement&&document.activeElement.matches('.search input')?document.activeElement:undefined;
-  if(searchInput&&event.key==='Enter'){
+  const editorInput=document.activeElement instanceof HTMLInputElement&&document.activeElement.matches(editing)?document.activeElement:undefined;
+  if(editorInput&&event.key==='Enter'){
     event.preventDefault();event.stopImmediatePropagation();
-    searchInput.blur();setTimeout(()=>searchInput.focus(),0);return;
+    editorInput.blur();setTimeout(()=>editorInput.focus(),0);return;
   }
   const back=event.key==='Escape'||event.key==='GoBack'||event.keyCode===461;
   if(back){
@@ -107,7 +107,7 @@ document.addEventListener('keydown',event=>{
   }
   if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key))return;
   const active=document.activeElement as HTMLElement;
-  if(active?.matches('input,textarea,select')&&!searchInput)return;
+  if(active?.matches('input,textarea,select')&&!editorInput)return;
   const list=candidates();
   if(!list.length)return;
   event.preventDefault();event.stopImmediatePropagation();
@@ -123,7 +123,7 @@ document.addEventListener('keydown',event=>{
     const score=forward+side*3;
     if(score<best){best=score;target=element;}
   }
-  if(!target&&searchInput){leaveEditor(searchInput);return;}
+  if(!target&&editorInput){leaveEditor(editorInput);return;}
   target?.focus();target?.scrollIntoView({block:'nearest',inline:'nearest'});
 },true);
 const stop=()=>{void nativeFetch('/api/webos/stop',{method:'POST',keepalive:true});};

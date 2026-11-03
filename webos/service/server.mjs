@@ -15,13 +15,16 @@ import {searchOnlineSubtitles,downloadOnlineSubtitle} from '../../server/online-
 import createTorrents from './torrents.cjs';
 import createUpdater from './updater.cjs';
 import createMonitor from './monitor.cjs';
+import {createFileList,filelistManifest} from '../../server/filelist.mjs';
+import parseTorrent from 'parse-torrent';
 
 const PORT=11476, ORIGIN='http://127.0.0.1:'+PORT;
 const MiB=1024*1024, metadataLimit=4*MiB;
 const configPath='/media/internal/app.hasimio.tv/settings.json';
 let cacheMiB=64;
 try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].includes(config.cacheMiB))cacheMiB=config.cacheMiB;}catch{/* New installation. */}
-const torrents=createTorrents({cacheMiB:()=>cacheMiB,
+const filelist=createFileList({filename:'/media/internal/app.hasimio.tv/filelist-account.json',parseTorrent});
+const torrents=createTorrents({cacheMiB:()=>cacheMiB,resolveFilelist:id=>filelist.resolve(id),
   record:(...event)=>monitor.record(...event), onStart:()=>monitor.counters.downloads++, onCleanup:()=>monitor.counters.cleanups++});
 const metadata=new Map(), pending=new Map();
 let metadataBytes=0, cacheGeneration=0;
@@ -73,6 +76,15 @@ async function route(req,res){
   if(!['127.0.0.1:'+PORT,'localhost:'+PORT].includes(host)||req.headers.origin&&req.headers.origin!==ORIGIN){json(res,403,{error:'Only the Hasimio TV app may use this service.'});return;}
   const url=new URL(req.url,ORIGIN),pathname=url.pathname;
   if(pathname==='/api/streaming/health'){json(res,200,{available:true,apiVersion:1,engineVersion:HASIMIO_VERSION,platform:'webos',nativePlayback:true,cacheLimit:cacheMiB*MiB});return;}
+  if(pathname==='/api/filelist/account'){
+    if(req.method==='GET'){json(res,200,filelist.status());return;}
+    if(req.method==='POST'){json(res,200,await filelist.connect(await readBody(req)));return;}
+    if(req.method==='DELETE'){await torrents.stop();json(res,200,filelist.disconnect());return;}
+    json(res,405,{error:'Method not allowed.'});return;
+  }
+  if(pathname==='/api/extensions/filelist/manifest.json'){json(res,200,filelistManifest);return;}
+  const filelistStream=/^\/api\/extensions\/filelist\/stream\/(movie|series)\/([^/]+)\.json$/.exec(pathname);
+  if(filelistStream&&req.method==='GET'){json(res,200,await filelist.search(filelistStream[1],decodeURIComponent(filelistStream[2])));return;}
   if(pathname==='/api/webos/monitor'){
     if(req.method==='GET'){json(res,200,monitor.snapshot());return;}
     if(req.method==='POST'){monitor.report(await readBody(req));json(res,200,{ok:true});return;}
