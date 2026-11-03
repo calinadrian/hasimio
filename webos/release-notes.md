@@ -1,8 +1,8 @@
-Make TV focus visible on both light and dark surfaces.
+Make remote selection obvious at TV viewing distance.
 
-Use an inset dark edge and a thin white inner line for remote focus. The
-same two-tone treatment is painted above poster artwork, so white posters
-and light buttons retain a dark selection edge while dark artwork retains
-a light edge. All highlights stay inside the control bounds.
+Focused buttons use a bright blue fill and dark text, replacing subtle white
+focus lines on light buttons. Poster selection uses a thicker blue artwork
+frame and a blue title. Search and other fields use the same blue focus ring.
+All selection indicators remain inside control bounds.
 
 Build and packaging completed; visual validation remains for the user.

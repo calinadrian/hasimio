@@ -1,10 +1,10 @@
 .hasimio-tv{scroll-behavior:auto}
 /* Keep remote focus inside the control, so adjacent controls and clipped
    shelves cannot overlap or cut off the selection indicator. */
-.hasimio-tv :focus{outline:3px solid #161616!important;outline-offset:-3px!important;box-shadow:inset 0 0 0 5px #fff!important}
-.hasimio-tv .button.primary:focus{outline-color:#161616!important}
+.hasimio-tv :focus{outline:5px solid #38bdf8!important;outline-offset:-5px!important;box-shadow:inset 0 0 0 7px #082f49!important}
+.hasimio-tv button:focus:not(.poster-card),.hasimio-tv a.button:focus{background:#38bdf8!important;color:#082032!important;outline:3px solid #082f49!important;outline-offset:-3px!important;box-shadow:none!important}
 .hasimio-tv .search input:focus{outline:none!important;box-shadow:none!important}
-.hasimio-tv .search:focus-within{outline:3px solid #161616!important;outline-offset:-3px!important;box-shadow:inset 0 0 0 5px #fff!important}
+.hasimio-tv .search:focus-within{outline:5px solid #38bdf8!important;outline-offset:-5px!important;box-shadow:inset 0 0 0 7px #082f49!important}
 .hasimio-tv .hero-actions>*+*{margin-left:12px}
 .hasimio-tv button,.hasimio-tv select,.hasimio-tv input{min-height:44px}
 .hasimio-tv .hero{min-height:380px}
@@ -26,7 +26,8 @@
 .hasimio-tv .poster-card:focus{transform:none;outline:none!important;box-shadow:none!important}
 .hasimio-tv .poster-card .poster-image{transform:none}
 /* Paint above the artwork, rather than behind children on the card button. */
-.hasimio-tv .poster-card:focus .poster-image::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border:3px solid #161616;box-shadow:inset 0 0 0 2px #fff;border-radius:inherit;box-sizing:border-box;z-index:10;pointer-events:none}
+.hasimio-tv .poster-card:focus .poster-image::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border:5px solid #38bdf8;box-shadow:inset 0 0 0 2px #082f49;border-radius:inherit;box-sizing:border-box;z-index:10;pointer-events:none}
+.hasimio-tv .poster-card:focus>strong{color:#7dd3fc}
 .hasimio-tv .shelf-controls{display:none}
 /* Explicit bounds also work on the TV browser, which predates CSS inset,
    dynamic viewport units and aspect-ratio. */
