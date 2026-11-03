@@ -10,8 +10,10 @@ computer needs to stay on. This is a macOS app, not an iPad app.
 For a ready-made installer, open the [GitHub releases](https://github.com/calinadrian/hasimio/releases),
 download `Hasimio-<version>-mac-arm64.dmg`, open it and drag Hasimio into
 Applications. The GitHub Mac installer workflow builds on an Apple Silicon
-Mac and attaches installers to an existing release. These builds use ad-hoc
-signing, not Apple notarization; see the security instructions below.
+Mac and attaches installers to an existing release. The first published
+0.1.51 Mac build used ad-hoc signing and was not Apple-notarized. The updated
+workflow requires Developer ID signing and notarization; it cannot replace
+that build until the publisher configures Apple credentials.
 
 The following steps are only needed to build or run from source.
 
@@ -54,13 +56,42 @@ use Apple's documented **Privacy & Security → Open Anyway** procedure only
 for a build you trust:
 [Open a Mac app from an unknown developer](https://support.apple.com/guide/mac-help/mh40616/mac).
 
-The ZIP target is included for the Mac updater. Automatic updates require
-signed Mac releases and matching `latest-mac.yml` metadata published to the
-configured GitHub repository. Until that is set up, rebuild and replace the
-app manually; do not assume the Windows release feed supplies Mac updates.
+### Publisher setup for GitHub
+
+An active [Apple Developer Program membership](https://developer.apple.com/programs/)
+is required. On the Mac, create a **Developer ID Application** certificate
+(not an Apple Development or Developer ID Installer certificate) and export
+it together with its private key as a password-protected `.p12` using
+Keychain Access. See [Apple's Developer ID instructions](https://developer.apple.com/help/account/certificates/create-developer-id-certificates/).
+
+In the repository's **Settings → Secrets and variables → Actions**, add these
+repository secrets. Do not paste certificates, private keys or passwords
+into chat, commit them, or include them in issue comments.
+
+| Secret | Value |
+| --- | --- |
+| `MAC_CSC_LINK` | Base64-encoded contents of the exported Developer ID Application `.p12`, including its private key. |
+| `MAC_CSC_KEY_PASSWORD` | Password protecting the `.p12` export. |
+| `APPLE_ID` | Apple Account email associated with the developer membership. |
+| `APPLE_APP_SPECIFIC_PASSWORD` | An app-specific password generated for that account at account.apple.com. |
+| `APPLE_TEAM_ID` | Developer team ID from the membership details. |
+
+Run **Signed Mac installer** from GitHub Actions on the branch containing
+the workflow. It builds the package version and attaches assets to the
+existing `v<version>` release. The shipped application code must match that
+tag. No new release is created and no Windows assets are replaced.
+
+The workflow requires signing and notarization, verifies the Developer ID
+signature and stapled ticket, and checks Gatekeeper acceptance before
+uploading. Missing credentials or rejected notarization stop publication.
+It publishes `latest-mac.yml` alongside the DMG and ZIP for Mac updates.
+The first ad-hoc build must be replaced manually with the Developer ID build;
+automatic updates from an ad-hoc build are not guaranteed.
 
 ## Current validation status
 
-Mac installation, torrent playback, media conversion and updates have not
-been tested on macOS. The installer must be built on a Mac with its native
-dependencies installed; a Windows dependency folder cannot be reused.
+The initial ad-hoc installer was built successfully on GitHub's Mac runner.
+Developer ID signing and notarization await publisher credentials. Mac
+installation, torrent playback, media conversion and updates have not been
+tested. Builds require native Mac dependencies; a Windows dependency folder
+cannot be reused.

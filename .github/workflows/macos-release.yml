@@ -1,13 +1,7 @@
-name: Mac installer
+name: Signed Mac installer
 
 on:
   workflow_dispatch:
-  push:
-    branches: [codex/macos-installer]
-    paths:
-      - .github/workflows/macos-release.yml
-      - electron-builder.yml
-      - package.json
 
 permissions:
   contents: write
@@ -19,7 +13,7 @@ concurrency:
 jobs:
   installer:
     runs-on: macos-14
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,6 +22,20 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Require Apple signing credentials
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          for NAME in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
+            if [ -z "${!NAME}" ]; then
+              echo "::error::Missing signing credential: $NAME. See docs/MACOS.md."
+              exit 1
+            fi
+          done
       - name: Select existing release
         id: release
         env:
@@ -41,10 +49,21 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
-      - name: Build Apple Silicon installer
+      - name: Build, sign and notarize Apple Silicon installer
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-        run: npm run package:mac -- -c.mac.identity=-
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: npm run package:mac -- -c.forceCodeSigning=true -c.mac.notarize=true
+      - name: Verify Developer ID and notarization
+        run: |
+          APP="release/desktop/mac-arm64/Hasimio.app"
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          codesign --display --verbose=2 "$APP" 2>&1 | grep -F 'Authority=Developer ID Application:'
+          xcrun stapler validate "$APP"
+          spctl --assess --type execute --verbose=2 "$APP"
       - name: Save installer artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -52,6 +71,7 @@ jobs:
           path: |
             release/desktop/*.dmg
             release/desktop/*-mac-arm64.zip
+            release/desktop/latest-mac.yml
           if-no-files-found: error
       - name: Attach installers to release
         env:
@@ -62,6 +82,5 @@ jobs:
           gh release upload "$RELEASE_TAG" \
             "release/desktop/Hasimio-$VERSION-mac-arm64.dmg" \
             "release/desktop/Hasimio-$VERSION-mac-arm64.zip" \
+            "release/desktop/latest-mac.yml" \
             --repo "$GITHUB_REPOSITORY" --clobber
-          # Ad-hoc builds are installed manually; do not publish an updater manifest
-          # claiming that an Apple-signed automatic update is available.
