@@ -5,6 +5,7 @@ import 'core-js/actual/promise/any';
 import dialogPolyfill from 'dialog-polyfill';
 import 'dialog-polyfill/dist/dialog-polyfill.css';
 import {bridge} from './platform';
+import {startTelemetry} from './telemetry';
 import './tv.css';
 
 // Vite handles syntax for Chromium 79. These newer web APIs need runtime
@@ -30,6 +31,7 @@ if(!crypto.randomUUID)crypto.randomUUID=()=>{
 const keepAlive=bridge();
 if(keepAlive){keepAlive.onservicecallback=()=>{};keepAlive.call('luna://app.hasimio.tv.service/start',JSON.stringify({subscribe:true}));}
 const nativeFetch=window.fetch.bind(window);
+startTelemetry(nativeFetch);
 window.fetch=(input,options)=>{
   const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url,location.href);
   // Extension HTTP APIs go through the TV service, avoiding browser CORS and

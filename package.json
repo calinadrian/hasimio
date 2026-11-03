@@ -11,7 +11,7 @@
     "url": "https://github.com/calinadrian/hasimio.git"
   },
   "main": "electron/main.mjs",
-  "version": "0.1.40",
+  "version": "0.1.41",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
     "build:webos": "node scripts/package-webos.mjs --prepare-only",
     "package:webos": "node scripts/package-webos.mjs",
     "release:webos": "node scripts/release-webos.mjs",
+    "monitor:tv": "node scripts/tv-monitor.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 5176 --strictPort",
     "engine": "node server/engine.mjs",
     "sync:relay": "node server/sync-relay.mjs",

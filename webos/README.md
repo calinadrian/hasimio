@@ -105,6 +105,43 @@ buffer than 1080p; slow peers can still cause buffering.
 No TV playback, manual checks, automated tests or visual verification have
 been performed as part of this initial build.
 
+## PC monitor
+
+On Windows, double-click `TV Monitor.cmd` in the project folder. It starts a
+small background process and opens http://127.0.0.1:11477 in your browser.
+Alternatively, run `npm run monitor:tv` and open that address yourself.
+Hasimio TV v0.1.41 or newer is required. The monitor uses the existing `lgtv`
+Developer Mode SSH configuration; it does not expose a TV network port.
+Override `HASIMIO_TV_DEVICE` for another configured device, or
+`HASIMIO_WEBOS_NOVACOM` for another ares-novacom.js installation path.
+
+The PC reads diagnostics roughly every 5–7 seconds while you use the TV:
+
+- Video piece bytes and cap, new bytes received, bytes sent to the player,
+  evictions, cache hits/misses, peers and reader count.
+- Cleanup confirmation after stopping: empty/closed piece store, no readers,
+  and destroyed torrent client. New sessions start with a fresh empty store.
+- Metadata cache, pending requests, service RSS and event-loop delays.
+- Interface heartbeat, native video state, buffering, provider failures,
+  UI errors, read timeouts and service restarts observed by the PC.
+
+The TV retains only counters and 40 recent events in memory, with a heartbeat
+every 10 seconds. It writes no diagnostic files. The PC retains 120 samples
+and 200 events in memory and two rotating 1 MiB JSONL files under
+`.cache/tv-monitor/`. Save report exports the current diagnostics as JSON.
+Errors can occur between polls or while the PC is off; this is not a complete
+crash recorder. Source URLs are removed from recorded error text.
+
+The monitor observes playback and does not start test downloads. Its
+**Clear buffers & stop playback** button explicitly stops playback and clears
+temporary caches; normal polling does not change playback. **Stop monitor**
+stops the PC process. Closing only the browser leaves monitoring running.
+
+The monitor cannot measure the native decoder's private buffers or promise
+that no bugs exist. RSS includes runtime allocations and need not drop as
+soon as the video cache is freed. Direct HTTPS/native streams do not have
+torrent counters; the player heartbeat still reports their state.
+
 ## Update directly from the TV
 
 Open Extensions > TV updates, select Check for updates, then Download update

@@ -14,17 +14,21 @@ import {createSkipSegmentLookup} from '../../server/segments.mjs';
 import {searchOnlineSubtitles,downloadOnlineSubtitle} from '../../server/online-subtitles.mjs';
 import createTorrents from './torrents.cjs';
 import createUpdater from './updater.cjs';
+import createMonitor from './monitor.cjs';
 
 const PORT=11476, ORIGIN='http://127.0.0.1:'+PORT;
 const MiB=1024*1024, metadataLimit=4*MiB;
 const configPath='/media/internal/app.hasimio.tv/settings.json';
 let cacheMiB=64;
 try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].includes(config.cacheMiB))cacheMiB=config.cacheMiB;}catch{/* New installation. */}
-const torrents=createTorrents({cacheMiB:()=>cacheMiB});
+const torrents=createTorrents({cacheMiB:()=>cacheMiB,
+  record:(...event)=>monitor.record(...event), onStart:()=>monitor.counters.downloads++, onCleanup:()=>monitor.counters.cleanups++});
 const metadata=new Map(), pending=new Map();
-let metadataBytes=0;
-const updater=createUpdater({version:HASIMIO_VERSION,stopPlayback:async()=>{await torrents.stop();metadata.clear();metadataBytes=0;}});
+let metadataBytes=0, cacheGeneration=0;
+function clearMetadata(){cacheGeneration++;metadata.clear();metadataBytes=0;}
+const updater=createUpdater({version:HASIMIO_VERSION,stopPlayback:async()=>{await torrents.stop();clearMetadata();}});
 const stats=()=>({torrent:torrents.stats(),metadata:{bytes:metadataBytes,limit:metadataLimit},memory:process.memoryUsage(),cacheMiB,storage:'Video pieces stay in RAM; no movie files are written to TV storage.'});
+const monitor=createMonitor(HASIMIO_VERSION,()=>({...stats(),metadata:{bytes:metadataBytes,limit:metadataLimit,entries:metadata.size,pending:pending.size},network:global.HASIMIO_FETCH_METRICS()}));
 const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));};
 function cached(key,loader,ttl=5*60*1000){
   const found=metadata.get(key);
@@ -32,9 +36,10 @@ function cached(key,loader,ttl=5*60*1000){
   if(found){metadataBytes-=found.bytes;metadata.delete(key);}
   if(pending.has(key))return pending.get(key);
   if(pending.size>=16)return Promise.reject(Error('The TV is busy. Try again in a moment.'));
+  const generation=cacheGeneration;
   const task=loader().then(value=>{
     const text=JSON.stringify(value),bytes=Buffer.byteLength(text);
-    if(bytes<=MiB){
+    if(generation===cacheGeneration&&bytes<=MiB){
       while(metadataBytes+bytes>metadataLimit&&metadata.size){const oldest=metadata.keys().next().value;metadataBytes-=metadata.get(oldest).bytes;metadata.delete(oldest);}
       metadata.set(key,{text,bytes,expires:Date.now()+ttl});metadataBytes+=bytes;
     }
@@ -68,6 +73,11 @@ async function route(req,res){
   if(!['127.0.0.1:'+PORT,'localhost:'+PORT].includes(host)||req.headers.origin&&req.headers.origin!==ORIGIN){json(res,403,{error:'Only the Hasimio TV app may use this service.'});return;}
   const url=new URL(req.url,ORIGIN),pathname=url.pathname;
   if(pathname==='/api/streaming/health'){json(res,200,{available:true,apiVersion:1,engineVersion:HASIMIO_VERSION,platform:'webos',nativePlayback:true,cacheLimit:cacheMiB*MiB});return;}
+  if(pathname==='/api/webos/monitor'){
+    if(req.method==='GET'){json(res,200,monitor.snapshot());return;}
+    if(req.method==='POST'){monitor.report(await readBody(req));json(res,200,{ok:true});return;}
+    json(res,405,{error:'Method not allowed.'});return;
+  }
   if(pathname==='/api/webos/updates'){
     if(req.method==='GET'){json(res,200,updater.status());return;}
     if(req.method==='POST'){
@@ -81,7 +91,7 @@ async function route(req,res){
     json(res,405,{error:'Method not allowed.'});return;
   }
   if(pathname==='/api/webos/cache'){
-    if(req.method==='DELETE'){await torrents.stop();metadata.clear();metadataBytes=0;}
+    if(req.method==='DELETE'){await torrents.stop();clearMetadata();monitor.record('info','cache-cleared','Temporary video and metadata caches cleared.');}
     else if(req.method==='POST'){
       const input=await readBody(req);if(![32,64].includes(input.cacheMiB))throw Error('Choose a 32 MB or 64 MB video cache.');
       await torrents.stop();cacheMiB=input.cacheMiB;
@@ -158,11 +168,19 @@ async function route(req,res){
     if(req.method==='HEAD')res.end();else{const stream=fs.createReadStream(filename);stream.on('error',()=>res.destroy());res.once('close',()=>stream.destroy());stream.pipe(res);}
   });
 }
-const server=http.createServer((req,res)=>{route(req,res).catch(error=>{if(res.headersSent)res.destroy();else json(res,400,{error:error.message||'The TV service could not complete this request.'});});});
+const server=http.createServer((req,res)=>{route(req,res).catch(error=>{
+  if(!/This playback session has ended/.test(error.message||'')){
+    monitor.counters.requestsFailed++;
+    const provider=/^\/api\/extensions\/([a-z]+)\//.exec(req.url);
+    monitor.record('error',provider?'provider-error':'request-error',(provider?provider[1]+': ':'')+(error.message||'A service request failed.'));
+  }
+  if(res.headersSent)res.destroy();else json(res,400,{error:error.message||'The TV service could not complete this request.'});
+});});
 server.setTimeout(60000);
-server.on('error',error=>console.error('Hasimio TV service:',error.code));
+server.on('error',error=>{monitor.record('error','service-error',error.code);console.error('Hasimio TV service:',error.code);});
+process.on('unhandledRejection',error=>{monitor.record('error','service-rejection',error&&error.message||'An unhandled service rejection occurred.');});
 server.listen(PORT,'127.0.0.1',()=>{if(global.HASIMIO_TV_READY)global.HASIMIO_TV_READY();});
 const Service=global.HASIMIO_TV_SERVICE;
 const service=new Service('app.hasimio.tv.service');
 service.register('start',message=>message.respond({returnValue:true,url:ORIGIN,subscribed:Boolean(message.isSubscription)}),()=>{void torrents.stop();});
-for(const signal of ['SIGTERM','SIGINT'])process.on(signal,()=>{void torrents.close().then(()=>{server.close();process.exit(0);});});
+for(const signal of ['SIGTERM','SIGINT'])process.on(signal,()=>{monitor.close();void torrents.close().then(()=>{server.close();process.exit(0);});});

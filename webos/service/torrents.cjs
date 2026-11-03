@@ -10,6 +10,8 @@ const videoType = name => /\.mkv$/i.test(name) ? 'video/x-matroska' : /\.webm$/i
 
 module.exports = function createTorrents(options) {
   let active, client, starting = Promise.resolve();
+  let generation = 0, lastCleanup, stopping = 0, stoppingSince = 0;
+  const record = (level, code, message) => { if (options.record) options.record(level,code,message); };
   const limit = () => options.cacheMiB() * MiB;
   const fail = message => { throw new Error(message); };
   const snapshot = session => ({
@@ -35,8 +37,21 @@ module.exports = function createTorrents(options) {
     }
     const previous = client;
     client = undefined;
-    if (previous && !previous.destroyed) await new Promise(resolve => previous.destroy(resolve));
-    if (session && session.store) session.store.close();
+    if(!stopping++)stoppingSince=Date.now();
+    try {
+      if (previous && !previous.destroyed) await new Promise(resolve => previous.destroy(resolve));
+    } finally {
+      if (session && session.store) session.store.close();
+      stopping--;
+      if(!stopping)stoppingSince=0;
+      if (session) {
+        lastCleanup = {at:Date.now(), generation:session.generation, releasedBytes:session.store ? session.store.monitor.clearedBytes : 0,
+          remainingBytes:session.store ? session.store.bytes : 0, readers:session.readers.size,
+          clientDestroyed:!previous || previous.destroyed, ok:(!session.store || session.store.closed && session.store.bytes === 0) && session.readers.size === 0 && (!previous || previous.destroyed)};
+        if (options.onCleanup) options.onCleanup();
+        record(lastCleanup.ok?'info':'error','playback-cleanup',lastCleanup.ok?'Playback stopped; video buffer, readers and torrent client released.':'Playback cleanup did not finish correctly.');
+      }
+    }
   }
   function choose(session, index) {
     if (!Number.isInteger(index) || !session.files.some(file => file.index === index)) fail('Choose a supported video file.');
@@ -47,10 +62,12 @@ module.exports = function createTorrents(options) {
   async function begin(input) {
     if (!/^[a-f\d]{40}$/i.test(input.infoHash || '')) fail('A valid torrent info hash is required.');
     await stop();
-    const session = active = {id:crypto.randomBytes(18).toString('hex'), touched:Date.now(), readers:new Set(), ready:false};
+    const session = active = {id:crypto.randomBytes(18).toString('hex'), generation:++generation, startedAt:Date.now(), touched:Date.now(), readers:new Set(), ready:false, receivedBytes:0, servedBytes:0, readTimeouts:0};
+    if (options.onStart) options.onStart();
+    record('info','playback-start','A fresh torrent session started with an empty video buffer.');
     // TCP/UDP/DHT only. No WebRTC native addons and no filesystem store.
     client = new WebTorrent({maxConns:8, tracker:{wrtc:false}, dht:{maxTables:16,maxValues:32,maxPeers:128}});
-    client.on('error', () => { session.error = 'The TV torrent service could not connect. Choose another source.'; });
+    client.on('error', () => { session.error = 'The TV torrent service could not connect. Choose another source.'; record('error','torrent-client',session.error); });
     const Store = createBoundedStore(limit(), index => {
       const torrent = session.torrent;
       if (!torrent || torrent.destroyed || !torrent.bitfield || !torrent.bitfield.get(index)) return;
@@ -61,7 +78,8 @@ module.exports = function createTorrents(options) {
       torrent.files.forEach(file => { file.done = false; });
     }, store => { session.store = store; });
     const torrent = session.torrent = client.add('magnet:?xt=urn:btih:' + input.infoHash.toLowerCase(), {store:Store, announce:trackers, strategy:'sequential'});
-    torrent.on('error', error => { session.error = error.message; });
+    torrent.on('download', bytes => { session.receivedBytes += bytes; });
+    torrent.on('error', error => { session.error = error.message; record('error','torrent-error',error.message); });
     torrent.once('metadata', () => {
       // Bound metadata bookkeeping as well as completed piece data.
       if (torrent.pieces.length > 32768 || torrent.files.length > 1000) {
@@ -84,9 +102,10 @@ module.exports = function createTorrents(options) {
       const explicit = session.files.find(file => file.index === input.fileIdx);
       session.selected = explicit ? explicit.index : match ? match.index : session.files.length === 1 ? session.files[0].index : undefined;
       session.ready = true;
+      record('info','torrent-ready','Torrent metadata is ready.');
     });
     session.timer = setTimeout(() => {
-      if (!session.ready && active === session) { session.error = 'No torrent metadata arrived. Try a source with more seeders.'; if (!torrent.destroyed) torrent.destroy(); }
+      if (!session.ready && active === session) { session.error = 'No torrent metadata arrived. Try a source with more seeders.'; record('warning','metadata-timeout',session.error); if (!torrent.destroyed) torrent.destroy(); }
     }, 90000);
     return snapshot(session);
   }
@@ -124,6 +143,7 @@ module.exports = function createTorrents(options) {
       session.readers.delete(reader);
       if (destroy && !res.finished) res.destroy();
     }
+    function timedOut() { session.readTimeouts++; record('warning','reader-timeout','A video reader made no progress for 45 seconds.'); finish(true); }
     function pump() {
       if (cancelled || torrent.destroyed || active !== session) return finish(true);
       session.touched = Date.now();
@@ -143,21 +163,30 @@ module.exports = function createTorrents(options) {
         if (cancelled) return;
         if (error) { waiting = setTimeout(pump, 50); return; }
         clearTimeout(timeout);
-        timeout = setTimeout(() => finish(true), 45000);
+        timeout = setTimeout(timedOut, 45000);
         const offset = absolute % torrent.pieceLength;
         // Small writes honor the native player's backpressure; never assemble
         // a movie, or let a slow player queue an entire 4 MB torrent piece.
         const length = Math.min(64 * 1024, buffer.length - offset, end - position + 1);
         position += length;
+        session.servedBytes += length;
         if (res.write(buffer.slice(offset, offset + length))) setImmediate(pump);
         else res.once('drain', pump);
       });
     }
-    timeout = setTimeout(() => finish(true), 45000);
+    timeout = setTimeout(timedOut, 45000);
     res.once('close', () => finish(false));
     pump();
   }
   const reap = setInterval(() => { if (active && Date.now() - active.touched > 90000) void stop(); }, 15000);
   reap.unref();
-  return {start, stop, get, choose, snapshot, serve, stats:() => ({bytes:active && active.store ? active.store.bytes : 0, limit:limit(), active:Boolean(active)}), close:async() => { clearInterval(reap); await stop(); }};
+  return {start, stop, get, choose, snapshot, serve, stats:() => ({
+    bytes:active && active.store ? active.store.bytes : 0, limit:limit(), active:Boolean(active), stopping:Boolean(stopping), stoppingSince,
+    id:active && active.id, generation, startedAt:active && active.startedAt, state:active ? active.error?'error':active.ready?'ready':'connecting':'idle',
+    error:active && active.error, peers:active && active.torrent ? active.torrent.numPeers : 0,
+    downloadSpeed:active && active.torrent ? active.torrent.downloadSpeed : 0,
+    receivedBytes:active ? active.receivedBytes : 0, servedBytes:active ? active.servedBytes : 0,
+    readers:active ? active.readers.size : 0, readTimeouts:active ? active.readTimeouts : 0,
+    store:active && active.store ? {...active.store.monitor, pieces:active.store.entries.size} : undefined, lastCleanup
+  }), close:async() => { clearInterval(reap); await stop(); }};
 };

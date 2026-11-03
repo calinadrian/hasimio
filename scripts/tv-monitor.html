@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hasimio · TV monitor</title>
+<style nonce="__NONCE__">
+:root{color-scheme:dark;font:15px/1.5 system-ui,sans-serif;background:#141414;color:#ededed}*{box-sizing:border-box}body{max-width:1100px;margin:32px auto;padding:0 24px}h1{font-size:27px;margin:0}h2{font-size:18px;margin:24px 0 12px}p{margin:8px 0;color:#bdbdbd}header,.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.status{padding:8px 14px;background:#292929;border-radius:20px}.ok{color:#a8dfba}.warn{color:#ffd48c}.bad{color:#ffa9a9}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}.card{background:#222;border:1px solid #383838;border-radius:8px;padding:16px}.card small{display:block;color:#aaa}.card strong{display:block;font-size:21px;margin:6px 0;overflow-wrap:anywhere}.card span{color:#c3c3c3;font-size:13px}meter{display:block;width:100%;height:10px;margin:8px 0}button,a.button{padding:10px 14px;font:inherit;border:1px solid #555;border-radius:5px;color:#eee;background:#303030;text-decoration:none;cursor:pointer}button:disabled{opacity:.5;cursor:default}.notice{padding:14px 18px;background:#242424;border-left:3px solid #8a8a8a;margin:18px 0;white-space:pre-line}.notice.warning{border-color:#e8b262}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #333;vertical-align:top}td:last-child{overflow-wrap:anywhere}th{color:#aaa;font-weight:500}#events{max-height:330px;overflow:auto;border:1px solid #333;border-radius:6px}footer{font-size:12px;margin:24px 0;color:#aaa;overflow-wrap:anywhere}.muted{color:#aaa}@media(max-width:750px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:460px){.cards{grid-template-columns:1fr}}
+</style>
+<header><div><h1>Hasimio TV monitor</h1><p>Live diagnostics from your LG · stored on this computer</p></div><span id="status" class="status">Connecting…</span></header>
+<div id="notice" class="notice">Open Hasimio on the TV. This monitor observes your playback; it does not start downloads.</div>
+<div class="cards">
+<div class="card"><small>Video buffer</small><strong id="buffer">—</strong><meter id="meter" min="0" max="1" value="0"></meter><span id="pieces">Waiting for a reading</span></div>
+<div class="card"><small>Fresh download / data sent to player</small><strong id="transfer">—</strong><span id="speed">No torrent activity yet</span></div>
+<div class="card"><small>Cleanup after stopping</small><strong id="cleanup">Not observed yet</strong><span id="released">Stop playback to observe cleanup</span></div>
+<div class="card"><small>Service memory / metadata</small><strong id="memory">—</strong><span id="metadata">Service only; excludes interface and native decoder</span></div>
+<div class="card"><small>TV interface / native player</small><strong id="interface">—</strong><span id="video">Waiting for interface heartbeat</span></div>
+<div class="card"><small>Recorded faults · since service startup</small><strong id="faults">—</strong><span id="totals">Counters reset when the TV service restarts</span></div>
+</div>
+<h2>Buffer lifecycle</h2><p id="lifecycle">Play a source, seek, then stop it to observe download, eviction and release.</p>
+<div class="toolbar"><h2>Recent events</h2><div class="toolbar"><a class="button" href="/report" download>Save report</a><button id="clear">Clear buffers & stop playback</button><button id="stop">Stop monitor</button></div></div>
+<p id="action" role="status"></p>
+<div id="events"><table><thead><tr><th>Time</th><th>Type</th><th>Event</th></tr></thead><tbody id="rows"></tbody></table></div>
+<footer id="footer">Checks run roughly every 5–7 seconds. No titles, stream URLs or account keys are collected. An empty piece cache does not mean the TV operating system has immediately returned all RAM. Native decoder buffers are not directly measurable here. Monitoring can expose faults; it cannot prove the absence of bugs.</footer>
+<script nonce="__NONCE__">
+const token='__TOKEN__',$=id=>document.getElementById(id),mib=bytes=>(Number(bytes||0)/1048576).toFixed(1)+' MB';
+let stopped=false,lastRows='';
+const text=(id,value)=>{$(id).textContent=value;};
+const labels={'buffer-limit':'Video cache exceeded its limit','metadata-limit':'Metadata exceeded its limit','retained-buffer':'Buffer retained after stop','cleanup-failed':'Cleanup failed','cleanup-stalled':'Cleanup is taking too long','torrent-error':'Torrent session failed','download-stalled':'Torrent reader stalled','ui-unresponsive':'Interface heartbeat missing','video-stalled':'Native player waiting','event-loop-delay':'Service response delayed'};
+function render(state){
+  const data=state.data;
+  $('status').className='status '+(state.connected?(data.status==='attention'?'warn':'ok'):'warn');
+  text('status',state.connected?(data.status==='attention'?'Needs attention':'Observing'):'Disconnected');
+  const conditions=data?.conditions||[];
+  text('notice',!state.connected?state.error:conditions.length?conditions.map(value=>labels[value]||value).join('\n'):data.recentFaults?.length?'Recent fault: '+data.recentFaults[data.recentFaults.length-1].message:data.torrent.active?'Watching the current torrent session. Cache and download counters are live.':'No active torrent. Start playback on the TV to observe downloading and cleanup.');
+  $('notice').className='notice'+(!state.connected||data?.status==='attention'?' warning':'');
+  $('clear').disabled=!state.connected||state.clearing;
+  if(!data)return;
+  const torrent=data.torrent,store=torrent.store,cleanup=torrent.lastCleanup,ui=data.ui;
+  text('buffer',mib(torrent.bytes)+' / '+mib(torrent.limit));$('meter').max=torrent.limit;$('meter').value=torrent.bytes;
+  text('pieces',(store?.pieces||0)+' pieces · '+(torrent.stopping?'releasing':torrent.state)+' · '+torrent.readers+' readers');
+  text('transfer',mib(torrent.receivedBytes)+' / '+mib(torrent.servedBytes));
+  text('speed',mib(torrent.downloadSpeed)+'/s · '+torrent.peers+' peers · session '+torrent.generation);
+  text('cleanup',cleanup?(cleanup.ok?'Released ✓':'Cleanup failed'):'Not observed yet');
+  $('cleanup').className=cleanup?(cleanup.ok?'ok':'bad'):'';
+  text('released',cleanup?mib(cleanup.releasedBytes)+' freed · '+cleanup.remainingBytes+' bytes retained · '+new Date(cleanup.at).toLocaleTimeString():'Stop playback to observe cleanup');
+  text('memory',mib(data.memory.rss)+' service RAM');
+  text('metadata',mib(data.metadata.bytes)+' metadata · '+data.metadata.pending+' requests pending · '+data.network.active+' active / '+data.network.queued+' queued fetches');
+  const age=ui?Math.round((data.at-ui.at)/1000):null;
+  text('interface',!ui?'Not observed':!ui.visible?'Hidden / closed':age>35?'Heartbeat missing':'Responding');
+  text('video',ui?.video?'Video '+(ui.video.errorCode?'error '+ui.video.errorCode:ui.video.ended?'ended':ui.video.paused?'paused':ui.video.readyState<3?'waiting':'playing')+' · '+Math.floor(ui.video.currentTime)+'s · heartbeat '+age+'s ago':'No native video element observed');
+  text('faults',data.counters.errors+' errors · '+data.counters.warnings+' warnings');
+  text('totals',data.counters.downloads+' sessions · '+data.counters.cleanups+' cleanups · '+data.counters.requestsFailed+' failed requests');
+  text('lifecycle',torrent.error||('Session '+torrent.generation+': '+mib(store?.writtenBytes)+' pieces stored, '+mib(store?.evictedBytes)+' evicted ('+(store?.evictedPieces||0)+' pieces), '+(store?.hits||0)+' cache reads and '+(store?.misses||0)+' misses. '+(cleanup?'Last cleanup '+(cleanup.ok?'confirmed empty.':'needs attention.'):'Cleanup has not been observed yet.')));
+  const rows=JSON.stringify(state.events);
+  if(rows!==lastRows){
+    lastRows=rows;$('rows').replaceChildren();
+    for(const event of state.events.slice(-60).reverse()){
+      const tr=document.createElement('tr');
+      for(const value of [new Date(event.at).toLocaleTimeString(),event.level,event.message+(event.count>1?' ×'+event.count:'')]){const td=document.createElement('td');td.textContent=value;tr.appendChild(td);}
+      tr.className=event.level==='error'?'bad':event.level==='warning'?'warn':'';$('rows').appendChild(tr);
+    }
+  }
+  document.title=(state.connected?'':'Disconnected · ')+'Hasimio TV monitor';
+  $('footer').title='Local logs: '+state.logFile;
+  if(state.logError)text('action',state.logError);
+}
+async function update(){
+  try{const response=await fetch('/snapshot',{cache:'no-store'});if(!response.ok)throw Error();render(await response.json());}
+  catch{text('status','Monitor stopped');$('status').className='status warn';text('notice','The PC monitor is no longer responding. Reopen TV Monitor.cmd to restart it.');}
+  if(!stopped)setTimeout(update,3000);
+}
+async function action(route){const response=await fetch(route,{method:'POST',headers:{'X-Monitor-Token':token}});const value=await response.json();if(!response.ok)throw Error(value.error||'Action failed.');}
+$('clear').onclick=async()=>{
+  $('clear').disabled=true;text('action','Stopping playback and clearing temporary caches…');
+  try{await action('/clear');text('action','The TV confirmed an empty video buffer. The next reading will show the updated counters.');}
+  catch(error){text('action',error.message);}finally{$('clear').disabled=false;}
+};
+$('stop').onclick=async()=>{try{await action('/stop');stopped=true;text('status','Monitor stopped');text('notice','Monitoring stopped. TV playback continues.');$('clear').disabled=true;$('stop').disabled=true;}catch(error){text('action',error.message);}};
+update();
+</script></html>

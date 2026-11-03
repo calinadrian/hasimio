@@ -1,18 +1,15 @@
-Fixes source requests and remote Back navigation on LG TVs.
+Adds diagnostics for a lightweight PC monitor.
 
-- Preserve service class names when packaging: node-fetch checks the
-  AbortSignal constructor name, and minification previously renamed it.
-  Requests failed before contacting providers, leaving no playable sources.
-- Back leaves the search field and dismisses the TV keyboard. Pressing Back
-  again clears the search. Back also leaves other editable fields and returns
-  from expanded catalog shelves.
-- Add explicit TV layout bounds for the player, dialogs, navigation rail and
-  overlays, plus spacing fallbacks for the older TV browser.
-- Show native track information during playback instead of a track-inspection
-  queue that never runs on the TV. Add the service's missing Array.at polyfill.
+- Run TV Monitor.cmd on Windows to watch the TV's buffer cap, fresh download
+  bytes, video reads, evictions, peers, memory and cleanup after stopping.
+- Add a small TV heartbeat and an in-memory record of service/provider/UI
+  errors, video stalls, read timeouts and cleanup faults. No diagnostic files
+  are written to the TV; its event history is capped at 40 entries.
+- Keep rotating logs and downloadable reports on the PC. Monitoring uses the
+  existing Developer Mode SSH connection and does not start test downloads.
+- Prevent requests already in flight when caches are cleared from filling
+  the metadata cache again with their old results.
 
-Build and packaging only; playback and remote interaction remain for user
-testing. The memory cache limits and existing signing key are unchanged.
-
-The v0.1.39 service has the same HTTP failure in its updater, so install this
-IPK to restore source requests and GitHub update downloads.
+The PC dashboard includes an explicit Clear buffers & stop playback button.
+Ordinary polling does not alter playback. Native decoder memory cannot be
+inspected, and monitoring cannot guarantee that the app has no bugs.

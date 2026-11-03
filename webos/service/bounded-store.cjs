@@ -14,6 +14,7 @@ module.exports = function createBoundedStore(limit, onEvict, onCreate) {
       this.bytes = 0;
       this.entries = new Map();
       this.closed = false;
+      this.monitor = {writtenBytes:0, evictedBytes:0, evictedPieces:0, hits:0, misses:0, clearedBytes:0};
       onCreate(this);
     }
 
@@ -24,12 +25,16 @@ module.exports = function createBoundedStore(limit, onEvict, onCreate) {
       if (previous) { this.bytes -= previous.length; this.entries.delete(index); }
       while (this.bytes + buffer.length > this.limit && this.entries.size) {
         const oldest = this.entries.keys().next().value;
-        this.bytes -= this.entries.get(oldest).length;
+        const evicted = this.entries.get(oldest).length;
+        this.bytes -= evicted;
+        this.monitor.evictedBytes += evicted;
+        this.monitor.evictedPieces++;
         this.entries.delete(oldest);
         onEvict(oldest);
       }
       this.entries.set(index, buffer);
       this.bytes += buffer.length;
+      this.monitor.writtenBytes += buffer.length;
       if (callback) process.nextTick(callback);
     }
 
@@ -37,7 +42,8 @@ module.exports = function createBoundedStore(limit, onEvict, onCreate) {
       if (typeof options === 'function') { callback = options; options = {}; }
       options = options || {};
       const buffer = this.entries.get(index);
-      if (this.closed || !buffer) return process.nextTick(() => callback(new Error('Piece is not buffered.')));
+      if (this.closed || !buffer) { this.monitor.misses++; return process.nextTick(() => callback(new Error('Piece is not buffered.'))); }
+      this.monitor.hits++;
       this.entries.delete(index);
       this.entries.set(index, buffer);
       const offset = options.offset || 0;
@@ -47,6 +53,7 @@ module.exports = function createBoundedStore(limit, onEvict, onCreate) {
 
     close(callback) {
       this.closed = true;
+      this.monitor.clearedBytes += this.bytes;
       this.entries.clear();
       this.bytes = 0;
       if (callback) process.nextTick(callback);

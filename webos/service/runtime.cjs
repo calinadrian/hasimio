@@ -37,6 +37,7 @@ if (!Array.prototype.flat) Array.prototype.flat = function () { return [].concat
 // redirect counts and socket lifetimes before reusing the desktop providers.
 let fetching = 0;
 const queue = [];
+global.HASIMIO_FETCH_METRICS = () => ({active:fetching, queued:queue.length});
 // Refresh the old runtime's trust roots without disabling TLS validation.
 const httpsAgent = new https.Agent({ca:fs.readFileSync(path.join(__dirname,'ca.pem'),'utf8'),keepAlive:true,maxSockets:2});
 global.fetch = async function (url, options) {
