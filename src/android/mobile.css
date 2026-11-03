@@ -1,0 +1,107 @@
+/* Android phone refinements. Desktop and TV keep their existing layouts. */
+.android-tabs{display:none}
+.android-more{padding:0;border:0;background:transparent;color:#eee}
+.android-more::backdrop{background:#0009}
+.android-more-content{padding:8px 20px max(24px,env(safe-area-inset-bottom));background:#202020;border:1px solid #414141;border-radius:24px 24px 0 0}
+.android-more-content>header{display:flex;align-items:center;justify-content:space-between;padding:10px 0 14px}
+.android-more-content h2{font-size:23px;letter-spacing:-.5px}
+.android-more-content .icon-button{width:44px;height:44px;border-radius:50%}
+.android-more-links{display:grid;gap:4px}
+.android-more-links>button{display:flex;align-items:center;gap:16px;min-height:58px;padding:10px 12px;border-radius:12px;text-align:left;font-size:16px}
+.android-more-links>button>span{flex:1}
+.android-more-links>button>svg:last-child{color:#929292}
+.android-more-links>button[aria-current=page]{background:#353535;color:#fff}
+.android-profile{display:flex;align-items:center;gap:14px;width:100%;margin-top:16px;padding:18px 12px 8px;border-top:1px solid #414141;text-align:left}
+.android-profile .profile-avatar{width:44px;height:44px;margin:0;border-radius:12px;font-size:21px}
+.android-profile>span:nth-child(2){display:grid;flex:1;gap:2px;min-width:0}
+.android-profile strong{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.android-profile small{color:#aaa;font-size:13px}
+
+@media(max-width:760px){
+  .hasimio-android{--gutter:16px;--tabbar:72px;--topbar:68px}
+  .hasimio-android body{overscroll-behavior-y:none}
+  .hasimio-android .sidebar{display:none}
+  .hasimio-android .app-shell>main{padding-bottom:calc(var(--tabbar) + env(safe-area-inset-bottom) + 12px)}
+  .hasimio-android .topbar{position:sticky;top:0;z-index:11;gap:10px;background:#181818f5}
+  .hasimio-android .topbar-brand .brand-symbol{width:32px;height:32px;border-radius:10px}
+  .hasimio-android .search{min-width:0;min-height:46px;border-radius:14px;padding:5px 12px;background:#242424;border-color:#414141;gap:8px}
+  .hasimio-android .search input{font-size:16px;min-height:34px}
+  .hasimio-android .search button{min-width:40px;min-height:40px;align-items:center;justify-content:center;margin-right:-8px}
+  .hasimio-android .page-content{padding-top:16px}
+  .hasimio-android .icon-button{min-width:44px;min-height:44px}
+  .hasimio-android .button{min-height:48px;border-radius:10px}
+  .hasimio-android .section-intro{flex-wrap:wrap;gap:12px}
+  .hasimio-android .section-intro h1{font-size:27px;line-height:1.25}
+
+  .hasimio-android .android-tabs{position:fixed;inset:auto 0 0;z-index:20;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));min-height:calc(var(--tabbar) + env(safe-area-inset-bottom));background:#1c1c1cf5;border-top:1px solid #3a3a3a}
+  .android-tabs>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:58px;border-radius:14px;font-size:11px;font-weight:600;color:#aaa}
+  .android-tabs>button[aria-current=page],.android-tabs>button.is-current{background:#343434;color:#fff}
+  .hasimio-android .android-more{position:fixed;inset:auto 0 0;width:100%;max-width:none;max-height:85dvh;margin:0;overflow:auto;overscroll-behavior:contain}
+
+  .hasimio-android .hero{border-radius:18px;overflow:hidden}
+  .hasimio-android .hero-content{padding:2px 16px 20px}
+  .hasimio-android .hero h1,.hasimio-android .hero h1.long{font-size:27px;line-height:1.15}
+  .hasimio-android .hero p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.6;margin:10px 0 16px}
+  .hasimio-android .hero-actions{gap:8px}
+  .hasimio-android .hero-actions .button{font-size:13px;padding:10px}
+  .hasimio-android .media-section{margin-top:28px}
+  .hasimio-android .row-heading h3{font-size:21px;line-height:1.3}
+  .hasimio-android .poster-row:not(.wrap){grid-auto-columns:42%;gap:12px;scroll-snap-type:x proximity}
+  .hasimio-android .poster-row.wrap{gap:18px 12px}
+  .hasimio-android .poster-image{border-radius:12px}
+  .hasimio-android .poster-card>strong{font-size:14px;margin-top:9px}
+  .hasimio-android .poster-card>span{font-size:12px;gap:5px}
+  .hasimio-android .filter-bar{gap:12px;padding-bottom:16px;margin-bottom:22px}
+  .hasimio-android .segmented{width:100%;gap:4px;padding:4px;background:#202020;border:1px solid #353535;border-radius:14px}
+  .hasimio-android .segmented button{flex:1;min-width:0;min-height:42px;padding:8px 5px;border-radius:10px;font-size:13px}
+  .hasimio-android .segmented button.selected{background:#3a3a3a;color:#fff}
+  .hasimio-android .filters{width:100%;margin:0;gap:10px}
+  .hasimio-android .filters select{flex:1;max-width:none;min-width:0;font-size:15px}
+  .hasimio-android .filters .icon-button{display:inline-flex;margin-left:auto}
+
+  .hasimio-android .detail-dialog:not(.playback-dialog){width:100%;max-width:none;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0}
+  .hasimio-android .detail-dialog .dialog-bar{height:64px;margin-bottom:-64px;padding:0 12px;gap:8px}
+  .hasimio-android .detail-content{padding:0 16px calc(28px + env(safe-area-inset-bottom))}
+  .hasimio-android .detail-art{height:200px}
+  .hasimio-android .detail-heading{grid-template-columns:88px minmax(0,1fr);gap:0 14px;margin-top:-50px}
+  .hasimio-android .detail-heading.no-poster{grid-template-columns:minmax(0,1fr);margin-top:20px}
+  .hasimio-android .detail-title{padding-top:60px}
+  .hasimio-android .detail-heading h2{font-size:23px;line-height:1.25}
+  .hasimio-android .detail-heading p{font-size:13px;line-height:1.5}
+  .hasimio-android .detail-actions{gap:8px}
+  .hasimio-android .detail-actions .button{flex:1 1 100px;padding:11px 10px;font-size:14px;white-space:normal}
+  .hasimio-android .description{font-size:15px;line-height:1.75;margin:20px 0 16px}
+  .hasimio-android .season-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px}
+  .hasimio-android .season-tabs button{flex:none;min-height:44px;border-radius:9px}
+  .hasimio-android .episode-list-heading{align-items:flex-start;flex-wrap:wrap}
+  .hasimio-android .source-toolbar{padding:14px;border-radius:12px}
+  .hasimio-android .quality-source{border-radius:12px;padding:14px}
+  .hasimio-android .quality-source .source-play{width:100%;justify-self:stretch}
+  .hasimio-android .source-title,.hasimio-android .release-details{overflow-wrap:anywhere}
+  .hasimio-android .detail-dialog.playback-dialog{width:100%;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0}
+  .hasimio-android .playback-dialog .cinema-player{height:100%;min-height:0;max-height:none;aspect-ratio:auto;border-radius:0}
+
+  .hasimio-android .install-panel{padding:18px;border-radius:14px;gap:12px;flex-direction:column}
+  .hasimio-android .install-form{flex-direction:column;gap:10px}
+  .hasimio-android .install-form input{min-height:48px;font-size:16px}
+  .hasimio-android .extension-item{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:20px 0;align-items:start}
+  .hasimio-android .extension-logo{width:40px;height:40px;border-radius:12px}
+  .hasimio-android .extension-info h3{font-size:16px;line-height:1.5}
+  .hasimio-android .extension-info h3 span{display:block;margin:0;font-size:12px}
+  .hasimio-android .extension-info p{font-size:14px;line-height:1.65}
+  .hasimio-android .extension-controls{grid-column:2;justify-content:flex-end;gap:18px;min-height:44px}
+  .hasimio-android .switch{position:relative}
+  .hasimio-android .switch::after{content:'';position:absolute;inset:-12px -8px}
+  .hasimio-android .recommended-extension{align-items:stretch;flex-direction:column;gap:12px}
+  .hasimio-android .source-banner{flex-wrap:wrap;border-radius:12px;gap:8px 12px}
+  .hasimio-android .source-banner>p{flex:1;min-width:180px}
+  .hasimio-android .library-actions{width:100%;gap:8px}
+  .hasimio-android .library-actions>.count-label{width:100%}
+  .hasimio-android .library-actions>.button{flex:1}
+  .hasimio-android .toast{bottom:calc(var(--tabbar) + env(safe-area-inset-bottom) + 12px);font-size:14px;padding:12px 14px}
+  .hasimio-android .detail-dialog .toast{bottom:calc(16px + env(safe-area-inset-bottom))}
+  .hasimio-android .profiles-screen{padding:22px 16px}
+  .hasimio-android .profiles-content h1{font-size:29px}
+  .hasimio-android .profile-card{border:1px solid #383838;background:#202020;border-radius:16px}
+  .hasimio-android .profile-card:focus:not(:focus-visible){outline:none}
+}

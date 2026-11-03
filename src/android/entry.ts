@@ -1,4 +1,5 @@
 import type {UpdateState} from '../DesktopUpdates';
+document.documentElement.classList.add('hasimio-android');
 
 type NativeBridge={state():string;check():void;install():void};
 const native=(window as unknown as {HasimioAndroid:NativeBridge}).HasimioAndroid;

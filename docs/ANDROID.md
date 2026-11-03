@@ -17,6 +17,12 @@ No reports are uploaded automatically.
 The build expands title-normalization Unicode property expressions into
 explicit character ranges because the embedded runtime cannot parse them.
 
+On phones, the interface uses four bottom tabs: Discover, Library, Live TV and
+More. More opens Calendar, Progress, Extensions, device sync and profile
+switching. Title details fill the screen, poster rows hint at the next card,
+and mobile filters/source actions use larger touch targets. These refinements
+are scoped to Android phone widths; desktop and TV retain their layouts.
+
 The engine reuses the TV's online movie/series catalog adapter (Cinemeta), rather
 than building the desktop IMDb database on the phone. Torrent playback uses the
 WebView's codecs; FFmpeg conversion, desktop track inspection, Chromecast and
