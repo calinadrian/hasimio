@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {ChevronLeft,ChevronRight,LoaderCircle,RefreshCw} from 'lucide-react';
 import './media-shelf.css';
+import {isWebOS} from './webos/platform';
 
 export default function MediaShelf({title,source,children,wrap=false,hasMore=false,onMore,onBrowse,onBack,expanded=false}:{title:string;source?:string;children:ReactNode;wrap?:boolean;hasMore?:boolean;onMore?:()=>Promise<boolean>;onBrowse?:()=>void;onBack?:()=>void;expanded?:boolean}){
   const row=useRef<HTMLDivElement>(null),busy=useRef(false),loader=useRef(onMore);
@@ -21,7 +22,7 @@ export default function MediaShelf({title,source,children,wrap=false,hasMore=fal
   },[children,wrap]);
   useEffect(()=>{
     const element=row.current,last=element?.lastElementChild;
-    if(!element||!last||!hasMore||failed||loading)return;
+    if(isWebOS||!element||!last||!hasMore||failed||loading)return;
     // Observe the last actual card, so adding pages doesn't create empty tiles.
     const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))void load();},{root:wrap?null:element,rootMargin:wrap?'0px 0px 400px 0px':'0px 600px 0px 0px'});
     observer.observe(last);return()=>observer.disconnect();
@@ -40,5 +41,6 @@ export default function MediaShelf({title,source,children,wrap=false,hasMore=fal
       }} onFocusCapture={event=>{if(!wrap)(event.target as HTMLElement).scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});}}>{children}</div>
       
     </div>
+    {isWebOS&&hasMore&&<button className="button secondary" disabled={loading} onClick={()=>void load()}>Next page</button>}
   </section>;
 }

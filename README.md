@@ -43,6 +43,15 @@ Open the localhost URL printed by Vite. `npm run build` creates `dist/`; `npm ru
 
 ## Desktop app
 
+### Standalone LG TV edition
+
+`npm run package:webos` builds a small webOS IPK containing the interface and
+an on-TV torrent service. The PC is not needed during playback. The target is
+LG webOS 6 (including 75UP78003LB), with a 32/64 MiB video-piece RAM cache,
+online catalogs and native TV decoding. See [webos/README.md](webos/README.md)
+for build/install steps, memory budgets and the initial implementation's limits.
+TV playback and memory use have not yet been validated on the device.
+
 Hasimio for Windows is an Electron app (`electron/`). It runs Hasimio Engine in a utility process on `127.0.0.1:11475`, and the engine also serves the built UI, so the window is the same page as `npm run preview` with no CORS involved. Closing the window stops the engine and clears temporary torrent data. Port 11475 must be free: close the portable engine zip before starting the app. A hosted Hasimio site can use the app's engine too when its address is listed in `%APPDATA%\Hasimio\engine.json` (`{ "allowedOrigins": ["https://site"] }`).
 
 - `npm run desktop` builds the UI and opens the app from source (no updates in this mode).

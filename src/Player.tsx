@@ -9,6 +9,8 @@ import {playerSettings,savePlayerSettings} from './preferences';
 import {useChromecast} from './casting';
 import {fetchSkipSegments,introSegmentAt,upNextStart,type SkipSegments} from './skip-segments';
 import './player.css';
+import {isWebOS,tvVideoBufferBytes} from './webos/platform';
+import {useNativeTracks} from './webos/NativeTracks';
 
 type Panel='audio'|'subtitles'|'download'|'cast'|'settings';
 type NextEpisode={label:string;title?:string;thumbnail?:string;onPlay:()=>void};
@@ -21,6 +23,8 @@ const panelNames:Record<Panel,string>={audio:'Audio & dubs',subtitles:'Subtitles
 export default function Player({episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,embeddedSubtitleLanguages=panels?.subtitles?undefined:[],download,status,loading,next}:Props){
   const root=useRef<HTMLDivElement>(null),seekRef=useRef<HTMLDivElement>(null),topRef=useRef<HTMLDivElement>(null),autoOnline=useRef(false),videoRef=useRef<HTMLVideoElement>(null),menuRef=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement|null>(null);
   const scrubbing=useRef(false),scrubTarget=useRef(0);
+  const nativeTracks=useNativeTracks(videoRef);
+  if(nativeTracks)panels={...panels,audio:panels?.audio??nativeTracks.audio,subtitles:panels?.subtitles??nativeTracks.subtitles};
   const resume=useRef(resumePosition(progressKey)),restoring=useRef(false),lastSave=useRef(0);
   const latestProgress=useRef<{position:number;duration:number;completed:boolean}|undefined>(undefined);
   const [scrubPosition,setScrubPosition]=useState<number>();
@@ -111,8 +115,8 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   useEffect(()=>{
     const video=videoRef.current;scrubbing.current=false;setScrubPosition(undefined);setError('');setNotice('');resume.current=resumePosition(progressKey);restoring.current=false;setPosition(timeOffset);setDuration(durationHint||0);setBufferEnd(timeOffset);setPlaying(false);setBuffering(!!url);if(!video||!url)return;
     let active=true,hls:import('hls.js').default|undefined;
-    if(/\.m3u8(?:\?|$)/i.test(url)){
-      void import('hls.js').then(({default:Hls})=>{if(!active)return;if(!Hls.isSupported()){video.src=url;return;}hls=new Hls(preparedStream?preparedHlsConfig:{});hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal){if(import.meta.env.DEV)console.warn('Playback failure',data.details,data.error?.message);setBuffering(false);setError('The stream stopped responding. Retry playback or choose another source.');}});}).catch(()=>{if(active){setBuffering(false);setError('The streaming player could not load. Retry playback.');}});
+    if(/\.m3u8(?:\?|$)/i.test(url)&&!(isWebOS&&video.canPlayType('application/vnd.apple.mpegurl'))){
+      void import('hls.js').then(({default:Hls})=>{if(!active)return;if(!Hls.isSupported()){video.src=url;return;}hls=new Hls(isWebOS?{maxBufferLength:15,maxMaxBufferLength:20,maxBufferSize:tvVideoBufferBytes,backBufferLength:0,enableWorker:false}:preparedStream?preparedHlsConfig:{});hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal){if(import.meta.env.DEV)console.warn('Playback failure',data.details,data.error?.message);setBuffering(false);setError('The stream stopped responding. Retry playback or choose another source.');}});}).catch(()=>{if(active){setBuffering(false);setError('The streaming player could not load. Retry playback.');}});
     }else video.src=url;
     return()=>{active=false;hls?.destroy();video.pause();video.removeAttribute('src');video.load();};
   },[url,retry,preparedStream,timeOffset]);
@@ -144,7 +148,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   const showNext=!!next&&!nextDismissed&&!panel&&!loading&&!error&&!cast.active&&duration>0&&position>=upNextStart(skipSegments,duration);
   const displayPosition=scrubPosition??position;
   const progress=duration?Math.min(100,displayPosition/duration*100):0,buffer=duration?Math.min(100,bufferEnd/duration*100):0;
-  return <div ref={root} className={`cinema-player ${visible?'controls-visible':''}`} role="region" aria-label={`${name} video player`} tabIndex={0} onKeyDown={keyDown} onPointerDown={event=>{setFocused(false);reveal();if(panel&&!menuRef.current?.contains(event.target as Node)&&!(event.target as HTMLElement).closest('[data-player-menu]'))setPanel(undefined);}} onFocusCapture={event=>{const target=event.target as HTMLElement;setFocused(target!==event.currentTarget&&target.matches(':focus-visible'));reveal();}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setFocused(false);}}>
+  return <div ref={root} className={`cinema-player ${visible?'controls-visible':''}`} role="region" aria-label={`${name} video player`} tabIndex={0} onKeyDown={keyDown} onPointerDown={event=>{setFocused(false);reveal();if(panel&&!menuRef.current?.contains(event.target as Node)&&!(event.target as HTMLElement).closest('[data-player-menu]'))setPanel(undefined);}} onFocusCapture={event=>{const target=event.target as HTMLElement;setFocused(target!==event.currentTarget&&(isWebOS||target.matches(':focus-visible')));reveal();}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setFocused(false);}}>
     <video ref={videoRef} className="cinema-video" autoPlay playsInline aria-label={name} onClick={togglePlay} onDoubleClick={()=>void toggleFullscreen()} onTimeUpdate={sync} onDurationChange={sync} onProgress={sync} onLoadedMetadata={()=>{restore();measure();}} onResize={measure} onSeeked={()=>{restoring.current=false;sync();persist(true);}} onLoadedData={()=>{sync();setBuffering(false);}} onCanPlay={()=>setBuffering(false)} onWaiting={()=>setBuffering(true)} onPlaying={()=>{setPlaying(true);setBuffering(false);}} onPlay={()=>setPlaying(true)} onPause={()=>{setPlaying(false);sync();persist(true);}} onEnded={()=>{setPlaying(false);sync();persist(true);if(next&&autoPlayNext&&!nextDismissed&&!autoAdvanced.current){autoAdvanced.current=true;next.onPlay();}}} onVolumeChange={()=>{if(videoRef.current){setVolume(videoRef.current.volume);setMuted(videoRef.current.muted);}}} onError={()=>{if(!videoRef.current?.currentSrc)return;setBuffering(false);if(onRecoverAudio)onRecoverAudio();else setError('This browser could not decode the video. Retry playback or choose another source.');}}/>
     {(subtitle||panel==='subtitles')&&<CaptionOverlay cues={subtitle?cues:[]} settings={captions} frame={frame} preview={panel==='subtitles'} lift={visible&&frame?{top:Math.max(0,chrome.header-frame.top),bottom:Math.max(0,frame.top+frame.height-chrome.controls)}:{top:0,bottom:0}}/>}
     <div ref={topRef} className="cinema-top cinema-chrome"><button className="cinema-icon cinema-back" onClick={onClose} title="Back to sources" aria-label="Back to sources"><ArrowLeft size={24}/></button><div className="cinema-title"><h2>{name}</h2><p>{stream.name&&stream.name!==name?stream.name:'Your cinema, your way.'}</p></div>{status&&<div className="cinema-connection">{status}</div>}</div>

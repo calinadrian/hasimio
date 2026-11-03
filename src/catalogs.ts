@@ -1,3 +1,4 @@
+import {isWebOS} from './webos/platform';
 import {stremioSources,stremioManifests} from '../shared/stremio-sources.mjs';
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
@@ -7,7 +8,7 @@ import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl,
 // Cinemeta stays recognised so existing installations migrate, and it can still be installed manually.
 const searchAndSkip = [{name:'search'},{name:'skip'}];
 export const cinemeta: Addon = {url:cinemetaUrl,enabled:true,manifest:{id:'com.linvo.cinemeta',name:'Cinemeta',version:'3.0.14',description:'Movie and series catalogs, artwork, descriptions, and episode release dates.',types:['movie','series'],idPrefixes:['tt'],resources:['catalog','meta'],catalogs:[{id:'top',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'top',type:'series',name:'Popular series',extra:searchAndSkip},{id:'imdbRating',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'imdbRating',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}]}};
-export const titles: Addon = {url:titlesUrl,enabled:true,manifest:{id:'org.hasimio.titles',name:'Hasimio Titles',version:'1.0.0',description:'Hasimio’s own movie and series index, built locally from IMDb’s public datasets. Wikipedia adds movie posters; TVmaze adds series artwork and episode air dates.',types:['movie','series'],idPrefixes:['tt'],resources:['catalog','meta'],catalogs:[{id:'popular',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'popular',type:'series',name:'Popular series',extra:searchAndSkip},{id:'top-rated',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'top-rated',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}]}};
+export const titles: Addon = {url:titlesUrl,enabled:true,manifest:{id:'org.hasimio.titles',name:'Hasimio Titles',version:'1.0.0',description:isWebOS?'Online movie and series catalogs. No IMDb database is downloaded to the TV.':'Hasimio’s own movie and series index, built locally from IMDb’s public datasets. Wikipedia adds movie posters; TVmaze adds series artwork and episode air dates.',types:['movie','series'],idPrefixes:['tt'],resources:['catalog','meta'],catalogs:[{id:'popular',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'popular',type:'series',name:'Popular series',extra:searchAndSkip},{id:'top-rated',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'top-rated',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}]}};
 // Runs once: Cinemeta becomes Hasimio Titles, keeping its enabled state. Installations without either receive Hasimio Titles.
 export function replaceCinemeta(existing:Addon[]) {
   const replaced = existing.map(a => a.url === cinemetaUrl ? {...titles,enabled:a.enabled} : a).filter((a,index,all) => all.findIndex(other => other.manifest.id === a.manifest.id) === index);
@@ -99,7 +100,8 @@ export async function loadCatalog(addon:Addon, catalog:Manifest['catalogs'][numb
   if(query)items=topResults([{items}],query,items.length);
   const label = anime ? 'Anime' : catalog.type === 'series' ? 'Series' : catalog.type === 'movie' ? 'Movies' : catalog.type;
   const title = catalog.name ? /movie|series|anime/i.test(catalog.name) ? catalog.name : `${catalog.name} · ${label}` : `${addon.manifest.name} · ${label}`;
-  return {key:`${addon.manifest.id}:${catalog.type}:${catalog.id}`,title,source:addon.manifest.name,items,addon,catalog,skip:'nextSkip' in result && Number.isSafeInteger(result.nextSkip) && Number(result.nextSkip)>skip ? Number(result.nextSkip) : skip+result.metas.length,hasMore:(result.hasMore ?? items.length > 0) && !!catalog.extra?.some(e => e.name === 'skip')};
+  if(isWebOS)items=items.slice(0,30);
+  return {key:`${addon.manifest.id}:${catalog.type}:${catalog.id}`,title,source:addon.manifest.name,items,addon,catalog,skip:'nextSkip' in result && Number.isSafeInteger(result.nextSkip) && Number(result.nextSkip)>skip ? Number(result.nextSkip) : skip+(isWebOS?Math.min(30,result.metas.length):result.metas.length),hasMore:(result.hasMore ?? items.length > 0) && !!catalog.extra?.some(e => e.name === 'skip')};
 }
 export function needsMetadata(meta:Meta, now = Date.now()) {
   return !meta.metadataFetchedAt || now - meta.metadataFetchedAt >= (meta.metadataPartial ? 60*1000 : meta.metadataError ? 10*60*1000 : 6*60*60*1000);

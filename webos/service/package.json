@@ -1,0 +1,11 @@
+{
+  "name": "app.hasimio.tv.service",
+  "version": "0.1.38",
+  "private": true,
+  "main": "service.cjs",
+  "dependencies": {
+    "abort-controller": "3.0.0",
+    "node-fetch": "2.7.0",
+    "webtorrent": "0.105.3"
+  }
+}

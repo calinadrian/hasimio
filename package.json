@@ -17,6 +17,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5176 --strictPort",
     "build": "tsc -b && vite build",
+    "build:webos": "node scripts/package-webos.mjs --prepare-only",
+    "package:webos": "node scripts/package-webos.mjs",
+    "release:webos": "node scripts/release-webos.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 5176 --strictPort",
     "engine": "node server/engine.mjs",
     "sync:relay": "node server/sync-relay.mjs",
@@ -46,6 +49,8 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "core-js": "^3.46.0",
+    "dialog-polyfill": "^0.5.6",
     "electron": "^45.1.0",
     "electron-builder": "^26.18.0",
     "hls.js": "^1.7.3",
@@ -54,6 +59,7 @@
     "playwright": "^1.64.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "regexpu-core": "^6.4.0",
     "typescript": "~5.9.3",
     "vite": "^6.4.0",
     "vitest": "^3.2.0"

@@ -5,11 +5,15 @@ import Player from './Player';
 import {resumePosition} from './playback-progress';
 import {engineUrl} from './engine';
 import {playerSettings} from './preferences';
+import {isWebOS} from './webos/platform';
+import TVTorrentPlayer from './webos/TorrentPlayer';
 
 import {type MediaTrack,audioAction,defaultAudioTrack,trackLabel,saveTrackSummary,sameLanguage,srtToVtt,parseVtt} from './playback-tracks';
 type Session={duration?:number;id:string;state:'buffering'|'ready'|'error';error?:string;files:{index:number;name:string;length:number}[];selected?:number;numPeers:number;downloadSpeed:number;downloaded:number;progress:number;mediaUrl?:string;audioTracks?:MediaTrack[];subtitleTracks?:MediaTrack[];subtitle?:{track:number;state:'preparing'|'ready'|'error';error?:string;url:string};audio?:{state:'preparing'|'ready'|'error';track:number;start?:number;offset?:number;error?:string;mediaUrl?:string}};
 async function request(url:string,options?:RequestInit):Promise<Session>{const response=await fetch(engineUrl(url),options);if(!response.headers.get('content-type')?.includes('application/json'))throw new Error('Hasimio Engine is unavailable. Start it on this PC (npm run engine), or keep Hasimio running with npm run dev or npm run preview.');const result=await response.json();if(!response.ok)throw new Error(result.error || 'The local streaming service did not respond.');return result;}
-export default function TorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,next}:{stream:Stream;videoId:string;onClose:()=>void;title?:string;progressKey?:string;titleKey?:string;episodeLabel?:string;next?:{label:string;title?:string;thumbnail?:string;onPlay:()=>void}}) {
+type Props={stream:Stream;videoId:string;onClose:()=>void;title?:string;progressKey?:string;titleKey?:string;episodeLabel?:string;next?:{label:string;title?:string;thumbnail?:string;onPlay:()=>void}};
+export default function TorrentPlayer(props:Props){return isWebOS?<TVTorrentPlayer {...props}/>:<DesktopTorrentPlayer {...props}/>;}
+function DesktopTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,next}:Props) {
   const [session,setSession]=useState<Session>();const [error,setError]=useState('');const [attempt,setAttempt]=useState(0);const [choosing,setChoosing]=useState(false);const sessionId=useRef<string|undefined>(undefined);
   const [compatible,setCompatible]=useState(true);const [seekStart,setSeekStart]=useState(()=>resumePosition(progressKey));
   const [track,setTrack]=useState(0);const [tracksError,setTracksError]=useState('');const [tracksLoading,setTracksLoading]=useState(false);const [tracksAttempt,setTracksAttempt]=useState(0);

@@ -1,0 +1,22 @@
+.hasimio-tv{scroll-behavior:auto}
+.hasimio-tv :focus{outline:3px solid #fff!important;outline-offset:4px}
+.hasimio-tv button,.hasimio-tv select,.hasimio-tv input{min-height:44px}
+.hasimio-tv .hero{min-height:380px}
+.hasimio-tv .poster-image{height:240px}
+.hasimio-tv .poster-image img{width:100%;height:100%;object-fit:cover}
+.hasimio-tv .tv-poster-frame{display:block;width:100%;height:100%}
+.hasimio-tv .poster-row{grid-auto-columns:160px;grid-template-columns:none}
+.hasimio-tv .poster-row.wrap{grid-template-columns:repeat(5,minmax(0,1fr))}
+.hasimio-tv .cinema-toolbar>*,.hasimio-tv .cinema-transport>*,.hasimio-tv .cinema-tools>*{margin-right:12px}
+.hasimio-tv .cinema-menu{font-size:18px}
+.hasimio-tv .cinema-connection{font-size:14px}
+.hasimio-tv .cinema-video{object-fit:contain}
+.hasimio-tv .tv-storage{display:block;margin-bottom:28px}
+.hasimio-tv .tv-storage>*{margin-bottom:16px}
+.hasimio-tv .tv-storage label{display:block}
+.hasimio-tv .tv-storage select{margin-left:20px;background:#303030;color:#fff;font:inherit;padding:8px 12px}
+.hasimio-tv .tv-storage small{display:block;color:#bbb}
+.hasimio-tv .poster-card:focus{transform:none}
+.hasimio-tv .shelf-controls{display:none}
+/* Installed apps use a 720p graphics surface; the native video pipeline can
+   still play supported 4K sources independently of the interface resolution. */

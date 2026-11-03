@@ -8,6 +8,7 @@ import {INSPECTION_CONCURRENCY} from '../shared/inspection-policy.mjs';
 import {describeStream,availableQualities,defaultQuality,formatSize,sortSources} from './stream-options';
 
 import {sourceTrackInfo,saveTrackSummary,type MediaTrack} from './playback-tracks';
+import {isWebOS} from './webos/platform';
 
 const qualityLabel=(q:Quality)=>q==='2K'?'2K · 1440p':q==='4K'?'4K · 2160p':q==='Other'?'Original / unspecified':q;
 export default function StreamPicker({streams,loading,error,onPlay,onRetry,onManage,videoId}:{videoId:string;streams:Stream[];loading:boolean;error:string;onPlay:(stream:Stream)=>void;onRetry:()=>void;onManage:()=>void}) {
@@ -24,6 +25,7 @@ export default function StreamPicker({streams,loading,error,onPlay,onRetry,onMan
   const open=expanded||!options.length||!!error;
   const sourceHashes=sources.map(o=>o.stream.infoHash||'').join(',');
   useEffect(()=>{let live=true;const controller=new AbortController();
+    if(isWebOS)return;
     const pending=[...new Map(sources.filter(o=>o.stream.infoHash).map(o=>[o.stream.infoHash,o])).values()];
     async function checkSources(){while(live){const option=pending.shift();if(!option)return;const stream=option.stream,hash=stream.infoHash;if(!live)return;if(!hash||sourceTrackInfo(stream,videoId).verified)continue;
       setChecks(previous=>({...previous,[hash]:'Checking audio and subtitles…'}));
@@ -32,7 +34,7 @@ export default function StreamPicker({streams,loading,error,onPlay,onRetry,onMan
     if(engine.state==='ready')void Promise.all(Array.from({length:INSPECTION_CONCURRENCY},checkSources));return()=>{live=false;controller.abort();};
   },[sourceHashes,videoId,quality,checkAttempt,engine.state]);
   return <section className="stream-picker" aria-label="Playback sources">
-    <div className="stream-picker-heading"><div><h3>Sources</h3>{open&&!loading&&<p>Pick a quality, then a source. Audio and subtitle tracks are checked automatically.</p>}</div><button className="icon-button" aria-label="Refresh stream sources" onClick={onRetry} disabled={loading}><RefreshCw size={18} className={loading?'spin':''}/></button></div>
+    <div className="stream-picker-heading"><div><h3>Sources</h3>{open&&!loading&&<p>{isWebOS?'Pick a quality, then a source. Audio and subtitles are read by the TV during playback.':'Pick a quality, then a source. Audio and subtitle tracks are checked automatically.'}</p>}</div><button className="icon-button" aria-label="Refresh stream sources" onClick={onRetry} disabled={loading}><RefreshCw size={18} className={loading?'spin':''}/></button></div>
     {engine.state!=='ready'&&<EnginePanel engine={engine}/>}
     {loading&&options.length>0&&<p className="loading" role="status"><LoaderCircle size={16} className="spin"/> Checking remaining extensions… You can play now.</p>}
     {loading&&!options.length?<div className="source-loading" role="status"><LoaderCircle size={22} className="spin"/><div><strong>Finding available sources</strong><p>Checking your installed extensions…</p></div></div>:options.length&&!open?<button type="button" className="sources-toggle" aria-expanded="false" onClick={()=>setExpanded(true)}><span><strong>{options.length} {options.length===1?'source':'sources'}</strong> in {qualities.length} {qualities.length===1?'quality':'qualities'}</span><span>Choose quality and source <ChevronDown size={16}/></span></button>:options.length?<>

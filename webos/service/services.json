@@ -1,0 +1,5 @@
+{
+  "id": "app.hasimio.tv.service",
+  "description": "Hasimio standalone TV streaming service",
+  "services": [{"name":"app.hasimio.tv.service","description":"Local-only media service with a bounded video buffer"}]
+}

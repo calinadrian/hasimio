@@ -1,5 +1,6 @@
 import {useEffect,useRef} from 'react';
 import {playerSettings,savePlayerSettings} from './preferences';
+import {isWebOS,tvVideoBufferBytes} from './webos/platform';
 
 export default function LiveVideo({url,onLoading,onError}:{url:string;onLoading:(loading:boolean)=>void;onError:()=>void}){
   const videoRef=useRef<HTMLVideoElement>(null),callbacks=useRef({onLoading,onError});
@@ -14,7 +15,7 @@ export default function LiveVideo({url,onLoading,onError}:{url:string;onLoading:
     else void import('hls.js').then(({default:Hls})=>{
       if(!active)return;
       if(!Hls.isSupported()){fail();return;}
-      hls=new Hls({liveSyncDurationCount:3,liveMaxLatencyDurationCount:8,maxBufferLength:30,backBufferLength:30});
+      hls=new Hls({liveSyncDurationCount:3,liveMaxLatencyDurationCount:8,maxBufferLength:isWebOS?15:30,backBufferLength:isWebOS?0:30,...(isWebOS?{maxMaxBufferLength:20,maxBufferSize:tvVideoBufferBytes,enableWorker:false}:{})});
       hls.on(Hls.Events.MANIFEST_PARSED,play);
       hls.on(Hls.Events.ERROR,(_,data)=>{
         if(!data.fatal)return;

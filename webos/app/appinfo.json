@@ -1,0 +1,13 @@
+{
+  "id": "app.hasimio.tv",
+  "version": "0.1.38",
+  "vendor": "Hasimio",
+  "type": "web",
+  "main": "index.html",
+  "title": "Hasimio",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "resolution": "1280x720",
+  "requiredMemory": 128,
+  "disableBackHistoryAPI": true
+}
