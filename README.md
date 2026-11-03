@@ -43,6 +43,13 @@ Open the localhost URL printed by Vite. `npm run build` creates `dist/`; `npm ru
 
 ## Desktop app
 
+### MacBook / Apple Silicon edition
+
+Hasimio's Electron desktop app can be built for Apple Silicon Macs, including
+the M5 MacBook Air. The app runs its torrent engine on the Mac; no Windows PC
+or hosted engine is needed. macOS playback and packaging have not yet been
+validated. See [Mac installation](docs/MACOS.md) for setup and installer steps.
+
 ### Standalone LG TV edition
 
 `npm run package:webos` builds a small webOS IPK containing the interface and

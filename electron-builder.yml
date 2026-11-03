@@ -24,6 +24,15 @@ win:
   target: nsis
   icon: resources/icon.png
   executableName: Hasimio
+mac:
+  target:
+    - target: dmg
+      arch: arm64
+    - target: zip
+      arch: arm64
+  category: public.app-category.entertainment
+  icon: resources/icon.png
+  artifactName: Hasimio-${version}-mac-${arch}.${ext}
 # One click, per user, no admin rights; Hasimio opens when it's done (same as SaveMe).
 nsis:
   oneClick: true

@@ -29,6 +29,7 @@
     "icon": "node scripts/make-icon.mjs",
     "desktop": "npm run build && electron .",
     "package:app": "npm run icon && npm run build && electron-builder --win --publish never",
+    "package:mac": "npm run icon && npm run build && electron-builder --mac --arm64 --publish never",
     "release": "node scripts/release.mjs",
     "test": "vitest run",
     "test:streaming": "node server/smoke.mjs",
