@@ -32,6 +32,16 @@ await fs.mkdir(service,{recursive:true});
 await run(process.execPath,[require.resolve('typescript/bin/tsc'),'-b']);
 await buildVite({
   root,configFile:false,plugins:[react()],
+  css:{postcss:{plugins:[{postcssPlugin:'tv-layout-fallbacks',Declaration(declaration){
+    declaration.value=declaration.value.replace(/\b(\d*\.?\d+)[dsl]vh\b/g,'$1vh');
+    if(declaration.prop==='inset'&&!declaration.value.includes('(')){
+      const values=declaration.value.trim().split(/\s+/);
+      if(values.length<1||values.length>4)return;
+      const [top,right=top,bottom=top,left=right]=values;
+      for(const [prop,value] of Object.entries({top,right,bottom,left}))declaration.cloneBefore({prop,value});
+      declaration.remove();
+    }
+  }}]}},
   define:{'import.meta.env.VITE_WEBOS':'"true"','import.meta.env.VITE_ENGINE_URL':'undefined'},
   build:{outDir:www,emptyOutDir:true,target:'chrome79',cssTarget:'chrome79',rollupOptions:{input:path.join(root,'webos.html')}}
 });

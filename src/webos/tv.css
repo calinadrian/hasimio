@@ -2,11 +2,12 @@
 .hasimio-tv :focus{outline:3px solid #fff!important;outline-offset:4px}
 .hasimio-tv button,.hasimio-tv select,.hasimio-tv input{min-height:44px}
 .hasimio-tv .hero{min-height:380px}
-.hasimio-tv .poster-image{height:240px}
+.hasimio-tv .poster-image{width:100%;height:228px;flex:none}
 .hasimio-tv .poster-image img{width:100%;height:100%;object-fit:cover}
 .hasimio-tv .tv-poster-frame{display:block;width:100%;height:100%}
-.hasimio-tv .poster-row{grid-auto-columns:160px;grid-template-columns:none}
-.hasimio-tv .poster-row.wrap{grid-template-columns:repeat(5,minmax(0,1fr))}
+.hasimio-tv .poster-row{grid-auto-columns:152px;grid-template-columns:none;align-items:start;gap:18px}
+.hasimio-tv .poster-row.wrap{grid-template-columns:repeat(auto-fill,152px);grid-auto-columns:152px;justify-content:start}
+.hasimio-tv .poster-card{width:152px;height:auto;align-items:stretch;align-self:start}
 .hasimio-tv .cinema-toolbar>*,.hasimio-tv .cinema-transport>*,.hasimio-tv .cinema-tools>*{margin-right:12px}
 .hasimio-tv .cinema-menu{font-size:18px}
 .hasimio-tv .cinema-connection{font-size:14px}
@@ -35,7 +36,21 @@
 .hasimio-tv .poster-playback-track{right:12px;bottom:12px;left:12px}
 .hasimio-tv .episode-toggle::before{top:8px;right:8px;bottom:8px;left:8px}
 .hasimio-tv .search kbd{display:none}
-.hasimio-tv .nav-item>*+*,.hasimio-tv .button>*+*,.hasimio-tv .search>*+*,.hasimio-tv .detail-actions>*+*{margin-left:10px}
+.hasimio-tv .nav-item>*+*,.hasimio-tv .search>*+*{margin-left:10px}
 .hasimio-tv nav>*+*{margin-top:7px}
+.hasimio-tv{--rail:216px;--gutter:28px}
+.hasimio-tv .hero{min-height:300px}
+.hasimio-tv .hero h1{font-size:52px;line-height:1.1}
+.hasimio-tv .button,.hasimio-tv .cinema-big-play,.hasimio-tv .cinema-icon,.hasimio-tv .icon-button{display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.hasimio-tv .button svg{margin:0 8px 0 0}
+.hasimio-tv .cinema-big-play{padding:0}
+.hasimio-tv .cinema-big-play svg{margin:0}
+.hasimio-tv .detail-actions{grid-column:2;align-items:center}
+.hasimio-tv .detail-actions .button{margin:0 10px 10px 0}
+.hasimio-tv .detail-heading.no-poster .detail-actions{grid-column:1}
+.hasimio-tv .source-play{align-self:center;flex-shrink:0}
+.hasimio-tv .segmented>*+*,.hasimio-tv .filters>*+*,.hasimio-tv .source-facts>*+*,.hasimio-tv .source-title>*+*{margin-left:10px}
+.hasimio-tv .dialog-bar>*+*{margin-left:12px}
+.hasimio-tv .stream-picker-heading,.hasimio-tv .quality-source,.hasimio-tv .source-toolbar{align-items:center}
 /* Installed apps use a 720p graphics surface; the native video pipeline can
    still play supported 4K sources independently of the interface resolution. */

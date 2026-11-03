@@ -43,7 +43,7 @@ function command(remote){
     processChild.once('close',code=>{
       clearTimeout(timeout);children.delete(processChild);
       if(tooLarge)return reject(Error('The diagnostic response exceeded its size limit.'));
-      if(code!==0)return reject(Error('Cannot reach the TV service. Turn on the TV, open Hasimio and check Developer Mode/network access.'));
+      if(code!==0)return reject(Error(/code=7|connection refused/i.test(errors)?'Connected to the TV, but Hasimio’s service is stopped. Close and reopen Hasimio on the TV.':'Cannot establish the TV diagnostic connection. Check that the TV is on and Developer Mode/network access is available.'));
       const begin=output.indexOf('{');
       try{const data=JSON.parse(output.slice(begin));if(begin<0||!data||typeof data!=='object')throw Error();resolve(data);}
       catch{reject(Error('The TV service did not return diagnostics. Open Hasimio on the TV.'));}
