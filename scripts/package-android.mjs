@@ -110,6 +110,9 @@ await run(java('java'),['-cp',path.join(tools,'lib/d8.jar'),'com.android.tools.r
 const entries=unzipSync(await fs.readFile(base));
 for(const directory of [path.join(work,'assets'),path.join(work,'lib')])for(const file of await files(directory))entries[path.relative(work,file).replaceAll('\\','/')]=await fs.readFile(file);
 for(const file of await files(dex))entries[path.basename(file)]=await fs.readFile(file);
+// Android 11+ rejects a compressed resources.arsc, even with a valid signature.
+// Preserve it as a stored ZIP entry so zipalign can align its data to 4 bytes.
+entries['resources.arsc']=[entries['resources.arsc'],{level:0}];
 const unsigned=path.join(work,'unsigned.apk'),aligned=path.join(work,'aligned.apk');await fs.writeFile(unsigned,zipSync(entries,{level:6}));
 await run(path.join(tools,exe('zipalign')),['-f','4',unsigned,aligned]);
 let key=process.env.ANDROID_KEYSTORE,alias=process.env.ANDROID_KEY_ALIAS||'hasimio',storePassword=process.env.ANDROID_KEYSTORE_PASSWORD,keyPassword=process.env.ANDROID_KEY_PASSWORD||storePassword;
@@ -127,6 +130,26 @@ if(!key){
 if(!storePassword||!keyPassword)throw Error('Android signing passwords are missing.');
 const apk=path.join(output,`Hasimio-${pkg.version}-android-arm64.apk`);
 await run(java('java'),['-jar',path.join(tools,'lib/apksigner.jar'),'sign','--ks',path.resolve(key),'--ks-key-alias',alias,'--ks-pass','env:HASIMIO_SIGN_STORE','--key-pass','env:HASIMIO_SIGN_KEY','--out',apk,aligned],{HASIMIO_SIGN_STORE:storePassword,HASIMIO_SIGN_KEY:keyPassword});
+// Check the final signed archive, rather than assuming successful ZIP creation
+// or zipalign means Android's installer will accept the resource table.
+const signed=await fs.readFile(apk);
+let end=signed.length-22;
+while(end>=Math.max(0,signed.length-65557)&&signed.readUInt32LE(end)!==0x06054b50)end--;
+if(end<0||signed.readUInt32LE(end)!==0x06054b50)throw Error('APK ZIP directory is missing.');
+let directory=signed.readUInt32LE(end+16),foundResources=false;
+for(let i=0;i<signed.readUInt16LE(end+10);i++){
+  if(signed.readUInt32LE(directory)!==0x02014b50)throw Error('Invalid APK ZIP directory.');
+  const nameLength=signed.readUInt16LE(directory+28),extraLength=signed.readUInt16LE(directory+30),commentLength=signed.readUInt16LE(directory+32);
+  if(signed.subarray(directory+46,directory+46+nameLength).toString()==='resources.arsc'){
+    const local=signed.readUInt32LE(directory+42);
+    const offset=local+30+signed.readUInt16LE(local+26)+signed.readUInt16LE(local+28);
+    if(signed.readUInt16LE(directory+10)!==0||offset%4!==0)throw Error('Android requires resources.arsc to be stored uncompressed and aligned to 4 bytes.');
+    foundResources=true;
+  }
+  directory+=46+nameLength+extraLength+commentLength;
+}
+if(!foundResources)throw Error('APK is missing resources.arsc.');
+await run(java('java'),['-jar',path.join(tools,'lib/apksigner.jar'),'verify',apk]);
 const sha256=crypto.createHash('sha256').update(await fs.readFile(apk)).digest('hex');
 await fs.writeFile(path.join(output,'hasimio-android-update.json'),JSON.stringify({version:pkg.version,versionCode:code,apk:path.basename(apk),sha256},null,2)+'\n');
 console.log('Created '+apk);
