@@ -52,21 +52,17 @@ global.fetch = async function (url, options) {
     if (queue.length) queue.shift()(); else fetching--;
   }
   if (response.body) response.body.getReader = function () {
-    const stream = response.body;
-    let total = 0;
+    // node-fetch 2 preserves a Buffer passed to Response; it does not turn it
+    // into a Node stream. The upstream body is already buffered and bounded.
+    const data = response.body;
+    let consumed = false;
     return {
-      read: () => new Promise((resolve, reject) => {
-        const chunk = stream.read();
-        if (chunk !== null) return deliver(chunk);
-        if (stream._readableState.endEmitted) return resolve({done:true});
-        function clean() { stream.removeListener('readable', readable); stream.removeListener('end', ended); stream.removeListener('error', failed); }
-        function deliver(value) { total += value.length; if (total > 16 * 1024 * 1024) { stream.destroy(); reject(new Error('Response exceeds the TV memory budget.')); } else resolve({done:false,value}); }
-        function readable() { const value = stream.read(); if (value !== null) { clean(); deliver(value); } }
-        function ended() { clean(); resolve({done:true}); }
-        function failed(error) { clean(); reject(error); }
-        stream.on('readable', readable); stream.once('end', ended); stream.once('error', failed);
-      }),
-      cancel: () => { stream.destroy(); return Promise.resolve(); }
+      read: () => {
+        if (consumed) return Promise.resolve({done:true});
+        consumed = true;
+        return Promise.resolve({done:false,value:data});
+      },
+      cancel: () => { consumed = true; return Promise.resolve(); }
     };
   };
   return response;
