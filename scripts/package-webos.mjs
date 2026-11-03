@@ -117,7 +117,7 @@ for(const directory of [...packages].sort()){
   }
 }
 await fs.writeFile(path.join(bundled,'THIRD-PARTY-NOTICES.txt'),notices.join('\n'));
-await fs.copyFile(path.join(root,'webos','README.md'),path.join(output,'INSTALL.txt'));
+await fs.copyFile(path.join(root,'webos','INSTALL.md'),path.join(output,'INSTALL.txt'));
 if(!prepared){
   const cliCandidates=[process.env.HASIMIO_WEBOS_CLI,process.env.APPDATA&&path.join(process.env.APPDATA,'npm','node_modules','@webos-tools','cli','bin','ares-package.js')].filter(Boolean);
   let cli;for(const candidate of cliCandidates){try{await fs.access(candidate);cli=candidate;break;}catch{/* Try next known CLI location. */}}

@@ -66,6 +66,7 @@ jobs:
         run: |
           VERSION=$(node -p 'JSON.parse(require("fs").readFileSync("package.json", "utf8")).version')
           TAG="android-v$VERSION"
+          node scripts/release-presentation.mjs notes android > "$RUNNER_TEMP/release-notes.md"
           if gh release view "$TAG" --json isDraft --jq '.isDraft' > "$RUNNER_TEMP/release-state"; then
             if [ "$(cat "$RUNNER_TEMP/release-state")" != true ]; then
               echo '::error::This Android version is already published. Bump package.json.'
@@ -75,10 +76,11 @@ jobs:
             git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
             test "$(git rev-parse "$TAG^{commit}")" = "$GITHUB_SHA"
           else
-            gh release create "$TAG" --target "$GITHUB_SHA" --draft --title "Hasimio Android $VERSION" --notes 'Standalone Android edition with on-device torrent playback and signed APK updates. Requires Android 9+ and ARM64. Desktop FFmpeg conversion is unavailable.' --latest=false
+            gh release create "$TAG" --target "$GITHUB_SHA" --draft --title "Hasimio Android $VERSION" --notes-file "$RUNNER_TEMP/release-notes.md" --latest=false
           fi
           gh release upload "$TAG" "release/android/Hasimio-$VERSION-android-arm64.apk" release/android/hasimio-android-update.json --clobber
-          gh release edit "$TAG" --draft=false --latest=false
+          gh release edit "$TAG" --draft=false --latest=false --notes-file "$RUNNER_TEMP/release-notes.md"
+          node scripts/release-presentation.mjs android
       - name: Remove temporary signing key
         if: always()
         run: rm -f "$RUNNER_TEMP/hasimio.jks"

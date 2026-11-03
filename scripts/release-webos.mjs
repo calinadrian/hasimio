@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import {pruneReleases} from './release-presentation.mjs';
 import {spawn} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
@@ -64,4 +65,5 @@ if(!existing)await run(gh,['release','create',tag,'--repo',repository,'--draft',
 await run(gh,['release','upload',tag,...assets,'--repo',repository,'--clobber']);
 // Keep TV releases out of the Windows updater's "latest release" channel.
 await run(gh,['release','edit',tag,'--repo',repository,'--draft=false','--latest=false','--notes-file',notesFile]);
+pruneReleases('webos',{gh,repository});
 console.log('Published TV installer and signed updates: https://github.com/'+repository+'/releases/tag/'+tag);
