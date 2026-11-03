@@ -38,10 +38,15 @@ export default function LiveVideo({url,onLoading,onError}:{url:string;onLoading:
         hls?.startLoad(-1);play();
       }
     },1000);
-    if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=url;video.load();play();}
+    const nativeHls=Boolean(video.canPlayType('application/vnd.apple.mpegurl'));
+    // Android advertises native HLS, but its separate media loader can fail on
+    // the local proxied playlists. Keep requests and recovery in the WebView.
+    const preferHls=import.meta.env.VITE_ANDROID==='true'||/Android/i.test(navigator.userAgent);
+    const playNative=()=>{if(!active)return;if(!nativeHls){fail();return;}video.src=url;video.load();play();};
+    if(nativeHls&&!preferHls)playNative();
     else void import('hls.js').then(({default:Hls})=>{
       if(!active)return;
-      if(!Hls.isSupported()){fail();return;}
+      if(!Hls.isSupported()){playNative();return;}
       hls=new Hls({liveSyncDurationCount:3,liveMaxLatencyDurationCount:8,maxBufferLength:isWebOS?15:30,backBufferLength:isWebOS?0:30,...(isWebOS?{maxMaxBufferLength:20,maxBufferSize:tvVideoBufferBytes,enableWorker:false}:{})});
       hls.on(Hls.Events.MANIFEST_PARSED,play);
       hls.on(Hls.Events.ERROR,(_,data)=>{
