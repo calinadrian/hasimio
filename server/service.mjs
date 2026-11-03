@@ -25,7 +25,9 @@ import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks,audioRoot} from
 
 import {createSubtitleJob,subtitleStatus} from './subtitles.mjs';
 import {createCastController} from './cast.mjs';
-import {searchOnlineSubtitles,downloadOnlineSubtitle} from './online-subtitles.mjs';
+import {createOnlineSubtitleService} from './online-subtitles.mjs';
+import {createRomanianSubtitles} from './romanian-subtitles.mjs';
+import {readRarSubtitles} from './rar-subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
 import {inspectionStream} from './inspection-stream.mjs';
 import {createSkipSegmentLookup,imdbVideoId} from './segments.mjs';
@@ -40,6 +42,7 @@ const sweepCache=()=>swept??=Promise.all([cacheRoot,audioRoot].map(dir=>rm(dir,{
 export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')}),lan=false,castMediaOrigins}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
+  const onlineSubtitles=createOnlineSubtitleService({fetchImpl,romanian:createRomanianSubtitles({fetchImpl,extractRar:readRarSubtitles})});
   const filelist=createFileList({filename:path.join(cacheDir('filelist'),'account.json'),fetchImpl,parseTorrent});
   // Created on first use so engines that never cast do not open discovery sockets or TLS connections.
   let castController;
@@ -133,7 +136,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       const liveRoute=/^\/api\/live-tv\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(main|alternative)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
       if(req.method==='GET'&&liveRoute){
         const controller=new AbortController();const cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
-        try{const output=await liveTv.resource(liveRoute[1],liveRoute[2],liveRoute[3].replace('asset/',''),controller.signal);res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);}
+        try{const output=await liveTv.resource(liveRoute[1],liveRoute[2],liveRoute[3].replace('asset/',''),controller.signal,url.searchParams.get('reconnect'));res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);}
         catch(error){if(!controller.signal.aborted)json(res,error.status??502,{error:error.message});}
         finally{res.removeListener('close',cancel);}return;
       }
@@ -218,11 +221,11 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       if(req.method==='GET'&&titleRoute){const [,resource,type,id,extras]=titleRoute;try{return json(res,200,resource==='catalog'?await titles.catalog(type,decodeURIComponent(id),Object.fromEntries(new URLSearchParams(extras??''))):await titles.meta(type,decodeURIComponent(id)));}catch(error){return json(res,error.status??502,{error:error.message});}}
       if(req.method==='GET'&&url.pathname==='/api/subtitles/search'){
         const id=url.searchParams.get('id')??'',filename=(url.searchParams.get('filename')??'').slice(0,300);
-        try{return json(res,200,await searchOnlineSubtitles(id,filename));}catch(e){return json(res,502,{error:e instanceof Error?e.message:'Online subtitles are unavailable.'});}
+        try{return json(res,200,await onlineSubtitles.search(id,filename,url.searchParams.get('language')??''));}catch(e){return json(res,502,{error:e instanceof Error?e.message:'Online subtitles are unavailable.'});}
       }
-      const onlineSubtitle=/^\/api\/subtitles\/files\/(\d{1,12})$/.exec(url.pathname);
+      const onlineSubtitle=/^\/api\/subtitles\/files\/(\d{1,12}|noi-\d{1,12}(?:-\d{1,3}-\d{1,4})?)$/.exec(url.pathname);
       if(req.method==='GET'&&onlineSubtitle){
-        try{const text=await downloadOnlineSubtitle(onlineSubtitle[1]);res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'private, max-age=86400','X-Content-Type-Options':'nosniff'});return res.end(text);}catch(e){return json(res,502,{error:e instanceof Error?e.message:'This subtitle could not be downloaded.'});}
+        try{const text=await onlineSubtitles.download(onlineSubtitle[1]);res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'private, max-age=86400','X-Content-Type-Options':'nosniff'});return res.end(text);}catch(e){return json(res,502,{error:e instanceof Error?e.message:'This subtitle could not be downloaded.'});}
       }
       if(req.method==='POST'&&url.pathname==='/api/torrent-inspections'){
         if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});

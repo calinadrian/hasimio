@@ -11,7 +11,8 @@ import {searchStremioSource} from '../../server/stremio-sources.mjs';
 import {extManifest,searchExt} from '../../server/ext.mjs';
 import {createLiveTv} from '../../server/live-tv.mjs';
 import {createSkipSegmentLookup} from '../../server/segments.mjs';
-import {searchOnlineSubtitles,downloadOnlineSubtitle} from '../../server/online-subtitles.mjs';
+import {createOnlineSubtitleService} from '../../server/online-subtitles.mjs';
+import {createRomanianSubtitles} from '../../server/romanian-subtitles.mjs';
 import createTorrents from './torrents.cjs';
 import createUpdater from './updater.cjs';
 import createMonitor from './monitor.cjs';
@@ -24,6 +25,7 @@ const dataRoot=process.env.HASIMIO_MOBILE_DATA||'/media/internal/app.hasimio.tv'
 const configPath=path.join(dataRoot,'settings.json');
 let cacheMiB=64;
 try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].includes(config.cacheMiB))cacheMiB=config.cacheMiB;}catch{/* New installation. */}
+const onlineSubtitles=createOnlineSubtitleService({romanian:createRomanianSubtitles()});
 const filelist=createFileList({filename:path.join(dataRoot,'filelist-account.json'),parseTorrent});
 const torrents=createTorrents({cacheMiB:()=>cacheMiB,resolveFilelist:id=>filelist.resolve(id),
   record:(...event)=>monitor.record(...event), onStart:()=>monitor.counters.downloads++, onCleanup:()=>monitor.counters.cleanups++});
@@ -158,13 +160,13 @@ async function route(req,res){
   const channel=/^\/api\/live-tv\/([a-z0-9-]+)\/(main|alternative)\/(index\.m3u8|asset\/[a-f\d]{32})$/.exec(pathname);
   if(channel&&req.method==='GET'){
     const controller=new AbortController();res.once('close',()=>controller.abort());
-    const output=await live.resource(channel[1],channel[2],channel[3].replace('asset/',''),controller.signal);
+    const output=await live.resource(channel[1],channel[2],channel[3].replace('asset/',''),controller.signal,url.searchParams.get('reconnect'));
     res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);return;
   }
   if(pathname==='/api/segments'){json(res,200,await skip(url.searchParams.get('videoId'),Number(url.searchParams.get('durationMs'))));return;}
-  if(pathname==='/api/subtitles/search'){json(res,200,await searchOnlineSubtitles(url.searchParams.get('id'),url.searchParams.get('filename')||''));return;}
-  const subtitle=/^\/api\/subtitles\/files\/(\d+)$/.exec(pathname);
-  if(subtitle){const text=await downloadOnlineSubtitle(subtitle[1]);res.writeHead(200,{'Content-Type':'text/vtt; charset=utf-8','Cache-Control':'no-store'});res.end(text);return;}
+  if(pathname==='/api/subtitles/search'){json(res,200,await onlineSubtitles.search(url.searchParams.get('id'),url.searchParams.get('filename')||'',url.searchParams.get('language')||''));return;}
+  const subtitle=/^\/api\/subtitles\/files\/(\d{1,12}|noi-\d{1,12}(?:-\d{1,3}-\d{1,4})?)$/.exec(pathname);
+  if(subtitle){const text=await onlineSubtitles.download(subtitle[1]);res.writeHead(200,{'Content-Type':'text/vtt; charset=utf-8','Cache-Control':'no-store'});res.end(text);return;}
   // People requires the desktop IMDb people database; don't build one on TV.
   if(pathname==='/api/people/photos'){json(res,200,{photos:{}});return;}
   if(pathname.startsWith('/api/people')){json(res,200,{people:[],metas:[]});return;}

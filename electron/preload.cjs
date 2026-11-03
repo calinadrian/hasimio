@@ -2,6 +2,12 @@
 const {contextBridge,ipcRenderer}=require('electron');
 
 contextBridge.exposeInMainWorld('hasimioDesktop',{
+  windowChrome:process.platform==='win32',
+  windowAction:action=>ipcRenderer.invoke('hasimio:window-action',action),
+  getWindowState:()=>ipcRenderer.invoke('hasimio:window-state'),
+  onWindowState(listener){const handler=(_event,state)=>listener(state);ipcRenderer.on('hasimio:window-state',handler);return ()=>ipcRenderer.removeListener('hasimio:window-state',handler);},
+  setPictureInPicture:enabled=>ipcRenderer.invoke('hasimio:pip',enabled),
+  onPictureInPicture(listener){const handler=(_event,enabled)=>listener(enabled);ipcRenderer.on('hasimio:pip-state',handler);return ()=>ipcRenderer.removeListener('hasimio:pip-state',handler);},
   onPlayerPointer(listener){
     const handler=(_event,point)=>listener(point);
     ipcRenderer.on('hasimio:player-pointer',handler);

@@ -1,0 +1,46 @@
+name: Mac installer
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: macos-publish-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  installer:
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Select release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p 'require("./package.json").version')
+          gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY"
+          git diff --exit-code "v$VERSION" HEAD -- src server shared electron public index.html package-lock.json
+      - run: npm ci
+      - name: Package Mac installer
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run package:mac -- -c.extraMetadata.main=electron/bootstrap.cjs -c.mac.identity=-
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasimio-mac-arm64
+          path: |
+            release/desktop/*-mac-arm64.dmg
+            release/desktop/*-mac-arm64.zip
+            release/desktop/latest-mac.yml
+          if-no-files-found: error
+      - name: Publish installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p 'require("./package.json").version')
+          gh release upload "v$VERSION" release/desktop/*-mac-arm64.dmg release/desktop/*-mac-arm64.zip release/desktop/latest-mac.yml --repo "$GITHUB_REPOSITORY" --clobber

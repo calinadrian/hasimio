@@ -9,17 +9,19 @@ import {describeStream,availableQualities,defaultQuality,formatSize,sortSources}
 
 import {sourceTrackInfo,saveTrackSummary,type MediaTrack} from './playback-tracks';
 import {isWebOS} from './webos/platform';
+import {usePlayerSettings} from './use-player-settings';
 const mobileEngine=import.meta.env.VITE_ANDROID==='true';
 
 const qualityLabel=(q:Quality)=>q==='2K'?'2K · 1440p':q==='4K'?'4K · 2160p':q==='Other'?'Original / unspecified':q;
 export default function StreamPicker({streams,loading,error,onPlay,onRetry,onManage,videoId}:{videoId:string;streams:Stream[];loading:boolean;error:string;onPlay:(stream:Stream)=>void;onRetry:()=>void;onManage:()=>void}) {
+  const preferences=usePlayerSettings();
   const [checks,setChecks]=useState<Record<string,string>>({});const [checkAttempt,setCheckAttempt]=useState(0);const [,setRevision]=useState(0);
   const [chosen,setChosen]=useState<Quality>();const [expanded,setExpanded]=useState(false);const [sort,setSort]=useState('seeders');
   const engine=useEngine();const engineSeen=useRef(engine.state);
   // Sources from the engine failed while it was missing; fetch them again once it appears.
   useEffect(()=>{const before=engineSeen.current;engineSeen.current=engine.state;if(engine.state==='ready'&&(before==='missing'||before==='outdated'))onRetry();},[engine.state,onRetry]);
   const options=streams.map(describeStream),qualities=availableQualities(options);
-  const quality=chosen&&qualities.includes(chosen)?chosen:defaultQuality(qualities);
+  const quality=chosen&&qualities.includes(chosen)?chosen:defaultQuality(qualities,preferences.preferredQuality);
   const sources=sortSources(options.filter(o=>o.quality===quality),sort);
   const providers=[...new Set(sources.map(o=>o.provider))];
   // One-click Play covers the usual case, so the full list waits behind a disclosure unless something needs attention.

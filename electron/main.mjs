@@ -4,19 +4,20 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {app,BrowserWindow,dialog,ipcMain,Menu,screen,session,shell,utilityProcess} from 'electron';
 import {watchPointerActivity} from './player-activity.mjs';
+import {createPictureInPicture} from './picture-in-picture.mjs';
 import electronUpdater from 'electron-updater';
 import {createUpdates} from './updates.mjs';
-import {ENGINE_PORT} from '../server/engine.mjs';
+import {ENGINE_PORT} from '../shared/engine-port.mjs';
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const APP_ID='app.hasimio.desktop';
 const HOUR=60*60_000;
 const icon=path.join(app.getAppPath(),'resources','icon.png');
 
-let win;let engine;let origin;let quitting=false;let engineStopped=false;
+let win;let pictureInPicture;let engine;let origin;let quitting=false;let engineStopped=false;
 
 app.setName('Hasimio');
-app.setAppUserModelId(APP_ID);
+if(process.platform==='win32')app.setAppUserModelId(APP_ID);
 const primary=app.requestSingleInstanceLock();
 
 /** Written right before an update installs and read on the next start, to log the version change. */
@@ -68,14 +69,18 @@ function showWindow() {
 
 function createWindow() {
   win=new BrowserWindow({
-    width:1280,height:820,minWidth:900,minHeight:600,show:false,title:'Hasimio',backgroundColor:'#141414',icon,autoHideMenuBar:true,
+    width:1280,height:820,minWidth:900,minHeight:600,show:false,frame:process.platform!=='win32',title:'Hasimio',backgroundColor:'#141414',icon,autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true},
   });
+  const publishWindowState=()=>{if(!win.isDestroyed())win.webContents.send('hasimio:window-state',{maximized:win.isMaximized(),fullscreen:win.isFullScreen()});};
+  for(const event of ['maximize','unmaximize','enter-full-screen','leave-full-screen'])win.on(event,publishWindowState);
   watchPointerActivity(win,screen);
+  pictureInPicture=createPictureInPicture(win,screen,()=>quitting);
   // Links to other sites open in the browser; the window only ever shows the app.
   win.webContents.setWindowOpenHandler(({url})=>{if(/^https?:\/\//i.test(url))void shell.openExternal(url);return {action:'deny'};});
   win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith(origin+'/')){event.preventDefault();if(/^https?:\/\//i.test(url))void shell.openExternal(url);}});
   win.once('ready-to-show',()=>win.show());
+  win.webContents.once('did-finish-load',()=>app.emit('hasimio:startup-ready'));
   void win.loadURL(origin+'/');
 }
 
@@ -92,6 +97,9 @@ async function start() {
     quitting=true;app.quit();return;
   }
   origin=`http://127.0.0.1:${port}`;
+  ipcMain.handle('hasimio:window-state',event=>{if(event.sender!==win?.webContents)throw Error('Invalid window');return {maximized:win.isMaximized(),fullscreen:win.isFullScreen()};});
+  ipcMain.handle('hasimio:window-action',(event,action)=>{if(event.sender!==win?.webContents)throw Error('Invalid window');if(action==='minimize')win.minimize();else if(action==='maximize'){if(win.isMaximized())win.unmaximize();else win.maximize();}else if(action==='close')win.close();else throw Error('Invalid window action');});
+  ipcMain.handle('hasimio:pip',(event,enabled)=>{if(event.sender!==win?.webContents||typeof enabled!=='boolean')throw Error('Invalid player window');return pictureInPicture.set(enabled);});
   ipcMain.handle('hasimio:update-state',()=>updates.get());
   ipcMain.handle('hasimio:update-check',()=>updates.check());
   ipcMain.handle('hasimio:update-install',()=>installUpdate());

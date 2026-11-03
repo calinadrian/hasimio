@@ -1,10 +1,10 @@
 import {useRef,useState} from 'react';
-import {Compass,Library,Tv,Ellipsis,CalendarDays,BarChart3,Puzzle,MonitorSmartphone,Users,ChevronRight,X} from 'lucide-react';
+import {Compass,Library,Tv,Ellipsis,CalendarDays,BarChart3,Puzzle,MonitorSmartphone,Users,ChevronRight,X,Settings} from 'lucide-react';
 import {currentProfile} from '../profile-storage';
 import {deviceSync} from '../device-sync';
 
 const primary=[{name:'Discover',icon:Compass},{name:'Library',icon:Library},{name:'Live TV',icon:Tv}];
-const secondary=[{name:'Calendar',icon:CalendarDays},{name:'Progress',icon:BarChart3},{name:'Extensions',icon:Puzzle},{name:'Sync devices',icon:MonitorSmartphone}];
+const secondary=[{name:'Calendar',icon:CalendarDays},{name:'Progress',icon:BarChart3},{name:'Extensions',icon:Puzzle},{name:'Sync devices',icon:MonitorSmartphone},{name:'Settings',icon:Settings}];
 
 export default function MobileNavigation({page,onNavigate}:{page:string;onNavigate:(page:string)=>void}){
   const dialog=useRef<HTMLDialogElement>(null);

@@ -38,3 +38,17 @@ export async function downloadOnlineSubtitle(file,fetchImpl=fetch){
   const bytes=new Uint8Array(await response.arrayBuffer());if(bytes.length>MAX_SUBTITLE_BYTES)throw new Error('This subtitle file is too large.');
   return new TextDecoder('utf-8').decode(bytes);
 }
+
+// A failed provider must not hide subtitles from the other provider.
+export function createOnlineSubtitleService({romanian,fetchImpl=fetch}={}){
+  async function search(id,filename,language=''){
+    const providers=[{name:'OpenSubtitles',search:()=>searchOnlineSubtitles(id,filename,fetchImpl)}];
+    if(romanian&&['ro','ron','rum'].includes(language.toLowerCase()))providers.push({name:'Subtitrari-noi.ro',search:()=>romanian.search(id,filename)});
+    const results=await Promise.allSettled(providers.map(provider=>provider.search()));
+    const subtitles=results.flatMap((result,index)=>result.status==='fulfilled'?result.value.subtitles.map(item=>({...item,provider:providers[index].name})):[]);
+    const warnings=results.flatMap(result=>result.status==='rejected'?[result.reason instanceof Error?result.reason.message:'A subtitle source is unavailable.']:[]);
+    if(results.every(result=>result.status==='rejected'))throw Error(warnings.join(' '));
+    return {subtitles:subtitles.sort((a,b)=>b.match-a.match),warnings};
+  }
+  return {search,download:id=>id.startsWith('noi-')?romanian.download(id):downloadOnlineSubtitle(id,fetchImpl)};
+}

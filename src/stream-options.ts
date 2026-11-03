@@ -1,4 +1,5 @@
 import {type Stream,safeHttp} from './media';
+import {playerSettings,type PreferredQuality} from './preferences';
 import {detectQuality,detectCodec,detectRelease,QUALITY_ORDER,type Quality} from '../shared/stream-info.mjs';
 export type StreamOption={stream:Stream;quality:Quality;provider:string;release?:string;codec?:string;seeders?:number;sizeBytes?:number;filename:string;detail:string};
 export function describeStream(stream:Stream):StreamOption {
@@ -12,8 +13,15 @@ export function describeStream(stream:Stream):StreamOption {
   return {stream,quality:QUALITY_ORDER.includes(stream.quality as Quality)?stream.quality as Quality:detectQuality(text),provider:stream.provider || stream.name?.replace(/\s*[·|]\s*(720p|1080p|2k|4k|torrent)\s*$/i,'') || 'Video source',release:detectRelease(text),codec:stream.codec || detectCodec(text),seeders:stream.seeders ?? (parsedSeeders ? Number(parsedSeeders.replaceAll(',','')) : undefined),sizeBytes,filename:stream.filename || stream.title?.split('\n')[0] || stream.name || 'Source details',detail};
 }
 export function availableQualities(options:StreamOption[]) {return QUALITY_ORDER.filter(q=>options.some(o=>o.quality===q));}
-export function defaultQuality(qualities:Quality[]):Quality {return qualities.includes('1080p')?'1080p':qualities.includes('720p')?'720p':qualities[0] ?? 'Other';}
+export function defaultQuality(qualities:Quality[],preferred:PreferredQuality='Auto'):Quality {
+  if(preferred==='Auto')return qualities.includes('1080p')?'1080p':qualities.includes('720p')?'720p':qualities[0]??'Other';
+  if(qualities.includes(preferred))return preferred;
+  const pixels:Record<Quality,number>={'SD':480,'720p':720,'1080p':1080,'2K':1440,'4K':2160,'Other':0};
+  const lower=qualities.filter(quality=>pixels[quality]>0&&pixels[quality]<pixels[preferred]).sort((a,b)=>pixels[b]-pixels[a]);
+  const higher=qualities.filter(quality=>pixels[quality]>pixels[preferred]).sort((a,b)=>pixels[a]-pixels[b]);
+  return lower[0]??higher[0]??qualities[0]??'Other';
+}
 export function formatSize(bytes?:number) {if(bytes==null||!Number.isFinite(bytes)||bytes<0)return 'Size unknown';return bytes>=1024**3?`${(bytes/1024**3).toFixed(1)} GB`:`${Math.round(bytes/1024**2)} MB`;}
 export function sortSources(options:StreamOption[],sort:string) {return [...options].sort((a,b)=>sort==='size'?(a.sizeBytes??Infinity)-(b.sizeBytes??Infinity):(b.seeders??-1)-(a.seeders??-1));}
 // One-click playback picks what the picker would show first, skipping torrents nobody seeds.
-export function bestSource(streams:Stream[]) {const options=streams.map(describeStream).filter(o=>o.stream.infoHash||o.stream.filelistId||safeHttp(o.stream.url));const ranked=sortSources(options.filter(o=>o.quality===defaultQuality(availableQualities(options))),'seeders');return (ranked.find(o=>(!o.stream.infoHash&&!o.stream.filelistId)||(o.seeders??0)>0)??ranked[0])?.stream;}
+export function bestSource(streams:Stream[],preferred=playerSettings().preferredQuality) {const options=streams.map(describeStream).filter(o=>o.stream.infoHash||o.stream.filelistId||safeHttp(o.stream.url));const ranked=sortSources(options.filter(o=>o.quality===defaultQuality(availableQualities(options),preferred)),'seeders');return (ranked.find(o=>(!o.stream.infoHash&&!o.stream.filelistId)||(o.seeders??0)>0)??ranked[0])?.stream;}

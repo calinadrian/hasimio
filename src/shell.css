@@ -39,7 +39,7 @@ nav{display:flex;flex-direction:column;gap:7px;margin-top:40px}
 
 /* Header: search is the only control, so it gets the space. */
 main{margin-left:var(--rail)}
-.topbar{height:var(--topbar);display:flex;align-items:center;gap:16px;background:var(--header);border-bottom:1px solid #393939;padding:0 var(--gutter)}
+.topbar{position:sticky;top:0;z-index:11;height:var(--topbar);display:flex;align-items:center;gap:16px;background:var(--header);border-bottom:1px solid #393939;padding:0 var(--gutter)}
 .topbar-brand{display:none}
 .search{display:flex;align-items:center;gap:10px;flex:1;max-width:560px;min-height:46px;background:#191919;border:1px solid #434343;border-radius:var(--radius-control);padding:9px 15px;color:#9c9c9c}
 .search:focus-within{border-color:transparent;outline:1px solid var(--accent);outline-offset:0}
@@ -162,3 +162,34 @@ main{margin-left:var(--rail)}
   .dialog-bar{padding-left:18px}
 }
 @media(prefers-reduced-motion:reduce){.hero-placeholder{animation:none}}
+
+/* Profile subtitle preferences. */
+.app-settings{max-width:760px}
+.settings-card{padding:26px;border:1px solid #484848;border-radius:10px;background:#222;display:grid;gap:20px}
+.settings-card h2{font-size:22px}
+.settings-field{display:grid;gap:9px;font-size:15px;font-weight:600}
+.settings-field select{width:100%;max-width:400px;min-height:46px;padding:10px 12px;border:1px solid #666;border-radius:6px;background:#303030;color:#fff}
+.settings-toggle{display:flex;align-items:center;gap:12px;font-size:15px;cursor:pointer}
+.settings-toggle input{width:20px;height:20px;accent-color:#eee;flex:none}
+.settings-card p{font-size:14px;line-height:1.65;color:#ccc;max-width:65ch}
+.settings-card .settings-saved{font-size:12px;color:#aaa}
+
+.sidebar>nav{min-height:0;overflow-y:auto;flex-shrink:1}
+
+/* Window controls are hidden entirely in the floating player. */
+.desktop-chrome-host{display:contents}
+.desktop-titlebar{position:fixed;inset:0 0 auto;height:32px;z-index:2147483647;display:flex;align-items:center;justify-content:space-between;background:#202020;color:#ccc;font:12px/1 system-ui,sans-serif;user-select:none;-webkit-app-region:drag}
+.desktop-titlebar-name{display:flex;align-items:center;gap:7px;padding-left:12px}
+.desktop-window-buttons{display:flex;height:32px;-webkit-app-region:no-drag}
+.desktop-window-buttons button{width:46px;height:32px;padding:0;display:grid;place-items:center;color:#ccc;-webkit-app-region:no-drag;border-radius:0}
+.desktop-window-buttons button:hover{background:#414141;color:#fff}
+.desktop-window-buttons .desktop-window-close:hover{background:#c42b1c}
+.hasimio-desktop-chrome{padding-top:32px}
+.hasimio-desktop-chrome .app-shell{min-height:calc(100vh - 32px)}
+.hasimio-desktop-chrome .sidebar{top:32px}
+.hasimio-desktop-chrome .topbar{top:32px}
+.hasimio-pip,.hasimio-window-fullscreen{padding-top:0}
+.hasimio-pip .desktop-titlebar,.hasimio-window-fullscreen .desktop-titlebar{display:none}
+.hasimio-window-fullscreen .sidebar,.hasimio-window-fullscreen .topbar{top:0}
+
+.app-settings .settings-card+.settings-card{margin-top:20px}

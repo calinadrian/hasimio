@@ -105,12 +105,12 @@ export function episodesBefore(meta:Meta,videoId:string):Video[] {
   const index=ordered.findIndex(v=>v.id===videoId);
   return index<0?[]:ordered.slice(0,index);
 }
-export type CardProgress=PlaybackProgress&{percent:number;episode?:string};
+export type CardProgress=PlaybackProgress&{percent:number;episode?:string;status?:string};
 export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefined {
   const key=progressKey(meta.type,meta.id);
   const entries=Object.entries(history).filter(([id,p])=>id===key||p.titleKey===key).sort((a,b)=>b[1].updatedAt-a[1].updatedAt);
   // A manually checked earlier episode should not hide what is actually in progress.
-  let latest=entries[0]?.[1];
+  let latest=entries.find(([,p])=>p.completed||p.position>0)?.[1];
   if(latest?.completed&&latest.manual)latest=entries.find(([,p])=>!p.completed&&p.position>0)?.[1]??latest;
   if(!latest||(!latest.completed&&latest.position===0))return;
   let episode:string|undefined;
@@ -123,7 +123,29 @@ export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefi
     else if(imdb)episode=`S${Number(imdb[1])} · E${Number(imdb[2])}`;
     else if(kitsu)episode=`Episode ${Number(kitsu[1])}`;
   }
-  return {...latest,episode,percent:latest.completed?100:Math.min(100,Math.max(0,Math.floor(latest.position/latest.duration*100)))};
+  let status=latest.completed?'Watched':episode?`Resume ${episode}`:'Continue';
+  if(meta.type!=='movie'){
+    const all=(meta.videos??[]).filter(v=>v.episode!=null).sort(episodeOrder);
+    const regular=all.filter(v=>v.season!==0);
+    const episodes=regular.length?regular:all;
+    const available=episodes.filter(v=>!validRelease(v.released)||Date.parse(v.released!)<=Date.now());
+    const watched=(video:Video)=>!!history[progressKey(meta.type,video.id)]?.completed;
+    const completed=available.filter(watched);
+    const current=all.find(v=>v.id===latest.videoId);
+    const last=completed[completed.length-1];
+    const target=latest.completed?last:current;
+    const season=target?all.filter(v=>v.season===target.season):[];
+    const number=target?.episode;
+    const label=target?`${target.season===0?'Specials':target.season!=null?`S${target.season}`:'Episodes'} · E${number}${!meta.metadataPartial&&season.length?`/${season.length}`:''}`:episode;
+    if(latest.completed){
+      if(!meta.metadataPartial&&available.length&&available.every(watched))status=available.length<episodes.length?'Caught up':'Watched';
+      else if(last){
+        const contiguous=available.slice(0,available.indexOf(last)+1).every(watched);
+        status=contiguous?`Watched through ${label}`:`${completed.length}/${available.length} episodes watched`;
+      }else status=episode?`Watched ${episode}`:'Episode watched';
+    }else if(label)status=`Resume ${label}`;
+  }
+  return {...latest,episode,status,percent:latest.completed?100:Math.min(100,Math.max(0,Math.floor(latest.position/latest.duration*100)))};
 }
 // Titles with unfinished playback, newest first. Only titles the app already knows can be shown.
 export function continueWatching(history:ProgressMap,metas:Meta[],limit=20):Meta[] {

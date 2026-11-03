@@ -98,7 +98,7 @@ async function bytes(response,limit){
   return Buffer.concat(chunks);
 }
 export function createLiveTv({fetchImpl=fetch,now=Date.now}={}){
-  const sources=new Map(),assets=new Map();
+  const sources=new Map(),assets=new Map(),refreshTokens=new Map();
   async function request(url,referer,signal){
     const response=await fetchImpl(url,{headers:{Referer:referer},redirect:'manual',signal:signal?AbortSignal.any([signal,AbortSignal.timeout(20000)]):AbortSignal.timeout(12000)});
     if(response.status!==200)throw Error('The channel server is unavailable. Try the other server.');
@@ -128,11 +128,14 @@ export function createLiveTv({fetchImpl=fetch,now=Date.now}={}){
     if(assets.size>2048)assets.delete(assets.keys().next().value);
     return `/api/live-tv/${channel}/${id}/asset/${key}`;
   }
-  async function resource(channel,id,name,signal){
+  async function resource(channel,id,name,signal,refreshToken){
     const {pages}=channelConfig(channel),sourceKey=channel+':'+id;
     if(!Object.hasOwn(pages,id))throw Object.assign(Error('Unknown Live TV server.'),{status:404});
     let target;
-    if(name==='index.m3u8')target=await resolve(channel,id);
+    if(name==='index.m3u8'){
+      if(typeof refreshToken==='string'&&/^[a-z0-9-]{1,80}$/i.test(refreshToken)&&refreshTokens.get(sourceKey)!==refreshToken){sources.delete(sourceKey);refreshTokens.set(sourceKey,refreshToken);}
+      target=await resolve(channel,id);
+    }
     else{const item=assets.get(name);if(!item||item.channel!==channel||item.id!==id||item.expires<=now())throw Object.assign(Error('This live segment expired. Reload the channel.'),{status:404});target=item;}
     try{
       const response=await request(target.url,target.referer,signal),data=await bytes(response,16*1024*1024);

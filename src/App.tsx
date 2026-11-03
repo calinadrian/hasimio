@@ -5,7 +5,7 @@ import FileListSettings from './FileListSettings';
 import React, { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {version as appVersion} from '../package.json';
 
-import { Compass, Library, CalendarDays, Puzzle, Search, Play, Plus, Check, ChevronLeft, ChevronRight, X, ArrowUpRight, Film, Info, RefreshCw, ExternalLink, Trash2, LoaderCircle, SlidersHorizontal, Download, Upload, MonitorSmartphone, CircleCheck, BarChart3, Tv } from 'lucide-react';
+import { Compass, Library, CalendarDays, Puzzle, Search, Play, Plus, Check, ChevronLeft, ChevronRight, X, ArrowUpRight, Film, Info, RefreshCw, ExternalLink, Trash2, LoaderCircle, SlidersHorizontal, Download, Upload, MonitorSmartphone, CircleCheck, BarChart3, Tv, Settings as SettingsIcon } from 'lucide-react';
 import { type Meta, type Addon, type Stream, demo, openFilms, getJson, manifestUrl, validateManifest, resourceUrl, supports, demoStreams, safeHttp, nextRelease, episodeLabel } from './media';
 import {removeBundledTitle, topResults, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
 import {defaultEpisode} from './media';
@@ -16,6 +16,9 @@ import Progress from './Progress';
 import {ActorSearch,ActorTitles,TitleCast,type Person} from './People';
 import {cachedProgressTitles,storeProgressTitles,progressTitleSeeds} from './progress-titles';
 import LiveTV from './LiveTV';
+import Settings from './Settings';
+import {usePlayerSettings} from './use-player-settings';
+import DesktopTitleBar from './DesktopTitleBar';
 import {runtimeSeconds} from './watch-time';
 import TorrentPlayer from './TorrentPlayer';
 import StreamPicker from './StreamPicker';
@@ -43,6 +46,7 @@ function read<T,>(key: string, fallback: T): T { try { const data = JSON.parse(p
 function useSaved<T,>(key: string, initial: T) { const [value, set] = useState<T>(() => read(key, initial)); useEffect(() => { try { const text=JSON.stringify(value);if(profileStorage.getItem(key)!==text){profileStorage.setItem(key,text);window.dispatchEvent(new Event('hasimio:local-data'));} } catch { /* UI continues when storage is full or blocked. */ } }, [value,key]); useEffect(()=>{const update=()=>set(previous=>{const next=read(key,initial);return JSON.stringify(next)===JSON.stringify(previous)?previous:next;});window.addEventListener('hasimio:remote-data',update);return()=>window.removeEventListener('hasimio:remote-data',update);},[key]); return [value,set] as const; }
 function mediaLabel(meta:Meta) { return meta.category === 'anime' || meta.type === 'anime' ? 'Anime' : meta.type === 'series' ? 'Series' : 'Movie'; }
 export default function App() {
+  const preferences=usePlayerSettings();
   const progressVersion=useSyncExternalStore(subscribeProgress,progressSnapshot);
   const history=useMemo(()=>playbackHistory(progressVersion),[progressVersion]);
   useEffect(()=>{deviceSync.start();},[]);
@@ -129,11 +133,11 @@ export default function App() {
     if (!autoNext) return;
     if (playing) { setAutoNext(undefined); return; }
     if (streamLoading) return;
-    const best = bestSource(streams);
+    const best = bestSource(streams,preferences.preferredQuality);
     setAutoNext(undefined);
     if (best) setPlaying(best);
     else notify('No playable source was found for the next episode. Choose another source.');
-  },[autoNext,playing,streamLoading,streams]);
+  },[autoNext,playing,streamLoading,streams,preferences.preferredQuality]);
 
   async function open(meta: Meta,videoId?:string) {
     const request=++detailRequest.current;
@@ -185,10 +189,12 @@ export default function App() {
   const localRows = page === 'Library' ? [{title:'Your collection',items:library.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : [...(!loading && !catalogs.length && filter !== 'Anime' ? [{title:'Starter picks · Offline selection',items:demo.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : []),...(addons.some(a => a.builtin && a.enabled) && !query.trim() ? [{title:'Open Cinema · Ready to play',items:openFilms}] : [])];
   useEffect(()=>storeProgressTitles(progressMetadata),[progressMetadata]);
   const knownTitles = useMemo(() => {const known=[...progressMetadata,...library,...catalogs.flatMap(c => c.items),...demo,...openFilms];return [...known,...progressTitleSeeds(history,known)];},[progressMetadata,catalogs,library,history]);
+  useEffect(()=>{if(selected?.videos?.length&&!selected.metadataPartial)setProgressMetadata(previous=>[...previous.filter(meta=>meta.id!==selected.id||meta.type!==selected.type),selected]);},[selected]);
+  const cardMetadata=useMemo(()=>{const result=new Map<string,Meta>();for(const meta of [...knownTitles,...(selected?[selected]:[])]){const key=progressKey(meta.type,meta.id),previous=result.get(key);if(!previous||(meta.videos?.length??0)>(previous.videos?.length??0))result.set(key,meta);}return result;},[knownTitles,selected]);
+  const cardProgress=(meta:Meta)=>titleProgress(cardMetadata.get(progressKey(meta.type,meta.id))??meta,history);
   const progressLookupKey=JSON.stringify([...new Set(Object.entries(history).map(([key,p])=>p.titleKey??key))].sort());
   const progressKnownKey=JSON.stringify([...new Set(knownTitles.map(meta=>progressKey(meta.type,meta.id)))].sort());
   useEffect(()=>{
-    if(page!=='Progress'){setProgressLoading(false);return;}
     const controller=new AbortController();let live=true;
     const force=progressRefreshApplied.current!==progressRefresh;progressRefreshApplied.current=progressRefresh;
     const tracked=new Set<string>(JSON.parse(progressLookupKey));
@@ -197,7 +203,7 @@ export default function App() {
     const needsRuntime=(key:string,meta:Meta)=>Object.entries(history).some(([entryKey,p])=>
       (p.titleKey??entryKey)===key&&p.completed&&p.manual&&p.duration<=1&&
       !runtimeSeconds(meta.runtime)&&!runtimeSeconds(meta.videos?.find(video=>video.id===p.videoId||progressKey(meta.type,video.id)===entryKey)?.runtime));
-    const queue=[...known].filter(([key,meta])=>tracked.has(key)&&(force||needsRuntime(key,meta)||(meta.type!=='movie'&&!meta.videos?.length)||needsMetadata(meta))).map(([,meta])=>meta);
+    const queue=[...known].filter(([key,meta])=>tracked.has(key)&&(force||(page==='Progress'&&needsRuntime(key,meta))||(meta.type!=='movie'&&!meta.videos?.length)||needsMetadata(meta))).map(([,meta])=>meta);
     setProgressLoading(queue.length>0);
     async function worker(){while(queue.length&&live){const meta=queue.shift()!;try{
       const updated=await loadMetadata(meta,addons,controller.signal);
@@ -217,7 +223,7 @@ export default function App() {
   // The spotlight follows what you are watching, then live catalogs; the starter pick only covers offline use.
   const resuming = continueItems.find(m => safeHttp(m.background));
   const featured = resuming ?? catalogs.flatMap(c => c.items).find(m => safeHttp(m.background) && m.description) ?? (loading ? undefined : demo[0]);
-  const featuredProgress = featured && titleProgress(featured,history);
+  const featuredProgress = featured && cardProgress(featured);
   // The spotlight title is not repeated in the shelves right below it.
   const activeRow=rows.find(row=>(row.key||row.title)===browseRow);
   const browseItems=activeRow?filteredForBrowse(activeRow.items):[];
@@ -234,7 +240,7 @@ export default function App() {
     }
   }
   const spotlightKey = page === 'Discover' && !query && filter === 'All' && featured && featured !== resuming ? `${featured.type}:${featured.id}` : '';
-  const quickSource = useMemo(() => bestSource(streams),[streams]);
+  const quickSource = useMemo(() => bestSource(streams,preferences.preferredQuality),[streams,preferences.preferredQuality]);
   useEffect(()=>{
     if(!isWebOS||!selected||playing)return;
     const frame=requestAnimationFrame(()=>{
@@ -249,9 +255,9 @@ export default function App() {
   // A modal dialog sits in the top layer, so the toast must render inside it while details are open.
   const toast = notice && <div className="toast" role="status" onMouseEnter={() => setNoticeHeld(true)} onMouseLeave={() => setNoticeHeld(false)} onFocus={() => setNoticeHeld(true)} onBlur={() => setNoticeHeld(false)}><Check size={17}/>{notice.text}{notice.undo && <button className="toast-action" onClick={() => {notice.undo?.();setNotice(undefined);setNoticeHeld(false);}}>Undo</button>}</div>;
   const playLabel =`${currentProgress && !currentProgress.completed && currentProgress.position > 0 ? 'Resume' : 'Play'}${selected && currentVideo ? ` ${episodeLabel(selected,currentVideo)}` : ''}`;
-  return <div className="app-shell">
+  return <div className="app-shell"><DesktopTitleBar/>
     {import.meta.env.VITE_ANDROID==='true'&&<MobileNavigation page={page} onNavigate={name=>{setPage(name);setCollectionKey(undefined);setQuery('');setProgressQuery('');setFilter('All');setGenre('All genres');}}/>}
-    <aside className="sidebar"><a className="brand" href="#" onClick={e => {e.preventDefault();setPage('Discover');}}><span className="brand-symbol"><Play size={21} fill="currentColor"/></span>hasimio<span className="brand-dot">.</span></a><nav aria-label="Main">{[{name:'Discover',icon:Compass},{name:'Live TV',icon:Tv,short:'Live'},{name:'Library',icon:Library},{name:'Progress',icon:BarChart3,short:'Stats'},{name:'Calendar',icon:CalendarDays},{name:'Extensions',icon:Puzzle,short:'Add-ons'},{name:'Sync devices',icon:MonitorSmartphone,short:'Sync'}].map(({name,icon:Icon,short}) => <button key={name} aria-label={name} className={`nav-item ${(page === name||page==='Actor'&&name==='Discover') ? 'active' : ''}`} onClick={() => { setPage(name); setCollectionKey(undefined); setQuery(''); setProgressQuery(''); setFilter('All'); setGenre('All genres'); }}><Icon size={20}/><span data-short={short}>{name}</span>{name === 'Library' && library.length > 0 && <small>{library.length}</small>}{name === 'Extensions' && <small>{addons.length}</small>}</button>)}</nav><div className="sidebar-bottom"><button className="profile-switch" aria-label="Switch profile" onClick={()=>{deviceSync.capture();location.reload();}}><span className={"profile-avatar profile-color-"+(currentProfile()?.color??0)} aria-hidden="true">{currentProfile()?.name.slice(0,1).toUpperCase()}</span><span className="profile-switch-label">{currentProfile()?.name??"My profile"}<small>Switch profile</small></span></button><button className={`sync-status ${sync.state}`} onClick={() => setPage('Sync devices')}><i aria-hidden="true"/>{syncLabel}</button><div className="version">HASIMIO <span>v{appVersion}</span></div></div></aside>
+    <aside className="sidebar"><a className="brand" href="#" onClick={e => {e.preventDefault();setPage('Discover');}}><span className="brand-symbol"><Play size={21} fill="currentColor"/></span>hasimio<span className="brand-dot">.</span></a><nav aria-label="Main">{[{name:'Discover',icon:Compass},{name:'Live TV',icon:Tv,short:'Live'},{name:'Library',icon:Library},{name:'Progress',icon:BarChart3,short:'Stats'},{name:'Calendar',icon:CalendarDays},{name:'Extensions',icon:Puzzle,short:'Add-ons'},{name:'Sync devices',icon:MonitorSmartphone,short:'Sync'},{name:'Settings',icon:SettingsIcon}].map(({name,icon:Icon,short}) => <button key={name} aria-label={name} className={`nav-item ${(page === name||page==='Actor'&&name==='Discover') ? 'active' : ''}`} onClick={() => { setPage(name); setCollectionKey(undefined); setQuery(''); setProgressQuery(''); setFilter('All'); setGenre('All genres'); }}><Icon size={20}/><span data-short={short}>{name}</span>{name === 'Library' && library.length > 0 && <small>{library.length}</small>}{name === 'Extensions' && <small>{addons.length}</small>}</button>)}</nav><div className="sidebar-bottom"><button className="profile-switch" aria-label="Switch profile" onClick={()=>{deviceSync.capture();location.reload();}}><span className={"profile-avatar profile-color-"+(currentProfile()?.color??0)} aria-hidden="true">{currentProfile()?.name.slice(0,1).toUpperCase()}</span><span className="profile-switch-label">{currentProfile()?.name??"My profile"}<small>Switch profile</small></span></button><button className={`sync-status ${sync.state}`} onClick={() => setPage('Sync devices')}><i aria-hidden="true"/>{syncLabel}</button><div className="version">HASIMIO <span>v{appVersion}</span></div></div></aside>
     <main><header className="topbar"><a className="topbar-brand" href="#" aria-label="Hasimio home" onClick={e => {e.preventDefault();setPage('Discover');}}><span className="brand-symbol"><Play size={19} fill="currentColor"/></span></a><label className="search"><Search size={17}/><input aria-label={page==='Progress'?'Search within Progress':'Search titles or actors'} placeholder={page==='Progress'?'Search within Progress…':'Search titles or actors…'} value={page==='Progress'?progressQuery:query} onChange={e => {const value=e.target.value;setCollectionKey(undefined);if(page==='Progress'){setProgressQuery(value);return;}setQuery(value);if(value.trim()){setPage('Discover');if(!query.trim() || page !== 'Discover'){setFilter('All');setGenre('All genres');}}}}/>{(page==='Progress'?progressQuery:query) && <button onClick={() => page==='Progress'?setProgressQuery(''):setQuery('')} aria-label="Clear search"><X size={15}/></button>}<kbd>/</kbd></label></header>
     <div className="page-content">
       <UpdateBanner state={update}/>
@@ -260,10 +266,11 @@ export default function App() {
       {!addons.some(a => a.manifest.id === titles.manifest.id) && page === 'Discover' && <div className="source-banner"><span className="small-puzzle"><Puzzle size={18}/></span><p><strong>Make room for more.</strong> Add Hasimio Titles for live movie and series catalogs. Featured picks below are a starter selection.</p><button onClick={() => setAddons(previous => replaceCinemeta(previous))}>Add catalog<ArrowUpRight size={15}/></button></div>}{installError && page === 'Discover' && <p className="error" role="alert">{installError}</p>}{catalogError && <p className="error" role="alert">{catalogError}</p>}
       {loading && <div className="loading" role="status"><LoaderCircle className="spin" size={17}/> {query.trim() ? 'Searching titles…' : 'Loading catalogs…'}</div>}
       {page==='Discover'&&query.trim()&&<ActorSearch query={query.trim()} onSelect={openActor}/>}
-      {rows.map(row => filtered(row.items).length ? <MediaShelf key={row.key || row.title} title={row.title} source={row.source} expanded={!!collectionRow} onBrowse={page==='Discover'&&!collectionRow?()=>{collectionScroll.current=window.scrollY;setCollectionKey(row.key||row.title);window.scrollTo({top:0,behavior:'instant'});}:undefined} onBack={collectionRow?()=>{setCollectionKey(undefined);requestAnimationFrame(()=>window.scrollTo({top:collectionScroll.current,behavior:'instant'}));}:undefined} wrap={!!(collectionRow || (page === 'Library' && row.key !== 'continue') || query)} hasMore={row.hasMore} onMore={async()=>{const catalog=catalogs.find(c=>c.key===row.key);return catalog?!!await more(catalog):false;}}>{filtered(row.items).map(meta=><Poster key={meta.type+':'+meta.id} progress={titleProgress(meta,history)} meta={meta} saved={saved(meta)} onClick={()=>{setBrowseRow(row.key||row.title);void open(meta);}}/>)}</MediaShelf> : null)}
+      {rows.map(row => filtered(row.items).length ? <MediaShelf key={row.key || row.title} title={row.title} source={row.source} expanded={!!collectionRow} onBrowse={page==='Discover'&&!collectionRow?()=>{collectionScroll.current=window.scrollY;setCollectionKey(row.key||row.title);window.scrollTo({top:0,behavior:'instant'});}:undefined} onBack={collectionRow?()=>{setCollectionKey(undefined);requestAnimationFrame(()=>window.scrollTo({top:collectionScroll.current,behavior:'instant'}));}:undefined} wrap={!!(collectionRow || (page === 'Library' && row.key !== 'continue') || query)} hasMore={row.hasMore} onMore={async()=>{const catalog=catalogs.find(c=>c.key===row.key);return catalog?!!await more(catalog):false;}}>{filtered(row.items).map(meta=><Poster key={meta.type+':'+meta.id} progress={cardProgress(meta)} meta={meta} saved={saved(meta)} onClick={()=>{setBrowseRow(row.key||row.title);void open(meta);}}/>)}</MediaShelf> : null)}
       {!loading && !rows.some(row => filtered(row.items).length) && <div className="empty-state"><Library size={38}/><h3>{page === 'Library' && !library.length ? 'Your next obsession belongs here' : catalogError ? 'Search could not finish' : 'No titles found'}</h3><p>{page === 'Library' && !library.length ? 'Save a movie or series from Discover to start your collection.' : catalogError ? 'The catalog is unavailable. Retry to search again.' : 'Try another title, genre, or media type.'}</p><button className="button primary" onClick={() => {if(catalogError){setRefresh(n=>n+1);return;}setPage('Discover');setQuery('');setFilter('All');setGenre('All genres');}}>{catalogError ? 'Retry search' : 'Explore titles'}</button></div>}</>}
       {page==='Actor'&&actor&&<ActorTitles person={actor} saved={saved} onOpen={open} onBack={()=>setPage('Discover')}/>}
       {page === 'Live TV' && <LiveTV/>}
+      {page === 'Settings' && <Settings/>}
       {page === 'Sync devices' && <SyncDevices/>}
       {page === 'Progress' && <Progress onImported={(items,message)=>{setProgressMetadata(previous=>[...previous,...items.filter(item=>!previous.some(meta=>meta.id===item.id&&meta.type===item.type))]);notify(message);}} searchQuery={progressQuery} onSearchChange={setProgressQuery} loading={progressLoading} onRefresh={()=>setProgressRefresh(value=>value+1)} history={history} titles={knownTitles} onOpen={open} onDiscover={() => setPage('Discover')}/>}
       {page === 'Calendar' && <Calendar library={library} syncing={calendarLoading} onRefresh={refreshCalendar} onOpen={open} onDiscover={() => setPage('Discover')}/>}

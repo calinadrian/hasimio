@@ -155,3 +155,15 @@
 .cinema-up-next .cinema-action:hover{background:#ffffff;color:#111111}
 @media(max-width:720px){.cinema-up-next{left:12px;right:12px;bottom:160px;width:auto;gap:10px}.cinema-up-next-art{width:66px}.cinema-up-next-text strong{font-size:15px}.cinema-up-next .cinema-action{padding:8px 11px}}
 @media(max-height:500px) and (orientation:landscape){.cinema-up-next{right:16px;bottom:110px}}
+
+/* Desktop PiP keeps captions and controls in the same floating player. */
+.hasimio-pip .detail-dialog.playback-dialog{inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0}
+.hasimio-pip .cinema-player{height:100dvh;min-height:0;max-height:none;aspect-ratio:auto;border-radius:0}
+.hasimio-pip .cinema-top{padding:10px 12px 35px}
+.hasimio-pip .cinema-title h2{font-size:14px}
+.hasimio-pip .cinema-title p,.hasimio-pip .cinema-connection{display:none}
+.hasimio-pip .cinema-menu{max-height:calc(100dvh - 16px)}
+
+.hasimio-pip .cinema-menu{top:8px;bottom:8px;max-height:calc(100dvh - 16px)}
+
+.cinema-pip-drag{position:absolute;top:0;left:56px;right:8px;height:28px;z-index:5;-webkit-app-region:drag;user-select:none}

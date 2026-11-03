@@ -14,6 +14,7 @@ export function audioAction({ready,compatible,audioTracks,tracksError}:{ready:bo
   return {action:'start'};
 }
 const codes:Record<string,string>={eng:'en',jpn:'ja',spa:'es',spn:'es',fre:'fr',fra:'fr',ger:'de',deu:'de',ita:'it',por:'pt',pob:'pt-BR',rum:'ro',ron:'ro',chi:'zh',zho:'zh',zht:'zh-Hant',kor:'ko',rus:'ru',hin:'hi',ara:'ar',dut:'nl',nld:'nl',pol:'pl',tur:'tr',gre:'el',ell:'el',heb:'he',swe:'sv',dan:'da',fin:'fi',nor:'no',cze:'cs',ces:'cs',hun:'hu',bul:'bg',hrv:'hr',scc:'sr',srp:'sr',slv:'sl',slo:'sk',slk:'sk',ukr:'uk',vie:'vi',tha:'th',ind:'id',may:'ms',msa:'ms',per:'fa',fas:'fa',est:'et',lav:'lv',lit:'lt',ice:'is',isl:'is',alb:'sq',sqi:'sq',mac:'mk',mkd:'mk',bos:'bs',cat:'ca',baq:'eu',eus:'eu',glg:'gl',ben:'bn',tam:'ta',tel:'te',mal:'ml',urd:'ur',kur:'ku',geo:'ka',kat:'ka',arm:'hy',hye:'hy'};
+export const subtitleLanguages=Object.keys(codes).filter((code,index,all)=>all.findIndex(other=>codes[other]===codes[code])===index);
 export function sameLanguage(a:string,b:string){return (codes[a]||a)===(codes[b]||b);}
 export function languageName(code:string){try{return new Intl.DisplayNames(['en'],{type:'language'}).of(codes[code]||code)||code;}catch{return code;}}
 export function trackLabel(track:MediaTrack,kind='Audio'){
