@@ -1,6 +1,8 @@
-Fix the clipped focus highlight on TV poster cards.
+Make TV focus visible on both light and dark surfaces.
 
-Poster cards use a rounded overlay border painted above the artwork. Remove
-its parent button outline so the image cannot obscure the focus indicator
-and no frame surrounds the title text. Disable poster hover movement on TV
-so the artwork and highlight keep the same bounds.
+Use an inset dark edge and a thin white inner line for remote focus. The
+same two-tone treatment is painted above poster artwork, so white posters
+and light buttons retain a dark selection edge while dark artwork retains
+a light edge. All highlights stay inside the control bounds.
+
+Build and packaging completed; visual validation remains for the user.
