@@ -1,11 +1,13 @@
-Hasimio can now run directly on LG webOS 6 TVs, without a PC during playback.
+Fixes the "TV service could not start" error on LG webOS 6 / Node 8.12.
 
-- Standalone on-TV torrent service and native TV video/audio playback.
-- Remote navigation, online catalogs, existing playback providers, Live TV and external text subtitles.
-- A 64 MiB video-piece RAM cache, with a 32 MiB option, plus a bounded 4 MiB metadata cache. No movie files or IMDb database are saved to TV storage.
-- GitHub updates under Extensions > TV updates: check, download, restart and restore a previous copy. Releases use signed metadata, SHA-256 file verification and a stable fallback launcher.
-- Updated public TLS trust roots for the TV's older Node runtime, with certificate validation enabled.
+The streaming-service bundle was compiled for Node 8, but its stable launcher
+and update-verification helper were previously copied without compilation.
+Node 8 rejected their optional catch-binding syntax before the service could
+start. The packager now compiles both launcher files for Node 8 as well.
 
-Download the IPK for the first installation. Subsequent interface and streaming-service updates can be downloaded directly from the TV. Developer Mode must remain enabled. Launcher/OS integration changes may require a new IPK installation.
+The TV's own parser confirmed the original syntax errors without launching
+the app. Build and packaging complete; playback remains for user testing.
 
-Build and packaging completed. TV playback, total device RAM use and the on-device update/restart flow have not been tested. Supported codecs depend on the TV; desktop FFmpeg audio conversion and the IMDb people database are not included.
+Install the v0.1.39 IPK once to replace the affected launcher. The v0.1.38
+launcher cannot start its updater, so it cannot apply this fix from inside
+the TV app. The existing signing key, cache settings and saved data are kept.

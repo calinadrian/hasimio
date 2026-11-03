@@ -11,7 +11,7 @@
     "url": "https://github.com/calinadrian/hasimio.git"
   },
   "main": "electron/main.mjs",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "private": true,
   "type": "module",
   "scripts": {

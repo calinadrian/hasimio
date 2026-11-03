@@ -1,6 +1,6 @@
 {
   "name": "app.hasimio.tv.service",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "private": true,
   "main": "service.cjs",
   "dependencies": {

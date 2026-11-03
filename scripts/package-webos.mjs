@@ -8,7 +8,7 @@ import {spawn} from 'node:child_process';
 import {rootCertificates} from 'node:tls';
 import {build as buildVite} from 'vite';
 import react from '@vitejs/plugin-react';
-import {build as buildService} from 'esbuild';
+import {build as buildService,transform as transformService} from 'esbuild';
 import rewritePattern from 'regexpu-core';
 import {icon} from './make-icon.mjs';
 
@@ -42,9 +42,16 @@ await fs.writeFile(path.join(app,'icon.png'),icon(80));
 await fs.writeFile(path.join(app,'largeIcon.png'),icon(130));
 await fs.writeFile(path.join(service,'package.json'),JSON.stringify({name:'app.hasimio.tv.service',version:pkg.version,main:'launcher.js'},null,2)+'\n');
 await fs.copyFile(path.join(root,'webos','service','services.json'),path.join(service,'services.json'));
-await fs.copyFile(path.join(root,'webos','service','update-format.cjs'),path.join(service,'update-format.cjs'));
+// The stable launcher runs before the bundled service. It and its helper must
+// target Node 8 too; copying them verbatim leaves unsupported syntax behind.
+async function writeLauncher(source,destination){
+  const text=(await fs.readFile(path.join(root,'webos','service',source),'utf8')).replace('__HASIMIO_VERSION__',pkg.version);
+  const result=await transformService(text,{loader:'js',target:'node8',format:'cjs',sourcefile:source});
+  await fs.writeFile(path.join(service,destination),result.code);
+}
+await writeLauncher('update-format.cjs','update-format.cjs');
 await fs.copyFile(path.join(root,'webos','update-public-key.pem'),path.join(service,'update-public-key.pem'));
-await fs.writeFile(path.join(service,'launcher.js'),(await fs.readFile(path.join(root,'webos','service','launcher.cjs'),'utf8')).replace('__HASIMIO_VERSION__',pkg.version));
+await writeLauncher('launcher.cjs','launcher.js');
 await fs.writeFile(path.join(bundled,'ca.pem'),rootCertificates.join('\n')+'\n');
 
 const result=await buildService({
