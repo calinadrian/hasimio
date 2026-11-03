@@ -1,3 +1,4 @@
+import {profileStorage} from './profile-storage';
 import type {Stream} from './media';
 
 export type MediaTrack={index:number;language:string;title?:string;codec:string;default:boolean;supported?:boolean};
@@ -22,10 +23,10 @@ export function trackLabel(track:MediaTrack,kind='Audio'){
 }
 export type TrackSummary={audio:number;subtitles:number;audioLanguages:string[];subtitleLanguages:string[]};
 const key='hasimio:verified-tracks';const memoryCache:Record<string,TrackSummary>={};
-function cache():Record<string,TrackSummary>{try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?{...value,...memoryCache}:{...memoryCache};}catch{return {...memoryCache};}}
+function cache():Record<string,TrackSummary>{try{const value=JSON.parse(profileStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?{...value,...memoryCache}:{...memoryCache};}catch{return {...memoryCache};}}
 export function saveTrackSummary(hash:string,videoId:string,audio:MediaTrack[],subtitles:MediaTrack[]){
   const id=`${hash}:${videoId}`;memoryCache[id]={audio:audio.length,subtitles:subtitles.length,audioLanguages:audio.map(t=>trackLabel(t)),subtitleLanguages:subtitles.map(t=>trackLabel(t,'Subtitle'))};if(Object.keys(memoryCache).length>100)delete memoryCache[Object.keys(memoryCache)[0]];
-  try{const entries=Object.entries(cache()).filter(([id])=>id!==`${hash}:${videoId}`).slice(-99);entries.push([`${hash}:${videoId}`,{audio:audio.length,subtitles:subtitles.length,audioLanguages:audio.map(t=>trackLabel(t)),subtitleLanguages:subtitles.map(t=>trackLabel(t,'Subtitle'))}]);localStorage.setItem(key,JSON.stringify(Object.fromEntries(entries)));}catch{/* Playback works without persistent storage. */}
+  try{const entries=Object.entries(cache()).filter(([id])=>id!==`${hash}:${videoId}`).slice(-99);entries.push([`${hash}:${videoId}`,{audio:audio.length,subtitles:subtitles.length,audioLanguages:audio.map(t=>trackLabel(t)),subtitleLanguages:subtitles.map(t=>trackLabel(t,'Subtitle'))}]);profileStorage.setItem(key,JSON.stringify(Object.fromEntries(entries)));}catch{/* Playback works without persistent storage. */}
 }
 function languageNames(labels:string[]){return [...new Set(labels.map(label=>label.split(' · ')[0]).map(name=>/^(?:Audio|Subtitle) track \d+$/.test(name)?'Unspecified':name))];}
 export function sourceTrackInfo(stream:Stream,videoId:string){

@@ -1,3 +1,4 @@
+import {profileStorage} from './profile-storage';
 import {serviceUrl} from './sync-crypto';
 const overrideKey='hasimio:sync:service';
 function browserName(agent:string){
@@ -25,8 +26,8 @@ export function deviceLabels(devices:{id:string;name:string;addedAt:number}[]){
   }
   return labels;
 }
-export function savedService(){try{return localStorage.getItem(overrideKey)||'';}catch{return '';}}
-export function rememberService(value:string){localStorage.setItem(overrideKey,serviceUrl(value));}
+export function savedService(){try{return profileStorage.getItem(overrideKey)||'';}catch{return '';}}
+export function rememberService(value:string){profileStorage.setItem(overrideKey,serviceUrl(value));}
 export const defaultSyncService='https://hasimio-sync.aqualoom256.chatgpt.site';
 export async function discoverSyncService({configured=import.meta.env.VITE_SYNC_URL||defaultSyncService,origin=location.origin,override=savedService(),fetcher=fetch}:{configured?:string;origin?:string;override?:string;fetcher?:typeof fetch}={}){
   const candidates=[...new Set([override,configured,origin].filter(Boolean))];

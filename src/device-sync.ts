@@ -1,3 +1,4 @@
+import {profileStorage} from './profile-storage';
 import {useSyncExternalStore} from 'react';
 import {randomDeviceId,randomKey,seal,unseal,serviceUrl,pairingKey,pairingFingerprint,sharedKey,encode,decode,type Sealed} from './sync-crypto';
 import {emptyDocument,localValues,captureChanges,mergeDocuments,compactDocument,validDocument,applyDocument,sameDocument,type SyncDocument} from './sync-state';
@@ -6,7 +7,7 @@ export type Identity={server:string;spaceId:string;deviceId:string;deviceToken:s
 type Device={id:string;name:string;addedAt:number;lastSeen:number};
 type Status={identity?:Identity;state:'off'|'syncing'|'ready'|'offline'|'revoked';error?:string;lastSynced?:number;devices:Device[];appUrl?:string};
 const identityKey='hasimio:sync:identity',documentKey='hasimio:sync:document';
-function read(key:string){try{return JSON.parse(localStorage.getItem(key)??'null');}catch{return null;}}
+function read(key:string){try{return JSON.parse(profileStorage.getItem(key)??'null');}catch{return null;}}
 function validIdentity(value:unknown):value is Identity{const v=value as Identity;try{return !!v&&serviceUrl(v.server)===v.server&&/^[a-f\d]{32}$/.test(v.spaceId)&&/^[a-f\d]{32}$/.test(v.deviceId)&&decode(v.key).length===32&&decode(v.deviceToken).length===32&&typeof v.name==='string'&&(v.recoveryToken===undefined||decode(v.recoveryToken).length===32);}catch{return false;}}
 function payload(text:string,message:string){try{const value=JSON.parse(new TextDecoder().decode(decode(text)));if(value&&typeof value==='object')return value as Record<string,unknown>;}catch{/* Reported below. */}throw Error(message);}
 export async function syncRequest<T>(server:string,route:string,options:{method?:string;body?:unknown;token?:string}={}):Promise<T>{
@@ -21,7 +22,7 @@ export class DeviceSync {
   private publish(update:Partial<Status>){this.status={...this.status,...update};for(const listener of this.listeners)listener();}
   subscribe=(listener:()=>void)=>{this.listeners.add(listener);return()=>{this.listeners.delete(listener);};};
   snapshot=()=>this.status;
-  private persist(){localStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:this.document,observed:this.observed,revision:this.revision,pending:this.pending}));}
+  private persist(){profileStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:this.document,observed:this.observed,revision:this.revision,pending:this.pending}));}
   capture=()=>{
     if(this.applied||!this.status.identity)return;
     try{const current=localValues(),next=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);if(Object.keys(next.records).some(key=>next.records[key]!==this.document.records[key]))this.pending=true;this.document=next;this.observed=current;this.persist();}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
@@ -39,7 +40,7 @@ export class DeviceSync {
   }
   private visibility=()=>{this.capture();if(document.visibilityState==='visible')void this.sync();};
   private setIdentity(identity:Identity,joining=false){
-    localStorage.setItem(identityKey,JSON.stringify(identity));this.document=captureChanges(emptyDocument(),identity.deviceId,{},localValues(),joining?0:Date.now());this.observed=localValues();this.revision=0;this.pending=true;this.publish({identity,state:'syncing',error:undefined,devices:[]});this.persist();
+    profileStorage.setItem(identityKey,JSON.stringify(identity));this.document=captureChanges(emptyDocument(),identity.deviceId,{},localValues(),joining?0:Date.now());this.observed=localValues();this.revision=0;this.pending=true;this.publish({identity,state:'syncing',error:undefined,devices:[]});this.persist();
   }
   async create(server:string,name:string){
     server=serviceUrl(server);const info=await syncRequest<{version:number;appUrl:string}>(server,'info');if(info.version!==1)throw Error('Unsupported sync service version.');
@@ -116,7 +117,7 @@ export class DeviceSync {
     return pairingFingerprint(keys.publicKey);
   }
   async unlink(deviceId:string){const i=this.status.identity;if(!i)return;await syncRequest(i.server,'spaces/'+i.spaceId+'/devices/'+deviceId,{method:'DELETE',token:i.deviceToken});if(deviceId===i.deviceId)this.forget();else await this.sync();}
-  forget(){localStorage.removeItem(identityKey);localStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.revision=0;this.pending=true;this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
+  forget(){profileStorage.removeItem(identityKey);profileStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.revision=0;this.pending=true;this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
 }
 export const deviceSync=new DeviceSync();
 export function useDeviceSync(){return useSyncExternalStore(deviceSync.subscribe,deviceSync.snapshot);}

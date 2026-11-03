@@ -1,3 +1,4 @@
+import {profileStorage,storageKey as scopedStorageKey} from './profile-storage';
 import {validRelease,type Meta,type Video} from './media';
 const storageKey='hasimio:playback-progress:v1';
 const progressEvent='hasimio:playback-progress';
@@ -8,9 +9,9 @@ export type ProgressMap=Record<string,PlaybackProgress>;
 export type WatchTarget={key:string;titleKey?:string;videoId?:string;episodeLabel?:string};
 export const progressLimit=500;
 export const newestFirst=(a:[string,PlaybackProgress],b:[string,PlaybackProgress])=>b[1].updatedAt-a[1].updatedAt||(a[0]<b[0]?-1:a[0]>b[0]?1:0);
-export function progressSnapshot(){try{return localStorage.getItem(storageKey)??'{}';}catch{return '{}';}}
+export function progressSnapshot(){try{return profileStorage.getItem(storageKey)??'{}';}catch{return '{}';}}
 export function subscribeProgress(changed:()=>void){
-  const storage=(event:StorageEvent)=>{if(event.key===storageKey||event.key===null)changed();};
+  const storage=(event:StorageEvent)=>{if(event.key===scopedStorageKey(storageKey)||event.key===null)changed();};
   window.addEventListener(progressEvent,changed);window.addEventListener('storage',storage);
   return()=>{window.removeEventListener(progressEvent,changed);window.removeEventListener('storage',storage);};
 }
@@ -43,7 +44,7 @@ function persistHistory(all:ProgressMap) {
   // Keep completed history for watched totals, while bounding unfinished bookmarks.
   let unfinished=0;
   const recent=Object.entries(all).sort(newestFirst).filter(([,p])=>p.completed||unfinished++<progressLimit);
-  localStorage.setItem(storageKey,JSON.stringify(Object.fromEntries(recent)));
+  profileStorage.setItem(storageKey,JSON.stringify(Object.fromEntries(recent)));
   if(typeof window!=='undefined')window.dispatchEvent(new Event(progressEvent));
 }
 // Marking watched does not invent a runtime; keep a known one so resuming still starts at the beginning.

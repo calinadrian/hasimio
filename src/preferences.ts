@@ -1,3 +1,4 @@
+import {profileStorage} from './profile-storage';
 export const settingsKey='hasimio:settings';
 export const captionFonts={sans:{label:'Modern sans',family:"'DM Sans',system-ui,sans-serif"},display:{label:'Bold display',family:"Manrope,'DM Sans',sans-serif"},rounded:{label:'Rounded',family:"ui-rounded,'SF Pro Rounded','Nunito','Arial Rounded MT Bold',system-ui,sans-serif"},serif:{label:'Serif',family:"Georgia,'Times New Roman',serif"},mono:{label:'Typewriter',family:"ui-monospace,Consolas,'Courier New',monospace"}} as const;
 export const captionEdges={none:'None',shadow:'Drop shadow',soft:'Soft glow',outline:'Outline',raised:'Raised',depressed:'Depressed'} as const;
@@ -24,5 +25,5 @@ export function validSetting(key:string,value:unknown){
   if(key==='subtitleLanguage')return typeof value==='string'&&/^[a-z]{2,3}(?:-[a-z]{2})?$/.test(value);
   return typeof value==='number'&&Number.isFinite(value)&&(key==='volume'?value>=0&&value<=1:key==='rate'?value>=0.25&&value<=3:key==='captionSize'?value>=50&&value<=200:key==='captionDelay'?value>=-120&&value<=120:key==='captionPosition'?value>=0&&value<=40:key==='captionBackground'?value>=0&&value<=100:false);
 }
-export function playerSettings():PlayerSettings{try{const data=JSON.parse(localStorage.getItem(settingsKey)??'{}');return {...defaultSettings,...Object.fromEntries(Object.entries(data).filter(([key,value])=>validSetting(key,value)))};}catch{return {...defaultSettings};}}
-export function savePlayerSettings(settings:PlayerSettings){try{const text=JSON.stringify(settings);if(localStorage.getItem(settingsKey)===text)return;localStorage.setItem(settingsKey,text);window.dispatchEvent(new Event('hasimio:local-data'));}catch{/* Playback continues with session settings. */}}
+export function playerSettings():PlayerSettings{try{const data=JSON.parse(profileStorage.getItem(settingsKey)??'{}');return {...defaultSettings,...Object.fromEntries(Object.entries(data).filter(([key,value])=>validSetting(key,value)))};}catch{return {...defaultSettings};}}
+export function savePlayerSettings(settings:PlayerSettings){try{const text=JSON.stringify(settings);if(profileStorage.getItem(settingsKey)===text)return;profileStorage.setItem(settingsKey,text);window.dispatchEvent(new Event('hasimio:local-data'));}catch{/* Playback continues with session settings. */}}

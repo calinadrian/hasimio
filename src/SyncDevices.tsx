@@ -1,3 +1,4 @@
+import {currentProfile} from './profile-storage';
 import {useEffect,useState} from 'react';
 import QRCode from 'qrcode';
 import {Link2,MonitorSmartphone,ShieldCheck,RefreshCw,Copy,Unplug,ChevronRight,Download,ArrowLeft,KeyRound} from 'lucide-react';
@@ -9,7 +10,7 @@ import './sync-devices.css';
 type Mode='start'|'connect'|'link'|'recover';
 export default function SyncDevices(){
   const state=useDeviceSync();
-  const [server,setServer]=useState(''),[customServer,setCustomServer]=useState(savedService()),[name,setName]=useState(()=>suggestedDeviceName());
+  const [server,setServer]=useState(''),[customServer,setCustomServer]=useState(savedService()),[name,setName]=useState(()=>suggestedDeviceName()+' · '+(currentProfile()?.name??'My profile'));
   const [availability,setAvailability]=useState<'checking'|'ready'|'unavailable'>('checking'),[discovery,setDiscovery]=useState(0);
   const [mode,setMode]=useState<Mode>(()=>location.hash.startsWith('#sync-link=')?'link':'start');
   const [link,setLink]=useState(()=>location.hash.startsWith('#sync-link=')?location.href:''),[recovery,setRecovery]=useState('');
@@ -40,7 +41,7 @@ export default function SyncDevices(){
   const unavailableNotice=unavailable&&availability==='unavailable'&&<div className="sync-unavailable" role="status"><strong>Sync isn’t available right now.</strong><p>Your library and progress are still saved on this device.</p><button className="sync-text-action" onClick={()=>setDiscovery(value=>value+1)}>Try again <RefreshCw size={14}/></button></div>;
   const connectionOptions=<details className="sync-advanced"><summary>Advanced settings</summary><p>For custom or self-hosted connections. Most users don’t need to change these.</p>{!state.identity&&<label>Device name<input value={name} maxLength={80} onChange={e=>setName(e.target.value)}/></label>}{!state.identity&&(mode==='start'||mode==='connect')&&<><label>Custom sync service<input type="url" value={customServer} onChange={e=>setCustomServer(e.target.value)} placeholder="https://sync.example.com"/></label><button className="button secondary" disabled={busy||!customServer.trim()} onClick={()=>void action(async()=>{const value=serviceUrl(customServer),info=await syncRequest<{version:number}>(value,'info');if(info.version!==1)throw Error('This service is not compatible with Hasimio.');rememberService(value);setServer(value);setAvailability('ready');setMessage('Connection settings saved.');})}>Save connection</button></>}{state.identity&&<p className="sync-service-address">{state.identity.server}</p>}</details>;
   return <div className="sync-page">
-    <div className="section-intro"><h1>Sync devices</h1></div>
+    <div className="section-intro"><h1>Sync devices</h1></div><p className="profile-sync-context">Connecting devices for <strong>{currentProfile()?.name??"My profile"}</strong>. Other profiles keep their own connections.</p>
     {!state.identity?<section className="sync-setup" aria-label="Connect your devices">
       {mode==='start'?<><div className="sync-welcome"><div className="sync-welcome-icon"><MonitorSmartphone size={30}/></div><h2>Your favorites, everywhere.</h2><p>Keep your library, episodes, and settings together across your phone, computer, and TV. No account needed.</p>{unavailableNotice}<button className="button primary" disabled={busy||unavailable||!name.trim()} onClick={()=>void action(async()=>{setRecovery(await deviceSync.create(server,name.trim()));setShowRecovery(true);})}><Link2 size={17}/>{busy?'Starting sync…':availability==='checking'?'Checking connection…':'Start syncing'}</button><small>Use this on your first device.</small></div><div className="sync-existing"><div><h3>Already syncing on another device?</h3><p>Bring your saved library and progress here.</p></div><button className="button secondary" onClick={()=>navigate('connect')}>Connect this device <ChevronRight size={16}/></button></div><button className="sync-text-action sync-recover-link" onClick={()=>navigate('recover')}><KeyRound size={15}/> Restore with a recovery key</button></>:<>
         <button className="sync-back" onClick={()=>navigate('start')}><ArrowLeft size={15}/> Back</button>

@@ -1,15 +1,17 @@
-Add FileList account access and private torrent sources to desktop and LG TV.
+Add a startup profile picker to desktop and LG TV.
 
-Connect your FileList username and API passkey in Extensions. FileList is
-enabled after a successful API check and contributes matching movie/episode
-sources. Playback downloads private torrent metadata directly from FileList,
-retains authenticated tracker information and adds no public trackers. Private
-sources do not trigger automatic track-inspection downloads.
+Each profile has its own library, watch progress, preferences, extension
+selection and device-sync connection. Pair one TV profile with one PC's
+device group and another with a different PC. Existing data and pairing are
+preserved under My profile without copying or clearing storage.
 
-On TV this works without the PC. Its existing piece and codec limits remain.
-Credentials stay with each device's service and are not synced or included
-in source results. Account access and tracker client acceptance need checking
-with the user's credentials; no authenticated playback has been tested.
+Add, rename, recolor and remove local profiles through Manage profiles.
+Switch profile in the sidebar returns to the picker. FileList login, buffer
+size and app updates remain device-wide. Existing local TV loading-screen
+improvements are preserved.
 
-Hasimio deletes data after playback and does not provide persistent seeding.
-The account panel explains this limitation. See docs/FILELIST.md for details.
+Profile storage uses separate namespaces, including sync credentials and
+pending documents. Switching recreates the app before selecting another
+profile. TV disposable-cache limits also cover profile-scoped metadata.
+
+Builds and packaging only. Pairing and navigation remain for user validation.

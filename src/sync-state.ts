@@ -1,3 +1,4 @@
+import {profileStorage} from './profile-storage';
 import {type Meta,type Addon,validateManifest} from './media';
 import {playbackHistory,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
 import {validSetting,settingsKey} from './preferences';
@@ -43,7 +44,7 @@ export function compactDocument(document:SyncDocument,clock=Date.now()):SyncDocu
   return {v:1,records:Object.fromEntries(entries.filter(([key])=>!evicted.has(key)))};
 }
 export function sameDocument(a:SyncDocument,b:SyncDocument){const keys=Object.keys(a.records);return keys.length===Object.keys(b.records).length&&keys.every(key=>{const left=a.records[key],right=b.records[key];return right&&left.stamp===right.stamp&&left.device===right.device&&JSON.stringify(left.value)===JSON.stringify(right.value);});}
-function read(key:string,fallback:unknown){try{return JSON.parse(localStorage.getItem(key)??'null')??fallback;}catch{return fallback;}}
+function read(key:string,fallback:unknown){try{return JSON.parse(profileStorage.getItem(key)??'null')??fallback;}catch{return fallback;}}
 export function localValues():Record<string,unknown>{
   const values:Record<string,unknown>={};const library=read('hasimio:library',[]),addons=read('hasimio:addons',[]),settings=read(settingsKey,{});
   for(const meta of Array.isArray(library)?library:[])if(title(meta)){
@@ -72,6 +73,6 @@ export function applyDocument(document:SyncDocument){
   }
   // Keep this device's library order and append titles saved elsewhere.
   const library=[...[...metadata.keys()].filter(id=>saved.has(id)),...[...saved.keys()].filter(id=>!metadata.has(id))].map(id=>saved.get(id)!);
-  localStorage.setItem('hasimio:library',JSON.stringify(library));localStorage.setItem('hasimio:addons',JSON.stringify(addons));localStorage.setItem('hasimio:playback-progress:v1',JSON.stringify(progress));localStorage.setItem(settingsKey,JSON.stringify(settings));
+  profileStorage.setItem('hasimio:library',JSON.stringify(library));profileStorage.setItem('hasimio:addons',JSON.stringify(addons));profileStorage.setItem('hasimio:playback-progress:v1',JSON.stringify(progress));profileStorage.setItem(settingsKey,JSON.stringify(settings));
   window.dispatchEvent(new Event('hasimio:remote-data'));window.dispatchEvent(new Event('hasimio:playback-progress'));
 }

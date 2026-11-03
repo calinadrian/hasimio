@@ -1,12 +1,13 @@
+import {profileStorage} from './profile-storage';
 import {type Meta} from './media';
 import {type ProgressMap,progressKey} from './playback-progress';
 
 const cacheKey='hasimio:progress-metadata:v1';
 export function cachedProgressTitles():Meta[]{
-  try{const items=JSON.parse(localStorage.getItem(cacheKey)??'[]');return Array.isArray(items)?items.filter(m=>m&&typeof m.id==='string'&&typeof m.type==='string'&&typeof m.name==='string'):[];}catch{return [];}
+  try{const items=JSON.parse(profileStorage.getItem(cacheKey)??'[]');return Array.isArray(items)?items.filter(m=>m&&typeof m.id==='string'&&typeof m.type==='string'&&typeof m.name==='string'):[];}catch{return [];}
 }
 export function storeProgressTitles(items:Meta[]){
-  try{localStorage.setItem(cacheKey,JSON.stringify(items));}catch{/* Metadata can be fetched again; history remains separate. */}
+  try{profileStorage.setItem(cacheKey,JSON.stringify(items));}catch{/* Metadata can be fetched again; history remains separate. */}
 }
 // Sync transfers history independently of library membership. Seed missing
 // identities so they can be hydrated even before their catalog is browsed.
