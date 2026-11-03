@@ -1,10 +1,8 @@
-Fix search focus trapping after dismissing the LG keyboard.
+Keep TV focus highlights inside controls.
 
-Track the native keyboardStateChange event: webOS can consume Back without
-sending a keydown event to the application. Once the keyboard is hidden,
-remote arrows navigate away from the focused search input. Enter reopens
-editing, and Back exits the field. Native keyboard navigation remains with
-webOS while the keyboard is visible. Merely hiding the keyboard does not
-force blur, preserving the temporary hide used by voice input.
+Replace the shared outward focus outline with an inset outline across the TV
+interface. Light primary buttons use a dark focus ring for contrast. Search
+uses one ring around the field rather than nested parent/input rings. Add
+explicit spacing between hero buttons for the TV browser's flex layout.
 
-Build and packaging only; remote interaction remains for user testing.
+Build and packaging completed; remote interaction remains for user testing.

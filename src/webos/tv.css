@@ -1,5 +1,11 @@
 .hasimio-tv{scroll-behavior:auto}
-.hasimio-tv :focus{outline:3px solid #fff!important;outline-offset:4px}
+/* Keep remote focus inside the control, so adjacent controls and clipped
+   shelves cannot overlap or cut off the selection indicator. */
+.hasimio-tv :focus{outline:3px solid #fff!important;outline-offset:-3px!important}
+.hasimio-tv .button.primary:focus{outline-color:#161616!important}
+.hasimio-tv .search input:focus{outline:none!important}
+.hasimio-tv .search:focus-within{outline:3px solid #fff!important;outline-offset:-3px!important}
+.hasimio-tv .hero-actions>*+*{margin-left:12px}
 .hasimio-tv button,.hasimio-tv select,.hasimio-tv input{min-height:44px}
 .hasimio-tv .hero{min-height:380px}
 .hasimio-tv .poster-image{width:100%;height:228px;flex:none}
