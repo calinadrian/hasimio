@@ -1,6 +1,6 @@
 {
   "id": "app.hasimio.tv",
-  "version": "0.1.42",
+  "version": "0.1.43",
   "vendor": "Hasimio",
   "type": "web",
   "main": "index.html",

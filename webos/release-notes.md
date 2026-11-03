@@ -1,11 +1,10 @@
-Fix TV card sizing and playback control alignment.
+Fix search focus trapping after dismissing the LG keyboard.
 
-Poster cards use consistent 152 x 228 artwork bounds in shelves and search.
-Play buttons use explicit flex centering and icon spacing. Detail actions,
-source controls, dialogs and navigation have TV-specific sizing and spacing.
-The TV build expands CSS inset and dynamic viewport units into older browser
-layout rules throughout the UI.
+Track the native keyboardStateChange event: webOS can consume Back without
+sending a keydown event to the application. Once the keyboard is hidden,
+remote arrows navigate away from the focused search input. Enter reopens
+editing, and Back exits the field. Native keyboard navigation remains with
+webOS while the keyboard is visible. Merely hiding the keyboard does not
+force blur, preserving the temporary hide used by voice input.
 
-The PC monitor distinguishes a stopped Hasimio service from an SSH connection
-failure. Reopening Hasimio restored the service connection during diagnosis.
-Build and packaging only; visual and playback validation remain for the user.
+Build and packaging only; remote interaction remains for user testing.

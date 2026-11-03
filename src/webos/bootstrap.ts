@@ -54,6 +54,12 @@ function scope(){return document.querySelector<HTMLElement>('.cinema-menu')??doc
 function candidates(){return Array.from(scope().querySelectorAll<HTMLElement>(focusable)).filter(element=>element.getClientRects().length&&getComputedStyle(element).visibility!=='hidden'&&!element.closest('[hidden],[aria-hidden="true"]'));}
 const editing='input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),textarea,select';
 let previousControl:HTMLElement|undefined;
+let keyboardVisible=false;
+// The native keyboard consumes Back itself, so our keydown handler may never
+// receive that press. Track its visibility instead of equating focus with editing.
+document.addEventListener('keyboardStateChange',event=>{
+  keyboardVisible=Boolean((event as CustomEvent<{visibility:boolean}>).detail?.visibility);
+});
 document.addEventListener('focusin',event=>{
   const element=event.target;
   if(element instanceof HTMLElement&&!element.matches(editing))previousControl=element;
@@ -69,6 +75,13 @@ function leaveEditor(element:HTMLElement){
 }
 
 document.addEventListener('keydown',event=>{
+  // Leave native keyboard navigation to webOS while it is actually visible.
+  if(keyboardVisible)return;
+  const searchInput=document.activeElement instanceof HTMLInputElement&&document.activeElement.matches('.search input')?document.activeElement:undefined;
+  if(searchInput&&event.key==='Enter'){
+    event.preventDefault();event.stopImmediatePropagation();
+    searchInput.blur();setTimeout(()=>searchInput.focus(),0);return;
+  }
   const back=event.key==='Escape'||event.key==='GoBack'||event.keyCode===461;
   if(back){
     const active=document.activeElement;
@@ -94,7 +107,7 @@ document.addEventListener('keydown',event=>{
   }
   if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key))return;
   const active=document.activeElement as HTMLElement;
-  if(active?.matches('input,textarea,select'))return;
+  if(active?.matches('input,textarea,select')&&!searchInput)return;
   const list=candidates();
   if(!list.length)return;
   event.preventDefault();event.stopImmediatePropagation();
@@ -110,6 +123,7 @@ document.addEventListener('keydown',event=>{
     const score=forward+side*3;
     if(score<best){best=score;target=element;}
   }
+  if(!target&&searchInput){leaveEditor(searchInput);return;}
   target?.focus();target?.scrollIntoView({block:'nearest',inline:'nearest'});
 },true);
 const stop=()=>{void nativeFetch('/api/webos/stop',{method:'POST',keepalive:true});};
