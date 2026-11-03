@@ -1,0 +1,47 @@
+name: Mac startup repair
+
+on:
+  push:
+    branches: [codex/macos-startup]
+    paths:
+      - electron/**
+      - server/engine.mjs
+      - shared/engine-port.mjs
+      - .github/workflows/macos-startup.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  installer:
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Package Mac startup repair
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: >-
+          npm run package:mac --
+          -c.extraMetadata.main=electron/bootstrap.cjs
+          -c.mac.identity=-
+          '-c.mac.artifactName=Hasimio-${version}-mac-${arch}-startup1.${ext}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hasimio-mac-startup
+          path: |
+            release/desktop/*-startup1.dmg
+            release/desktop/*-startup1.zip
+          if-no-files-found: error
+      - name: Publish startup repair
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p 'require("./package.json").version')
+          gh release upload "v$VERSION" release/desktop/*-startup1.dmg release/desktop/*-startup1.zip --repo "$GITHUB_REPOSITORY" --clobber

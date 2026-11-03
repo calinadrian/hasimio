@@ -8,8 +8,9 @@ import {createMediaService} from './service.mjs';
 import {parseOrigins,lanOrigins} from './torrent-utils.mjs';
 import {cacheRoot} from './paths.mjs';
 import {serveStatic} from './static-ui.mjs';
+import {ENGINE_PORT} from '../shared/engine-port.mjs';
 
-export const ENGINE_PORT=11475;
+export {ENGINE_PORT};
 // Precedence: defaults, then environment, then the config file, then command-line flags. Allowed sites from all of them combine.
 export function engineOptions(argv,env=process.env,readConfig=file=>JSON.parse(readFileSync(file,'utf8'))) {
   const options={port:Number(env.HASIMIO_ENGINE_PORT||ENGINE_PORT),host:'127.0.0.1',origins:[env.HASIMIO_ALLOWED_ORIGINS||'']};

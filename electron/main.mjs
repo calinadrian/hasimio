@@ -6,7 +6,7 @@ import {app,BrowserWindow,dialog,ipcMain,Menu,screen,session,shell,utilityProces
 import {watchPointerActivity} from './player-activity.mjs';
 import electronUpdater from 'electron-updater';
 import {createUpdates} from './updates.mjs';
-import {ENGINE_PORT} from '../server/engine.mjs';
+import {ENGINE_PORT} from '../shared/engine-port.mjs';
 
 const __dirname=path.dirname(fileURLToPath(import.meta.url));
 const APP_ID='app.hasimio.desktop';
@@ -16,8 +16,9 @@ const icon=path.join(app.getAppPath(),'resources','icon.png');
 let win;let engine;let origin;let quitting=false;let engineStopped=false;
 
 app.setName('Hasimio');
-app.setAppUserModelId(APP_ID);
+if(process.platform==='win32')app.setAppUserModelId(APP_ID);
 const primary=app.requestSingleInstanceLock();
+console.info(`[startup] Main process loaded; primary=${primary}`);
 
 /** Written right before an update installs and read on the next start, to log the version change. */
 const updateMarker=path.join(app.getPath('userData'),'update.json');
@@ -45,14 +46,19 @@ function allowedOrigins() {
 
 function startEngine() {
   return new Promise((resolve,reject)=>{
-    engine=utilityProcess.fork(path.join(__dirname,'engine-process.mjs'),[],{serviceName:'Hasimio Engine'});
+    console.info('[startup] Starting streaming engine');
+    engine=utilityProcess.fork(path.join(__dirname,'engine-process.mjs'),[],{serviceName:'Hasimio Engine',stdio:'pipe'});
+    engine.stdout?.on('data',data=>console.info(`[engine] ${data.toString().trimEnd()}`));
+    engine.stderr?.on('data',data=>console.error(`[engine] ${data.toString().trimEnd()}`));
     const timer=setTimeout(()=>reject(new Error('Hasimio Engine did not start within 20 seconds.')),20_000);
     engine.once('message',message=>{
+      console.info(`[startup] Engine response: ${message?.type}`);
       clearTimeout(timer);
       if(message?.type==='ready')resolve(message.port);
       else reject(Object.assign(new Error(message?.message||'Hasimio Engine could not start.'),{code:message?.code}));
     });
     engine.once('exit',code=>{
+      console.error(`[startup] Engine exited: ${code}`);
       engineStopped=true;clearTimeout(timer);reject(new Error(`Hasimio Engine stopped (code ${code}).`));
       if(!quitting&&origin){dialog.showErrorBox('Hasimio stopped streaming','The streaming engine closed unexpectedly. Hasimio will close; start it again to keep watching.');app.quit();}
     });
@@ -67,6 +73,7 @@ function showWindow() {
 }
 
 function createWindow() {
+  console.info('[startup] Creating application window');
   win=new BrowserWindow({
     width:1280,height:820,minWidth:900,minHeight:600,show:false,title:'Hasimio',backgroundColor:'#141414',icon,autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true},
@@ -76,10 +83,17 @@ function createWindow() {
   win.webContents.setWindowOpenHandler(({url})=>{if(/^https?:\/\//i.test(url))void shell.openExternal(url);return {action:'deny'};});
   win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith(origin+'/')){event.preventDefault();if(/^https?:\/\//i.test(url))void shell.openExternal(url);}});
   win.once('ready-to-show',()=>win.show());
-  void win.loadURL(origin+'/');
+  win.webContents.once('did-finish-load',()=>{console.info('[startup] Window loaded');app.emit('hasimio:startup-ready');});
+  win.webContents.on('render-process-gone',(_event,details)=>console.error(`[startup] Renderer stopped: ${JSON.stringify(details)}`));
+  void win.loadURL(origin+'/').catch(error=>{
+    console.error('[startup] Window failed to load',error);
+    dialog.showErrorBox('Hasimio could not open',error.message);
+    app.quit();
+  });
 }
 
 async function start() {
+  console.info('[startup] Electron is ready');
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     {label:'File',submenu:[{label:'Quit Hasimio',accelerator:'Ctrl+Q',click:()=>app.quit()}]},
     {role:'editMenu'},{role:'viewMenu'},
