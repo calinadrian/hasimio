@@ -91,6 +91,13 @@
 @media(max-width:850px){.cinema-volume input{display:none}.control-caption{display:none}.cinema-time{font-size:13px}.cinema-top{gap:10px}.cinema-connection{display:none}}
 @media(max-width:720px){.detail-dialog.playback-dialog{width:100vw;width:100dvw;max-height:100dvh;margin:auto;border-radius:0}.cinema-player{aspect-ratio:auto;height:85dvh;min-height:min(520px,100dvh);max-height:100dvh;border-radius:0}.cinema-top{padding:16px 12px 50px;align-items:flex-start}.cinema-title h2{font-size:21px}.cinema-title p{font-size:13px}.cinema-back{margin-top:1px}.cinema-bottom{padding:55px 12px max(12px,env(safe-area-inset-bottom))}.cinema-toolbar{flex-wrap:wrap;gap:5px}.cinema-transport{width:100%;justify-content:flex-start}.cinema-time{margin-left:auto;padding-right:6px;font-size:14px}.cinema-tools{width:100%;justify-content:flex-end;gap:5px}.cinema-seek{margin-bottom:7px}.cinema-menu{bottom:160px;right:12px;width:calc(100% - 24px);max-height:calc(100% - 235px)}.cinema-menu-content{padding:16px}.cinema-menu-header{padding-left:16px}.cinema-notice{bottom:160px;left:12px;max-width:calc(100% - 24px)}.cinema-state{inset:100px 20px 165px}.cinema-state p{font-size:14px}.cinema-state h2,.cinema-state h3{font-size:21px}.cinema-big-play{width:68px;height:68px}}
 @media(max-height:500px) and (orientation:landscape){.cinema-player{height:100dvh;min-height:0;max-height:100dvh;aspect-ratio:auto}.cinema-top{padding-top:9px}.cinema-bottom{padding-bottom:8px}.cinema-toolbar{flex-wrap:nowrap}.cinema-transport,.cinema-tools{width:auto}.cinema-menu{bottom:100px;max-height:calc(100% - 155px)}.cinema-state{inset:75px 20% 90px}.cinema-state p{font-size:14px}.cinema-notice{bottom:110px}}
+/* Short windows still need separate rows when their width cannot hold both
+   groups. Allow each group to wrap instead of painting over the timestamp. */
+@media(max-width:720px){
+  .cinema-toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:5px}
+  .cinema-transport,.cinema-tools{width:100%;min-width:0;flex-wrap:wrap}
+  .cinema-time{flex-shrink:0}
+}
 @media(prefers-reduced-motion:reduce){.cinema-chrome,.cinema-icon,.cinema-tool{transition:none}}
 
 .cinema-menu .subtitle-file input::file-selector-button{min-height:44px}
@@ -162,8 +169,20 @@
 .hasimio-pip .cinema-top{padding:10px 12px 35px}
 .hasimio-pip .cinema-title h2{font-size:14px}
 .hasimio-pip .cinema-title p,.hasimio-pip .cinema-connection{display:none}
-.hasimio-pip .cinema-menu{max-height:calc(100dvh - 16px)}
-
+/* Keep PiP in two rows even when the short landscape viewport would force
+   the regular player toolbar onto one line. Fit down to the 320px minimum. */
+.hasimio-pip .cinema-bottom{padding:40px 12px 8px}
+.hasimio-pip .cinema-toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
+.hasimio-pip .cinema-transport,.hasimio-pip .cinema-tools{width:100%;min-width:0;flex-wrap:wrap;gap:4px}
+.hasimio-pip .cinema-transport{justify-content:flex-start}
+.hasimio-pip .cinema-tools{justify-content:flex-end}
+:root .hasimio-pip .cinema-icon,:root .hasimio-pip .cinema-tool{min-width:36px;width:36px;min-height:36px;height:36px;padding:6px}
+.hasimio-pip .cinema-skip{display:inline-flex}
+.hasimio-pip .cinema-skip span{top:12px}
+.hasimio-pip .cinema-volume{margin-left:0}
+.hasimio-pip .cinema-volume input,.hasimio-pip .control-caption{display:none}
+.hasimio-pip .cinema-time{flex-shrink:0;margin-left:auto;padding-right:0;font-size:12px}
+.hasimio-pip .cinema-seek{margin-bottom:2px}
 .hasimio-pip .cinema-menu{top:8px;bottom:8px;max-height:calc(100dvh - 16px)}
 
 .cinema-pip-drag{position:absolute;top:0;left:56px;right:8px;height:28px;z-index:5;-webkit-app-region:drag;user-select:none}
