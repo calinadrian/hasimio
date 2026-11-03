@@ -8,6 +8,15 @@ button closes playback/details first, then offers to exit and stop the engine.
 Playback pauses when the activity leaves the foreground. There is no background
 playback/foreground service. Keep Android System WebView up to date.
 
+The activity binds to an engine service in a separate private process. Native
+library loading is guarded; engine failures display a copyable startup report
+instead of terminating the interface. Reports include the device/Android
+version, memory page size, engine exit reason and local engine errors. Native
+stdout/stderr are kept in app-private `engine-native.log`, reset each startup.
+No reports are uploaded automatically.
+The build expands title-normalization Unicode property expressions into
+explicit character ranges because the embedded runtime cannot parse them.
+
 The engine reuses the TV's online movie/series catalog adapter (Cinemeta), rather
 than building the desktop IMDb database on the phone. Torrent playback uses the
 WebView's codecs; FFmpeg conversion, desktop track inspection, Chromecast and

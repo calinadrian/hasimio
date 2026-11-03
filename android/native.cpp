@@ -2,8 +2,14 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include <fcntl.h>
+#include <unistd.h>
 namespace node { int Start(int argc, char* argv[]); }
-extern "C" JNIEXPORT jint JNICALL Java_app_hasimio_android_MainActivity_startNode(JNIEnv* env,jclass,jobjectArray input){
+extern "C" JNIEXPORT jint JNICALL Java_app_hasimio_android_EngineService_startNode(JNIEnv* env,jclass,jobjectArray input,jstring logFile){
+  const char* filename=env->GetStringUTFChars(logFile,nullptr);
+  int log=open(filename,O_WRONLY|O_CREAT|O_TRUNC,0600);
+  env->ReleaseStringUTFChars(logFile,filename);
+  if(log>=0){dup2(log,STDOUT_FILENO);dup2(log,STDERR_FILENO);close(log);}
   int count=env->GetArrayLength(input);
   std::vector<char> buffer;
   std::vector<size_t> offsets;

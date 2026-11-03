@@ -4,45 +4,43 @@ import android.app.*;
 import android.os.*;
 import android.webkit.*;
 import android.view.*;
-import android.widget.TextView;
+import android.widget.*;
 import android.content.*;
 import android.net.Uri;
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.json.JSONObject;
 
 public class MainActivity extends Activity {
-  static { System.loadLibrary("node"); System.loadLibrary("hasimio"); }
-  private static native int startNode(String[] args);
-  private static final AtomicBoolean started=new AtomicBoolean();
-  private static volatile String engineError;
   static final String ORIGIN="http://127.0.0.1:11476";
   WebView web;
   private Updates updates;
   private View fullscreen;
   private WebChromeClient.CustomViewCallback fullscreenCallback;
   private ValueCallback<Uri[]> filePicker;
-  private boolean destroyed;
+  private volatile boolean destroyed;
+  private volatile boolean engineFailed;
+  private boolean bound;
+  private final ServiceConnection engineConnection=new ServiceConnection(){
+    @Override public void onServiceConnected(ComponentName name,IBinder binder){}
+    @Override public void onServiceDisconnected(ComponentName name){
+      if(destroyed)return;
+      engineFailed=true;
+      if(bound){unbindService(this);bound=false;}
+      showStartupError("The native engine process stopped unexpectedly.");
+    }
+  };
 
   @Override public void onCreate(Bundle state){
     super.onCreate(state);
     getWindow().setStatusBarColor(0xff101014);getWindow().setNavigationBarColor(0xff101014);
     TextView loading=new TextView(this);loading.setText("Starting Hasimio…");loading.setGravity(Gravity.CENTER);setContentView(loading);
     updates=new Updates(this);
-    if(started.compareAndSet(false,true))new Thread(()->{
-      try{
-        File engine=new File(getFilesDir(),"engine-"+BuildConfig.VERSION_NAME);
-        copyAssets("engine",engine);
-        File data=new File(getFilesDir(),"data");data.mkdirs();
-        String script="process.env.HASIMIO_MOBILE_DATA="+JSONObject.quote(data.getAbsolutePath())+";require("+JSONObject.quote(new File(engine,"engine.cjs").getAbsolutePath())+");";
-        int code=startNode(new String[]{"node","-e",script});
-        engineError="The on-device engine stopped ("+code+"). Close Hasimio and reopen it.";
-      }catch(Throwable error){engineError="Could not start the on-device engine: "+error.getMessage();}
-    },"Hasimio Engine").start();
+    new File(getFilesDir(),"engine-startup-error.txt").delete();
+    bound=bindService(new Intent(this,EngineService.class),engineConnection,BIND_AUTO_CREATE);
+    if(!bound){showStartupError("Android could not start the engine service.");return;}
     new Thread(()->{
-      for(int attempt=0;attempt<120&&!destroyed;attempt++){
-        if(engineError!=null)break;
+      for(int attempt=0;attempt<120&&!destroyed&&!engineFailed;attempt++){
+        if(new File(getFilesDir(),"engine-startup-error.txt").exists())break;
         try{
           HttpURLConnection connection=(HttpURLConnection)new URL(ORIGIN+"/api/streaming/health").openConnection();
           connection.setConnectTimeout(500);connection.setReadTimeout(500);
@@ -50,17 +48,36 @@ public class MainActivity extends Activity {
         }catch(IOException ignored){}
         try{Thread.sleep(250);}catch(InterruptedException ignored){return;}
       }
-      runOnUiThread(()->loading.setText(engineError==null?"The on-device engine did not start. Close Hasimio and reopen it.":engineError));
+      runOnUiThread(()->showStartupError("The on-device engine did not start."));
     },"Hasimio startup").start();
   }
 
-  private void copyAssets(String source,File target)throws IOException{
-    String[] children=getAssets().list(source);
-    if(children!=null&&children.length>0){target.mkdirs();for(String child:children)copyAssets(source+"/"+child,new File(target,child));}
-    else{target.getParentFile().mkdirs();try(InputStream input=getAssets().open(source);OutputStream output=new FileOutputStream(target)){byte[] buffer=new byte[65536];int count;while((count=input.read(buffer))!=-1)output.write(buffer,0,count);}}
+  private String readReport(String name){
+    try(InputStream input=new FileInputStream(new File(getFilesDir(),name));ByteArrayOutputStream output=new ByteArrayOutputStream()){
+      byte[] buffer=new byte[4096];int count;while(output.size()<32768&&(count=input.read(buffer))!=-1)output.write(buffer,0,Math.min(count,32768-output.size()));
+      return new String(output.toByteArray(),java.nio.charset.StandardCharsets.UTF_8);
+    }catch(IOException ignored){return "";}
+  }
+  private void showStartupError(String reason){
+    if(destroyed)return;
+    engineFailed=true;
+    String system="";
+    if(Build.VERSION.SDK_INT>=30){
+      ActivityManager manager=(ActivityManager)getSystemService(ACTIVITY_SERVICE);
+      for(ApplicationExitInfo exit:manager.getHistoricalProcessExitReasons(getPackageName(),0,8)){
+        if((getPackageName()+":engine").equals(exit.getProcessName())){system="\nEngine exit reason "+exit.getReason()+", status "+exit.getStatus()+": "+exit.getDescription();break;}
+      }
+    }
+    String report="Hasimio "+BuildConfig.VERSION_NAME+"\nAndroid "+Build.VERSION.RELEASE+" / "+Build.MANUFACTURER+" "+Build.MODEL+"\nMemory page size: "+android.system.Os.sysconf(android.system.OsConstants._SC_PAGESIZE)+" bytes\n"+reason+system+"\n\n"+readReport("engine-startup-error.txt")+"\n"+readReport("engine-native.log");
+    android.util.Log.e("HasimioStartup",report);
+    LinearLayout layout=new LinearLayout(this);layout.setOrientation(LinearLayout.VERTICAL);layout.setPadding(32,32,32,32);
+    TextView title=new TextView(this);title.setText("Hasimio could not start");title.setTextSize(22);layout.addView(title);
+    ScrollView scroll=new ScrollView(this);TextView detail=new TextView(this);detail.setText(report);detail.setTextIsSelectable(true);scroll.addView(detail);layout.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
+    Button copy=new Button(this);copy.setText("Copy startup report");copy.setOnClickListener(v->{((android.content.ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("Hasimio startup report",report));Toast.makeText(this,"Startup report copied",Toast.LENGTH_SHORT).show();});layout.addView(copy);
+    setContentView(layout);
   }
   @SuppressWarnings("SetJavaScriptEnabled") private void openApp(){
-    if(destroyed)return;
+    if(destroyed||engineFailed)return;
     web=new WebView(this);
     WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);
     settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
@@ -98,7 +115,7 @@ public class MainActivity extends Activity {
   }
   @Override protected void onResume(){super.onResume();if(web!=null){web.onResume();updates.periodic();}}
   @Override protected void onPause(){if(web!=null){web.evaluateJavascript("document.querySelectorAll('video').forEach(v=>v.pause())",null);web.onPause();}super.onPause();}
-  @Override protected void onDestroy(){destroyed=true;if(filePicker!=null)filePicker.onReceiveValue(null);updates.close();if(web!=null){web.removeJavascriptInterface("HasimioAndroid");web.destroy();}super.onDestroy();}
+  @Override protected void onDestroy(){destroyed=true;if(bound){unbindService(engineConnection);bound=false;}if(filePicker!=null)filePicker.onReceiveValue(null);updates.close();if(web!=null){web.removeJavascriptInterface("HasimioAndroid");web.destroy();}super.onDestroy();}
   @Override public void onBackPressed(){
     if(fullscreen!=null){web.getWebChromeClient().onHideCustomView();return;}
     if(web==null){super.onBackPressed();return;}

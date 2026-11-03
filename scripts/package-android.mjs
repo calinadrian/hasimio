@@ -11,6 +11,7 @@ import react from '@vitejs/plugin-react';
 import {build as esbuild} from 'esbuild';
 import {zipSync,unzipSync} from 'fflate';
 import {icon} from './make-icon.mjs';
+import rewritePattern from 'regexpu-core';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cache=path.join(root,'.cache/android'),output=path.join(root,'release/android'),work=path.join(output,'staging');
@@ -52,6 +53,11 @@ const bundled=await esbuild({absWorkingDir:root,entryPoints:['webos/service/main
     build.onLoad({filter:/.*/,namespace:'android-stub'},args=>({contents:args.path==='android-updater'?'module.exports=()=>({status:()=>({}),check:async()=>({}),apply:async()=>{throw Error("Use Android app updates.");}});':args.path==='load-ip-set'?'module.exports=null;':'module.exports=function(){throw Error("Unavailable on Android.");};',loader:'js'}));
     build.onLoad({filter:/\.(mjs|cjs|js)$/},async args=>{
       let contents=await fs.readFile(args.path,'utf8');const normalized=args.path.replaceAll('\\','/');
+      // The pinned mobile runtime is built without ICU and rejects Unicode
+      // property escapes at parse time, despite reporting Node 18. Expand the
+      // title-normalization classes into explicit Unicode ranges as on TV.
+      contents=contents.replace(/\/([\[][\^]\\p\{L\}\\p\{N\} ?\]\+?)\/gu/g,(_,pattern)=>'/'+rewritePattern(pattern,'gu',{unicodePropertyEscapes:'transform'})+'/gu');
+      if(/\\[pP]\{/.test(contents))throw Error('Review unsupported Unicode property escapes for Android: '+normalized);
       if(normalized.endsWith('/webtorrent/lib/torrent.js')){
         const needle='this.store = new ImmediateChunkStore(';
         if(!contents.includes(needle))throw Error('Review WebTorrent metadata limits after dependency changes.');
