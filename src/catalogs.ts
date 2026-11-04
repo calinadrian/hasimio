@@ -1,6 +1,4 @@
 import {isWebOS} from './webos/platform';
-import {filelistManifest} from '../shared/filelist-manifest.mjs';
-export const filelist:Addon={url:'/api/extensions/filelist/manifest.json',enabled:false,manifest:filelistManifest};
 import {stremioSources,stremioManifests} from '../shared/stremio-sources.mjs';
 import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
@@ -47,16 +45,20 @@ export function addStremioSource(existing:Addon[],source:Addon) {
 export function updatePlaybackAddon(existing:Addon[]) {
   return existing.map(a => a.url === torrentClaw.url && a.manifest.id === torrentClaw.manifest.id && a.manifest.version !== torrentClaw.manifest.version ? {...a,manifest:torrentClaw.manifest} : a.url === pirateBay.url && a.manifest.id === pirateBay.manifest.id && a.manifest.version !== pirateBay.manifest.version ? {...a,manifest:pirateBay.manifest} : a);
 }
+// Retired built-in sources stay removed when profiles are loaded, imported or synced.
+export function removeRetiredSources(existing:Addon[]) {
+  return existing.filter(addon=>addon.manifest.id!=='org.hasimio.filelist'&&!/^\/api\/extensions\/filelist(?:\/|$)/.test(addon.url));
+}
 export function migrateAnimeSource(existing:Addon[]) {
-  return existing.map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
+  return removeRetiredSources(existing).map(a => a.manifest.id === 'community.anime.kitsu' || a.manifest.id === kitsu.manifest.id || a.url === 'https://anime-kitsu.strem.fun/manifest.json' ? {...kitsu,enabled:a.enabled} : a)
     .filter((a,index,all) => all.findIndex(other=>other.manifest.id === a.manifest.id) === index);
 }
-export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw,torrentio,comet,ext,filelist];
+export const defaultAddons = [demoAddon,titles,kitsu,pirateBay,yts,eztv,torrentDownloads,torrentClaw,torrentio,comet,ext];
 // Sources served by Hasimio itself. Synced records may use these non-HTTP URLs.
 export const builtinSourceUrls = defaultAddons.map(a => a.url).filter(url => !/^https?:/.test(url));
 // One-time additions for existing installations, applied in order. A flag is set once, so later removals are preserved.
 export const sourceMigrations:[flag:string,apply:(existing:Addon[])=>Addon[]][] = [
-  ['hasimio:filelist-v1',existing=>existing.some(addon=>addon.manifest.id===filelist.manifest.id)?existing:[...existing,filelist]],
+  ['hasimio:remove-filelist-v1',removeRetiredSources],
   ['hasimio:piratebay-v1',existing => existing.some(a => a.manifest.id === pirateBay.manifest.id) ? existing : [...existing,pirateBay]],
   ['hasimio:yts-v1',addYtsSource],['hasimio:eztv-v1',addEztvSource],['hasimio:torrentdownloads-v1',addTorrentDownloadsSource],
   ['hasimio:torrentclaw-v1',addTorrentClawSource],['hasimio:titles-v1',replaceCinemeta],
