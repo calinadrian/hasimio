@@ -32,7 +32,7 @@ const existing=await run(gh,['release','view',tag,'--repo',repository,'--json','
 if(existing&&!JSON.parse(existing).isDraft)throw Error(tag+' is already published. Bump package.json before releasing another TV update.');
 const privateKey=await fs.readFile(process.env.HASIMIO_WEBOS_SIGNING_KEY_FILE||path.join(root,'.cache','webos-update-signing-key.pem'),'utf8');
 const publicKey=await fs.readFile(path.join(root,'webos','update-public-key.pem'),'utf8');
-if(crypto.createPublicKey(privateKey).export({type:'spki',format:'pem'}).trim()!==publicKey.trim())throw Error('The signing key does not match the public key trusted by installed TVs.');
+if(crypto.createPublicKey(privateKey).export({type:'spki',format:'pem'}).trim()!==crypto.createPublicKey(publicKey).export({type:'spki',format:'pem'}).trim())throw Error('The signing key does not match the public key trusted by installed TVs.');
 await run(process.execPath,[path.join(root,'scripts','package-webos.mjs')]);
 async function collect(folder,prefix=''){
   const result=[];
