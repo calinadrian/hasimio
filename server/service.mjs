@@ -133,7 +133,8 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       if(req.method==='GET'&&url.pathname==='/api/extensions/filelist/manifest.json')return json(res,200,filelistManifest);
       const filelistStream=/^\/api\/extensions\/filelist\/stream\/(movie|series)\/([^/]+)\.json$/.exec(url.pathname);
       if(req.method==='GET'&&filelistStream)return json(res,200,await filelist.search(filelistStream[1],decodeURIComponent(filelistStream[2])));
-      const liveRoute=/^\/api\/live-tv\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(main|alternative)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
+      if(req.method==='GET'&&url.pathname==='/api/live-tv/iptv-org/channels')return json(res,200,{channels:await liveTv.channels(),checkedAt:liveTv.checkedAt});
+      const liveRoute=/^\/api\/live-tv\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(main|alternative|s[1-9][0-9]*)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
       if(req.method==='GET'&&liveRoute){
         const controller=new AbortController();const cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
         try{const output=await liveTv.resource(liveRoute[1],liveRoute[2],liveRoute[3].replace('asset/',''),controller.signal,url.searchParams.get('reconnect'));res.writeHead(200,{'Content-Type':output.type,'Cache-Control':'no-store'});res.end(output.body);}

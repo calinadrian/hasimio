@@ -1,4 +1,6 @@
 import {createHash} from 'node:crypto';
+import {createIptvOrg} from './iptv-org.mjs';
+import verifiedIptv from './iptv-org-verified.mjs';
 
 const channels={
   'prima-tv':{pages:{main:'https://www.cool-etv.net/ch/primatv.htm',alternative:'https://www.cool-etv.net/ch/primatv-s2.htm'},players:['https://saruman1.tharen001.cfd/000/prima.html'],origin:'https://saruman1.tharen001.cfd',path:'/prima/',encoding:'prima'},
@@ -98,6 +100,7 @@ async function bytes(response,limit){
   return Buffer.concat(chunks);
 }
 export function createLiveTv({fetchImpl=fetch,now=Date.now}={}){
+  const iptv=createIptvOrg({fetchImpl,now,catalogChannels:verifiedIptv.channels});
   const sources=new Map(),assets=new Map(),refreshTokens=new Map();
   async function request(url,referer,signal){
     const response=await fetchImpl(url,{headers:{Referer:referer},redirect:'manual',signal:signal?AbortSignal.any([signal,AbortSignal.timeout(20000)]):AbortSignal.timeout(12000)});
@@ -129,6 +132,7 @@ export function createLiveTv({fetchImpl=fetch,now=Date.now}={}){
     return `/api/live-tv/${channel}/${id}/asset/${key}`;
   }
   async function resource(channel,id,name,signal,refreshToken){
+    if(channel.startsWith('iptv-org-'))return iptv.resource(channel,id,name,signal);
     const {pages}=channelConfig(channel),sourceKey=channel+':'+id;
     if(!Object.hasOwn(pages,id))throw Object.assign(Error('Unknown Live TV server.'),{status:404});
     let target;
@@ -151,5 +155,5 @@ export function createLiveTv({fetchImpl=fetch,now=Date.now}={}){
       return {body:data,type:data[0]===0x47?'video/mp2t':'application/octet-stream'};
     }catch(error){sources.delete(sourceKey);throw error;}
   }
-  return {resolve,resource};
+  return {resolve,resource,channels:iptv.channels,checkedAt:verifiedIptv.checkedAt};
 }
