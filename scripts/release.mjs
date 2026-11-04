@@ -6,22 +6,14 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import yaml from 'js-yaml';
+import {installationNotes,pruneReleases} from './release-presentation.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const DIST=path.join(ROOT,'release','desktop');
 const REPO='calinadrian/hasimio';
 const require=createRequire(import.meta.url);
 
-/** Commit subjects since the last release, grouped the way the in-app update panel shows them. */
-export function releaseNotes(subjects) {
-  const groups={New:[],Fixed:[],Improved:[]};
-  for(const subject of subjects){
-    const s=subject.trim();
-    if(!s||/^v?\d+\.\d+\.\d+$/.test(s))continue;
-    groups[/^(add|new\b|feat[(:])/i.test(s)?'New':/^fix/i.test(s)?'Fixed':'Improved'].push(s);
-  }
-  return Object.entries(groups).filter(([,list])=>list.length).map(([title,list])=>'### '+title+'\n'+list.map(s=>'- '+s).join('\n')).join('\n\n')||'### Improved\n- Maintenance release';
-}
+export function releaseNotes() { return installationNotes('desktop'); }
 
 function main() {
   const run=(exe,args,optional=false)=>{
@@ -48,11 +40,9 @@ function main() {
   const release=run(ghExe,['release','view',tag,'--repo',REPO,'--json','isDraft'],true);
   if(release&&!JSON.parse(release).isDraft)throw Error(tag+' is already published. Bump the version.');
 
-  const previous=git('tag','--list','v*','--sort=-v:refname','--merged','HEAD').split(/\r?\n/).find(t=>t&&t!==tag);
-  const subjects=git('log','--no-merges','--pretty=%s',previous?previous+'..HEAD':'HEAD').split(/\r?\n/);
   const notesFile=path.join(DIST,'release-notes.md');
   fs.mkdirSync(path.dirname(notesFile),{recursive:true});
-  fs.writeFileSync(notesFile,releaseNotes(subjects)+'\n');
+  fs.writeFileSync(notesFile,releaseNotes()+'\n');
 
   // No publication happens until a complete installer and manifest exist.
   // Vite only exports its package.json, so find its CLI from there.
@@ -76,6 +66,7 @@ function main() {
   if(!release)gh('release','create',tag,'--repo',REPO,'--draft','--verify-tag','--title','Hasimio '+version,'--notes-file',notesFile);
   gh('release','upload',tag,...assets,'--repo',REPO,'--clobber');
   gh('release','edit',tag,'--repo',REPO,'--notes-file',notesFile,'--draft=false','--latest');
+  pruneReleases('desktop',{gh:ghExe,repository:REPO});
   console.log('Released '+tag+': https://github.com/'+REPO+'/releases/tag/'+tag);
 }
 

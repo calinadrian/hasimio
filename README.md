@@ -1,128 +1,43 @@
 # Hasimio
 
-Episode watch controls use compact **Watched / Unwatched** pairs for **All seasons** and the currently displayed season. Season actions include Specials when selected, leave other seasons alone, and support Undo.
+Download installers from [Releases](https://github.com/calinadrian/hasimio/releases).
 
-Progress supports **Import TV Time ZIP**. Preview watched-episode history from a TV Time personal-data export, review exact show matches or enter an IMDb ID, then merge without overwriting existing Hasimio progress. Re-importing does not duplicate episodes. Account and token CSVs are not read.
+## Windows
 
-EXT is available as an optional playback source, off by default because its browser verification currently blocks automated HTTP access. The standalone development flow in [scripts/browser-auth.md](scripts/browser-auth.md) supports manual verification and persistent Playwright state, but is not connected to playback requests.
+1. Open the newest **Hasimio** release.
+2. Download **Hasimio-Setup-<version>.exe** and run it.
+3. Follow the installer, then open Hasimio.
 
-TorrentClaw supplies movie and series discovery, title search, metadata and episode lists through its documented `https://torrentclaw.com/api/v1/search` API. These catalogs are independent of the local IMDb index and its vote threshold. IMDb IDs are shared with other providers; titles without one use TMDB IDs. Episode details come from TorrentClaw’s season metadata, falling back to known torrent episode numbers when unavailable. Playback searches match exact IDs and episodes; season packs remain excluded from playback. API responses are cached for five minutes and HTTP errors are reported.
+## Android
 
-TorrentClaw is off by default; turn it on in Extensions. Its network refuses connections from some IP addresses with HTTP 403, and the source then shows that error. Anonymous use has low, IP-based rate limits. To use a TorrentClaw API key, set `HASIMIO_TORRENTCLAW_API_KEY` for the engine; it is sent as `Authorization: Bearer <key>`. Run `npm run test:torrentclaw` to check live access from your computer.
+Requires Android 9 or newer and an ARM64 device.
 
-TorrentDownloads is an alternative movie and series episode playback extension. The local engine searches `https://www.torrentdownloads.pro/search/`, matches the resolved title plus movie year or exact season/episode, and reads magnet hashes from up to 16 matching detail pages with three requests at a time. Executable and archive labels are excluded. No remote download URL or script is executed. The source shares the existing torrent player and Extensions controls, including a one-time addition for existing installations and synced enabled settings. HTML layout changes or browser verification can interrupt this provider. PSA is not integrated: its torrent buttons currently require human verification.
+1. Open the newest **Hasimio Android** release and download the **.apk**.
+2. Open the downloaded file. If prompted, allow installation from that source.
+3. Install, then open Hasimio.
 
-EZTV is included as an alternative series playback extension. It uses `https://eztvx.to/api/get-torrents`, reads paginated releases by IMDb show ID, and matches the selected season and episode exactly. Show results are cached for five minutes across episode switches. It shares the existing source picker, track inspection, torrent player, and download flow. Existing installations receive the extension once; disabled settings and subsequent removal are preserved. EZTV does not add discovery catalogs or supply movie sources.
+## LG TV
 
-YTS is included as an alternative movie playback extension alongside The Pirate Bay. Movie detail pages combine both providers in the existing quality/source picker; either extension can be disabled or removed from Extensions. Existing installations receive YTS once, keeping an existing disabled setting. YTS matches the exact IMDb movie ID through `https://movies-api.accel.li/api/v2/list_movies.json` and passes validated torrent hashes to the same local player, track inspection, and download flow. Results are cached for five minutes; provider errors remain retryable and do not discard results from other extensions. YTS does not supply series or anime episode sources, or replace Hasimio’s discovery catalogs.
+1. Open the newest **Hasimio TV** release and download the **.ipk**.
+2. Connect the TV and computer to the same network.
+3. Install **Developer Mode** from LG Apps. Sign in, enable **Dev Mode Status**, restart the TV, and enable **Key Server**.
+4. Install Node.js on the computer, then run:
 
-A browser-first media library with discovery, an episode calendar, and Stremio-compatible HTTP extensions. React + TypeScript + Vite.
-
-## Run
-
-```powershell
-npm install
-npm run dev
+```sh
+npm install -g @webos-tools/cli
+ares-setup-device
 ```
 
-Open the localhost URL printed by Vite. `npm run build` creates `dist/`; `npm run preview` serves the production build. `npm test` checks add-on routing, validation, filtering and episode date handling.
+Add the TV using its IP address, port **9922**, and user **prisoner**. Replace **YOUR_TV** below with the device name you chose:
 
-## Features
+```sh
+ares-novacom --device YOUR_TV --getkey
+ares-install --device YOUR_TV PATH_TO_DOWNLOADED_IPK
+ares-launch --device YOUR_TV app.hasimio.tv
+```
 
-- Browse live movie/series catalogs from our own Hasimio Titles index and anime catalogs from our own Hasimio Anime integration by default. Search across sources, select Anime, and load more titles from paginated catalogs. Existing installations receive missing default catalogs once, preserving disabled sources; subsequent removal stays respected.
-- Search, filter by type and genre, view details and select episodes.
-- Calendar shows a compact Coming up strip, a selectable month grid, and an agenda with posters and local release times. View a day or the full month, open the exact episode, navigate dates with arrow keys, and expand Tracked titles for schedules that have not been announced. Mobile uses release dots and an agenda below the grid.
-- Playback progress saves automatically on this device during playback, on pause, and when leaving the player or app. Movies resume at their saved time; series and anime remember each episode separately and reopen the last-played episode. Cards in Discover and Library show the last-played episode, playback percentage, a progress bar, and watched/total time; completed episodes are marked Watched. Progress follows the title across source changes. Finished videos start from the beginning.
-- Series and anime show an Up next card near the end of an episode. Play now switches immediately; with automatic next episode on (the default), the following episode opens when the current one ends and starts the best available source once its search settles. Turn it off per device in Playback settings.
-- Community intro and credits markers from TheIntroDB add a Skip intro button during a known intro and open Up next at the start of known credits. Lookups use the IMDb movie or episode ID and the video duration, run through Hasimio Engine, and are cached for six hours. When a title has no markers, Up next keeps the final 45 seconds (or last 10% for short videos) fallback.
-- Save a library on this browser. Every saved movie, series, and anime appears in Calendar automatically. Missing metadata loads on save and stale metadata refreshes at startup, on returning to the app, and during periodic checks while the app is open (six-hour cache for successful metadata). Refresh dates bypasses the cache. The tracked list shows the next known release or explains missing dates; the month grid includes movie releases, episodes, and specials. Removing a library item also removes its calendar entries, including when a metadata request is still running.
-- Install add-ons with an HTTP(S) manifest URL. Configured add-on paths and query parameters are preserved. Toggle or remove installed extensions.
-- Play HTTP video and HLS sources with native controls. Open Cinema includes Big Buck Bunny and Tears of Steel, Blender Foundation films under CC BY 3.0.
-- The Pirate Bay is the first built-in playback extension. It searches the public APIBay index by IMDb ID or title/year and series episode, ranks video torrents by seeders, and displays quality and file size. Choose Play to buffer through the local WebTorrent engine; season packs allow manual video selection when the requested episode cannot be identified.
-- Playback selection starts with a quality dropdown: only available 720p, 1080p, 2K/1440p, 4K/2160p, SD or unspecified tiers appear. Choose a source within that tier, sort by seeders or file size, and press Play. Long filenames remain available under Release details. Pirate Bay results retain up to eight sources per quality, so lower-seeded resolutions are not crowded out by a single tier.
+Enter the passphrase displayed by Developer Mode when requested. Keep the Developer Mode session renewed.
 
-## Desktop app
+## macOS (Apple Silicon)
 
-Hasimio for Windows is an Electron app (`electron/`). It runs Hasimio Engine in a utility process on `127.0.0.1:11475`, and the engine also serves the built UI, so the window is the same page as `npm run preview` with no CORS involved. Closing the window stops the engine and clears temporary torrent data. Port 11475 must be free: close the portable engine zip before starting the app. A hosted Hasimio site can use the app's engine too when its address is listed in `%APPDATA%\Hasimio\engine.json` (`{ "allowedOrigins": ["https://site"] }`).
-
-- `npm run desktop` builds the UI and opens the app from source (no updates in this mode).
-- `npm run package:app` builds `release/desktop/Hasimio-Setup-<version>.exe`: a one-click, per-user installer with no admin prompt, plus `latest.yml` for the updater. It is not code-signed, so Windows SmartScreen warns on first run.
-- `npm run release` publishes a version like SaveMe does. It requires a clean, committed tree and `gh auth login`. It builds the installer, checks that `latest.yml` matches it, tags `v<version>`, uploads to a draft GitHub release on calinadrian/hasimio and then publishes it, with notes grouped from commit subjects (Add… → New, Fix… → Fixed, everything else → Improved). Bump `version` in package.json first.
-
-Installed copies check GitHub 10 seconds after starting and every 6 hours, download new versions in the background, and show "Restart to update" on every page. Otherwise the update installs when Hasimio closes. Extensions → Hasimio shows the version, status and release notes, with Check for updates. `npm run icon` redraws `resources/icon.png` and `public/favicon.png`.
-
-## Local torrent playback
-
-Use `npm run dev`, or `npm run build` followed by `npm run preview`. Both include the local streaming API and use port 5176 with LAN binding. Hosting `dist/` on a static web server alone does not run this service. The streaming API accepts same-origin requests addressed to localhost or this PC's actual private IPv4 interfaces, rejecting public clients and foreign origins.
-
-### Hasimio Engine (hosted UI)
-
-`npm run engine` runs the streaming API on its own at `http://127.0.0.1:11475`, loopback only. Options: `--port <n>`, `--lan` (bind all IPv4 interfaces), and `--allow-origin <https://site>` (repeatable; also `HASIMIO_ALLOWED_ORIGINS`, comma-separated). Build a hosted UI with `VITE_ENGINE_URL=http://127.0.0.1:11475 npm run build`; each visitor's browser then calls the engine on their own PC. Unset, the UI uses its own origin as before. `VITE_ENGINE_DOWNLOAD_URL` sets the engine download link shown to visitors; without it the panel shows `npm run engine`.
-
-`npm run engine -- --config engine.json` reads `{ "allowedOrigins": [...], "port": 11475, "lan": false }` from a file. Flags override the file, and allowed sites from the environment, file and flags combine.
-
-### Windows portable engine
-
-`npm run package:engine -- --allow-origin https://your-site` builds `release/Hasimio-Engine-<version>-win-x64.zip` (about 75 MB) on Windows. It holds `Hasimio Engine.cmd` (the launcher), `engine.json` (allowed sites, port, LAN), `README.txt` for users, `runtime/node.exe` copied from the Node.js running the script (x64, Node 22 or newer; `--node <path>` picks another), and `app/` with the engine's server files plus only the packages WebTorrent and ffmpeg-static need, including `ffmpeg.exe`. Users unzip it and double-click the launcher; closing its window or pressing Ctrl+C stops the engine and clears its temporary files. Without `--allow-origin`, users add the site to `engine.json` themselves. The launcher is not code-signed.
-
-The UI checks `/api/streaming/health` on load. While the engine is missing, playback sources and the Extensions page show an install panel with Check again, and the check repeats every 10 seconds and on returning to the tab, so a newly started engine is picked up and sources reload. The health response carries `apiVersion` (`shared/engine-api.mjs`, bumped on breaking API changes) and `engineVersion` (from `package.json`); an engine older than the UI's API version shows an update panel instead.
-
-Device sync is available under **Sync devices**. Select **Start syncing** on the first device; use **Connect another device** for a QR/link or **Enter TV code** for a TV. New devices select **Connect this device → Show connection code**. Device names and the publisher-configured service are automatic. Recovery keys download as a file, with code entry and custom server settings tucked into secondary disclosures. Library membership, per-episode playback progress, extensions, volume/mute, playback speed, and subtitle size/delay sync automatically, with offline edits kept locally until reconnection. Data is encrypted on the client; each device has separately revocable access. The app includes the public HTTPS service at https://hasimio-sync.aqualoom256.chatgpt.site; no server setup or login is required. See [deploy/sync/README.md](deploy/sync/README.md) to host your own relay with Node.js. `npm run sync:relay` runs the development service independently of the torrent engine.
-
-Without device sync, libraries are stored per site. Library → Export saves saved titles and installed extensions (not the built-in demo source) to a JSON file; Import on another site or device adds titles and extensions it does not already have and leaves existing ones unchanged. Exports can contain credentials included in add-on URLs.
-
-An allowed site gets CORS headers and Chrome's private-network preflight answer. Host and client-address checks still apply, so the engine stays unreachable from other machines. Other sites are refused, except Origin-less `<video>` / HLS segment / subtitle reads of an existing session's random 36-character ID, and only when at least one site is allowed.
-
-Temporary data lives in the per-user cache: `%LOCALAPPDATA%\Hasimio\cache` on Windows, `~/Library/Caches/Hasimio` on macOS, `$XDG_CACHE_HOME/hasimio` elsewhere; override with `HASIMIO_CACHE_DIR`.
-
-## Access from another device
-
-On the same home network, open `http://192.168.100.10:5176/` (the host PC's current Ethernet address). Include `http://` and the port; this is a LAN address, not an internet address. Keep Hasimio running on the host. Guest Wi-Fi or router client isolation may block devices from reaching the PC. No router port forwarding is required.
-
-`scripts/Enable-LANAccess.ps1` installs a Windows administrator firewall rule restricted to Node.js, TCP 5176, Ethernet, local address 192.168.100.10 and remote subnet 192.168.100.0/24. It allows that subnet on either Windows Private or Public profile without changing the network profile. If DHCP changes the PC address or subnet, update the rule and device URL. Development and preview use strictPort so the URL cannot silently move to another port. Library storage is still local to each device/browser and origin.
-
-The source uses `https://apibay.org/q.php` rather than embedding scripts or ads from the supplied Pirate Bay mirror. Its local Stremio-compatible manifest is `/api/extensions/piratebay/manifest.json`. The extension can be disabled or removed normally.
-
-The torrent player shows peers and download progress, supports byte-range seeking, and stops the session when closed. Data is stored under `torrents/` in the per-user cache and removed on normal stop. Unattended sessions expire after three minutes without polling. A forced process termination can leave temporary files behind. Torrenting exchanges data with peers and exposes your network address. Source availability and listed seeder counts are not guarantees. Browser video codec support still varies; video transcoding is not included.
-
-Torrent playback defaults to Compatible audio on all devices: the included FFmpeg binary copies the video and converts the selected audio track to stereo AAC in fragmented-MP4 HLS. This addresses unsupported audio formats that can otherwise produce silent video in Safari. Direct original playback remains optional; a direct-playback error automatically retries using compatible audio. The first segment must buffer before playback. Clicking or dragging anywhere on the full timeline seeks there; a position outside the prepared portion restarts compatible conversion at that time and buffers the requested section. Switching modes restarts playback. Use original audio retains the direct stream and full-range seeking. The Audio / dub dropdown reads embedded languages, titles and codecs from the selected torrent file. The Subtitles dropdown converts embedded text tracks (SRT/SubRip, ASS/SSA, WebVTT and MOV text) to WebVTT and adds timed cues to the native player as torrent data arrives; selecting subtitles does not restart video. Image-based PGS/DVD subtitle tracks are listed as unsupported. You can also load a UTF-8 SRT or VTT file (up to 5 MB), which stays in the browser. ASS styling is simplified during conversion. Visible torrent source rows automatically inspect file headers before playback, showing verified audio/subtitle languages and track counts directly on each card. Full codec and track-title information stays under Release details. Checks run four different torrent hashes at a time on a separate WebTorrent client, without stopping playback; changing quality or closing details cancels the current request. Missing peers or ambiguous episode packs show an explicit error with Retry track check. Verified results are cached by torrent hash and episode. Duplicate hashes share a scheduling lane to avoid duplicate torrent additions; cached cards appear immediately. MP4/MKV/MOV/WebM inspection reads container track headers without decoding media packets. Files that cannot expose usable stream headers fall back to a full probe; a genuinely silent file does not trigger a second check. Inspection reads select moving 256 KiB torrent windows rather than the whole requested file, and cancel pending piece reads as soon as a check ends. This window is not a total network-byte cap; torrent piece size and metadata placement still affect traffic. Network availability still controls metadata and file-header arrival time. Checks download some torrent data and connect to peers, then clear temporary inspection downloads. Selecting a track uses AAC compatibility playback on every device, including Safari. Switching dubs restarts playback; only tracks actually included in the file are available. Untagged languages appear as numbered audio tracks. Language discovery can be retried after buffering. Converted segments live under `compatible-audio/` in the per-user cache and are deleted, and FFmpeg stopped, when the session ends or the file changes.
-
-`npm run test:audio` generates a short H.264/PCM fixture, transfers it over a local torrent connection, prepares it through the actual HLS API, decodes the AAC stereo result, verifies H.264 video is retained and checks converted-data cleanup. No public media is downloaded for this test.
-
-`npm run test:audio-sync` generates AC-3, E-AC-3, AAC and 96 kHz PCM fixtures with a synchronized flash and tone, converts each at the start and after a seek, and checks that audio stays within 150 ms of video. It needs only the bundled FFmpeg.
-
-`npm run test:inspections` compares the previous probe with header-only inspection on generated MKV, MP4 (metadata at either end), WebM, and silent video. It verifies track counts/languages, records local HTTP bytes and elapsed time, and compares eight-source batches. These synthetic timings do not predict public-peer startup time.
-
-`npm run test:streaming` checks real TCP torrent transfer and HTTP seeking with generated test data on loopback, then stops the session and removes its temporary data. It does not download copyrighted films or contact public torrent peers.
-
-## Current limits
-
-No account is required. Cross-device sync is optional and end-to-end encrypted. Library and add-on URLs are stored in localStorage, which may contain credentials supplied in configured add-on paths. Install only trusted add-ons. Remote endpoints must support browser CORS. Codec, authentication and DRM restrictions depend on each provider and browser. Torrent/info-hash playback requires the included Node.js local streaming service. No arbitrary extension JavaScript runs inside the app. Casting needs a Chromecast device on the same Wi-Fi network. Chrome uses the Google Cast sender on HTTPS or localhost; the desktop app uses the engine's native discovery and control instead. Local torrent casting from Chrome also needs a LAN-bound engine; the desktop app starts its own temporary media relay.
-
-The calendar uses the device's local timezone. Provider schedules can be incomplete or change; unannounced dates are not estimated. Hasimio Titles and Hasimio Anime supply metadata, not playback streams. Catalog requests are limited to six eligible catalogs per extension; Load more is available for catalogs declaring skip support. Search queries supported remote catalogs; genre filtering applies to loaded results. Metadata refresh requires the app to be open, with no background service or notifications after closing it.
-
-## Sources
-
-Protocol: https://stremio.github.io/stremio-addon-sdk/protocol.html
-
-Movie/series metadata comes from Hasimio Titles (`server/title-index.mjs`), served by Hasimio Engine at `/api/extensions/titles/manifest.json`. On first use the engine downloads IMDb's public datasets from https://datasets.imdbws.com (about 250 MB, licensed for personal and non-commercial use), keeps movies and series with at least 1,000 ratings in a local SQLite file under the engine cache folder, and rebuilds it weekly in the background. Catalogs show a building message until the first index is ready. IMDb's datasets have no posters, plots or exact dates. Series artwork, summaries and episode air dates come from TVmaze (https://api.tvmaze.com, no key, rate-limited; title pages and searches go ahead of background catalog artwork). Movie posters and summaries come from English Wikipedia: Wikidata (https://query.wikidata.org) maps IMDb IDs to articles, and the article's lead image, normally the release poster, is shown from upload.wikimedia.org. Many of these posters are non-free images Wikipedia hosts under fair use; Hasimio links to them rather than copying them. Films without an article or lead image keep the placeholder and are retried after three days. Artwork is cached in `artwork.db` beside the index for 30 days. Movies show a year rather than a release date and do not appear on the calendar. Series unknown to TVmaze fall back to IMDb's episode list without dates. Catalogs need Hasimio Engine, as torrent playback does. Existing Cinemeta installations switch to Hasimio Titles once, keeping their enabled state; Cinemeta can still be installed manually from its URL. The Pirate Bay resolves IMDb titles through this index. Anime uses Hasimio’s own adapter in `shared/kitsu.mjs`, calling https://kitsu.io/api/edge directly. The community Anime Kitsu add-on is no longer used, including during torrent lookup. Existing enabled/disabled settings and Kitsu title/episode IDs are preserved; removed sources stay removed. The adapter consumes validated JSON fields, omits credentials, rejects redirects, and constructs pagination on the fixed API origin. Kitsu remains an external data provider; rewriting the adapter does not make provider data inherently trustworthy.
-
-Starter artwork: MetaHub and TMDB. Open Cinema films and artwork: Blender Foundation (https://peach.blender.org/ and https://mango.blender.org/). Intro and credits timestamps: TheIntroDB (https://theintrodb.org), queried by the local engine. Demo video hosting: W3C and Blender Foundation. Network assets and services may be unavailable independently of the application.
-
-## Cinema player
-
-The unified player places audio/dub, subtitles, download and playback settings inside the video stage. It includes a buffered seek bar, play/pause, ten-second skips, mute/volume, playback speed, fullscreen and picture-in-picture where the browser supports it. Controls fade during mouse-driven playback and remain available with keyboard focus or an open menu. Space/K toggles playback, left/right seek ten seconds, up/down adjust volume, M mutes, F toggles fullscreen, and C opens subtitle options. Subtitle size and timing offset can be adjusted in the subtitle menu.
-
-Chromecast works in Chrome and in the Hasimio desktop app. In Chrome, Cast uses the browser's Google Cast sender: Cast to TV sends the current source and position to a device on the same Wi-Fi network. Direct videos cast as-is; torrent and compatible-audio HLS URLs use the engine's private LAN address, which `/api/streaming/health` advertises only when the engine listens beyond loopback, so run `npm run dev` / `npm run preview` or start Hasimio Engine with `--lan`.
-
-The desktop app has no Google Cast sender, so its engine discovers Chromecast devices on the LAN and speaks the Cast protocol directly. The Cast button lists nearby TVs; choosing one sends the current source and position to the TV while Hasimio stays open. Because the desktop engine normally listens only on loopback, the first desktop cast starts a temporary media relay on a random port bound to all IPv4 interfaces. The relay answers only `GET`/`HEAD` for active torrent media paths and stops with Hasimio; the app UI and API remain loopback-only. Windows Firewall may ask for network access the first time — allow private networks so the TV can reach the relay. Use the TV remote to pause or seek, or press Cast again to stop.
-
-For torrent sources, Download original file streams the selected file with attachment headers, retaining all embedded audio/subtitle tracks. Keep the player open until the download completes; closing playback stops the torrent and clears temporary files. Direct remote videos expose an Open video file action; the remote source and browser determine saving support. HLS-only direct sources have no standalone-file download. Audio compatibility, dub switching, prepared-video seeking and image-subtitle limitations described above still apply.
-
-The prepared-movie timeline uses the full source duration when available. Dragging previews the destination and seeks once on release; seeking beyond prepared video shows a preparation message. Progressive movie playlists start at the beginning without live-edge catch-up. Embedded subtitle cues are displayed as soon as FFmpeg flushes them, including the final cue; failed extraction can be retried in the subtitle menu. `npm run test:player` exercises the actual React controls in a hidden Electron window with generated HLS video and captions, including a growing playlist, mouse dragging, keyboard seeking, pause/resume and subtitle toggling.
-
-### Torrentio and Comet
-
-Torrentio is included and enabled for new and existing installations. Comet is included disabled because the public ElfHosted instance requires configuration and may reject requests with HTTP 403. Enable it in Extensions after configuring the engine, or install your configured Comet manifest directly using the existing extension URL field.
-
-The local adapters query the providers' Stremio stream APIs (Torrentio: https://torrentio.strem.fun, Comet: https://comet.elfhosted.com), keeping requests out of browser CORS restrictions. To use your own instance or debrid settings, set HASIMIO_TORRENTIO_MANIFEST_URL or HASIMIO_COMET_MANIFEST_URL to its complete configured HTTP(S) manifest URL before starting Hasimio. Configured URL paths may contain API keys; keep them private. Direct video URLs play in the player; validated torrent hashes use the local torrent engine. Provider file indices are preserved for episode packs. Both support IMDb movies/episodes and Kitsu anime episodes, with five-minute result caches. One-time migrations preserve existing disabled sources and later removals.
+Download the **.dmg** from the newest Hasimio release that includes one, open it, and drag Hasimio into **Applications**.
