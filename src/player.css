@@ -10,6 +10,10 @@
    Windows drops small mouse moves in fullscreen, so moving the mouse would not bring the controls back. */
 .cinema-player:not(.controls-visible){cursor:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgBAAABgACpSjotQAAAABJRU5ErkJggg==") 0 0,none}
 .cinema-player:not(.controls-visible) .cinema-video{cursor:inherit}
+/* Hardware-decoded video can sit in a display overlay that hides the controls on screen even though Chromium rendered
+   them, seen on Windows with an AMD GPU in fullscreen. Video below full opacity should not use that overlay. TVs and
+   Android keep theirs: their video planes are not worth risking, and the bug has not been seen there. */
+:root:not(.hasimio-tv):not(.hasimio-android) .cinema-player.controls-visible .cinema-video{opacity:.999}
 .cinema-top{top:0;display:flex;align-items:center;gap:16px;padding:22px 24px 52px;background:linear-gradient(180deg,rgba(0,0,0,.95),rgba(0,0,0,.6) 60%,transparent)}
 .cinema-title{min-width:0;flex:1}
 .cinema-title h2{font:600 clamp(20px,2vw,28px)/1.25 'Manrope',sans-serif;color:var(--player-ink);margin:0;overflow-wrap:anywhere;letter-spacing:-.02em}
