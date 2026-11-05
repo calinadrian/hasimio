@@ -17,8 +17,6 @@ import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
 import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer,lanOrigins} from './torrent-utils.mjs';
 import {cacheDir} from './paths.mjs';
 import {ENGINE_API_VERSION} from '../shared/engine-api.mjs';
-import {createFileList,filelistManifest} from './filelist.mjs';
-import parseTorrent from 'parse-torrent';
 
 const engineVersion=(()=>{try {return JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;}catch {return 'unknown';}})();
 import {createAudioJob,stopAudioJob,audioStatus,probeAudioTracks,audioRoot} from './compatible-audio.mjs';
@@ -43,7 +41,6 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
   const onlineSubtitles=createOnlineSubtitleService({fetchImpl,romanian:createRomanianSubtitles({fetchImpl,extractRar:readRarSubtitles})});
-  const filelist=createFileList({filename:path.join(cacheDir('filelist'),'account.json'),fetchImpl,parseTorrent});
   // Created on first use so engines that never cast do not open discovery sockets or TLS connections.
   let castController;
   const cast=()=>castController??=createCastController({fetchImpl,mediaOrigins:castMediaOrigins});
@@ -61,26 +58,22 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   }
   async function clearAudio(session){if(session.audioPending){try{await session.audioPending;}catch{/* Failed startup still needs any completed job cleaned. */}}await stopAudioJob(session.audioJob);session.audioJob=undefined;}
   async function clearSubtitles(session){if(session.subtitleQueue)await session.subtitleQueue.catch(()=>{});await stopAudioJob(session.subtitleJob);session.subtitleJob=undefined;}
-  async function stop(id) {const session=sessions.get(id);if(!session)return; sessions.delete(id);clearTimeout(session.timer);session.probeController?.abort();if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);await clearSubtitles(session);for(const stream of session.readers)stream.destroy();if(session.torrent&&!session.torrent.destroyed)await new Promise(resolve=>session.torrent.destroy({destroyStore:true},resolve));if(session.ownedClient&&!session.ownedClient.destroyed)await new Promise(resolve=>session.ownedClient.destroy(resolve));}
+  async function stop(id) {const session=sessions.get(id);if(!session)return; sessions.delete(id);clearTimeout(session.timer);session.probeController?.abort();if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);await clearSubtitles(session);for(const stream of session.readers)stream.destroy();if(session.torrent&&!session.torrent.destroyed)await new Promise(resolve=>session.torrent.destroy({destroyStore:true},resolve));}
   function snapshot(session) {session.touched=Date.now();return {id:session.id,state:session.error?'error':session.ready?'ready':'buffering',error:session.error,files:session.files,selected:session.selected,duration:session.duration,audio:audioStatus(session.audioJob,session.id),audioTracks:session.audioTracks,subtitleTracks:session.subtitleTracks,subtitle:subtitleStatus(session.subtitleJob,session.id),numPeers:session.torrent?.numPeers ?? 0,downloadSpeed:session.torrent?.downloadSpeed ?? 0,downloaded:session.torrent?.downloaded ?? 0,progress:session.torrent?.progress ?? 0,mediaUrl:session.ready&&session.selected!=null?`/api/torrents/${session.id}/files/${session.selected}`:undefined};}
   async function start(input,inspection=false) {
-    const privateSource=input.filelistId?await filelist.resolve(input.filelistId):undefined;
-    if(!privateSource&&!validHash(input.infoHash))throw new Error('A valid torrent info hash is required.');
-    const hash=privateSource?privateSource.infoHash:input.infoHash.toLowerCase();
+    if(!validHash(input.infoHash))throw new Error('A valid torrent info hash is required.');
+    const hash=input.infoHash.toLowerCase();
     if(!inspection)for(const [id,active] of [...sessions.entries()])if(!active.inspection)await stop(id);
     if(shuttingDown)throw new Error('Streaming service is stopping.');
-    let engine;
-    if(privateSource){const {default:WebTorrent}=await import('webtorrent');await sweepCache();await mkdir(cacheRoot,{recursive:true});engine=new WebTorrent({dht:false,lsd:false,natUpnp:false,natPmp:false,utp:false,maxConns:20,uploadLimit:UPLOAD_LIMIT});}
-    else engine=await client(inspection);
+    const engine=await client(inspection);
     const id=randomBytes(18).toString('hex');
-    const session={id,inspection,touched:Date.now(),ready:false,files:[],selected:undefined,readers:new Set(),ownedClient:privateSource?engine:undefined};sessions.set(id,session);
-    if(privateSource)engine.on('error',()=>{session.error='FileList tracker connection failed. Check your account and source.';});
+    const session={id,inspection,touched:Date.now(),ready:false,files:[],selected:undefined,readers:new Set()};sessions.set(id,session);
     const magnet=`magnet:?xt=urn:btih:${hash}`;
     let torrent;
-    try{torrent=engine.add(privateSource?privateSource.data:magnet,{path:path.join(cacheRoot,inspection?'inspections':'playback',hash),addUID:true,destroyStoreOnDestroy:true,deselect:true,strategy:'sequential',announce:privateSource?[]:trackers});session.torrent=torrent;}
-    catch(error){await stop(id);throw Error(privateSource?'FileList torrent could not start.':error.message);}
+    try{torrent=engine.add(magnet,{path:path.join(cacheRoot,inspection?'inspections':'playback',hash),addUID:true,destroyStoreOnDestroy:true,deselect:true,strategy:'sequential',announce:trackers});session.torrent=torrent;}
+    catch(error){await stop(id);throw error;}
     session.timer=setTimeout(()=>{session.error='No torrent metadata arrived within 90 seconds. Try a source with more seeders.';if(!torrent.destroyed)torrent.destroy({destroyStore:true},()=>{});},90000);session.timer.unref();
-    torrent.on('error',error=>{clearTimeout(session.timer);session.error=privateSource?'FileList playback failed. Check tracker access and account permissions.':error.message;});
+    torrent.on('error',error=>{clearTimeout(session.timer);session.error=error.message;});
     torrent.once('ready',()=>{clearTimeout(session.timer);const selection=selectVideo(torrent.files,input.videoId,input.fileIdx);session.files=selection.files;session.selected=selection.selected;if(!session.files.length){session.error='This torrent contains no supported video files.';return;}session.ready=true;for(const file of torrent.files)file.deselect();if(!inspection&&session.selected!=null)torrent.files[session.selected].select();});
     return snapshot(session);
   }
@@ -124,15 +117,6 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     if(!localRequest(req,undefined,allowedOrigins))return json(res,403,{error:'Streaming requests must come from this app on localhost, this PC’s private LAN address, or an allowed Hasimio site.'});
     for(const [name,value] of Object.entries(corsHeaders(req,allowedOrigins)))res.setHeader(name,value);
     try {
-      if(url.pathname==='/api/filelist/account'){
-        if(req.method==='GET')return json(res,200,filelist.status());
-        if(req.method==='POST')return json(res,200,await filelist.connect(await body(req)));
-        if(req.method==='DELETE'){for(const session of [...sessions.values()])if(session.ownedClient)await stop(session.id);return json(res,200,filelist.disconnect());}
-        return json(res,405,{error:'Method not allowed.'});
-      }
-      if(req.method==='GET'&&url.pathname==='/api/extensions/filelist/manifest.json')return json(res,200,filelistManifest);
-      const filelistStream=/^\/api\/extensions\/filelist\/stream\/(movie|series)\/([^/]+)\.json$/.exec(url.pathname);
-      if(req.method==='GET'&&filelistStream)return json(res,200,await filelist.search(filelistStream[1],decodeURIComponent(filelistStream[2])));
       if(req.method==='GET'&&url.pathname==='/api/live-tv/iptv-org/channels')return json(res,200,{channels:await liveTv.channels(),checkedAt:liveTv.checkedAt});
       const liveRoute=/^\/api\/live-tv\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(main|alternative|s[1-9][0-9]*)\/(index\.m3u8|asset\/[a-f0-9]{32})$/.exec(url.pathname);
       if(req.method==='GET'&&liveRoute){

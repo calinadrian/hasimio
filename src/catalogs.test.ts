@@ -6,10 +6,15 @@ import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
 const enabledClaw = {...torrentClaw,enabled:true};
 afterEach(() => vi.unstubAllGlobals());
 describe('default catalogs and anime discovery', () => {
+  it('removes the retired FileList extension from saved and synced profiles',()=>{
+    const retired=[{url:'/api/extensions/filelist/manifest.json',enabled:true,manifest:{id:'org.hasimio.filelist',name:'FileList',version:'1.0.0',resources:['stream'],types:['movie']}}];
+    expect(migrateAnimeSource([...retired,kitsu] as typeof defaultAddons)).toEqual([kitsu]);
+    expect(defaultAddons.some(addon=>/filelist/i.test(addon.url+addon.manifest.id))).toBe(false);
+  });
   it('runs each one-time source addition under its own flag, preserving later removals',()=>{
     const flags=sourceMigrations.map(([flag])=>flag);
     expect(new Set(flags).size).toBe(flags.length);
-    expect(flags).toEqual(['hasimio:piratebay-v1','hasimio:yts-v1','hasimio:eztv-v1','hasimio:torrentdownloads-v1','hasimio:torrentclaw-v1','hasimio:titles-v1','hasimio:torrentio-v1','hasimio:comet-v1','hasimio:ext-v1']);
+    expect(flags).toEqual(['hasimio:remove-filelist-v1','hasimio:piratebay-v1','hasimio:yts-v1','hasimio:eztv-v1','hasimio:torrentdownloads-v1','hasimio:torrentclaw-v1','hasimio:titles-v1','hasimio:torrentio-v1','hasimio:comet-v1','hasimio:ext-v1']);
     const migrated=sourceMigrations.reduce((existing,[,apply])=>apply(existing),[] as typeof defaultAddons);
     expect(migrated.map(a=>a.manifest.id)).toEqual([pirateBay,yts,eztv,torrentDownloads,torrentClaw,titles,torrentio,comet,ext].map(a=>a.manifest.id));
     expect(migrated.find(a=>a.manifest.id===torrentClaw.manifest.id)?.enabled).toBe(false);

@@ -1,1 +1,0 @@
-export const filelistManifest={id:'org.hasimio.filelist',name:'FileList',version:'1.0.0',description:'Private movie and series sources. Connect your FileList username and API passkey in Extensions.',resources:['stream'],types:['movie','series'],idPrefixes:['tt'],catalogs:[]};

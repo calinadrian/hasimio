@@ -34,10 +34,8 @@ storage namespace cannot change within a running app: old asynchronous sync
 work therefore continues to refer only to the old profile's keys and group.
 In-memory player, metadata and pairing state are recreated on the next choice.
 
-Shared device settings remain shared: FileList login, video-buffer size,
-engine and app updates. The FileList settings panel explicitly identifies its
-account as shared on this device. Connection keys and provider credentials
-are never copied from an existing profile to a newly created one.
+Shared device settings remain shared: video-buffer size, engine and app
+updates. Connection keys and provider credentials are never copied from an existing profile to a newly created one.
 
 Only the selected profile's data is loaded into the app. Avatar tiles use CSS
 and initials, without extra images. On TV disposable metadata cache limits

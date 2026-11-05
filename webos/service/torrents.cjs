@@ -60,14 +60,13 @@ module.exports = function createTorrents(options) {
     return snapshot(session);
   }
   async function begin(input) {
-    const privateSource=input.filelistId?await options.resolveFilelist(input.filelistId):undefined;
-    if (!privateSource&&!/^[a-f\d]{40}$/i.test(input.infoHash || '')) fail('A valid torrent info hash is required.');
+    if (!/^[a-f\d]{40}$/i.test(input.infoHash || '')) fail('A valid torrent info hash is required.');
     await stop();
     const session = active = {id:crypto.randomBytes(18).toString('hex'), generation:++generation, startedAt:Date.now(), touched:Date.now(), readers:new Set(), ready:false, receivedBytes:0, servedBytes:0, readTimeouts:0};
     if (options.onStart) options.onStart();
     record('info','playback-start','A fresh torrent session started with an empty video buffer.');
     // TCP/UDP/DHT only. No WebRTC native addons and no filesystem store.
-    client = new WebTorrent({maxConns:8, lsd:false, tracker:{wrtc:false}, dht:privateSource?false:{maxTables:16,maxValues:32,maxPeers:128}});
+    client = new WebTorrent({maxConns:8, lsd:false, tracker:{wrtc:false}, dht:{maxTables:16,maxValues:32,maxPeers:128}});
     client.on('error', () => { session.error = 'The TV torrent service could not connect. Choose another source.'; record('error','torrent-client',session.error); });
     const Store = createBoundedStore(limit(), index => {
       const torrent = session.torrent;
@@ -79,10 +78,10 @@ module.exports = function createTorrents(options) {
       torrent.files.forEach(file => { file.done = false; });
     }, store => { session.store = store; });
     let torrent;
-    try{torrent=session.torrent=client.add(privateSource?privateSource.data:'magnet:?xt=urn:btih:' + input.infoHash.toLowerCase(), {store:Store, announce:privateSource?[]:trackers, strategy:'sequential'});}
-    catch(error){await stop();throw Error(privateSource?'FileList torrent could not start.':error.message);}
+    try{torrent=session.torrent=client.add('magnet:?xt=urn:btih:' + input.infoHash.toLowerCase(), {store:Store, announce:trackers, strategy:'sequential'});}
+    catch(error){await stop();throw error;}
     torrent.on('download', bytes => { session.receivedBytes += bytes; });
-    torrent.on('error', error => { session.error = privateSource?'FileList playback failed. Check tracker access, source compatibility and account permissions.':error.message; record('error','torrent-error',session.error); });
+    torrent.on('error', error => { session.error = error.message; record('error','torrent-error',session.error); });
     torrent.once('metadata', () => {
       // Bound metadata bookkeeping as well as completed piece data.
       if (torrent.pieces.length > 32768 || torrent.files.length > 1000) {
