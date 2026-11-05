@@ -11,6 +11,7 @@ import {searchStremioSource} from '../../server/stremio-sources.mjs';
 import {extManifest,searchExt} from '../../server/ext.mjs';
 import {createLiveTv} from '../../server/live-tv.mjs';
 import {createSkipSegmentLookup} from '../../server/segments.mjs';
+import {removeFileListLogin} from '../../server/retired-filelist.mjs';
 import {createOnlineSubtitleService} from '../../server/online-subtitles.mjs';
 import {createRomanianSubtitles} from '../../server/romanian-subtitles.mjs';
 import createTorrents from './torrents.cjs';
@@ -21,6 +22,7 @@ const PORT=11476, ORIGIN='http://127.0.0.1:'+PORT;
 const MiB=1024*1024, metadataLimit=4*MiB;
 const dataRoot=process.env.HASIMIO_MOBILE_DATA||'/media/internal/app.hasimio.tv';
 const configPath=path.join(dataRoot,'settings.json');
+removeFileListLogin(path.join(dataRoot,'filelist-account.json'));
 let cacheMiB=64;
 try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].includes(config.cacheMiB))cacheMiB=config.cacheMiB;}catch{/* New installation. */}
 const onlineSubtitles=createOnlineSubtitleService({romanian:createRomanianSubtitles()});

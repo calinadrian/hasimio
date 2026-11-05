@@ -8,6 +8,7 @@ import {createMediaService} from './service.mjs';
 import {parseOrigins,lanOrigins} from './torrent-utils.mjs';
 import {cacheRoot} from './paths.mjs';
 import {serveStatic} from './static-ui.mjs';
+import {removeFileListLogin} from './retired-filelist.mjs';
 
 export const ENGINE_PORT=11475;
 // Precedence: defaults, then environment, then the config file, then command-line flags. Allowed sites from all of them combine.
@@ -39,6 +40,7 @@ export function engineOptions(argv,env=process.env,readConfig=file=>JSON.parse(r
 
 // Starts the engine; with uiRoot it also serves that built UI folder, as the desktop app does. Rejects with error.code on listen failures.
 export async function startEngine({port=ENGINE_PORT,host='127.0.0.1',allowedOrigins=new Set(),uiRoot}={}) {
+  removeFileListLogin(path.join(cacheRoot(),'filelist','account.json'));
   let relay;let server;
   // A loopback-only desktop engine cannot hand a TV its 127.0.0.1 media URL. A second, ephemeral
   // HTTP server on 0.0.0.0 serves only torrent media paths, and only after the first cast starts.
