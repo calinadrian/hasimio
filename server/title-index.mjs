@@ -9,6 +9,7 @@ import {Readable} from 'node:stream';
 import {mkdir,rename,rm,stat} from 'node:fs/promises';
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
+import {romanianSeries,romanianSeriesIds,romanianCatalog} from '../shared/romanian-series.mjs';
 
 export const datasetBase='https://datasets.imdbws.com';
 export const tvmazeApi='https://api.tvmaze.com';
@@ -17,14 +18,20 @@ export const wikipediaApi='https://en.wikipedia.org/w/api.php';
 // Wikimedia asks API clients to identify themselves.
 const wikiHeaders={'User-Agent':'Hasimio (https://github.com/calinadrian/hasimio)'};
 export const MIN_VOTES=1000;
+// New shows and shows from smaller markets rarely reach a thousand ratings, and a series is
+// often only reachable through this index, so series need far fewer. Romanian shows need none.
+export const MIN_SERIES_VOTES=25;
+const NEW_SERIES_VOTES=100;
+// Raise when the build changes what an index contains, so existing installations rebuild.
+const INDEX_VERSION='2';
 const PAGE=50;
 const REFRESH_MS=7*24*60*60*1000;
 const searchAndSkip=[{name:'search'},{name:'skip'}];
 export const titleIndexManifest={
-  id:'org.hasimio.titles',name:'Hasimio Titles',version:'1.0.0',
+  id:'org.hasimio.titles',name:'Hasimio Titles',version:'1.1.0',
   description:'Hasimio’s own movie and series index, built locally from IMDb’s public datasets. Wikipedia adds movie posters; TVmaze adds series artwork and episode air dates.',
   types:['movie','series'],idPrefixes:['tt'],resources:['catalog','meta'],
-  catalogs:[{id:'popular',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'popular',type:'series',name:'Popular series',extra:searchAndSkip},{id:'top-rated',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'top-rated',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}],
+  catalogs:[{id:'popular',type:'movie',name:'Popular movies',extra:searchAndSkip},{id:'popular',type:'series',name:'Popular series',extra:searchAndSkip},{id:'new',type:'series',name:'New series',extra:[{name:'skip'}]},{id:'romanian',type:'series',name:'Romanian series',extra:[{name:'skip'}]},{id:'top-rated',type:'movie',name:'Top-rated movies',extra:[{name:'skip'}]},{id:'top-rated',type:'series',name:'Top-rated series',extra:[{name:'skip'}]}],
 };
 
 export function normalize(value) { return String(value).normalize('NFKD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim(); }
@@ -55,17 +62,23 @@ export async function* datasetRows(name, fetchImpl, signal) {
 }
 const rows=datasetRows;
 
-// Builds a fresh index into `file`. Titles need MIN_VOTES ratings; adult titles are skipped.
-export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{}}={}) {
+// A title is searched by both of its names, for shows IMDb lists under an English title.
+// `search` keeps them in one column so indexes from older versions stay readable until they rebuild.
+const searchText=(...names)=>[...new Set(names.filter(Boolean).map(normalize))].join('|');
+
+// Builds a fresh index into `file`. Movies need MIN_VOTES ratings and series MIN_SERIES_VOTES,
+// except listed Romanian series; adult titles are skipped.
+export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},romanian=romanianSeriesIds}={}) {
   const db=new DatabaseSync(file);
   try {
     db.exec(`PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;
-      CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT NOT NULL,name TEXT NOT NULL,search TEXT NOT NULL,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER NOT NULL) WITHOUT ROWID;
+      CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT NOT NULL,name TEXT NOT NULL,search TEXT NOT NULL,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER NOT NULL,alias TEXT) WITHOUT ROWID;
       CREATE TABLE episodes(id TEXT PRIMARY KEY,parent TEXT NOT NULL,season INTEGER NOT NULL,episode INTEGER NOT NULL,name TEXT,runtime INTEGER) WITHOUT ROWID;
       CREATE TABLE info(key TEXT PRIMARY KEY,value TEXT);`);
     onStep('Downloading ratings');
     const ratings=new Map();
-    for await (const [id,rating,votes] of rows('title.ratings.tsv.gz',fetchImpl,signal)) { const n=count(votes); if (n >= MIN_VOTES) ratings.set(id,[Number(rating),n]); }
+    for await (const [id,rating,votes] of rows('title.ratings.tsv.gz',fetchImpl,signal)) { const n=count(votes); if (n >= MIN_SERIES_VOTES || romanian.has(id)) ratings.set(id,[Number(rating),n]); }
+    for (const id of romanian) if (!ratings.has(id)) ratings.set(id,[null,0]);
     db.exec('BEGIN');
     onStep('Downloading episode lists');
     const addEpisode=db.prepare('INSERT OR IGNORE INTO episodes(id,parent,season,episode) VALUES(?,?,?,?)');
@@ -74,17 +87,19 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{}}={}
       if (ratings.has(parent) && s != null && e != null) addEpisode.run(id,parent,s,e);
     }
     onStep('Downloading titles');
-    const addTitle=db.prepare('INSERT OR IGNORE INTO titles VALUES(?,?,?,?,?,?,?,?,?,?)');
+    const addTitle=db.prepare('INSERT OR IGNORE INTO titles VALUES(?,?,?,?,?,?,?,?,?,?,?)');
     const nameEpisode=db.prepare('UPDATE episodes SET name=?,runtime=? WHERE id=?');
-    for await (const [id,kind,name,,adult,start,end,runtime,genres] of rows('title.basics.tsv.gz',fetchImpl,signal)) {
-      if (kind === 'tvEpisode') { nameEpisode.run(field(name)??null,count(runtime)??null,id); continue; }
+    for await (const [id,kind,primary,originalTitle,adult,start,end,runtime,genres] of rows('title.basics.tsv.gz',fetchImpl,signal)) {
+      if (kind === 'tvEpisode') { nameEpisode.run(field(primary)??null,count(runtime)??null,id); continue; }
       const type=kind === 'movie' ? 'movie' : kind === 'tvSeries' || kind === 'tvMiniSeries' ? 'series' : undefined;
       const rated=ratings.get(id);
-      if (!type || !rated || adult === '1' || !field(name)) continue;
-      addTitle.run(id,type,name,normalize(name),count(start) ?? null,count(end) ?? null,count(runtime) ?? null,field(genres) ?? null,rated[0],rated[1]);
+      if (!type || !rated || adult === '1' || !field(primary) || (type === 'movie' && rated[1] < MIN_VOTES)) continue;
+      // Romanian shows keep their Romanian name, so Băieți de oraș is not listed as City Boys.
+      const original=field(originalTitle),name=romanian.has(id) && original ? original : primary,alias=[primary,original].find(other=>other && other !== name);
+      addTitle.run(id,type,name,searchText(name,alias),count(start) ?? null,count(end) ?? null,count(runtime) ?? null,field(genres) ?? null,rated[0],rated[1],alias ?? null);
     }
     db.exec('DELETE FROM episodes WHERE parent NOT IN (SELECT id FROM titles)');
-    db.prepare('INSERT INTO info VALUES(?,?)').run('builtAt',String(Date.now()));
+    db.prepare('INSERT INTO info VALUES(?,?),(?,?)').run('builtAt',String(Date.now()),'version',INDEX_VERSION);
     db.exec('COMMIT;CREATE INDEX titles_rank ON titles(type,votes);CREATE INDEX episodes_parent ON episodes(parent)');
     return db.prepare('SELECT COUNT(*) AS n FROM titles').get().n;
   } finally { db.close(); }
@@ -93,6 +108,7 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{}}={}
 export function titleMeta(row, art) {
   const year=row.start ? String(row.start) : undefined;
   return {id:row.id,type:row.type,name:row.name,
+    aliases:row.alias ? [row.alias] : undefined,
     releaseInfo:row.type === 'series' && year && row.end !== row.start ? `${year}–${row.end ?? ''}` : year,
     imdbRating:typeof row.rating === 'number' ? row.rating.toFixed(1) : undefined,
     votes:Number.isSafeInteger(row.votes) ? row.votes : undefined,
@@ -106,7 +122,7 @@ export function tvmazeEpisodes(imdb, episodes) {
     .map(e => ({id:`${imdb}:${e.season}:${e.number}`,season:e.season,episode:e.number,title:typeof e.name === 'string' ? e.name : undefined,released:stamp(e.airstamp) ?? date(e.airdate),thumbnail:image(e.image?.medium ?? e.image?.original),...(typeof e.runtime==='number'&&e.runtime>0?{runtime:e.runtime}:{} )}));
 }
 
-export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
+export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=romanianSeries}={}) {
   const file=path.join(dir,'titles.db');
   let db,building,status={state:'idle'},closed=false;
   const artPending=new Map(),controller=new AbortController();
@@ -216,7 +232,7 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
       await mkdir(dir,{recursive:true});
       const temp=`${file}.${process.pid}.${Date.now()}.tmp`;
       try {
-        await buildIndex(temp,{fetchImpl,signal:controller.signal,onStep:step=>{status={state:'building',step};}});
+        await buildIndex(temp,{fetchImpl,signal:controller.signal,romanian:new Set(romanian.map(show=>show.id)),onStep:step=>{status={state:'building',step};}});
         db?.close();db=undefined;
         await rename(temp,file);
         status={state:'ready'};
@@ -229,8 +245,9 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
     if (closed) throw new Error('Title index is closed.');
     const current=await open();
     if (current) {
-      const built=Number(current.prepare('SELECT value FROM info WHERE key=?').get('builtAt')?.value);
-      if (!(now()-built < REFRESH_MS)) void refresh();
+      const info=key=>current.prepare('SELECT value FROM info WHERE key=?').get(key)?.value;
+      // An outdated index keeps serving while its replacement builds in the background.
+      if (!(now()-Number(info('builtAt')) < REFRESH_MS) || info('version') !== INDEX_VERSION) void refresh();
       return current;
     }
     void refresh();
@@ -258,13 +275,17 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now}={}) {
       const clauses=words.map(()=>"instr(replace(search,' ',''),?)>0").join(' AND ');
       // Most popular first. Titles whose words start with the query words rank above mid-word
       // matches, so short queries like “it” still find It before Spirited Away.
-      const wordStarts=words.map(()=>"instr(' '||search,' '||?)>0").join(' AND ');
-      found=index.prepare(`SELECT * FROM titles WHERE type=? AND ${clauses} ORDER BY (replace(search,' ','')=?) DESC,(${wordStarts}) DESC,votes DESC LIMIT ? OFFSET ?`).all(type,...words,words.join(''),...words,PAGE,skip);
+      const wordStarts=words.map(()=>"instr(' '||replace(search,'|',' '),' '||?)>0").join(' AND ');
+      found=index.prepare(`SELECT * FROM titles WHERE type=? AND ${clauses} ORDER BY (instr('|'||replace(search,' ','')||'|','|'||?||'|')>0) DESC,(${wordStarts}) DESC,votes DESC LIMIT ? OFFSET ?`).all(type,...words,words.join(''),...words,PAGE,skip);
     }
     else if (id === 'popular') found=index.prepare('SELECT * FROM titles WHERE type=? AND start>=? ORDER BY votes DESC LIMIT ? OFFSET ?').all(type,new Date(now()).getFullYear()-2,PAGE,skip);
+    // IMDb only gives a start year, so this year's shows come first, most rated first.
+    else if (id === 'new') { const year=new Date(now()).getFullYear(); found=index.prepare('SELECT * FROM titles WHERE type=? AND start BETWEEN ? AND ? AND votes>=? ORDER BY start DESC,votes DESC LIMIT ? OFFSET ?').all(type,year-1,year,NEW_SERIES_VOTES,PAGE,skip); }
+    else if (id === 'romanian') found=index.prepare('SELECT * FROM titles WHERE type=? AND id IN (SELECT value FROM json_each(?)) ORDER BY votes DESC,start DESC LIMIT ? OFFSET ?').all(type,JSON.stringify(romanian.map(show=>show.id)),PAGE,skip);
     else if (id === 'top-rated') found=index.prepare('SELECT * FROM titles WHERE type=? AND votes>=25000 ORDER BY rating DESC,votes DESC LIMIT ? OFFSET ?').all(type,PAGE,skip);
     else throw Object.assign(new Error('Unknown Hasimio catalog.'),{status:404});
-    return {metas:await withArt(found.map(row=>titleMeta(row)),3000,query ? 'high' : 'low'),hasMore:found.length === PAGE};
+    // Searches reach many rarely seen titles, and the client has fallback posters, so they wait less for artwork.
+    return {metas:await withArt(found.map(row=>titleMeta(row)),query ? 1500 : 3000,query ? 'high' : 'low'),hasMore:found.length === PAGE};
   }
   async function title(id) {
     if (!/^tt\d+$/.test(id)) throw Object.assign(new Error('Invalid IMDb title ID.'),{status:400});

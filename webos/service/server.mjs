@@ -14,6 +14,7 @@ import {createSkipSegmentLookup} from '../../server/segments.mjs';
 import {removeFileListLogin} from '../../server/retired-filelist.mjs';
 import {createOnlineSubtitleService} from '../../server/online-subtitles.mjs';
 import {createRomanianSubtitles} from '../../server/romanian-subtitles.mjs';
+import {romanianCatalog} from '../../shared/romanian-series.mjs';
 import createTorrents from './torrents.cjs';
 import createUpdater from './updater.cjs';
 import createMonitor from './monitor.cjs';
@@ -137,8 +138,10 @@ async function route(req,res){
     const [,key,file,resource,rawType,rawId,extras]=extension,type=decodeURIComponent(rawType||''),id=decodeURIComponent(rawId||'');
     if(key==='titles'){
       if(file==='manifest.json'){json(res,200,{id:'org.hasimio.titles',name:'TV catalogs',version:'1.0.0',description:'Online movie and series metadata; no IMDb database is downloaded to the TV.',resources:['catalog','meta'],types:['movie','series'],catalogs:[]});return;}
-      const mapped=resource==='catalog'?(id==='popular'?'top':id==='top-rated'?'imdbRating':id):id;
-      const result=await cached(pathname,()=>remoteJson(cinemaUrl(resource,type,mapped,extras)));
+      if(resource==='catalog'&&id==='romanian'){json(res,200,romanianCatalog(Number(new URLSearchParams(extras||'').get('skip'))||0,30));return;}
+      const mapped=resource==='catalog'?(id==='popular'?'top':id==='top-rated'?'imdbRating':id==='new'?'year':id):id;
+      const remoteExtras=resource==='catalog'&&id==='new'?['genre='+new Date().getFullYear(),extras].filter(Boolean).join('&'):extras;
+      const result=await cached(pathname,()=>remoteJson(cinemaUrl(resource,type,mapped,remoteExtras)));
       // Keep DOM and decoded artwork bounded; paging stays explicit on TV.
       if(result.metas)result.metas=result.metas.slice(0,30);
       json(res,200,result);return;

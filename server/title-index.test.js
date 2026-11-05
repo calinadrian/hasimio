@@ -56,6 +56,39 @@ describe('Hasimio title index',()=>{
     await expect(titles.title('tt9')).rejects.toMatchObject({status:404});
     await titles.close();
   });
+  it('keeps lightly rated series, finds them by original title, and lists new and Romanian rows',async()=>{
+    const ratings=tsv(['tconst','averageRating','numVotes'],['tt60','7.0','900'],['tt61','7.5','30'],['tt62','8.0','5'],['tt63','6.0','10'],['tt64','6.5','500'],['tt65','7.1','5000'],['tt66','7.2','300']);
+    const basics=tsv(['tconst','titleType','primaryTitle','originalTitle','isAdult','startYear','endYear','runtimeMinutes','genres'],
+      ['tt60','movie','Small Film','Small Film','0','2026','\\N','90','Drama'],['tt61','tvSeries','City Boys','Baieti de Oras','0','2016','\\N','50','Comedy'],
+      ['tt62','tvSeries','Obscure','Obscure','0','2026','\\N','50','Drama'],['tt63','tvSeries','Fara Urma','Fara Urma','0','2026','\\N','50','Drama'],
+      ['tt64','tvSeries','Older New','Older New','0','2025','\\N','50','Drama'],['tt65','tvSeries','Newest','Newest','0','2026','\\N','50','Drama'],
+      ['tt66','tvSeries','Last Decade','Last Decade','0','2015','\\N','50','Drama'],['tt67','tvMiniSeries','Unrated Romanian','Unrated Romanian','0','2026','\\N','50','Drama']);
+    dir=await mkdtemp(path.join(tmpdir(),'hasimio-titles-'));
+    const fetchImpl=async url=>{const name=String(url).split('/').at(-1);return String(url).startsWith('https://datasets.imdbws.com/')?new Response({'title.ratings.tsv.gz':ratings,'title.basics.tsv.gz':basics,'title.episode.tsv.gz':tsv(['tconst','parentTconst','seasonNumber','episodeNumber'],['tt671','tt67','1','1'])}[name]):new Response('',{status:404});};
+    const titles=createTitleIndex({dir,fetchImpl,now:()=>Date.parse('2026-10-28T00:00:00Z'),romanian:[{id:'tt61'},{id:'tt63'},{id:'tt67'}]});open=titles;
+    await titles.refresh();
+    await expect(titles.title('tt60')).rejects.toMatchObject({status:404});
+    await expect(titles.title('tt62')).rejects.toMatchObject({status:404});
+    expect((await titles.catalog('series','new')).metas.map(m=>m.id)).toEqual(['tt65','tt64']);
+    const romanian=(await titles.catalog('series','romanian')).metas;
+    expect(romanian.map(m=>m.id)).toEqual(['tt61','tt63','tt67']);
+    // Romanian shows are listed under their Romanian name and stay findable under the English one.
+    expect(romanian[0]).toMatchObject({name:'Baieti de Oras',aliases:['City Boys']});
+    expect(romanian[2].imdbRating).toBeUndefined();
+    expect((await titles.meta('series','tt67')).meta.videos.map(v=>v.id)).toEqual(['tt67:1:1']);
+    for(const search of ['baieti de oras','city boys','Băieți','oras baieti'])expect((await titles.catalog('series','popular',{search})).metas.map(m=>m.id),search).toEqual(['tt61']);
+    // An exact match on either name wins.
+    expect((await titles.catalog('series','popular',{search:'newest'})).metas[0].id).toBe('tt65');
+  });
+  it('rebuilds an index from an older version while it keeps serving',async()=>{
+    const {titles}=await index();await titles.refresh();await titles.close();
+    const {DatabaseSync}=await import('node:sqlite');
+    const db=new DatabaseSync(path.join(dir,'titles.db'));db.exec("DELETE FROM info WHERE key='version'");db.close();
+    const fetchImpl=vi.fn(async()=>new Response('',{status:404}));
+    const restarted=createTitleIndex({dir,fetchImpl,now:()=>Date.parse('2026-10-28T00:00:00Z')});open=restarted;
+    expect((await restarted.catalog('movie','popular')).metas.map(m=>m.id)).toEqual(['tt1']);
+    await vi.waitFor(()=>expect(fetchImpl.mock.calls.some(([url])=>String(url).startsWith('https://datasets.imdbws.com/'))).toBe(true));
+  });
   it('falls back to IMDb episodes when TVmaze does not know a series',async()=>{
     const {titles}=await index();await titles.refresh();
     const {meta}=await titles.meta('series','tt3');

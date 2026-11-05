@@ -99,6 +99,11 @@ describe('default catalogs and anime discovery', () => {
     expect(supports({...updated,enabled:true},'stream','series','kitsu:11:1')).toBe(true);
     expect(updatePlaybackAddon([])).toEqual([]);
   });
+  it('gives saved profiles the new series rows while keeping Hasimio Titles disabled if it was', () => {
+    const [updated]=updatePlaybackAddon([{...titles,enabled:false,manifest:{...titles.manifest,version:'1.0.0',catalogs:titles.manifest.catalogs.filter(c=>c.id!=='new'&&c.id!=='romanian')}}]);
+    expect(updated.enabled).toBe(false);
+    expect(updated.manifest.catalogs.filter(c=>c.type==='series').map(c=>c.id)).toEqual(['popular','new','romanian','top-rated']);
+  });
   it('defaults playback to a released regular episode rather than the next calendar release', () => {
     const meta:Meta={id:'tt1',name:'Show',type:'series',videos:[{id:'special',season:0,episode:1,released:'2020-01-01'},{id:'future',season:1,episode:2,released:'2099-01-01'},{id:'pilot',season:1,episode:1,released:'2020-01-01'}]};
     expect(defaultEpisode(meta)?.id).toBe('pilot');
