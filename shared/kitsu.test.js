@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {describe,it,expect,vi} from 'vitest';
 import {animeMeta,kitsuCatalog,kitsuMetadata,kitsuSeries,parseSeasonTitle} from './kitsu.mjs';
 
@@ -35,6 +36,12 @@ it('ranks exact anime titles and aliases above more popular partial matches',asy
  const record=(id,name,rank,titles={})=>({...anime,id,attributes:{...anime.attributes,canonicalTitle:name,popularityRank:rank,titles}});
  const result=await kitsuCatalog('kitsu-anime-list','From',0,undefined,async()=>response({data:[record('1','From the Stars',1),record('2','From',1000),record('3','Japanese title',2000,{en:'From'})]}));
  expect(result.metas.map(m=>m.id)).toEqual(['kitsu:2','kitsu:3','kitsu:1']);
+});
+
+it('uses only the Unicode property escapes the TV and Android builds can rewrite',()=>{
+  // Their engines have no ICU: anything else fails on the device, not in these tests.
+  const source=readFileSync(new URL('./kitsu.mjs',import.meta.url),'utf8').replaceAll(String.raw`/[^\p{L}\p{N}]+/gu`,'');
+  expect(source).not.toMatch(/\\[pP]\{/);
 });
 
 describe('anime season titles',()=>{

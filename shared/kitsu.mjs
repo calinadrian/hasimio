@@ -55,7 +55,7 @@ export function parseSeasonTitle(title) {
   }
   return {base,label:parts.join(' ') || undefined};
 }
-export const compactTitle = value => value.normalize('NFKD').replace(/\p{M}+/gu,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'');
+export const compactTitle = value => value.normalize('NFKD').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'');
 const textValue = value => typeof value === 'string' && value.trim() ? value.trim() : undefined;
 export function animeMeta(record) {
   const a = record?.attributes;

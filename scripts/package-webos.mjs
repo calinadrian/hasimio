@@ -81,6 +81,7 @@ const result=await buildService({
         let contents=await fs.readFile(args.path,'utf8');
         // Node 8 supports Unicode regex flags, but not Unicode properties.
         contents=contents.replace(/\/([\[][\^]\\p\{L\}\\p\{N\} ?\]\+?)\/gu/g,(_,pattern)=>'/'+rewritePattern(pattern,'gu',{unicodePropertyEscapes:'transform'})+'/gu');
+        if(/\\[pP]\{/.test(contents))throw Error('Review unsupported Unicode property escapes for the TV: '+args.path);
         if(args.path.replaceAll('\\','/').endsWith('/webtorrent/lib/torrent.js')){
           const needle='this.store = new ImmediateChunkStore(';
           if(!contents.includes(needle))throw Error('WebTorrent changed: review the TV metadata guard before packaging.');
