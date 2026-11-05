@@ -46,7 +46,8 @@ export async function searchPirateBay(type,id,fetchImpl=fetch,lookupTitle) {
   }
   if(!meta?.name)throw new Error('No title metadata was found.');
   const clean = name => name.replace(/['’]/g,'').replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim();
-  const name=clean(meta.name);
+  // Anime releases are mostly named after Kitsu's canonical title, not the English one shown in the app.
+  const name=clean(meta.originalName??meta.name);
   if(video.kitsu){
     animeNames=[...new Set([name,...(meta.aliases ?? []).filter(n=>typeof n==='string').map(clean)])];
     video.imdb=meta.imdb_id;

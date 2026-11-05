@@ -1,6 +1,7 @@
 import {isWebOS} from './webos/platform';
 import {stremioSources,stremioManifests} from '../shared/stremio-sources.mjs';
-import {kitsuCatalog,kitsuMetadata} from '../shared/kitsu.mjs';
+import {kitsuCatalog,kitsuSeries} from '../shared/kitsu.mjs';
+import {groupAnimeSeries,imdbAnimeMatch} from './anime-series';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
 import { type Addon, type Meta, type Manifest, cinemetaUrl, kitsuUrl, titlesUrl, demoAddon, getJson, resourceUrl, supports, validRelease } from './media';
 
@@ -72,11 +73,11 @@ export function addDefaultCatalogs(existing: Addon[]) {
 export function topResults(rows:{items:Meta[]}[], query:string, limit = 12) {
   const words = (text:string) => text.normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/['’]/g,'').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
   const wanted = words(query);
-  const wordStart = (meta:Meta) => { const name = words(meta.name); return wanted.every(word => name.some(part => part.startsWith(word))); };
+  const wordStart = (meta:Meta) => [meta.name,meta.originalName].some(title => { const name = words(title??''); return wanted.every(word => name.some(part => part.startsWith(word))); });
   const exact = (meta:Meta) => [meta.name,...(meta.aliases??[])].some(name=>words(name).join('')===wanted.join(''));
   const seen = new Set<string>();
-  return rows.flatMap(row => row.items).filter(meta => !seen.has(`${meta.type}:${meta.id}`) && seen.add(`${meta.type}:${meta.id}`))
-    .sort((a,b) => Number(exact(b))-Number(exact(a)) || Number(wordStart(b))-Number(wordStart(a)) || (b.votes??0)-(a.votes??0)).slice(0,limit);
+  return groupAnimeSeries(rows.flatMap(row => row.items).filter(meta => !seen.has(`${meta.type}:${meta.id}`) && seen.add(`${meta.type}:${meta.id}`))
+    .sort((a,b) => Number(exact(b))-Number(exact(a)) || Number(wordStart(b))-Number(wordStart(a)) || (b.votes??0)-(a.votes??0))).slice(0,limit);
 }
 export function removeBundledTitle(existing:Meta[]) {
   return existing.filter(meta=>!(meta.id==='tt28504410'&&meta.type==='series'));
@@ -108,7 +109,24 @@ export async function loadCatalog(addon:Addon, catalog:Manifest['catalogs'][numb
   if(isWebOS)items=items.slice(0,30);
   return {key:`${addon.manifest.id}:${catalog.type}:${catalog.id}`,title,source:addon.manifest.name,items,addon,catalog,skip:'nextSkip' in result && Number.isSafeInteger(result.nextSkip) && Number(result.nextSkip)>skip ? Number(result.nextSkip) : skip+(isWebOS?Math.min(30,result.metas.length):result.metas.length),hasMore:(result.hasMore ?? items.length > 0) && !!catalog.extra?.some(e => e.name === 'skip')};
 }
+const imdbAnimeLookups=new Map<string,Meta|null>();
+// Finds the anime for an IMDb series that no loaded catalog covers, as on the Series tab. Bounded so a slow
+// Kitsu cannot hold up the details, and failures are not remembered so the next open tries again.
+export async function findImdbAnime(meta:Meta, signal?:AbortSignal, fetchImpl?:typeof fetch):Promise<Meta|undefined> {
+  const known=imdbAnimeLookups.get(meta.id);
+  if(known!==undefined)return known??undefined;
+  const timeout=AbortSignal.timeout(3000);
+  const bounded=signal?AbortSignal.any([signal,timeout]):timeout;
+  const search=async(name:string)=>imdbAnimeMatch(meta,(await kitsuCatalog('kitsu-anime-list',name,0,bounded,fetchImpl)).metas);
+  let match=await search(meta.name);
+  for(const alias of meta.aliases??[])match??=await search(alias);
+  if(imdbAnimeLookups.size>=200)imdbAnimeLookups.clear();
+  imdbAnimeLookups.set(meta.id,match?{...match,sourceUrl:kitsuUrl}:null);
+  return imdbAnimeLookups.get(meta.id)??undefined;
+}
 export function needsMetadata(meta:Meta, now = Date.now()) {
+  // Anime saved before seasons were merged still holds a single season.
+  if (meta.id.startsWith('kitsu:') && meta.type !== 'movie' && !meta.seasonIds && !meta.metadataError) return true;
   return !meta.metadataFetchedAt || now - meta.metadataFetchedAt >= (meta.metadataPartial ? 60*1000 : meta.metadataError ? 10*60*1000 : 6*60*60*1000);
 }
 export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSignal): Promise<Meta> {
@@ -126,12 +144,13 @@ export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSigna
         if(requestSignal.aborted)cancel();else requestSignal.addEventListener('abort',cancel,{once:true});
       });
       const result = source.manifest.id === kitsu.manifest.id
-        ? {meta:await kitsuMetadata(meta.id,requestSignal)}
+        ? {meta:await kitsuSeries(meta.id,requestSignal)}
         : await getJson<{meta:Meta}>(resourceUrl(source.url,'meta',meta.type,meta.id),requestSignal);
       if (!result.meta || typeof result.meta.id !== 'string' || typeof result.meta.name !== 'string') throw new Error('Invalid metadata response.');
       const knownVideos=new Map(meta.videos?.map(video=>[video.id,video]));
       const videos=Array.isArray(result.meta.videos)?result.meta.videos.map(video=>{const known=knownVideos.get(video.id);const merged={...known,...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined&&value!==null)),id:video.id};if(!validRelease(video.released)&&validRelease(known?.released))merged.released=known!.released;return merged;}):meta.videos;
-      return {...meta,...result.meta,id:meta.id,type:meta.type,category:meta.category ?? (source.manifest.id === kitsu.manifest.id ? 'anime' : undefined),sourceUrl:source.url,videos,metadataFetchedAt:Date.now(),metadataError:undefined,metadataPartial:result.meta.metadataPartial===true};
+      // A merged anime is always the same title, whichever season's card opened it.
+      return {...meta,...result.meta,id:result.meta.seasonIds?.includes(meta.id)?result.meta.id:meta.id,type:meta.type,category:meta.category ?? (source.manifest.id === kitsu.manifest.id ? 'anime' : undefined),sourceUrl:source.url,videos,metadataFetchedAt:Date.now(),metadataError:undefined,metadataPartial:result.meta.metadataPartial===true};
     }));
   }catch{if(signal?.aborted)throw new DOMException('Aborted','AbortError');}
   finally{controller.abort();}

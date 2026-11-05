@@ -1,4 +1,4 @@
-import {type Meta} from './media';
+import {seasonShortName,type Meta} from './media';
 import {progressKey,type ProgressMap} from './playback-progress';
 import {runtimeSeconds} from './watch-time';
 
@@ -21,7 +21,7 @@ const watchPercent=(watched:number,total:number)=>total>0?Math.min(100,Math.roun
 function episodeName(meta:Meta,videoId:string|undefined,label:string|undefined){
   if(label)return label;
   const video=meta.videos?.find(v=>v.id===videoId);
-  if(video?.episode!=null)return `${video.season!=null?`S${video.season} · `:''}E${video.episode}`;
+  if(video?.episode!=null)return `${video.season!=null?`${seasonShortName(video)} · `:''}E${video.episode}`;
   return meta.type==='movie'?'Movie':'Episode';
 }
 // Counts manual marks and real playback together. Titles the app does not know stay out of the lists

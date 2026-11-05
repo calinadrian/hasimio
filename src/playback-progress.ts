@@ -1,5 +1,5 @@
 import {profileStorage,storageKey as scopedStorageKey} from './profile-storage';
-import {validRelease,type Meta,type Video} from './media';
+import {seasonShortName,validRelease,type Meta,type Video} from './media';
 const storageKey='hasimio:playback-progress:v1';
 const progressEvent='hasimio:playback-progress';
 // Manually watched entries have no real runtime yet, so cards hide their play time.
@@ -78,16 +78,31 @@ export function restoreProgress(entries:Record<string,PlaybackProgress|undefined
     persistHistory(all);
   }catch{/* The toast still closes when storage is unavailable. */}
 }
-export function lastPlayedEpisode(titleKey:string,videoIds:string[]) {
+// Episode IDs already identify their title, and an anime season watched before its series was merged has an older title key.
+export function lastPlayedEpisode(videoIds:string[]) {
   const ids=new Set(videoIds);
-  return Object.values(playbackHistory()).filter(p=>p.titleKey===titleKey&&p.videoId&&ids.has(p.videoId)&&!p.manual).sort((a,b)=>b.updatedAt-a.updatedAt)[0]?.videoId;
+  return Object.values(playbackHistory()).filter(p=>p.videoId&&ids.has(p.videoId)&&!p.manual).sort((a,b)=>b.updatedAt-a.updatedAt)[0]?.videoId;
+}
+// Progress saved against one anime season counts toward the merged series. Stored history stays untouched.
+export function canonicalHistory(history:ProgressMap,metas:Meta[]):ProgressMap {
+  const aliases=new Map<string,string>();
+  for(const meta of metas)for(const id of meta.seasonIds??[])if(id!==meta.id)aliases.set(progressKey(meta.type,id),progressKey(meta.type,meta.id));
+  if(!aliases.size)return history;
+  let changed=false;
+  const result=Object.fromEntries(Object.entries(history).map(([key,progress])=>{
+    const titleKey=progress.titleKey&&aliases.get(progress.titleKey);
+    if(!titleKey)return [key,progress];
+    changed=true;
+    return [key,{...progress,titleKey}];
+  }));
+  return changed?result:history;
 }
 const seasonRank=(season:number|undefined)=>season==null?-1:season===0?Number.MAX_SAFE_INTEGER:season;
 export const episodeOrder=(a:Video,b:Video)=>seasonRank(a.season)-seasonRank(b.season)||(a.episode??0)-(b.episode??0);
 // Reopening a series resumes real playback first, then falls in after the last episode checked by hand.
 export function nextEpisodeToWatch(meta:Meta,history:ProgressMap):string|undefined {
   const ordered=(meta.videos??[]).filter(v=>v.episode!=null).sort(episodeOrder);
-  const played=lastPlayedEpisode(progressKey(meta.type,meta.id),ordered.map(v=>v.id));
+  const played=lastPlayedEpisode(ordered.map(v=>v.id));
   if(played)return played;
   let lastWatched=-1;
   ordered.forEach((video,index)=>{if(history[progressKey(meta.type,video.id)]?.completed)lastWatched=index;});
@@ -119,7 +134,7 @@ export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefi
     const imdb=/^tt\d+:(\d+):(\d+)$/.exec(latest.videoId??'');
     const kitsu=/^kitsu:\d+:(\d+)$/.exec(latest.videoId??'');
     if(typeof latest.episodeLabel==='string'&&latest.episodeLabel)episode=latest.episodeLabel;
-    else if(video?.episode!=null)episode=`${video.season!=null?`S${video.season} · `:''}E${video.episode}`;
+    else if(video?.episode!=null)episode=`${video.season!=null?`${seasonShortName(video)} · `:''}E${video.episode}`;
     else if(imdb)episode=`S${Number(imdb[1])} · E${Number(imdb[2])}`;
     else if(kitsu)episode=`Episode ${Number(kitsu[1])}`;
   }
@@ -136,7 +151,7 @@ export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefi
     const target=latest.completed?last:current;
     const season=target?all.filter(v=>v.season===target.season):[];
     const number=target?.episode;
-    const label=target?`${target.season===0?'Specials':target.season!=null?`S${target.season}`:'Episodes'} · E${number}${!meta.metadataPartial&&season.length?`/${season.length}`:''}`:episode;
+    const label=target?`${target.season===0?'Specials':target.season!=null?seasonShortName(target):'Episodes'} · E${number}${!meta.metadataPartial&&season.length?`/${season.length}`:''}`:episode;
     if(latest.completed){
       if(!meta.metadataPartial&&available.length&&available.every(watched))status=available.length<episodes.length?'Caught up':'Watched';
       else if(last){

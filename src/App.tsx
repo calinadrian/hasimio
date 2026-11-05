@@ -6,7 +6,8 @@ import {version as appVersion} from '../package.json';
 
 import { Compass, Library, CalendarDays, Puzzle, Search, Play, Plus, Check, ChevronLeft, ChevronRight, X, ArrowUpRight, Film, Info, RefreshCw, ExternalLink, Trash2, LoaderCircle, SlidersHorizontal, Download, Upload, MonitorSmartphone, CircleCheck, BarChart3, Tv, Settings as SettingsIcon } from 'lucide-react';
 import { type Meta, type Addon, type Stream, demo, openFilms, getJson, manifestUrl, validateManifest, resourceUrl, supports, demoStreams, safeHttp, nextRelease, episodeLabel } from './media';
-import {removeBundledTitle, topResults, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
+import {groupAnimeSeries, imdbAnimeCandidate, mergeImdbAnime, sameTitle, updateTitle} from './anime-series';
+import {removeBundledTitle, topResults, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, findImdbAnime, kitsu, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
 import {defaultEpisode} from './media';
 import Calendar from './Calendar';
 import PosterImage from './PosterImage';
@@ -27,7 +28,7 @@ import { exportLibrary, mergeLibrary, parseLibrary } from './library-transfer';
 import './styles.css';
 import './shell.css';
 import Player from './Player';
-import {progressKey,subscribeProgress,progressSnapshot,playbackHistory,titleProgress,continueWatching,savedProgress,setWatched,restoreProgress,episodesBefore,nextEpisodeToWatch,type WatchTarget} from './playback-progress';
+import {canonicalHistory,progressKey,subscribeProgress,progressSnapshot,playbackHistory,titleProgress,continueWatching,savedProgress,setWatched,restoreProgress,episodesBefore,nextEpisodeToWatch,type WatchTarget} from './playback-progress';
 import {bestSource} from './stream-options';
 import {nextEpisode} from './next-episode';
 import Poster from './Poster';
@@ -47,7 +48,7 @@ function mediaLabel(meta:Meta) { return meta.category === 'anime' || meta.type =
 export default function App() {
   const preferences=usePlayerSettings();
   const progressVersion=useSyncExternalStore(subscribeProgress,progressSnapshot);
-  const history=useMemo(()=>playbackHistory(progressVersion),[progressVersion]);
+  const storedHistory=useMemo(()=>playbackHistory(progressVersion),[progressVersion]);
   useEffect(()=>{deviceSync.start();},[]);
   useEffect(()=>{if(!isWebOS)return;const frame=requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('nav button.active')?.focus({preventScroll:true}));return()=>cancelAnimationFrame(frame);},[]);
   const [actor,setActor]=useState<Person>();
@@ -65,7 +66,7 @@ export default function App() {
   const [catalogs,setCatalogs] = useState<CatalogRow[]>([]); const [loading,setLoading] = useState(false); const [catalogError,setCatalogError] = useState(''); const [refresh,setRefresh] = useState(0);
   const [calendarLoading,setCalendarLoading] = useState(false); const [calendarRefresh,setCalendarRefresh] = useState(0); const [clockTick,setClockTick] = useState(0);
   const progressRefreshApplied=useRef(0);
-  const [progressMetadata,setProgressMetadata]=useState<Meta[]>(cachedProgressTitles);const [progressLoading,setProgressLoading]=useState(false);const [progressRefresh,setProgressRefresh]=useState(0);
+  const [progressMetadata,setProgressMetadata]=useState<Meta[]>(cachedProgressTitles);const history=useMemo(()=>canonicalHistory(storedHistory,[...progressMetadata,...library]),[storedHistory,progressMetadata,library]);const [progressLoading,setProgressLoading]=useState(false);const [progressRefresh,setProgressRefresh]=useState(0);
   const [selected,setSelected] = useState<Meta>(); const [detailLoading,setDetailLoading] = useState(false); const [streams,setStreams] = useState<Stream[]>([]); const [streamLoading,setStreamLoading] = useState(false); const [streamError,setStreamError] = useState(''); const [episode,setEpisode] = useState<string>(); const [autoNext,setAutoNext] = useState<string>();
   const [playing,setPlaying] = useState<Stream>(); const [installUrl,setInstallUrl] = useState(''); const [installing,setInstalling] = useState(false); const [installError,setInstallError] = useState(''); const [notice,setNotice] = useState<{text:string;undo?:()=>void}>(); const [noticeHeld,setNoticeHeld] = useState(false); const [dialogScrolled,setDialogScrolled] = useState(false);
   const notify = (text:string,undo?:()=>void) => setNotice({text,undo});
@@ -85,7 +86,7 @@ export default function App() {
     const queue = library.filter(meta => calendarRefresh > (meta.metadataFetchedAt ?? 0) || needsMetadata(meta) || (meta.metadataError && addons.some(a => supports(a,'meta',meta.type,meta.id))));
     setCalendarLoading(queue.length > 0);
     // Bound concurrency so restoring a large library does not flood metadata providers.
-    async function worker() { while (queue.length && live) { const meta = queue.shift()!; try { const updated = await loadMetadata(meta,addons,controller.signal); if (live) setLibrary(previous => previous.map(m => m.id === meta.id && m.type === meta.type ? updated : m)); } catch { if (controller.signal.aborted) return; } } }
+    async function worker() { while (queue.length && live) { const meta = queue.shift()!; try { const updated = await loadMetadata(meta,addons,controller.signal); if (live) setLibrary(previous => updateTitle(previous.map(m => m.id === meta.id && m.type === meta.type ? updated : m),updated)); } catch { if (controller.signal.aborted) return; } } }
     Promise.all(Array.from({length:Math.min(3,queue.length)},worker)).then(() => {if (live) setCalendarLoading(false);});
     return () => {live=false;controller.abort();};
     // Metadata writes do not restart synchronization; changes to membership do.
@@ -142,7 +143,7 @@ export default function App() {
     detailAbort.current?.abort();
     const controller=new AbortController();detailAbort.current=controller;
     const cacheKey=JSON.stringify([meta.type,meta.id,addons.filter(a=>a.enabled).map(a=>[a.url,a.manifest.version])]);
-    const savedMeta=library.find(m=>m.id===meta.id&&m.type===meta.type);
+    const savedMeta=library.find(m=>sameTitle(m,meta));
     const cached=detailCache.current.get(cacheKey);
     const initial=cached??(savedMeta&&(!needsMetadata(savedMeta)||(savedMeta.videos?.length??0)>(meta.videos?.length??0))?savedMeta:meta);
     const initialEpisode=(videoId&&initial.videos?.some(v=>v.id===videoId)?videoId:undefined)??nextEpisodeToWatch(initial,history)??defaultEpisode(initial)?.id;
@@ -150,6 +151,13 @@ export default function App() {
     if(dialog.current)dialog.current.scrollTop=0;
     const refreshNeeded=needsMetadata(initial)||initial.type!=='movie'&&!initial.videos?.length;
     setDetailLoading(refreshNeeded);
+    if(imdbAnimeCandidate(initial)&&!keepImdbTitle(initial)&&addons.some(a=>a.enabled&&a.manifest.id===kitsu.manifest.id)){
+      setDetailLoading(true);
+      const anime=await findImdbAnime(initial,controller.signal).catch(()=>undefined);
+      if(request!==detailRequest.current)return;
+      if(anime)return open({...anime,imdbIds:[initial.id]});
+      setDetailLoading(refreshNeeded);
+    }
     if(!refreshNeeded)return;
     try{
       const updated=await loadMetadata(initial,addons,controller.signal);
@@ -160,7 +168,7 @@ export default function App() {
       }
       setSelected(updated);
       setEpisode(current=>current&&updated.videos?.some(v=>v.id===current)?current:nextEpisodeToWatch(updated,history)??defaultEpisode(updated)?.id);
-      setLibrary(previous=>previous.map(m=>m.id===meta.id&&m.type===meta.type?updated:m));
+      setLibrary(previous=>updateTitle(previous.map(m=>m.id===meta.id&&m.type===meta.type?updated:m),updated));
     }catch(error){if(!controller.signal.aborted)notify(error instanceof Error?error.message:'Could not load details. Try again.');}
     finally{if(request===detailRequest.current)setDetailLoading(false);}
   }
@@ -170,25 +178,30 @@ export default function App() {
   function toggleWatched(videoId:string|undefined,watched:boolean) {const target=watchTarget(videoId);if(!target||!selected)return;const before={[target.key]:savedProgress(target.key)},label=videoId?target.episodeLabel:selected.name;setWatched([target],watched);notify(`${label} marked as ${watched?'watched':'unwatched'}`,()=>restoreProgress(before));}
   function markPreviousWatched(videoId?:string) {if(!selected)return;const targets=(videoId?episodesBefore(selected,videoId):(selected.videos??[]).filter(v=>v.episode!=null)).map(v=>({key:progressKey(selected.type,v.id),titleKey:progressKey(selected.type,selected.id),videoId:v.id,episodeLabel:episodeLabel(selected,v)})).filter(target=>!history[target.key]?.completed);if(!targets.length)return;const before=Object.fromEntries(targets.map(target=>[target.key,savedProgress(target.key)]));setWatched(targets);notify(`Marked ${targets.length} ${videoId?'earlier ':''}${targets.length===1?'episode':'episodes'} as watched`,()=>restoreProgress(before));}
   function markAllUnwatched() {if(!selected)return;const targets=(selected.videos??[]).filter(v=>v.episode!=null).map(v=>({key:progressKey(selected.type,v.id),titleKey:progressKey(selected.type,selected.id),videoId:v.id,episodeLabel:episodeLabel(selected,v)})).filter(target=>history[target.key]?.completed);if(!targets.length)return;const before=Object.fromEntries(targets.map(target=>[target.key,savedProgress(target.key)]));setWatched(targets,false);notify(`Marked ${targets.length} ${targets.length===1?'episode':'episodes'} as unwatched`,()=>restoreProgress(before));}
-  function markSeasonWatched(season:number|undefined,watched:boolean) {if(!selected)return;const targets=(selected.videos??[]).filter(v=>v.episode!=null&&v.season===season).map(v=>({key:progressKey(selected.type,v.id),titleKey:progressKey(selected.type,selected.id),videoId:v.id,episodeLabel:episodeLabel(selected,v)})).filter(target=>watched?!history[target.key]?.completed:history[target.key]?.completed);if(!targets.length)return;const before=Object.fromEntries(targets.map(target=>[target.key,savedProgress(target.key)]));setWatched(targets,watched);const label=season==null?'Episodes':season===0?'Specials':'Season '+season;notify(label+' marked as '+(watched?'watched':'unwatched'),()=>restoreProgress(before));}
+  function markSeasonWatched(season:number|undefined,watched:boolean) {if(!selected)return;const targets=(selected.videos??[]).filter(v=>v.episode!=null&&v.season===season).map(v=>({key:progressKey(selected.type,v.id),titleKey:progressKey(selected.type,selected.id),videoId:v.id,episodeLabel:episodeLabel(selected,v)})).filter(target=>watched?!history[target.key]?.completed:history[target.key]?.completed);if(!targets.length)return;const before=Object.fromEntries(targets.map(target=>[target.key,savedProgress(target.key)]));setWatched(targets,watched);const label=season==null?'Episodes':season===0?'Specials':selected.videos?.find(v=>v.season===season)?.seasonName??'Season '+season;notify(label+' marked as '+(watched?'watched':'unwatched'),()=>restoreProgress(before));}
   function startPlayback(stream:Stream) {setAutoNext(undefined);setPlaying(stream);}
   function playEpisode(id:string) {if(!selected)return;setAutoNext(id);setPlaying(undefined);setStreams([]);setStreamError('');setStreamLoading(true);setEpisode(id);}
-  function toggleSave(meta:Meta) { const index = library.findIndex(m => m.id === meta.id && m.type === meta.type); if (index < 0) { setLibrary(previous => [...previous,meta]); notify(`${meta.name} added to your library`); return; }
-    const removed = library[index]; setLibrary(previous => previous.filter(m => m.id !== meta.id || m.type !== meta.type)); notify(`${meta.name} removed from your library`,() => setLibrary(previous => previous.some(m => m.id === removed.id && m.type === removed.type) ? previous : [...previous.slice(0,index),removed,...previous.slice(index)])); }
+  function toggleSave(meta:Meta) { const index = library.findIndex(m => sameTitle(m,meta)); if (index < 0) { setLibrary(previous => [...previous,meta]); notify(`${meta.name} added to your library`); return; }
+    const removed = library[index]; setLibrary(previous => previous.filter(m => !sameTitle(m,meta))); notify(`${meta.name} removed from your library`,() => setLibrary(previous => previous.some(m => m.id === removed.id && m.type === removed.type) ? previous : [...previous.slice(0,index),removed,...previous.slice(index)])); }
   function removeAddon(addon:Addon) { const index = addons.findIndex(a => a.manifest.id === addon.manifest.id); setAddons(previous => previous.filter(a => a.manifest.id !== addon.manifest.id)); notify(`${addon.manifest.name} removed`,() => setAddons(previous => previous.some(a => a.manifest.id === addon.manifest.id) ? previous : [...previous.slice(0,index),addon,...previous.slice(index)])); }
   async function install(input = installUrl) { setInstalling(true); setInstallError(''); try { const url = manifestUrl(input); const manifest = validateManifest(await getJson(url)); if (addons.some(a => a.manifest.id === manifest.id)) throw new Error('This extension is already installed.'); setAddons(previous => [...previous,{url,manifest,enabled:true}]); setInstallUrl(''); notify(`${manifest.name} installed`); } catch (e) { setInstallError(e instanceof Error ? e.message : 'Installation failed. Check the URL and CORS support.'); } finally { setInstalling(false); } }
   function exportFile() { const blob = new Blob([JSON.stringify(exportLibrary(library,addons),null,2)],{type:'application/json'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `hasimio-library-${new Date().toLocaleDateString('sv-SE')}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(link.href),1000); notify(`Exported ${library.length} saved title${library.length === 1 ? '' : 's'}`); }
   async function importFile(file?: File) { if (!file) return; try { if (file.size > 10*1024*1024) throw new Error('Choose a Hasimio library export smaller than 10 MB.'); const merged = mergeLibrary({library,addons},parseLibrary(await file.text())); setLibrary(previous => mergeLibrary({library:previous,addons:[]},{library:merged.library,addons:[]}).library); setAddons(previous => mergeLibrary({library:[],addons:previous},{library:[],addons:merged.addons}).addons); notify(`Imported ${merged.added.titles} title${merged.added.titles === 1 ? '' : 's'} and ${merged.added.addons} extension${merged.added.addons === 1 ? '' : 's'}`); } catch (e) { notify(e instanceof Error ? e.message : 'Could not import this library.'); } }
   function refreshCalendar() {setCalendarRefresh(Date.now());}
   async function more(row:CatalogRow) {if(morePending.current.has(row.key))return undefined;morePending.current.add(row.key);const request=catalogRequest.current; try {const next = await loadCatalog(row.addon,row.catalog,query.trim(),row.skip); if (request !== catalogRequest.current) return; setCatalogs(previous => previous.map(c => c.key !== row.key ? c : {...next,items:isWebOS?next.items.slice(0,30):[...new Map([...c.items,...next.items].map(m => [`${m.type}:${m.id}`,m])).values()],hasMore:next.hasMore && next.items.some(m => !c.items.some(old => old.id === m.id && old.type === m.type))}));return next.items.filter(m=>!row.items.some(old=>old.id===m.id&&old.type===m.type));} catch {return undefined;} finally {morePending.current.delete(row.key);}}
-  const filtered = (items:Meta[]) => items.filter(m => `${m.type}:${m.id}` !== spotlightKey).filter(m => (filter === 'All' || (filter === 'Anime' ? mediaLabel(m) === 'Anime' : m.type === (filter === 'Movies' ? 'movie' : 'series'))) && (genre === 'All genres' || m.genres?.includes(genre)));
-  const saved = (meta:Meta) => library.some(m => m.id === meta.id && m.type === meta.type);
+  // IMDb numbers anime differently, so a saved or started IMDb entry stays as it is rather than losing that progress.
+  const startedTitles=useMemo(()=>new Set(Object.entries(history).map(([key,entry])=>entry.titleKey??key)),[history]);
+  const keepImdbTitle=(meta:Meta)=>startedTitles.has(progressKey(meta.type,meta.id))||library.some(m=>m.id===meta.id&&m.type===meta.type);
+  const knownAnime=useMemo(()=>[...progressMetadata,...library,...catalogs.flatMap(c=>c.items)].filter(m=>m.category==='anime'&&m.seriesKeys),[progressMetadata,library,catalogs]);
+  const shelfTitles=(items:Meta[])=>groupAnimeSeries(mergeImdbAnime(items,knownAnime,keepImdbTitle));
+  const filtered = (items:Meta[]) => shelfTitles(items).filter(m => `${m.type}:${m.id}` !== spotlightKey).filter(m => (filter === 'All' || (filter === 'Anime' ? mediaLabel(m) === 'Anime' : m.type === (filter === 'Movies' ? 'movie' : 'series'))) && (genre === 'All genres' || m.genres?.includes(genre)));
+  const saved = (meta:Meta) => library.some(m => sameTitle(m,meta));
   const allGenres = [...new Set([...demo,...catalogs.flatMap(c => c.items),...library].flatMap(m => m.genres ?? []))].sort();
   const localRows = page === 'Library' ? [{title:'Your collection',items:library.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : [...(!loading && !catalogs.length && filter !== 'Anime' ? [{title:'Starter picks · Offline selection',items:demo.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : []),...(addons.some(a => a.builtin && a.enabled) && !query.trim() ? [{title:'Open Cinema · Ready to play',items:openFilms}] : [])];
   useEffect(()=>storeProgressTitles(progressMetadata),[progressMetadata]);
   const knownTitles = useMemo(() => {const known=[...progressMetadata,...library,...catalogs.flatMap(c => c.items),...demo,...openFilms];return [...known,...progressTitleSeeds(history,known)];},[progressMetadata,catalogs,library,history]);
-  useEffect(()=>{if(selected?.videos?.length&&!selected.metadataPartial)setProgressMetadata(previous=>[...previous.filter(meta=>meta.id!==selected.id||meta.type!==selected.type),selected]);},[selected]);
-  const cardMetadata=useMemo(()=>{const result=new Map<string,Meta>();for(const meta of [...knownTitles,...(selected?[selected]:[])]){const key=progressKey(meta.type,meta.id),previous=result.get(key);if(!previous||(meta.videos?.length??0)>(previous.videos?.length??0))result.set(key,meta);}return result;},[knownTitles,selected]);
+  useEffect(()=>{if(selected?.videos?.length&&!selected.metadataPartial)setProgressMetadata(previous=>[...previous.filter(meta=>!sameTitle(meta,selected)),selected]);},[selected]);
+  const cardMetadata=useMemo(()=>{const result=new Map<string,Meta>();for(const meta of [...knownTitles,...(selected?[selected]:[])])for(const id of new Set([meta.id,...(meta.seasonIds??[])])){const key=progressKey(meta.type,id),previous=result.get(key);if(!previous||(meta.videos?.length??0)>(previous.videos?.length??0))result.set(key,meta);}return result;},[knownTitles,selected]);
   const cardProgress=(meta:Meta)=>titleProgress(cardMetadata.get(progressKey(meta.type,meta.id))??meta,history);
   const progressLookupKey=JSON.stringify([...new Set(Object.entries(history).map(([key,p])=>p.titleKey??key))].sort());
   const progressKnownKey=JSON.stringify([...new Set(knownTitles.map(meta=>progressKey(meta.type,meta.id)))].sort());
@@ -205,7 +218,7 @@ export default function App() {
     setProgressLoading(queue.length>0);
     async function worker(){while(queue.length&&live){const meta=queue.shift()!;try{
       const updated=await loadMetadata(meta,addons,controller.signal);
-      if(live)setProgressMetadata(previous=>[...previous.filter(item=>item.id!==updated.id||item.type!==updated.type),updated]);
+      if(live)setProgressMetadata(previous=>[...previous.filter(item=>!sameTitle(item,updated)),updated]);
     }catch{if(controller.signal.aborted)return;}}}
     void Promise.all(Array.from({length:Math.min(3,queue.length)},worker)).then(()=>{if(live)setProgressLoading(false);});
     return()=>{live=false;controller.abort();};
@@ -220,13 +233,13 @@ export default function App() {
   const rows=collectionRow?[collectionRow]:allRows;
   // The spotlight follows what you are watching, then live catalogs; the starter pick only covers offline use.
   const resuming = continueItems.find(m => safeHttp(m.background));
-  const featured = resuming ?? catalogs.flatMap(c => c.items).find(m => safeHttp(m.background) && m.description) ?? (loading ? undefined : demo[0]);
+  const featured = resuming ?? catalogs.flatMap(c => shelfTitles(c.items)).find(m => safeHttp(m.background) && m.description) ?? (loading ? undefined : demo[0]);
   const featuredProgress = featured && cardProgress(featured);
   // The spotlight title is not repeated in the shelves right below it.
   const activeRow=rows.find(row=>(row.key||row.title)===browseRow);
   const browseItems=activeRow?filteredForBrowse(activeRow.items):[];
-  function filteredForBrowse(items:Meta[]){return items.filter(m=>(filter==='All'||(filter==='Anime'?mediaLabel(m)==='Anime':m.type===(filter==='Movies'?'movie':'series')))&&(genre==='All genres'||m.genres?.includes(genre)));}
-  const browseIndex=selected?browseItems.findIndex(m=>m.id===selected.id&&m.type===selected.type):-1;
+  function filteredForBrowse(items:Meta[]){return shelfTitles(items).filter(m=>(filter==='All'||(filter==='Anime'?mediaLabel(m)==='Anime':m.type===(filter==='Movies'?'movie':'series')))&&(genre==='All genres'||m.genres?.includes(genre)));}
+  const browseIndex=selected?browseItems.findIndex(m=>sameTitle(m,selected)):-1;
   async function browseTitle(direction:number){
     if(browsing)return;
     const target=browseItems[browseIndex+direction];
@@ -234,7 +247,7 @@ export default function App() {
     if(direction>0&&activeRow?.hasMore){
       const catalog=catalogs.find(row=>row.key===activeRow.key);if(!catalog)return;
       setBrowsing(true);const request=detailRequest.current;
-      try{const added=await more(catalog);const next=added&&filteredForBrowse(added)[0];if(request===detailRequest.current&&dialog.current?.open){if(next)void open(next);else if(!added)notify('Could not load the next titles. Try again.');}}finally{setBrowsing(false);}
+      try{const added=await more(catalog);const next=added&&filteredForBrowse([...activeRow.items,...added]).find(m=>!browseItems.some(old=>sameTitle(old,m)||(old.seriesKeys??[]).some(key=>m.seriesKeys?.includes(key))));if(request===detailRequest.current&&dialog.current?.open){if(next)void open(next);else if(!added)notify('Could not load the next titles. Try again.');}}finally{setBrowsing(false);}
     }
   }
   const spotlightKey = page === 'Discover' && !query && filter === 'All' && featured && featured !== resuming ? `${featured.type}:${featured.id}` : '';

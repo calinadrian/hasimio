@@ -4,9 +4,10 @@ import {type Meta,type Video,episodeLabel,releaseCountdown,validRelease} from '.
 import {episodesBefore,progressKey,type ProgressMap} from './playback-progress';
 
 const visibleEpisodes=10;
-const seasonName=(season:number|undefined)=>season==null?'Episodes':season===0?'Specials':`Season ${season}`;
+const defaultSeasonName=(season:number|undefined)=>season==null?'Episodes':season===0?'Specials':`Season ${season}`;
 export default function EpisodeList({meta,episode,history,onSelect,onToggleWatched,onMarkPrevious,onMarkAll,onMarkAllUnwatched,onMarkSeason}:{meta:Meta;episode?:string;history:ProgressMap;onSelect:(id:string)=>void;onToggleWatched:(id:string,watched:boolean)=>void;onMarkPrevious:(id:string)=>void;onMarkAll:()=>void;onMarkAllUnwatched:()=>void;onMarkSeason:(season:number|undefined,watched:boolean)=>void}){
   const episodes=meta.videos?.filter(v=>v.episode!=null)??[];
+  const seasonName=(season:number|undefined)=>episodes.find(v=>v.season===season)?.seasonName??defaultSeasonName(season);
   // Specials sort after the numbered seasons, as most providers list them.
   const seasons=[...new Set(episodes.map(v=>v.season))].sort((a,b)=>(a===0?Infinity:a??-1)-(b===0?Infinity:b??-1));
   const selectedSeason=episodes.find(v=>v.id===episode)?.season;

@@ -53,9 +53,9 @@ describe('persistent playback progress',()=>{
     expect(resumePosition('series:tt123:1:1')).toBe(100);
     expect(resumePosition('series:tt123:1:2')).toBe(300);
     expect(resumePosition('series:kitsu:11:1')).toBe(400);
-    expect(lastPlayedEpisode('series:tt123',['tt123:1:1','tt123:1:2'])).toBe('tt123:1:2');
-    expect(lastPlayedEpisode('series:kitsu:11',['kitsu:11:1'])).toBe('kitsu:11:1');
-    expect(lastPlayedEpisode('series:tt123',['tt123:1:1'])).toBe('tt123:1:1');
+    expect(lastPlayedEpisode(['tt123:1:1','tt123:1:2'])).toBe('tt123:1:2');
+    expect(lastPlayedEpisode(['kitsu:11:1'])).toBe('kitsu:11:1');
+    expect(lastPlayedEpisode(['tt123:1:1'])).toBe('tt123:1:1');
   });
   it('starts finished videos from the beginning without discarding their history',()=>{
     saveProgress('movie:tt123',90,100);expect(resumePosition('movie:tt123')).toBe(90);
@@ -95,7 +95,7 @@ describe('persistent playback progress',()=>{
     time.mockReturnValue(2000);
     setWatched([{key:'series:tt1:1:1',titleKey:'series:tt1',videoId:'tt1:1:1',episodeLabel:'S1 · E1'}]);
     expect(titleProgress({type:'series',id:'tt1',name:'Show'},playbackHistory())).toMatchObject({episode:'S2 · E1',percent:50});
-    expect(lastPlayedEpisode('series:tt1',['tt1:1:1','tt1:2:1'])).toBe('tt1:2:1');
+    expect(lastPlayedEpisode(['tt1:1:1','tt1:2:1'])).toBe('tt1:2:1');
   });
   it('undoes a watched change by restoring the exact earlier bookmarks',()=>{
     const key='series:tt1:1:1',target={key,titleKey:'series:tt1',videoId:'tt1:1:1',episodeLabel:'S1 · E1'};

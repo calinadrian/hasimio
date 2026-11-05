@@ -188,8 +188,13 @@ describe('automatic library release hydration', () => {
     expect(needsMetadata(saved,saved.metadataFetchedAt!+11*60*1000)).toBe(true);
   });
   it('expires successful metadata after six hours', () => {
-    expect(needsMetadata({...preview,metadataFetchedAt:1000},1000+5*60*60*1000)).toBe(false);
-    expect(needsMetadata({...preview,metadataFetchedAt:1000},1000+6*60*60*1000)).toBe(true);
+    const merged={...preview,seasonIds:['kitsu:12']};
+    expect(needsMetadata({...merged,metadataFetchedAt:1000},1000+5*60*60*1000)).toBe(false);
+    expect(needsMetadata({...merged,metadataFetchedAt:1000},1000+6*60*60*1000)).toBe(true);
+  });
+  it('refreshes anime saved before its seasons were merged, without hammering a failing provider', () => {
+    expect(needsMetadata({...preview,metadataFetchedAt:1000},1000)).toBe(true);
+    expect(needsMetadata({...preview,metadataFetchedAt:1000,metadataError:'offline'},1000)).toBe(false);
   });
 });
 describe('movie and episode release semantics', () => {
