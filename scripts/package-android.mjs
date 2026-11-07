@@ -14,6 +14,12 @@ import {icon} from './make-icon.mjs';
 import rewritePattern from 'regexpu-core';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const arm32=process.argv.includes('--arm32');
+const abi=arm32?'armeabi-v7a':'arm64-v8a';
+const suffix=arm32?abi:'arm64';
+const updateManifest=arm32?'hasimio-android-update-armeabi-v7a.json':'hasimio-android-update.json';
+const sysrootArch=arm32?'arm-linux-androideabi':'aarch64-linux-android';
+const compilerTarget=arm32?'armv7a-linux-androideabi28':'aarch64-linux-android28';
 const cache=path.join(root,'.cache/android'),output=path.join(root,'release/android'),work=path.join(output,'staging');
 const pkg=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'));
 const parts=pkg.version.split('.').map(Number);
@@ -39,7 +45,7 @@ if(work!==path.resolve(root,'release/android/staging'))throw Error('Invalid stag
 await fs.rm(work,{recursive:true,force:true});await fs.mkdir(work,{recursive:true});await fs.mkdir(cache,{recursive:true});
 await fs.mkdir(path.join(work,'tmp'),{recursive:true});
 const engine=path.join(work,'assets/engine');await fs.mkdir(engine,{recursive:true});
-await vite({root,configFile:false,plugins:[react()],define:{'import.meta.env.VITE_ANDROID':'"true"','import.meta.env.VITE_WEBOS':'"false"','import.meta.env.VITE_ENGINE_URL':'undefined'},build:{outDir:path.join(engine,'www'),emptyOutDir:true,target:'chrome100',rollupOptions:{input:path.join(root,'android.html')}}});
+await vite({root,configFile:false,plugins:[react()],define:{'import.meta.env.VITE_ANDROID':'"true"','import.meta.env.VITE_ANDROID_ARM32':JSON.stringify(arm32?'true':'false'),'import.meta.env.VITE_WEBOS':'"false"','import.meta.env.VITE_ENGINE_URL':'undefined'},build:{outDir:path.join(engine,'www'),emptyOutDir:true,target:'chrome100',rollupOptions:{input:path.join(root,'android.html')}}});
 await fs.rename(path.join(engine,'www/android.html'),path.join(engine,'www/index.html'));
 const html=path.join(engine,'www/index.html');
 await fs.writeFile(html,(await fs.readFile(html,'utf8')).replace('<head>','<head><meta http-equiv="Content-Security-Policy" content="frame-src \'none\'; object-src \'none\'"/>'));
@@ -91,15 +97,16 @@ try{await fs.access(archive);}catch{
 }
 const runtime=await fs.readFile(archive);
 if(crypto.createHash('sha256').update(runtime).digest('hex')!=='bd7321eaa1a7602fbe0bb87302df2d79d87835cf4363fbdd17c350dbb485c2af')throw Error('Node runtime archive checksum mismatch.');
-const library=unzipSync(runtime,{filter:file=>file.name==='bin/arm64-v8a/libnode.so'})['bin/arm64-v8a/libnode.so'];
-if(!library)throw Error('Node runtime is missing arm64-v8a.');
-const lib=path.join(work,'lib/arm64-v8a');await fs.mkdir(lib,{recursive:true});await fs.writeFile(path.join(lib,'libnode.so'),library);
+const nodeLibrary=`bin/${abi}/libnode.so`;
+const library=unzipSync(runtime,{filter:file=>file.name===nodeLibrary})[nodeLibrary];
+if(!library)throw Error('Node runtime is missing '+abi+'.');
+const lib=path.join(work,'lib',abi);await fs.mkdir(lib,{recursive:true});await fs.writeFile(path.join(lib,'libnode.so'),library);
 const nodeLicense=path.join(cache,'NODE-LICENSE');
 try{await fs.access(nodeLicense);}catch{const response=await fetch('https://raw.githubusercontent.com/nodejs-mobile/nodejs-mobile/v18.20.4/LICENSE');if(!response.ok)throw Error('Could not fetch Node runtime notices.');await fs.writeFile(nodeLicense,await response.text());}
 notices.push(await fs.readFile(nodeLicense,'utf8'));
 await fs.writeFile(path.join(engine,'THIRD-PARTY-NOTICES.txt'),notices.join('\n\n'));
-await fs.copyFile(path.join(llvm,'sysroot/usr/lib/aarch64-linux-android/libc++_shared.so'),path.join(lib,'libc++_shared.so'));
-await run(path.join(llvm,'bin',exe('clang++')),['--target=aarch64-linux-android28','--sysroot='+path.join(llvm,'sysroot'),'-shared','-fPIC','-std=c++17','-Wl,-z,max-page-size=16384',path.join(root,'android/native.cpp'),'-L'+lib,'-lnode','-o',path.join(lib,'libhasimio.so')]);
+await fs.copyFile(path.join(llvm,'sysroot/usr/lib',sysrootArch,'libc++_shared.so'),path.join(lib,'libc++_shared.so'));
+await run(path.join(llvm,'bin',exe('clang++')),['--target='+compilerTarget,'--sysroot='+path.join(llvm,'sysroot'),'-shared','-fPIC','-std=c++17','-Wl,-z,max-page-size=16384',path.join(root,'android/native.cpp'),'-L'+lib,'-lnode','-o',path.join(lib,'libhasimio.so')]);
 
 const resources=path.join(work,'res');await fs.cp(path.join(root,'android/res'),resources,{recursive:true});await fs.mkdir(path.join(resources,'drawable'),{recursive:true});await fs.writeFile(path.join(resources,'drawable/icon.png'),icon(192));
 const compiled=path.join(work,'resources.zip');
@@ -134,7 +141,7 @@ if(!key){
   console.log('Using persistent local signing key in .cache/android/signing. Back it up before publishing.');
 }
 if(!storePassword||!keyPassword)throw Error('Android signing passwords are missing.');
-const apk=path.join(output,`Hasimio-${pkg.version}-android-arm64.apk`);
+const apk=path.join(output,`Hasimio-${pkg.version}-android-${suffix}.apk`);
 await run(java('java'),['-jar',path.join(tools,'lib/apksigner.jar'),'sign','--ks',path.resolve(key),'--ks-key-alias',alias,'--ks-pass','env:HASIMIO_SIGN_STORE','--key-pass','env:HASIMIO_SIGN_KEY','--out',apk,aligned],{HASIMIO_SIGN_STORE:storePassword,HASIMIO_SIGN_KEY:keyPassword});
 // Check the final signed archive, rather than assuming successful ZIP creation
 // or zipalign means Android's installer will accept the resource table.
@@ -157,5 +164,5 @@ for(let i=0;i<signed.readUInt16LE(end+10);i++){
 if(!foundResources)throw Error('APK is missing resources.arsc.');
 await run(java('java'),['-jar',path.join(tools,'lib/apksigner.jar'),'verify',apk]);
 const sha256=crypto.createHash('sha256').update(await fs.readFile(apk)).digest('hex');
-await fs.writeFile(path.join(output,'hasimio-android-update.json'),JSON.stringify({version:pkg.version,versionCode:code,apk:path.basename(apk),sha256},null,2)+'\n');
+await fs.writeFile(path.join(output,updateManifest),JSON.stringify({version:pkg.version,versionCode:code,apk:path.basename(apk),sha256},null,2)+'\n');
 console.log('Created '+apk);

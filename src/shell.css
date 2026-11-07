@@ -83,6 +83,7 @@ main{margin-left:var(--rail)}
 /* Title details */
 .detail-dialog{border:1px solid var(--line-strong);border-radius:var(--radius-dialog);background:var(--panel);color:#eeeeee;padding:0;width:min(1040px,calc(100vw - 32px));max-height:90dvh;overflow:auto;overscroll-behavior:contain;box-shadow:0 25px 100px #00000099}
 .detail-dialog::backdrop{background:#0a0a0abd;backdrop-filter:blur(5px)}
+.hasimio-android-arm32 .detail-dialog::backdrop{backdrop-filter:none}
 .close-dialog{background:#1a1a1ae8;color:#e7e7e7}
 /* The bar stays out of the way over the artwork and turns solid, with the title, once the artwork scrolls away. */
 .dialog-bar{position:sticky;top:0;z-index:10;height:60px;margin-bottom:-60px;display:flex;align-items:center;gap:12px;padding:0 12px 0 24px;transition:background .15s}

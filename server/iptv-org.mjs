@@ -22,9 +22,9 @@ async function publicHost(url){
 async function read(response,limit){
   const reader=response.body?.getReader();if(!reader)throw Error('The IPTV server returned no data.');
   const chunks=[];let size=0;
-  try{while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>limit)throw Error('The IPTV response is too large.');chunks.push(Buffer.from(value));}}
+  try{while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>limit)throw Error('The IPTV response is too large.');chunks.push(Buffer.from(value.buffer,value.byteOffset,value.byteLength));}}
   catch(error){await reader.cancel().catch(()=>{});throw error;}
-  return Buffer.concat(chunks);
+  return chunks.length===1?chunks[0]:Buffer.concat(chunks,size);
 }
 async function discard(response){
   if(response.body?.cancel)await response.body.cancel();

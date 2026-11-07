@@ -1,8 +1,13 @@
 import type {UpdateState} from '../DesktopUpdates';
 document.documentElement.classList.add('hasimio-android');
+if(import.meta.env.VITE_ANDROID_ARM32==='true')document.documentElement.classList.add('hasimio-android-arm32');
 
-type NativeBridge={state():string;check():void;install():void};
+type NativeBridge={isTelevision?():boolean;state():string;check():void;install():void};
 const native=(window as unknown as {HasimioAndroid:NativeBridge}).HasimioAndroid;
+if(native.isTelevision?.()){
+  document.documentElement.classList.add('hasimio-android-tv');
+  void import('./remote');
+}
 const listeners=new Set<(state:UpdateState)=>void>();
 Object.assign(window,{
   hasimioAndroid:true,
@@ -26,6 +31,10 @@ window.fetch=(input,options)=>{
   return originalFetch(input,options);
 };
 Object.assign(window,{hasimioAndroidBack:()=>{
+  const fullscreen=document.querySelector<HTMLButtonElement>('.live-tv-expanded .live-tv-fullscreen');
+  if(fullscreen){fullscreen.click();return true;}
+  const editor=document.activeElement;
+  if(document.documentElement.classList.contains('hasimio-android-tv')&&editor instanceof HTMLInputElement&&editor.matches('.search input')){editor.blur();document.querySelector<HTMLButtonElement>('nav button.active')?.focus();return true;}
   const close=document.querySelector<HTMLButtonElement>('.cinema-menu .cinema-menu-header button,.cinema-back');
   if(close){close.click();return true;}
   const dialog=document.querySelector('dialog[open]');

@@ -2,6 +2,9 @@ import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {ChevronLeft,ChevronRight,LoaderCircle,RefreshCw} from 'lucide-react';
 import './media-shelf.css';
 import {isWebOS} from './webos/platform';
+import {isAndroidArm32,isAndroidTV} from './android/platform';
+
+const pagedCatalog=isWebOS||isAndroidArm32;
 
 export default function MediaShelf({title,source,children,wrap=false,hasMore=false,onMore,onBrowse,onBack,expanded=false}:{title:string;source?:string;children:ReactNode;wrap?:boolean;hasMore?:boolean;onMore?:()=>Promise<boolean>;onBrowse?:()=>void;onBack?:()=>void;expanded?:boolean}){
   const row=useRef<HTMLDivElement>(null),busy=useRef(false),loader=useRef(onMore);
@@ -22,12 +25,12 @@ export default function MediaShelf({title,source,children,wrap=false,hasMore=fal
   },[children,wrap]);
   useEffect(()=>{
     const element=row.current,last=element?.lastElementChild;
-    if(isWebOS||!element||!last||!hasMore||failed||loading)return;
+    if(pagedCatalog||!element||!last||!hasMore||failed||loading)return;
     // Observe the last actual card, so adding pages doesn't create empty tiles.
     const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))void load();},{root:wrap?null:element,rootMargin:wrap?'0px 0px 400px 0px':'0px 600px 0px 0px'});
     observer.observe(last);return()=>observer.disconnect();
   },[children,hasMore,failed,loading,wrap]);
-  const scroll=(direction:number)=>{const element=row.current;if(element)element.scrollBy({left:direction*element.clientWidth*.9,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});};
+  const scroll=(direction:number)=>{const element=row.current;if(element)element.scrollBy({left:direction*element.clientWidth*.9,behavior:isAndroidTV||matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});};
   return <section className="media-section media-shelf" aria-label={title}>
     {onBack&&<button className="shelf-back" onClick={onBack}><ChevronLeft size={17}/>Back to Discover</button>}
     <div className="row-heading"><>{expanded?<h1>{title}</h1>:<h3>{onBrowse?<button className="shelf-heading-button" onClick={onBrowse} aria-label={`Browse all ${title}`}>{title}<ChevronRight size={18}/></button>:title}</h3>}</>{source&&<span>{source}</span>}<span className="shelf-status" role="status">{loading&&<><LoaderCircle className="spin" size={15}/>Loading titles…</>}</span>{failed&&<button className="shelf-retry" onClick={()=>void load()}><RefreshCw size={14}/>Retry loading titles</button>}{!wrap&&(edges.left||edges.right)&&<div className="shelf-controls"><button className="shelf-arrow" disabled={!edges.left} aria-label={`Scroll ${title} left`} onClick={()=>scroll(-1)}><ChevronLeft size={20}/></button><button className="shelf-arrow" disabled={!edges.right} aria-label={`Scroll ${title} right`} onClick={()=>scroll(1)}><ChevronRight size={20}/></button></div>}</div>
@@ -41,6 +44,6 @@ export default function MediaShelf({title,source,children,wrap=false,hasMore=fal
       }} onFocusCapture={event=>{if(!wrap)(event.target as HTMLElement).scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});}}>{children}</div>
       
     </div>
-    {isWebOS&&hasMore&&<button className="button secondary" disabled={loading} onClick={()=>void load()}>Next page</button>}
+    {pagedCatalog&&hasMore&&<button className="button secondary" disabled={loading} onClick={()=>void load()}>Next page</button>}
   </section>;
 }

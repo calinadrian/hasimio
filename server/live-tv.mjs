@@ -95,9 +95,9 @@ export function decodeCoolEtvStream(html,channel='cartoon-network'){
 async function bytes(response,limit){
   const reader=response.body?.getReader();if(!reader)throw Error('The channel returned an empty response.');
   const chunks=[];let size=0;
-  try{while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>limit)throw Error('The channel response is too large.');chunks.push(Buffer.from(value));}}
+  try{while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>limit)throw Error('The channel response is too large.');chunks.push(Buffer.from(value.buffer,value.byteOffset,value.byteLength));}}
   catch(error){await reader.cancel().catch(()=>{});throw error;}
-  return Buffer.concat(chunks);
+  return chunks.length===1?chunks[0]:Buffer.concat(chunks,size);
 }
 export function createLiveTv({fetchImpl=fetch,now=Date.now}={}){
   const iptv=createIptvOrg({fetchImpl,now,catalogChannels:verifiedIptv.channels});

@@ -15,11 +15,14 @@ import org.json.*;
 final class Updates {
   private static final String REPO="https://github.com/calinadrian/hasimio";
   private final MainActivity activity;
+  private final boolean arm32=!android.os.Process.is64Bit();
+  private final String manifestName=arm32?"hasimio-android-update-armeabi-v7a.json":"hasimio-android-update.json";
+  private final String apkSuffix=arm32?"-android-armeabi-v7a.apk":"-android-arm64.apk";
   private final ExecutorService worker=Executors.newSingleThreadExecutor();
   private final JSONObject state=new JSONObject();
   private boolean busy;
-  private long checked;
-  private File downloaded;
+  private volatile long checked;
+  private volatile File downloaded;
   Updates(MainActivity activity){this.activity=activity;set("idle",null,null,0);}
   synchronized String state(){return state.toString();}
   private synchronized void set(String status,String version,String message,int percent){
@@ -43,13 +46,13 @@ final class Updates {
             JSONArray assets=release.getJSONArray("assets");
             for(int j=0;j<assets.length();j++){
               JSONObject asset=assets.getJSONObject(j);
-              if(!"hasimio-android-update.json".equals(asset.optString("name")))continue;
+              if(!manifestName.equals(asset.optString("name")))continue;
               String url=asset.getString("browser_download_url");requireReleaseUrl(url);
               JSONObject candidate=new JSONObject(new String(bytes(url,32768),java.nio.charset.StandardCharsets.UTF_8));
               int code=candidate.getInt("versionCode");String name=candidate.getString("version");
               if(!release.getString("tag_name").equals("android-v"+name)||!name.matches("\\d+\\.\\d+\\.\\d+")||!candidate.getString("sha256").matches("[a-f0-9]{64}"))throw new IOException("Invalid Android update manifest.");
               String apk=candidate.getString("apk");
-              if(!apk.equals("Hasimio-"+name+"-android-arm64.apk"))throw new IOException("Invalid APK name.");
+              if(!apk.equals("Hasimio-"+name+apkSuffix))throw new IOException("Invalid APK name.");
               if(code>best){best=code;manifest=candidate;}
             }
           }
