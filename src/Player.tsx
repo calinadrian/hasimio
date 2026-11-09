@@ -2,7 +2,8 @@ import {useEffect,useRef,useState,type CSSProperties,type KeyboardEvent,type Rea
 import {ArrowLeft,AudioLines,Captions,Cast,Download,ExternalLink,LoaderCircle,Maximize,Minimize,Pause,PictureInPicture2,Play,RotateCcw,RotateCw,Settings2,Volume2,VolumeX,X} from 'lucide-react';
 import {type Stream,safeHttp} from './media';
 import {languageName,parseVtt,sameLanguage} from './playback-tracks';
-import {CaptionOverlay,CaptionStyleControls,OnlineSubtitles,loadOnlineSubtitle,subtitleFile,useOnlineSubtitles,type CaptionSettings,type Frame,type SubtitleFile} from './Captions';
+import {CaptionOverlay,CaptionStyleControls,OnlineSubtitles,loadOnlineSubtitle,subtitleFile,useOnlineSubtitles,type CaptionSettings,type Frame} from './Captions';
+import {useSubtitleSelection,type SubtitleFile,type SubtitleSelection} from './subtitle-selection';
 import {playbackTime,seekPosition,timelineDuration,preparedHlsConfig} from './player-utils';
 import {resumePosition,saveProgress} from './playback-progress';
 import {playerSettings,savePlayerSettings} from './preferences';
@@ -15,13 +16,15 @@ import {usePictureInPicture} from './use-picture-in-picture';
 
 type Panel='audio'|'subtitles'|'download'|'cast'|'settings';
 type NextEpisode={label:string;title?:string;thumbnail?:string;onPlay:()=>void};
-type Props={episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode;next?:NextEpisode};
+type Props={episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};subtitleSelection?:SubtitleSelection;embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode;next?:NextEpisode};
 const captionSettings=():CaptionSettings=>{const {volume:_v,muted:_m,rate:_r,autoPlayNext:_a,preferredQuality:_q,...captions}=playerSettings();return captions;};
 type DesktopPointer={onPlayerPointer?:(listener:(point?:{x:number;y:number})=>void)=>()=>void};
 const desktopPointer=(globalThis as {hasimioDesktop?:DesktopPointer}).hasimioDesktop;
 const panelNames:Record<Panel,string>={audio:'Audio & dubs',subtitles:'Subtitles',download:'Download',cast:'Cast to TV',settings:'Playback settings'};
 
-export default function Player({episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,embeddedSubtitleLanguages=panels?.subtitles?undefined:[],download,status,loading,next}:Props){
+export default function Player({episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,subtitleSelection,embeddedSubtitleLanguages=panels?.subtitles?undefined:[],download,status,loading,next}:Props){
+  const localSelection=useSubtitleSelection(subtitleSelection?undefined:progressKey??videoId);
+  const {choice,choose,error:subtitleSaveError}=subtitleSelection??localSelection;
   const root=useRef<HTMLDivElement>(null),seekRef=useRef<HTMLDivElement>(null),topRef=useRef<HTMLDivElement>(null),autoOnline=useRef(''),videoRef=useRef<HTMLVideoElement>(null),menuRef=useRef<HTMLDivElement>(null),trigger=useRef<HTMLButtonElement|null>(null);
   const scrubbing=useRef(false),scrubTarget=useRef(0);
   const pip=usePictureInPicture(videoRef);
@@ -40,7 +43,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   const latestSkipSegments=useRef(skipSegments);latestSkipSegments.current=skipSegments;
   const [panel,setPanel]=useState<Panel>(),[visible,setVisible]=useState(true),[activity,setActivity]=useState(0),[focused,setFocused]=useState(false);
   const [error,setError]=useState(''),[notice,setNotice]=useState(''),[subtitleError,setSubtitleError]=useState(''),[retry,setRetry]=useState(0);
-  const [localSubtitle,setLocalSubtitle]=useState<SubtitleFile&{online?:string}>(),[captions,setCaptions]=useState<CaptionSettings>(()=>captionSettings());
+  const [automaticSubtitle,setAutomaticSubtitle]=useState<SubtitleFile>(),[captions,setCaptions]=useState<CaptionSettings>(()=>captionSettings());
   useEffect(()=>{if(!notice)return;const timer=setTimeout(()=>setNotice(''),2000);return()=>clearTimeout(timer);},[notice]);
   const updateCaptions=(next:Partial<CaptionSettings>)=>setCaptions(previous=>({...previous,...next}));
   useEffect(()=>{savePlayerSettings({...playerSettings(),volume,muted,rate,autoPlayNext,...captions});},[volume,muted,rate,autoPlayNext,captions]);
@@ -56,12 +59,16 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
     void fetchSkipSegments(videoId,{durationMs:segmentDuration*1000,signal:controller.signal}).then(value=>{if(!controller.signal.aborted&&value)setSkipSegments(value);});
     return()=>controller.abort();
   },[videoId,segmentDuration]);
-  const url=safeHttp(stream.url),name=title||stream.name||'Now playing',subtitle=localSubtitle||stream.subtitleTrack;
+  const url=safeHttp(stream.url),name=title||stream.name||'Now playing';
+  const localSubtitle=choice?.kind==='file'?choice.file:(!choice&&!stream.subtitleTrack?automaticSubtitle:undefined);
+  const subtitle=choice?.kind==='off'?undefined:localSubtitle??stream.subtitleTrack;
+  const subtitleUrl=subtitle&&'url' in subtitle?subtitle.url:undefined;
+  const subtitleText=subtitle&&'text' in subtitle?subtitle.text:undefined;
   const cast=useChromecast({url,title:name,subtitle:episodeLabel,position:Math.max(0,position-timeOffset)});
   // Online backup subtitles are searched when the panel opens, or up front when they may load automatically.
-  const needsOnline=captions.autoSubtitles&&!subtitle&&!!url&&embeddedSubtitleLanguages!==undefined&&!embeddedSubtitleLanguages.some(language=>sameLanguage(language,captions.subtitleLanguage));
+  const needsOnline=!choice&&captions.autoSubtitles&&!subtitle&&!!url&&embeddedSubtitleLanguages!==undefined&&!embeddedSubtitleLanguages.some(language=>sameLanguage(language,captions.subtitleLanguage));
   const autoSubtitleKey=videoId+'|'+captions.subtitleLanguage+'|'+captions.autoSubtitles;
-  useEffect(()=>{setLocalSubtitle(previous=>previous?.online&&!sameLanguage(previous.language,captions.subtitleLanguage)?undefined:previous);},[captions.subtitleLanguage]);
+  useEffect(()=>{setAutomaticSubtitle(previous=>previous&&!sameLanguage(previous.language,captions.subtitleLanguage)?undefined:previous);},[captions.subtitleLanguage]);
   const online=useOnlineSubtitles(videoId,download?.filename||stream.filename,panel==='subtitles'||(needsOnline&&autoOnline.current!==autoSubtitleKey),captions.subtitleLanguage);
   function reveal(){const now=performance.now();hideAt.current=now+2500;if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
   function openPanel(next:Panel,button:HTMLButtonElement){trigger.current=button;setPanel(previous=>previous===next?undefined:next);reveal();}
@@ -138,28 +145,28 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   },[url,retry,preparedStream,timeOffset]);
   useEffect(()=>{sync();},[durationHint]);
   useEffect(()=>{const leave=()=>persist(true,true);const hidden=()=>{if(document.visibilityState==='hidden')persist(true);};window.addEventListener('pagehide',leave);document.addEventListener('visibilitychange',hidden);return()=>{leave();window.removeEventListener('pagehide',leave);document.removeEventListener('visibilitychange',hidden);};},[progressKey,titleKey,videoId,episodeLabel]);
-  useEffect(()=>()=>{if(localSubtitle)URL.revokeObjectURL(localSubtitle.url);},[localSubtitle]);
-  // Choosing a track in the source's own menu replaces a file or online subtitle.
-  useEffect(()=>{if(stream.subtitleTrack)setLocalSubtitle(undefined);},[stream.subtitleTrack?.url]);
+  useEffect(()=>{if(choice){autoOnline.current='';setAutomaticSubtitle(undefined);}},[choice]);
+  useEffect(()=>{if(stream.subtitleTrack)setAutomaticSubtitle(undefined);},[stream.subtitleTrack?.url]);
   useEffect(()=>{if(!needsOnline||autoOnline.current===autoSubtitleKey||online.search.state==='idle'||online.search.state==='loading')return;autoOnline.current=autoSubtitleKey;
     const options=online.search.results.filter(item=>sameLanguage(item.language,captions.subtitleLanguage)).slice(0,5);if(!options.length)return;
     let live=true;
-    async function load(){for(const item of options){try{const file=await loadOnlineSubtitle(item);if(!live){URL.revokeObjectURL(file.url);return;}setLocalSubtitle(previous=>{if(previous){URL.revokeObjectURL(file.url);return previous;}return {...file,online:item.id};});setNotice(`${languageName(item.language)} subtitles loaded from ${item.provider||'OpenSubtitles'}. Change them in Subtitles (C).`);return;}catch{if(!live)return;}}if(live)setSubtitleError('No matching subtitle version could be loaded. Choose another version in Subtitles.');}
+    async function load(){for(const item of options){try{const file=await loadOnlineSubtitle(item);if(!live)return;setAutomaticSubtitle({...file,online:item.id});setNotice(`${languageName(item.language)} subtitles loaded from ${item.provider||'OpenSubtitles'}. Change them in Subtitles (C).`);return;}catch{if(!live)return;}}if(live)setSubtitleError('No matching subtitle version could be loaded. Choose another version in Subtitles.');}
     void load();return()=>{live=false;};
   },[needsOnline,online.search.state,autoSubtitleKey,captions.subtitleLanguage]);
   useEffect(()=>{
-    const video=videoRef.current;setSubtitleError('');if(!video||!subtitle)return;
+    const video=videoRef.current;setSubtitleError('');if(!video||(!subtitleUrl&&!subtitleText))return;
     let live=true,timer:ReturnType<typeof setTimeout>;const controller=new AbortController(),textTrack=subtitleRef.current??video.addTextTrack('subtitles','Subtitles','und');subtitleRef.current=textTrack;textTrack.mode='hidden';const seen=new Set<string>();
     const show=()=>setCues(Array.from(textTrack.activeCues??[],cue=>(cue as VTTCue).text));textTrack.addEventListener('cuechange',show);
-    async function load(){try{const response=await fetch(subtitle!.url,{signal:controller.signal,cache:'no-store'});if(!response.ok)throw new Error('Subtitles could not load. Choose the track again or load an SRT / VTT file.');const text=await response.text();if(!live)return;for(const cue of parseVtt(text)){const key=cue.start+':'+cue.end+':'+cue.text;if(!seen.has(key)&&cue.end+captions.captionDelay-timeOffset>0){textTrack.addCue(new VTTCue(Math.max(0,cue.start+captions.captionDelay-timeOffset),cue.end+captions.captionDelay-timeOffset,cue.text));seen.add(key);}}show();setSubtitleError('');}catch(e){if(live)setSubtitleError(e instanceof Error?e.message:'Subtitles could not load.');}finally{if(live&&!subtitle!.url.startsWith('blob:'))timer=setTimeout(load,4000);}}
+    async function load(){try{let text=subtitleText;if(subtitleUrl){const response=await fetch(subtitleUrl,{signal:controller.signal,cache:'no-store'});if(!response.ok)throw new Error('Subtitles could not load. Choose the track again or load an SRT / VTT file.');text=await response.text();}if(!live||!text)return;for(const cue of parseVtt(text)){const key=cue.start+':'+cue.end+':'+cue.text;if(!seen.has(key)&&cue.end+captions.captionDelay-timeOffset>0){textTrack.addCue(new VTTCue(Math.max(0,cue.start+captions.captionDelay-timeOffset),cue.end+captions.captionDelay-timeOffset,cue.text));seen.add(key);}}show();setSubtitleError('');}catch(e){if(live)setSubtitleError(e instanceof Error?e.message:'Subtitles could not load.');}finally{if(live&&subtitleUrl&&!subtitleUrl.startsWith('blob:'))timer=setTimeout(load,4000);}}
     void load();return()=>{
       live=false;controller.abort();clearTimeout(timer);textTrack.removeEventListener('cuechange',show);setCues([]);
       // Disabled tracks can hide their cue list. Clear while hidden so reusing this
       // track for another language cannot make the old cues visible again.
       textTrack.mode='hidden';while(textTrack.cues?.length)textTrack.removeCue(textTrack.cues[0]);textTrack.mode='disabled';
     };
-  },[url,subtitle?.url,captions.captionDelay,timeOffset,retry]);
-  async function loadSubtitle(file?:File){if(!file)return;try{if(file.size>5*1024*1024||!/\.(srt|vtt)$/i.test(file.name))throw new Error('Choose an SRT / VTT file smaller than 5 MB.');setLocalSubtitle(subtitleFile(await file.text(),file.name,'und'));setSubtitleError('');}catch(e){setSubtitleError(e instanceof Error?e.message:'Could not load subtitles.');}}
+  },[url,subtitleUrl,subtitleText,captions.captionDelay,timeOffset,retry]);
+  function useSubtitleFile(file:SubtitleFile){choose({kind:'file',file});setSubtitleError('');}
+  async function loadSubtitle(file?:File){if(!file)return;try{if(file.size>5*1024*1024||!/\.(srt|vtt)$/i.test(file.name))throw new Error('Choose an SRT / VTT file smaller than 5 MB.');useSubtitleFile(subtitleFile(await file.text(),file.name,'und'));}catch(e){setSubtitleError(e instanceof Error?e.message:'Could not load subtitles.');}}
   const canPip=pip.available;
   const nextArt=safeHttp(next?.thumbnail);
   const activeIntro=introSegmentAt(skipSegments,position),introEnd=activeIntro?.end;
@@ -178,7 +185,14 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
     {showNext&&next&&<div className="cinema-up-next" role="region" aria-label="Up next">{nextArt&&<img className="cinema-up-next-art" src={nextArt} alt="" onError={event=>{event.currentTarget.style.visibility='hidden';}}/>}<div className="cinema-up-next-text"><span>Up next</span><strong>{next.label}</strong>{next.title&&<p>{next.title}</p>}</div><button className="cinema-action" onClick={playNext}><Play size={16} fill="currentColor"/> Play now</button><button className="cinema-icon" aria-label="Dismiss up next" onClick={()=>setNextDismissed(true)}><X size={18}/></button></div>}
     {panel&&<div className="cinema-menu" ref={menuRef} role="region" aria-label={panelNames[panel]}><div className="cinema-menu-header"><h3>{panelNames[panel]}</h3><button className="cinema-icon" aria-label="Close player menu" onClick={()=>setPanel(undefined)}><X size={20}/></button></div><div className="cinema-menu-content">
       {panel==='audio'&&(panels?.audio||<p>This direct source uses your browser’s audio track. Choose a torrent source with multiple tracks to switch dubs.</p>)}
-      {panel==='subtitles'&&<>{panels?.subtitles||<><p>{localSubtitle?.label||'Load a subtitle file to add captions to this video.'}</p><label className="cinema-field">Subtitle file<input type="file" accept=".srt,.vtt" aria-label="Load subtitle file" onChange={event=>{void loadSubtitle(event.target.files?.[0]);event.currentTarget.value='';}}/></label>{localSubtitle&&!localSubtitle.online&&<button className="cinema-text-action" onClick={()=>setLocalSubtitle(undefined)}>Turn subtitles off</button>}</>}<div className="cinema-menu-divider"/><OnlineSubtitles search={online.search} retry={online.retry} language={captions.subtitleLanguage} active={localSubtitle} auto={captions.autoSubtitles} onAuto={autoSubtitles=>updateCaptions({autoSubtitles})} onLanguage={subtitleLanguage=>updateCaptions({subtitleLanguage})} onLoad={file=>{setLocalSubtitle(file);setSubtitleError('');}} onOff={()=>setLocalSubtitle(undefined)}/><div className="cinema-menu-divider"/><CaptionStyleControls settings={captions} onChange={updateCaptions}/></>}
+      {panel==='subtitles'&&<>
+        {panels?.subtitles}
+        {!nativeTracks&&<><p>{localSubtitle&&!localSubtitle.online?localSubtitle.label:'Load a subtitle file to add captions to this video.'}</p><label className="cinema-field">Subtitle file<input type="file" accept=".srt,.vtt" aria-label="Load subtitle file" onChange={event=>{void loadSubtitle(event.target.files?.[0]);event.currentTarget.value='';}}/></label></>}
+        {!subtitleSelection&&subtitle&&!localSubtitle?.online&&<button className="cinema-text-action" onClick={()=>choose({kind:'off'})}>Turn subtitles off</button>}
+        {!subtitleSelection&&choice&&<button className="cinema-text-action" onClick={()=>choose()}>Use automatic subtitles</button>}
+        {subtitleSaveError&&<p role="alert">{subtitleSaveError}</p>}
+        <div className="cinema-menu-divider"/><OnlineSubtitles search={online.search} retry={online.retry} language={captions.subtitleLanguage} active={localSubtitle} auto={captions.autoSubtitles} onAuto={autoSubtitles=>updateCaptions({autoSubtitles})} onLanguage={subtitleLanguage=>updateCaptions({subtitleLanguage})} onLoad={useSubtitleFile} onOff={()=>choose({kind:'off'})}/><div className="cinema-menu-divider"/><CaptionStyleControls settings={captions} onChange={updateCaptions}/>
+      </>}
       {panel==='download'&&<>{download?<><p>Save the original video, including every embedded audio and subtitle track.</p><a className="cinema-action" href={download.url} download={download.filename}><Download size={18}/> Download original file</a><p className="cinema-help">Keep this player open until the download finishes. Speed depends on available peers.</p><p className="cinema-filename">{download.filename}</p></>:url&&!/\.m3u8(?:\?|$)/i.test(url)?<><p>Open the video file to save it from your browser. Download availability depends on the source.</p><a className="cinema-action" href={url} target="_blank" rel="noreferrer"><ExternalLink size={18}/> Open video file</a></>:<p>This stream has no standalone download. Choose a source that provides an original video file.</p>}</>}
       {panel==='cast'&&<>{cast.active?<><p>Casting <strong>{name}</strong> to <strong>{cast.device||'your TV'}</strong>. Use the TV remote to pause or seek; stop here to free the TV.</p><button className="cinema-action" onClick={()=>{cast.stop();setNotice('Casting stopped.');setPanel(undefined);}}>Stop casting</button></>:<><p>Choose a TV on this Wi-Fi network. The TV plays this video while Hasimio stays open.</p>{cast.scanning?<p className="cinema-help cinema-cast-scan"><LoaderCircle className="spin" size={16}/> Looking for Cast devices…</p>:cast.devices.length?<div className="cinema-cast-list">{cast.devices.map(item=><button key={item.id} className="cinema-cast-device" disabled={cast.busy} onClick={()=>void startCast(item.id)}><Cast size={18}/><span><strong>{item.name}</strong>{item.model&&<small>{item.model}</small>}</span>{cast.busy?<LoaderCircle className="spin" size={16}/>:<Play size={15}/>}</button>)}</div>:<p className="cinema-help">No Cast devices found. Make sure the TV is on, connected to the same Wi-Fi, and has casting enabled.</p>}{cast.scanError&&cast.devices.length===0&&<p className="cinema-help" role="status">{cast.scanError}</p>}<button className="cinema-text-action" disabled={cast.scanning||cast.busy} onClick={()=>void cast.refreshDevices()}>Scan again</button></>}</>}
       {panel==='settings'&&<><label className="cinema-field">Playback speed<select value={rate} onChange={event=>setRate(Number(event.target.value))}>{[0.5,0.75,1,1.25,1.5,2].map(value=><option key={value} value={value}>{value}×{value===1?' · Normal':''}</option>)}</select></label><div className="cinema-menu-divider"/><label className="caption-toggle"><input type="checkbox" checked={autoPlayNext} onChange={event=>setAutoPlayNext(event.target.checked)}/><span>Play the next episode automatically when this one ends.</span></label><div className="cinema-menu-divider"/><h4>Keyboard controls</h4><dl className="cinema-shortcuts"><div><dt>Play / pause</dt><dd><kbd>Space</kbd></dd></div><div><dt>Skip 10 seconds</dt><dd><kbd>←</kbd> <kbd>→</kbd></dd></div><div><dt>Mute</dt><dd><kbd>M</kbd></dd></div><div><dt>Fullscreen</dt><dd><kbd>F</kbd></dd></div><div><dt>Subtitles</dt><dd><kbd>C</kbd></dd></div></dl></>}

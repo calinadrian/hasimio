@@ -2,10 +2,10 @@ import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import {Check,Globe,LoaderCircle,RotateCcw} from 'lucide-react';
 import {captionColors,captionEdges,captionFonts,captionPresets,defaultSettings,type CaptionEdge,type CaptionFont,type CaptionStyle,type PlayerSettings} from './preferences';
 import {captionLines,languageName,parseVtt,sameLanguage,srtToVtt} from './playback-tracks';
+import type {SubtitleFile} from './subtitle-selection';
 import {engineUrl} from './engine';
 
 export type CaptionSettings=Pick<PlayerSettings,'captionSize'|'captionDelay'|'captionPosition'|'subtitleLanguage'|'autoSubtitles'>&CaptionStyle;
-export type SubtitleFile={url:string;label:string;language:string};
 export type Frame={left:number;top:number;width:number;height:number};
 
 const edges:Record<CaptionEdge,CSSProperties>={
@@ -24,7 +24,7 @@ export function matchingPreset(style:CaptionStyle){return captionPresets.find(pr
 export function subtitleFile(text:string,label:string,language:string):SubtitleFile{
   const vtt=(/^\s*(?:﻿)?WEBVTT/.test(text)?text:srtToVtt(text)).trimEnd()+'\n\n';
   if(!parseVtt(vtt).length)throw new Error('No timed subtitles were found. Use a UTF-8 SRT / VTT file.');
-  return {url:URL.createObjectURL(new Blob([vtt],{type:'text/vtt'})),label,language};
+  return {text:vtt,label,language};
 }
 
 export function CaptionOverlay({cues,settings,frame,lift,preview}:{cues:string[];settings:CaptionSettings;frame?:Frame;lift:{top:number;bottom:number};preview:boolean}){
@@ -91,7 +91,7 @@ export function OnlineSubtitles({search,retry,language,active,auto,onAuto,onLang
   const languages=[...new Set([language,...search.results.map(item=>item.language)])].map(code=>({code,name:languageName(code),count:search.results.filter(item=>sameLanguage(item.language,code)).length})).sort((a,b)=>a.code===language?-1:b.code===language?1:a.name.localeCompare(b.name));
   const options=search.results.filter(item=>sameLanguage(item.language,language)).slice(0,40);
   const [choice,setChoice]=useState<string>(),[loading,setLoading]=useState(false),[error,setError]=useState('');
-  const selected=options.find(item=>item.id===choice)??options[0];
+  const selected=options.find(item=>item.id===(choice??active?.online))??options[0];
   async function load(){if(!selected)return;setLoading(true);setError('');try{onLoad({...await loadOnlineSubtitle(selected),online:selected.id});}catch(e){setError(e instanceof Error?e.message:'This subtitle could not be downloaded.');}finally{setLoading(false);}}
   return <div className="caption-online">
     <div className="caption-section-heading"><h4><Globe size={15}/> Online subtitles</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
