@@ -116,6 +116,14 @@ try{
         await until('document.querySelector(".cinema-time").textContent.startsWith("0:1")');
         await until('document.querySelector(".cinema-play").getAttribute("aria-label")==="Pause video"');
         const resumed=await js('document.querySelector("video").currentTime');assert.ok(resumed>13&&resumed<18,'Resume must keep the requested position, got '+resumed);
+        await js('Array.from(document.querySelectorAll("button")).find(button=>button.getAttribute("aria-label")==="Enter fullscreen").focus()');
+        for(const paused of [true,false]){
+          win.webContents.sendInputEvent({type:'keyDown',keyCode:'Space'});win.webContents.sendInputEvent({type:'keyUp',keyCode:'Space'});
+          await until('document.querySelector("video").paused==='+paused);
+          assert.equal(await js('!!document.fullscreenElement'),false,'Space should leave fullscreen unchanged while its button is focused');
+        }
+        await js('document.querySelector(".cinema-player").focus()');
+        console.log('PASS: Space pauses and resumes with the Fullscreen button focused.');
         // Match the app's modal dialog and repeat fullscreen wake/hide cycles.
         await js('document.getElementById("changing-sub").click()');
         await until('document.querySelector(".cinema-caption")?.textContent.includes("subtitle")');

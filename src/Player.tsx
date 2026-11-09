@@ -87,9 +87,17 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   function keyDown(event:KeyboardEvent<HTMLDivElement>){
     if(event.key==='Tab'){setFocused(true);reveal();}
     if(event.key==='Escape'&&panel){event.preventDefault();event.stopPropagation();setPanel(undefined);return;}
-    if((event.target as HTMLElement).closest('input,select,textarea,button,a')||event.altKey||event.ctrlKey||event.metaKey)return;
-    const key=event.key.toLowerCase();if(event.repeat&&[' ','k','m','f','c'].includes(key))return;if(![' ','k','arrowleft','arrowright','arrowup','arrowdown','m','f','c'].includes(key))return;event.preventDefault();reveal();
-    if(key===' '||key==='k')togglePlay();else if(key==='arrowleft')seek(position-10);else if(key==='arrowright')seek(position+10);else if(key==='m')setMuted(value=>!value);else if(key==='f')void toggleFullscreen();else if(key==='c')setPanel(previous=>previous==='subtitles'?undefined:'subtitles');else{setVolume(value=>Math.max(0,Math.min(1,value+(key==='arrowup'?0.05:-0.05))));setMuted(false);}
+    const target=event.target as HTMLElement;
+    if(event.defaultPrevented||target.closest('input,select,textarea,[contenteditable]')||event.altKey||event.ctrlKey||event.metaKey)return;
+    const key=event.key.toLowerCase();
+    if(key===' '){
+      event.preventDefault();
+      if(!event.repeat)togglePlay();
+      return;
+    }
+    if(target.closest('button,a'))return;
+    if(event.repeat&&['k','m','f','c'].includes(key))return;if(!['k','arrowleft','arrowright','arrowup','arrowdown','m','f','c'].includes(key))return;event.preventDefault();reveal();
+    if(key==='k')togglePlay();else if(key==='arrowleft')seek(position-10);else if(key==='arrowright')seek(position+10);else if(key==='m')setMuted(value=>!value);else if(key==='f')void toggleFullscreen();else if(key==='c')setPanel(previous=>previous==='subtitles'?undefined:'subtitles');else{setVolume(value=>Math.max(0,Math.min(1,value+(key==='arrowup'?0.05:-0.05))));setMuted(false);}
   }
   // Buffering comes and goes while a torrent fills its buffer; it must not pop
   // the controls back up over a still cursor. Pausing, focusing or opening a
