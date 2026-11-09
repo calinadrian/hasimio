@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
 import type {Meta} from './media';
-import {nextEpisode,orderedEpisodes} from './next-episode';
+import {adjacentEpisodes,nextEpisode,orderedEpisodes} from './next-episode';
 
 const show:Meta={
   id:'tt1',type:'series',name:'A Show',videos:[
@@ -11,24 +11,27 @@ const show:Meta={
   ],
 };
 
-describe('next episode',()=>{
+describe('episode navigation',()=>{
   it('orders numbered seasons first and specials last',()=>{
     expect(orderedEpisodes(show).map(video=>video.id)).toEqual(['s1e1','s1e2','s2e1','special']);
   });
-  it('moves through a season, then into the next one',()=>{
-    expect(nextEpisode(show,'s1e1')?.id).toBe('s1e2');
+  it('moves in both directions across season boundaries',()=>{
+    expect(adjacentEpisodes(show,'s1e1').previous).toBeUndefined();
+    expect(adjacentEpisodes(show,'s1e1').next?.id).toBe('s1e2');
     expect(nextEpisode(show,'s1e2')?.id).toBe('s2e1');
-    expect(nextEpisode(show,'s2e1')?.id).toBe('special');
+    expect(adjacentEpisodes(show,'s2e1').previous?.id).toBe('s1e2');
+    expect(adjacentEpisodes(show,'s2e1').next?.id).toBe('special');
+    expect(adjacentEpisodes(show,'special').previous?.id).toBe('s2e1');
   });
   it('stops at the final episode and ignores unknown or missing metadata',()=>{
-    expect(nextEpisode(show,'special')).toBeUndefined();
-    expect(nextEpisode(show,'missing')).toBeUndefined();
-    expect(nextEpisode(undefined,'s1e1')).toBeUndefined();
-    expect(nextEpisode(show)).toBeUndefined();
+    expect(adjacentEpisodes(show,'special').next).toBeUndefined();
+    expect(adjacentEpisodes(show,'missing')).toEqual({});
+    expect(adjacentEpisodes(undefined,'s1e1')).toEqual({});
+    expect(adjacentEpisodes(show)).toEqual({});
   });
   it('ignores videos that are not episodes',()=>{
     const meta:Meta={...show,videos:[{id:'trailer'},{id:'s1e1',season:1,episode:1}]};
     expect(orderedEpisodes(meta).map(video=>video.id)).toEqual(['s1e1']);
-    expect(nextEpisode(meta,'s1e1')).toBeUndefined();
+    expect(adjacentEpisodes(meta,'s1e1')).toEqual({previous:undefined,next:undefined});
   });
 });

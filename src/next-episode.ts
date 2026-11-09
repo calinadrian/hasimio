@@ -1,5 +1,7 @@
 import type {Meta,Video} from './media';
 
+export type EpisodeAction={label:string;title?:string;thumbnail?:string;onPlay:()=>void};
+
 // Same order as the episode list: specials after numbered seasons, then episode number.
 const seasonRank=(season:number|undefined)=>season===0?Infinity:season??-1;
 
@@ -9,8 +11,12 @@ export function orderedEpisodes(meta:Meta):Video[] {
     .sort((a,b)=>seasonRank(a.season)-seasonRank(b.season)||(a.episode??0)-(b.episode??0));
 }
 
-export function nextEpisode(meta:Meta|undefined,videoId?:string):Video|undefined {
-  if(!meta||!videoId)return;
+export function adjacentEpisodes(meta:Meta|undefined,videoId?:string):{previous?:Video;next?:Video} {
+  if(!meta||!videoId)return {};
   const episodes=orderedEpisodes(meta),index=episodes.findIndex(video=>video.id===videoId);
-  return index<0?undefined:episodes[index+1];
+  return index<0?{}:{previous:episodes[index-1],next:episodes[index+1]};
+}
+
+export function nextEpisode(meta:Meta|undefined,videoId?:string):Video|undefined {
+  return adjacentEpisodes(meta,videoId).next;
 }
