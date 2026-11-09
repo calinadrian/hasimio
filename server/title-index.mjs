@@ -126,11 +126,11 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
   const file=path.join(dir,'titles.db');
   let db,building,status={state:'idle'},closed=false;
   const artPending=new Map(),controller=new AbortController();
-  const seriesMetadata=new Map(),seriesPending=new Map();
+  const seriesMetadata=new Map(),seriesPending=new Map(),searchPending=new Map(),searchCache=new Map();
   let lastRequest=0,artDb;
   // Artwork survives restarts and weekly rebuilds in its own file, so each title is looked up once a month at most.
   function artCache() {
-    if (!artDb) { mkdirSync(dir,{recursive:true}); artDb=new DatabaseSync(path.join(dir,'artwork.db')); artDb.exec('CREATE TABLE IF NOT EXISTS art(imdb TEXT PRIMARY KEY,value TEXT,expires INTEGER NOT NULL) WITHOUT ROWID'); }
+    if (!artDb) { mkdirSync(dir,{recursive:true}); artDb=new DatabaseSync(path.join(dir,'artwork.db')); artDb.exec('CREATE TABLE IF NOT EXISTS art(imdb TEXT PRIMARY KEY,value TEXT,expires INTEGER NOT NULL) WITHOUT ROWID; CREATE TABLE IF NOT EXISTS online_series(id TEXT PRIMARY KEY,value TEXT NOT NULL) WITHOUT ROWID'); }
     return artDb;
   }
   // TVmaze allows about 20 requests every 10 seconds per address; stay under it.
@@ -178,6 +178,38 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
   }
   function saveArt(imdb, value, missingDays) {
     if (!closed) artCache().prepare('INSERT OR REPLACE INTO art VALUES(?,?,?)').run(imdb,value ? JSON.stringify(value) : null,now()+(value ? 30 : missingDays)*24*60*60*1000);
+  }
+  // Keep newly discovered shows outside the weekly IMDb database, so they remain
+  // available to saved library entries and source lookups after a restart/rebuild.
+  function rememberShow(show) {
+    const id=show?.externals?.imdb;
+    if (closed || !/^tt\d+$/.test(id) || !Number.isSafeInteger(show.id) || typeof show.name !== 'string' || !show.name.trim()) return undefined;
+    const row={id,type:'series',name:show.name,start:date(show.premiered)?Number(show.premiered.slice(0,4)):null,
+      end:date(show.ended)?Number(show.ended.slice(0,4)):null,runtime:count(show.averageRuntime ?? show.runtime)??null,
+      genres:Array.isArray(show.genres)?show.genres.filter(g=>typeof g==='string').join(','):null,rating:null,votes:0};
+    artCache().prepare('INSERT OR REPLACE INTO online_series VALUES(?,?)').run(id,JSON.stringify(row));
+    saveArt(id,{tvmaze:show.id,poster:image(show.image?.original ?? show.image?.medium),description:plainText(show.summary)},7);
+    return row;
+  }
+  function searchShows(query) {
+    const key=normalize(query),cached=searchCache.get(key);
+    if(cached && cached.expires>now())return Promise.resolve(cached.rows);
+    if(searchPending.has(key))return searchPending.get(key);
+    const pending=tvmaze(`/search/shows?q=${encodeURIComponent(query)}`,'high').then(results=>{
+      if(!Array.isArray(results))throw new Error('TVmaze returned invalid search results.');
+      const rows=results.map(result=>rememberShow(result?.show)).filter(Boolean);
+      searchCache.delete(key);searchCache.set(key,{rows,expires:now()+5*60*1000});
+      if(searchCache.size>100)searchCache.delete(searchCache.keys().next().value);
+      return rows;
+    }).finally(()=>searchPending.delete(key));
+    searchPending.set(key,pending);return pending;
+  }
+  async function boundedSearch(query) {
+    let timer;
+    // Allow the provider's 15-second request window plus a rate-limit queue turn.
+    // Returning after two seconds silently lost valid first-search results.
+    try{return await Promise.race([searchShows(query).catch(()=>[]),new Promise(resolve=>{timer=setTimeout(()=>resolve([]),16000);})]);}
+    finally{clearTimeout(timer);}
   }
   async function wiki(url) {
     const response=await fetchImpl(url,{headers:{...wikiHeaders,Accept:'application/json'},signal:AbortSignal.any([controller.signal,AbortSignal.timeout(15000)])});
@@ -265,8 +297,14 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     return metas.map(m=>Object.fromEntries(Object.entries(m).filter(([,v])=>v !== undefined)));
   }
   async function catalog(type, id, extras={}) {
-    const index=await ready();
     const skip=Math.max(0,Number(extras.skip)||0),query=normalize(extras.search ?? '');
+    const online=type==='series' && query && skip===0 ? boundedSearch(String(extras.search).trim().slice(0,200)) : Promise.resolve([]);
+    let index;
+    try{index=await ready();}catch(error){
+      const rows=await online;
+      if(!rows.length)throw error;
+      return {metas:rows.map(row=>titleMeta(row,cachedArt(row.id)?.value)),hasMore:false};
+    }
     let found;
     if (query) {
       // Ignore punctuation/spacing differences, including old indexes storing “Grey's” as “grey s”.
@@ -285,11 +323,17 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     else if (id === 'top-rated') found=index.prepare('SELECT * FROM titles WHERE type=? AND votes>=25000 ORDER BY rating DESC,votes DESC LIMIT ? OFFSET ?').all(type,PAGE,skip);
     else throw Object.assign(new Error('Unknown Hasimio catalog.'),{status:404});
     // Searches reach many rarely seen titles, and the client has fallback posters, so they wait less for artwork.
-    return {metas:await withArt(found.map(row=>titleMeta(row)),query ? 1500 : 3000,query ? 'high' : 'low'),hasMore:found.length === PAGE};
+    const [metas,live]=await Promise.all([withArt(found.map(row=>titleMeta(row)),query ? 1500 : 3000,query ? 'high' : 'low'),online]);
+    const seen=new Set(metas.map(meta=>meta.id));
+    for(const row of live)if(!seen.has(row.id)){seen.add(row.id);metas.push(titleMeta(row,cachedArt(row.id)?.value));}
+    return {metas,hasMore:found.length === PAGE,nextSkip:skip+found.length};
   }
   async function title(id) {
     if (!/^tt\d+$/.test(id)) throw Object.assign(new Error('Invalid IMDb title ID.'),{status:400});
-    const row=(await ready()).prepare('SELECT * FROM titles WHERE id=?').get(id);
+    const saved=()=>{const value=artCache().prepare('SELECT value FROM online_series WHERE id=?').get(id)?.value;return value?JSON.parse(value):undefined;};
+    let row;
+    try{row=(await ready()).prepare('SELECT * FROM titles WHERE id=?').get(id);}catch(error){row=saved();if(!row)throw error;}
+    row??=saved();
     if (!row) throw Object.assign(new Error('This title is not in Hasimio’s index.'),{status:404});
     return row;
   }
@@ -303,7 +347,7 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     }
     const cached=seriesMetadata.get(id);
     if(cached&&cached.expires>now())return cached.value;
-    const fallback=(await ready()).prepare('SELECT * FROM episodes WHERE parent=? ORDER BY season,episode').all(id).map(e=>({id:`${id}:${e.season}:${e.episode}`,season:e.season,episode:e.episode,title:e.name ?? undefined,...(e.runtime>0?{runtime:e.runtime}:{})}));
+    const fallback=(await open())?.prepare('SELECT * FROM episodes WHERE parent=? ORDER BY season,episode').all(id).map(e=>({id:`${id}:${e.season}:${e.episode}`,season:e.season,episode:e.episode,title:e.name ?? undefined,...(e.runtime>0?{runtime:e.runtime}:{})}))??[];
     let pending=seriesPending.get(id);
     if(!pending){
       pending=(async()=>{
@@ -326,6 +370,6 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
   async function close() { closed=true; controller.abort(); await building?.catch(()=>{});
     // Release queued lookups at once; their requests fail on the aborted signal instead of waiting their turn.
     for (const turn of [...queues.high.splice(0),...queues.low.splice(0)]) turn();
-    await Promise.allSettled([...artPending.values()].map(pending=>pending.promise).concat([...seriesPending.values()])); db?.close(); db=undefined; artDb?.close(); artDb=undefined; }
+    await Promise.allSettled([...artPending.values()].map(pending=>pending.promise).concat([...seriesPending.values()],[...searchPending.values()])); db?.close(); db=undefined; artDb?.close(); artDb=undefined; }
   return {catalog,meta,title,peopleRows:async()=> (await ready()).prepare('SELECT * FROM titles').all(),status:()=>status,refresh,close};
 }

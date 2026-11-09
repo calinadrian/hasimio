@@ -24,6 +24,24 @@ async function index(tvmaze=()=>new Response('',{status:404})) {
 }
 
 describe('Hasimio title index',()=>{
+  it('finds an unindexed new show online and retains details and source lookup data after restart',async()=>{
+    const show={id:900,externals:{imdb:'tt900'},name:'Brand New Show',premiered:'2026-10-28',runtime:45,genres:['Drama'],image:{original:'https://static.tvmaze.com/new.jpg'},summary:'<p>Just released.</p>'};
+    const {titles}=await index(href=>new Response(JSON.stringify(href.includes('/search/shows?')?[{show},{show}]:href.includes('/episodes')?[{season:1,number:1,name:'Premiere',airdate:'2026-10-28'}]:show)));
+    await titles.refresh();
+    const result=await titles.catalog('series','popular',{search:'Brand New Show'});
+    expect(result.metas.map(meta=>meta.id)).toEqual(['tt900']);
+    expect(result).toMatchObject({hasMore:false,nextSkip:0});
+    expect(result.metas[0]).toMatchObject({name:'Brand New Show',poster:show.image.original,description:'Just released.'});
+    await titles.close();
+    const restarted=createTitleIndex({dir,fetchImpl:async()=>new Response(JSON.stringify([{season:1,number:1,name:'Premiere',airdate:'2026-10-28'}])),now:()=>Date.parse('2026-10-28T00:00:00Z')});open=restarted;
+    expect(await restarted.title('tt900')).toMatchObject({name:'Brand New Show',type:'series',start:2026});
+    expect((await restarted.meta('series','tt900')).meta.videos).toEqual([{id:'tt900:1:1',season:1,episode:1,title:'Premiere',released:'2026-10-28',thumbnail:undefined}]);
+  });
+  it('keeps local series search working when online search fails',async()=>{
+    const {titles}=await index(()=>new Response('',{status:503}));
+    await titles.refresh();
+    expect((await titles.catalog('series','popular',{search:'The Show'})).metas.map(meta=>meta.id)).toEqual(['tt3']);
+  });
   it('returns local episodes within 1.2 seconds while slow TVmaze enrichment continues, then reuses the full result',async()=>{
     let finishLookup;
     const {titles,fetchImpl}=await index(href=>href.includes('/lookup/')?new Promise(resolve=>{finishLookup=resolve;}):new Response(JSON.stringify([{season:1,number:1,name:'Pilot',airdate:'2024-01-02'}])));
