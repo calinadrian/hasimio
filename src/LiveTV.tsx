@@ -88,7 +88,7 @@ export default function LiveTV(){
       </aside>
       <ChannelPlayer key={selected.id} channel={selected} favorite={favorites.includes(selected.id)} topRank={topRank(selected)} onFavorite={()=>toggleFavorite(selected.id)}/>
     </div>
-    <p className="live-tv-note">English channels from <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noreferrer">IPTV-org</a>{checkedAt?' · Playback checked '+new Date(checkedAt).toLocaleDateString():''}. Channel availability and regional restrictions can change.</p>
+    <p className="live-tv-note">English and Romanian channels from <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noreferrer">IPTV-org</a>{checkedAt?' · Playback checked '+new Date(checkedAt).toLocaleDateString():''}. Channel availability and regional restrictions can change.</p>
   </section>;
 }
 

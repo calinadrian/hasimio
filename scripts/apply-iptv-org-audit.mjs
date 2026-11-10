@@ -2,10 +2,15 @@ import {readFile,writeFile} from 'node:fs/promises';
 
 const snapshot=JSON.parse(await readFile(new URL('../.cache/iptv-org-audit/verified.json',import.meta.url),'utf8'));
 const report=JSON.parse(await readFile(new URL('../.cache/iptv-org-audit/report.json',import.meta.url),'utf8'));
-if(Object.keys(report.results).length!==report.englishStreams)throw Error('The channel audit is incomplete.');
-if(!snapshot.channels?.length||snapshot.language!=='eng')throw Error('The verified English catalog is missing.');
-for(const channel of snapshot.channels)for(const server of channel.servers){
-  if(!report.results[server.url]?.ok)throw Error('An unverified stream is present: '+channel.name);
+if(Object.keys(report.results).length!==report.selectedStreams)throw Error('The channel audit is incomplete.');
+const languages=Array.isArray(snapshot.languages)?snapshot.languages:[];
+if(!snapshot.channels?.length||!['eng','ron'].every(language=>languages.includes(language))||languages.some(language=>!['eng','ron'].includes(language)))throw Error('The verified English and Romanian catalog is missing.');
+for(const language of ['eng','ron'])if(!snapshot.channels.some(channel=>channel.language?.split('+').includes(language)))throw Error('No verified channels for language: '+language);
+for(const channel of snapshot.channels){
+  if(!channel.language||channel.language.split('+').some(language=>!languages.includes(language)))throw Error('A channel without a verified language is present: '+channel.name);
+  for(const server of channel.servers){
+    if(!report.results[server.url]?.ok)throw Error('An unverified stream is present: '+channel.name);
+  }
 }
 await writeFile(new URL('../server/iptv-org-verified.mjs',import.meta.url),'// Generated from the completed IPTV-org stream audit.\nexport default '+JSON.stringify(snapshot,null,2)+';\n');
-console.log('Applied '+snapshot.channels.length+' verified English channels, checked '+snapshot.checkedAt);
+console.log('Applied '+snapshot.channels.length+' verified English and Romanian channels, checked '+snapshot.checkedAt);
