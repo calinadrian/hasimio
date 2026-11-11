@@ -26,8 +26,13 @@ function Portrait({photo,large=false}:{photo?:ActorPhoto;large?:boolean}){
 }
 type PeopleData={people?:Person[];cast?:Person[];person?:Person;metas?:Meta[];hasMore?:boolean};
 async function request(path:string,signal?:AbortSignal):Promise<PeopleData>{
-  const response=await fetch(engineUrl('/api/people/'+path),{signal:signal?AbortSignal.any([signal,AbortSignal.timeout(15000)]):AbortSignal.timeout(15000)});
-  const data=await response.json();if(!response.ok)throw Object.assign(new Error(data.error||'Actor information is unavailable.'),{building:data.state==='building'});return data;
+  let response:Response;
+  try{response=await fetch(engineUrl('/api/people/'+path),{signal:signal?AbortSignal.any([signal,AbortSignal.timeout(15000)]):AbortSignal.timeout(15000)});}
+  catch{throw new Error('Actor information isn’t available right now.');}
+  const isJson=response.headers.get('content-type')?.includes('application/json');
+  const data=isJson?await response.json().catch(()=>undefined):undefined;
+  if(!response.ok||!data)throw Object.assign(new Error(data?.error||'Actor information isn’t available right now.'),{building:data?.state==='building'});
+  return data;
 }
 function usePeople(path:string){
   const [data,setData]=useState<PeopleData>(),[error,setError]=useState(''),[loading,setLoading]=useState(true),[retry,setRetry]=useState(0);
@@ -40,7 +45,7 @@ function usePeople(path:string){
   return {data,error,loading,refresh};
 }
 function Status({loading,error,onRetry}:{loading:boolean;error:string;onRetry:()=>void}){
-  return <>{loading&&<p className="people-status" role="status"><LoaderCircle size={16} className="spin"/>Loading actor information…</p>}{error&&<div className="people-status" role="status"><p>{error}</p><button className="button secondary" onClick={onRetry}>Retry</button></div>}</>;
+  return <>{loading&&<p className="people-status" role="status"><LoaderCircle size={16} className="spin"/>Loading actor information…</p>}{error&&<div className="people-status" role="alert"><p>{error}</p><button className="button secondary" onClick={onRetry}>Retry</button></div>}</>;
 }
 function PersonButton({person,onSelect,photo}:{person:Person;onSelect:(person:Person)=>void;photo?:ActorPhoto}){
   return <button className="person-button" onClick={()=>onSelect(person)}><Portrait photo={photo}/><span><strong>{person.name}</strong>{person.role?<small>{person.role}</small>:person.titles!==undefined?<small>{person.titles} indexed {person.titles===1?'title':'titles'}</small>:null}</span></button>;
@@ -50,8 +55,9 @@ function PeopleList({people,onSelect}:{people:Person[];onSelect:(person:Person)=
   return <div className="people-list">{people.map(person=><PersonButton key={person.id} person={person} onSelect={onSelect} photo={photos[person.id]}/>)}</div>;
 }
 export function ActorSearch({query,onSelect}:{query:string;onSelect:(person:Person)=>void}){
-  const {data,error,loading,refresh}=usePeople('search?q='+encodeURIComponent(query));
-  return <section className="people-section" aria-label="Actor search"><h2>Actors</h2><Status loading={loading} error={error} onRetry={()=>void refresh()}/>{data?.people?.length?<PeopleList people={data.people} onSelect={onSelect}/>:data&&!error?<p className="people-status">No matching actors in Hasimio’s index.</p>:null}</section>;
+  const {data,error,loading}=usePeople('search?q='+encodeURIComponent(query));
+  if(!loading&&(error||!data?.people?.length))return null;
+  return <section className="people-section" aria-label="Actor search"><h2>Actors</h2><Status loading={loading} error="" onRetry={()=>{}}/>{data?.people?.length?<PeopleList people={data.people} onSelect={onSelect}/>:null}</section>;
 }
 export function TitleCast({meta,onSelect}:{meta:Meta;onSelect:(person:Person)=>void}){
   return /^tt\d+$/.test(meta.id)?<Cast id={meta.id} onSelect={onSelect}/>:null;

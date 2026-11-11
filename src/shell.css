@@ -4,18 +4,12 @@
   --bg:#141414;--sidebar:#1c1c1c;--header:#181818;--panel:#242424;--surface:#2b2b2b;--surface-hover:#343434;
   --field:#2e2e2e;--field-border:#5e5e5e;--line:#3e3e3e;--line-strong:#4f4f4f;
   --text:#ededed;--text-strong:#f4f4f4;--muted:#bcbcbc;--accent:#e0e0e0;--accent-hover:#f2f2f2;--on-accent:#161616;
-  --radius-control:5px;--radius-poster:7px;--radius-dialog:9px;
+  --radius-control:12px;--radius-poster:7px;--radius-dialog:9px;
   --rail:240px;--topbar:76px;--tabbar:64px;--gutter:42px;
 }
 
-/* Buttons: primary is the one light fill on a screen; secondary is a dark outlined surface. */
+/* Base layout for buttons; shared fills and hover states live in controls.css. */
 .button{min-height:46px;display:inline-flex;gap:8px;align-items:center;justify-content:center;border-radius:var(--radius-control);padding:11px 19px;font-size:15px;font-weight:600;white-space:nowrap;transition:background .15s,color .15s}
-.button.primary{background:var(--accent);color:var(--on-accent);border:1px solid var(--accent)}
-.button.primary:hover{background:var(--accent-hover)}
-.button.primary:disabled{background:#3a3a3a;border-color:#3a3a3a;color:#bdbdbd;cursor:default;opacity:1}
-.button.secondary{background:#343434;border:1px solid #505050;color:#e6e6e6}
-.button.secondary:hover{background:#424242}
-.button.quiet{background:#363636;color:#d1d1d1}
 
 /* Navigation rail */
 .sidebar{width:var(--rail);position:fixed;inset:0 auto 0 0;background:var(--sidebar);border-right:1px solid #393939;padding:28px 20px 22px;display:flex;flex-direction:column;z-index:10}
@@ -48,7 +42,7 @@ main{margin-left:var(--rail)}
 .search input::placeholder{color:#b4b4b4}
 .search button{display:flex;padding:0}
 .search kbd{border:1px solid #464646;border-radius:3px;padding:0 5px;font-size:13px}
-.page-content{padding:28px var(--gutter) 48px;max-width:1640px;margin:auto}
+.page-content{padding:28px var(--gutter) 48px;max-width:1640px;margin:auto;overflow-x:clip}
 
 /* Page headings: plain titles, no taglines. */
 .section-intro{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:4px 0 24px}
@@ -61,7 +55,7 @@ main{margin-left:var(--rail)}
 .load-more+.row-arrows{margin-left:0}
 .row-arrows .icon-button{border:1px solid #313131;width:36px;height:36px}
 @media(hover:hover){.row-arrows{opacity:0;transition:opacity .15s}.media-section:hover .row-arrows,.media-section:focus-within .row-arrows{opacity:1}}
-@media(hover:none){.row-arrows{display:none}}
+@media(hover:none){.row-arrows,.shelf-controls{display:none}}
 
 /* Spotlight */
 .hero{position:relative;min-height:400px;isolation:isolate;border-radius:var(--radius-dialog);overflow:hidden;background:#262626;margin-bottom:28px}
@@ -193,3 +187,14 @@ main{margin-left:var(--rail)}
 .hasimio-window-fullscreen .sidebar,.hasimio-window-fullscreen .topbar{top:0}
 
 .app-settings .settings-card+.settings-card{margin-top:20px}
+.settings-profile-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.settings-profile-row .profile-avatar{width:48px;height:48px;font-size:22px;border-radius:12px;margin:0}
+.settings-profile-row>div{flex:1;min-width:180px}
+.settings-profile-row strong{display:block;font-size:17px;margin-bottom:4px}
+.settings-card .engine-panel{margin:0}
+.settings-shortcuts{display:grid;gap:12px;margin:0}
+.settings-shortcuts>div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid #353535;font-size:14px}
+.settings-shortcuts>div:last-child{border-bottom:0;padding-bottom:0}
+.settings-shortcuts dt{font-weight:600;color:#ededed;white-space:nowrap}
+.settings-shortcuts dd{margin:0;color:#bcbcbc;text-align:right}
+.settings-shortcuts kbd{display:inline-block;padding:2px 7px;border:1px solid #525252;border-radius:5px;background:#2d2d2d;font-family:inherit;font-size:12px;color:#ededed}

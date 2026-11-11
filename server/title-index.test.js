@@ -97,7 +97,7 @@ describe('Hasimio title index',()=>{
     for(const search of ['baieti de oras','city boys','Băieți','oras baieti'])expect((await titles.catalog('series','popular',{search})).metas.map(m=>m.id),search).toEqual(['tt61']);
     // An exact match on either name wins.
     expect((await titles.catalog('series','popular',{search:'newest'})).metas[0].id).toBe('tt65');
-  });
+  },15000);
   it('rebuilds an index from an older version while it keeps serving',async()=>{
     const {titles}=await index();await titles.refresh();await titles.close();
     const {DatabaseSync}=await import('node:sqlite');

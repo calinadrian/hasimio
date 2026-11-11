@@ -19,3 +19,4 @@
 .detail-browse .icon-button:disabled{opacity:.3;cursor:default}
 .detail-browse .icon-button:hover:not(:disabled){background:#484848}
 @media(max-width:760px){.media-shelf .row-heading>span:not(.shelf-status){display:none}.media-shelf .shelf-status{font-size:12px}.shelf-arrow{width:44px;height:44px}.detail-browse{gap:4px}}
+@media(hover:none){.media-shelf .shelf-controls{display:none}}

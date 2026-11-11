@@ -116,13 +116,13 @@ Most hierarchy comes from surface color and thin dividers. Photography uses dark
 
 ## Shapes
 
-Controls and source rows use compact 4–5px corners. Posters use 7px corners; dialogs use 9px corners. Small codec and release-format chips use 3px corners. Avatars and today/saved markers remain circular.
+Controls and action buttons use 12px corners (`--radius-control`). Posters use 7px corners; dialogs use 9px corners. Small codec and release-format chips use 3px corners. Avatars and today/saved markers remain circular.
 
 ## Components
 
 ### Live TV
 
-Live TV reuses the shell's neutral grey fields, buttons, dividers, typography and compact control corners around a pure black video stage. The sidebar entry reads Live TV on desktop and Live in the mobile tab bar; Extensions shortens to Add-ons on mobile. A labeled Channel select switches between Cartoon Network, A1 and TLC. A channel icon, selected channel title and provider line sit beside the labeled Server select on desktop. Server counts reflect each channel. At 760px and below the select moves to its own row and the stage uses a 420px height; desktop uses a 16:9 stage with a 320px minimum height and a 1440px page maximum.
+Live TV reuses the shell's neutral grey fields, buttons, dividers, typography and control corners around a pure black video stage. The sidebar entry reads Live TV on desktop and in the mobile tab bar. Channels are browsed across All channels, Top 100 and Favorites, with a searchable channel guide and Source/Category filters alongside the 16:9 player stage.
 
 The idle stage centers a channel icon, title, short direct-stream explanation and the light primary Watch channel action. The active stage contains only the channel video with native video controls for playback, volume and fullscreen; the video retains its proportions against black letterboxing. Loading, slow-loading and opening-failure messages direct users to switch servers or retry. The toolbar keeps Reload and Stop reachable, stacking below 1100px. Supporting copy identifies Cool-eTv and explains that the two server pages currently reference the same stream. Keep provider websites and their controls outside this surface.
 

@@ -51,7 +51,7 @@ export default function StreamPicker({streams,loading,error,onPlay,onRetry,onMan
           {direct||stream.infoHash?<button className="button secondary source-play" aria-label={`Play ${option.provider} ${quality} source ${index+1}`} onClick={()=>onPlay(stream)}><Play size={16} fill="currentColor"/> Play</button>:external?<a className="button secondary source-play" href={external} target="_blank" rel="noreferrer">Open <ExternalLink size={14}/></a>:<span className="count-label">Unavailable</span>}
         </article>;
       })}</div><p className="source-note">{sources.some(o=>o.stream.infoHash)?((isWebOS||mobileEngine)?'More seeders can help playback start faster. Video buffers in the TV’s bounded memory cache. ':'More seeders can help playback start faster. Torrent sources buffer locally. Public-source track checks connect to peers and read file headers. '):''}{sources.some(o=>o.codec==='HEVC'||o.codec==='AV1')?'HEVC and AV1 require a compatible browser and device.':''}</p>
-    </>:<div className="stream-empty"><Puzzle size={28}/><h4>No sources available yet</h4><p>Try refreshing, or enable a playback extension.</p><button className="button secondary" onClick={onManage}>Manage extensions <ArrowUpRight size={16}/></button></div>}
-    {error&&<p className="error" role="alert">{error}</p>}
+    </>:engine.state==='ready'&&(loading||!error)?<div className="stream-empty"><Puzzle size={28}/><h4>No sources available yet</h4><p>Try refreshing, or enable a playback extension.</p><button className="button secondary" onClick={onManage}>Manage extensions <ArrowUpRight size={16}/></button></div>:null}
+    {error&&engine.state==='ready'&&<p className="error" role="alert">{error}</p>}
   </section>;
 }
