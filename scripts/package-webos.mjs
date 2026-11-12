@@ -17,6 +17,13 @@ const require=createRequire(import.meta.url);
 const pkg=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'));
 const output=path.join(root,'release','webos');
 const staging=path.join(output,'staging');
+// The TV service pins its own older dependencies for the TV's Node 8. Without them the bundler
+// falls back to the desktop copies and fails with unrelated-looking syntax errors.
+const servicePins=JSON.parse(await fs.readFile(path.join(root,'webos','service','package.json'),'utf8')).dependencies;
+for(const [name,version] of Object.entries(servicePins)){
+  const installed=await fs.readFile(path.join(root,'webos','service','node_modules',name,'package.json'),'utf8').then(text=>JSON.parse(text).version,()=>undefined);
+  if(installed!==version)throw Error('TV service dependency '+name+' '+version+' is '+(installed?'at '+installed:'not installed')+'. Run: npm ci --prefix webos/service --omit=optional --ignore-scripts');
+}
 const app=path.join(staging,'app'),service=path.join(staging,'service');
 const bundled=path.join(service,'bundled');
 const www=path.join(bundled,'www');
