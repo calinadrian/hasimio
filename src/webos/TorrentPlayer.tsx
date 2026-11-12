@@ -3,6 +3,7 @@ import type {ComponentProps} from 'react';
 import type DesktopTorrentPlayer from '../TorrentPlayer';
 import Player from '../Player';
 import {engineUrl} from '../engine';
+import {POLL_FAILURE_LIMIT,torrentPollDelay} from '../player-utils';
 
 type Session={id:string;state:string;error?:string;files:{index:number;name:string;length:number}[];selected?:number;mediaUrl?:string;numPeers:number;downloadSpeed:number;cacheBytes:number;cacheLimit:number};
 export default function TVTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,previous,next}:ComponentProps<typeof DesktopTorrentPlayer>){
@@ -10,9 +11,10 @@ export default function TVTorrentPlayer({stream,videoId,onClose,title,progressKe
   const id=useRef<string|undefined>(undefined);
   async function request(route:string,options?:RequestInit):Promise<Session>{const response=await fetch(engineUrl(route),options);const value=await response.json();if(!response.ok)throw Error(value.error||'The device service could not respond.');return value;}
   useEffect(()=>{
-    let live=true,timer:ReturnType<typeof setTimeout>;
+    let live=true,timer:ReturnType<typeof setTimeout>,failures=0;const started=Date.now();
     setSession(undefined);setError('');
-    async function poll(key:string){try{const value=await request('/api/torrents/'+key);if(!live)return;setSession(value);if(value.error)setError(value.error);else timer=setTimeout(()=>void poll(key),2000);}catch(problem){if(live)setError(problem instanceof Error?problem.message:'Playback stopped.');}}
+    // Check often until the video can start, then relax; one missed check must not stop a playing video.
+    async function poll(key:string){try{const value=await request('/api/torrents/'+key);if(!live)return;failures=0;setSession(value);if(value.error)setError(value.error);else timer=setTimeout(()=>void poll(key),torrentPollDelay(!value.mediaUrl,Date.now()-started,700,2000));}catch(problem){if(!live)return;if(++failures<POLL_FAILURE_LIMIT){timer=setTimeout(()=>void poll(key),2000);return;}setError(problem instanceof Error?problem.message:'Playback stopped.');}}
     void request('/api/torrents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId})}).then(value=>{if(!live){void fetch(engineUrl('/api/torrents/'+value.id),{method:'DELETE'});return;}id.current=value.id;setSession(value);void poll(value.id);}).catch(problem=>{if(live)setError(problem instanceof Error?problem.message:'Playback could not start.');});
     return()=>{live=false;clearTimeout(timer);if(id.current){void fetch(engineUrl('/api/torrents/'+id.current),{method:'DELETE',keepalive:true});id.current=undefined;}};
   },[stream.infoHash,stream.fileIdx,videoId,attempt]);

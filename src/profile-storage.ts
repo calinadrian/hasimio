@@ -34,6 +34,18 @@ export function removeProfile(id:string){
   save(list.filter(profile=>profile.id!==id));
 }
 export function currentProfile(){return active;}
+// Switching profiles reloads the app. A lone profile opens directly, so the reload has to say
+// when the picker was asked for; the address is the fallback where session storage is blocked.
+const pickerKey='hasimio:profile-picker';
+export function requestProfilePicker(){try{sessionStorage.setItem(pickerKey,'1');}catch{location.hash='profiles';}}
+let pickerRequested:boolean|undefined;
+export function profilePickerRequested(){
+  if(pickerRequested!==undefined)return pickerRequested;
+  pickerRequested=location.hash==='#profiles';
+  if(pickerRequested)history.replaceState(null,'',location.pathname+location.search);
+  try{if(sessionStorage.getItem(pickerKey)==='1'){pickerRequested=true;sessionStorage.removeItem(pickerKey);}}catch{/* The address fallback above still applies. */}
+  return pickerRequested;
+}
 export function selectProfile(id:string){
   if(active&&active.id!==id)throw Error('Reopen the profile picker to switch profiles.');
   const profile=profiles().find(value=>value.id===id);if(!profile)throw Error('This profile is no longer available.');active=profile;

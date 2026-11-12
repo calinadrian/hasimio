@@ -1,11 +1,20 @@
 import {useEffect,useRef,useState} from 'react';
 import App from './App';
-import {createProfile,currentProfile,profileLimit,profiles,removeProfile,renameProfile,selectProfile,type Profile} from './profile-storage';
+import {createProfile,currentProfile,profileLimit,profilePickerRequested,profiles,removeProfile,renameProfile,selectProfile,type Profile} from './profile-storage';
 import './profiles.css';
 
 const colors=['Blue','Orange','Purple','Green','Pink','Teal'];
+// With a single profile there is nothing to choose, so the app opens straight away. The picker still
+// appears for several profiles, for a sync link, and when Switch profile asked for it.
+function onlyProfile(){
+  try{
+    const list=profiles();
+    if(list.length!==1||profilePickerRequested()||location.hash.startsWith('#sync-link='))return undefined;
+    selectProfile(list[0].id);return list[0];
+  }catch{return undefined;}
+}
 export default function Profiles(){
-  const [selected,setSelected]=useState<Profile>(),[list,setList]=useState<Profile[]>([]),[error,setError]=useState('');
+  const [selected,setSelected]=useState<Profile|undefined>(onlyProfile),[list,setList]=useState<Profile[]>([]),[error,setError]=useState('');
   const [managing,setManaging]=useState(false),[editing,setEditing]=useState<Profile|'new'>(),[name,setName]=useState(''),[color,setColor]=useState(0),[deleting,setDeleting]=useState(false);
   const root=useRef<HTMLDivElement>(null);
   useEffect(()=>{try{setList(profiles());}catch(problem){setError(problem instanceof Error?problem.message:'Profiles are unavailable. Check device storage.');}},[]);

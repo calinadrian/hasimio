@@ -5,6 +5,7 @@ import Player from './Player';
 import {resumePosition} from './playback-progress';
 import {engineUrl} from './engine';
 import {usePlayerSettings} from './use-player-settings';
+import {POLL_FAILURE_LIMIT,torrentPollDelay} from './player-utils';
 import {useSubtitleSelection} from './subtitle-selection';
 import type {EpisodeAction} from './next-episode';
 import {isWebOS} from './webos/platform';
@@ -36,8 +37,9 @@ function DesktopTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey
   }else if(!choice&&preferences.autoSubtitles)embeddedSubtitle=supportedSubtitles.find(item=>sameLanguage(item.language,preferences.subtitleLanguage));
   const embeddedIndex=embeddedSubtitle?.index;
   const audioChosen=useRef(false);
-  useEffect(()=>{let live=true;let timer:ReturnType<typeof setTimeout>;setError('');setSession(undefined);setCompatible(true);setSeekStart(resumePosition(progressKey));setTrack(0);audioChosen.current=false;
-    async function poll(id:string){try{const status=await request(`/api/torrents/${id}`);if(!live)return;setSession(status);if(status.state==='error'){setError(status.error || 'Torrent playback failed.');return;}timer=setTimeout(()=>poll(id),1500);}catch(e){if(live)setError(e instanceof Error?e.message:'Could not check buffering status.');}}
+  useEffect(()=>{let live=true;let timer:ReturnType<typeof setTimeout>;let failures=0;const started=Date.now();setError('');setSession(undefined);setCompatible(true);setSeekStart(resumePosition(progressKey));setTrack(0);audioChosen.current=false;
+    // A single missed status check must not tear down a video that is playing; only repeated failures do.
+    async function poll(id:string){try{const status=await request(`/api/torrents/${id}`);if(!live)return;failures=0;setSession(status);if(status.state==='error'){setError(status.error || 'Torrent playback failed.');return;}const elapsed=Date.now()-started;timer=setTimeout(()=>poll(id),torrentPollDelay(status.state==='buffering'||status.audio?.state==='preparing'||(!status.audio&&elapsed<15000),elapsed));}catch(e){if(!live)return;if(++failures<POLL_FAILURE_LIMIT){timer=setTimeout(()=>poll(id),1500);return;}setError(e instanceof Error?e.message:'Could not check buffering status.');}}
     request('/api/torrents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId})}).then(result=>{if(!live){void fetch(engineUrl(`/api/torrents/${result.id}`),{method:'DELETE',keepalive:true});return;}sessionId.current=result.id;setSession(result);void poll(result.id);}).catch(e=>{if(live)setError(e instanceof Error?e.message:'Could not start torrent playback.');});
     const leave=()=>{if(sessionId.current){void fetch(engineUrl(`/api/torrents/${sessionId.current}`),{method:'DELETE',keepalive:true});sessionId.current=undefined;}};
     window.addEventListener('pagehide',leave);

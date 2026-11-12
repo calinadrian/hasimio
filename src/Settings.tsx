@@ -1,7 +1,7 @@
 import {playerSettings,savePlayerSettings,preferredQualities,type PreferredQuality,type PlayerSettings} from './preferences';
 import {languageName,subtitleLanguages} from './playback-tracks';
 import {usePlayerSettings} from './use-player-settings';
-import {currentProfile} from './profile-storage';
+import {currentProfile,requestProfilePicker} from './profile-storage';
 import {deviceSync} from './device-sync';
 import {EnginePanel,useEngine} from './EngineStatus';
 import {version as appVersion} from '../package.json';
@@ -23,7 +23,7 @@ export default function Settings(){
           <strong>{profile?.name||'My profile'}</strong>
           <p>Each profile keeps its own library, watch progress, and preferences.</p>
         </div>
-        <button className="button secondary" onClick={()=>{deviceSync.capture();location.reload();}}><Users size={16}/> Switch profile</button>
+        <button className="button secondary" onClick={()=>{deviceSync.capture();requestProfilePicker();location.reload();}}><Users size={16}/> Switch profile</button>
       </div>
     </div>
     <div className="settings-card">

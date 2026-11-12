@@ -1,6 +1,6 @@
 import {useRef,useState} from 'react';
 import {Compass,Library,Tv,Ellipsis,CalendarDays,BarChart3,Puzzle,MonitorSmartphone,Users,ChevronRight,X,Settings} from 'lucide-react';
-import {currentProfile} from '../profile-storage';
+import {currentProfile,requestProfilePicker} from '../profile-storage';
 import {deviceSync} from '../device-sync';
 
 const primary=[{name:'Discover',icon:Compass},{name:'Library',icon:Library},{name:'Live TV',icon:Tv}];
@@ -20,7 +20,7 @@ export default function MobileNavigation({page,onNavigate}:{page:string;onNaviga
       <div className="android-more-content">
         <header><h2 id="android-more-title">More</h2><button className="icon-button" aria-label="Close menu" onClick={()=>dialog.current?.close()}><X size={22}/></button></header>
         <div className="android-more-links">{secondary.map(({name,icon:Icon})=><button key={name} aria-label={name} aria-current={page===name?'page':undefined} onClick={()=>navigate(name)}><Icon size={22}/><span>{name}</span><ChevronRight size={18}/></button>)}</div>
-        <button className="android-profile" onClick={()=>{deviceSync.capture();location.reload();}}><span className={'profile-avatar profile-color-'+(currentProfile()?.color??0)} aria-hidden="true">{currentProfile()?.name.slice(0,1).toUpperCase()||'?'}</span><span><strong>{currentProfile()?.name||'My profile'}</strong><small>Switch profile</small></span><Users size={21}/></button>
+        <button className="android-profile" onClick={()=>{deviceSync.capture();requestProfilePicker();location.reload();}}><span className={'profile-avatar profile-color-'+(currentProfile()?.color??0)} aria-hidden="true">{currentProfile()?.name.slice(0,1).toUpperCase()||'?'}</span><span><strong>{currentProfile()?.name||'My profile'}</strong><small>Switch profile</small></span><Users size={21}/></button>
       </div>
     </dialog>
   </>;

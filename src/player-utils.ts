@@ -13,3 +13,11 @@ export function timelineDuration(mediaDuration:number,hint?:number,seekableEnd=0
   if(hint!==undefined&&Number.isFinite(hint)&&hint>0)return hint;
   return Number.isFinite(mediaDuration)&&mediaDuration>0?mediaDuration:Number.isFinite(seekableEnd)?seekableEnd:0;
 }
+
+// Torrent status is polled quickly while playback is still being prepared, so start-up and
+// seeks are not held back by the poll interval. A stream that stays unprepared (no peers)
+// falls back to the relaxed pace instead of polling quickly forever.
+export const POLL_FAILURE_LIMIT=4;
+export function torrentPollDelay(preparing:boolean,elapsedMs:number,fast=400,slow=1500){
+  return preparing&&elapsedMs<60000?fast:slow;
+}

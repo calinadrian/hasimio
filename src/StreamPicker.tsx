@@ -28,14 +28,15 @@ export default function StreamPicker({streams,loading,error,onPlay,onRetry,onMan
   const open=expanded||!options.length||!!error;
   const sourceHashes=sources.map(o=>o.stream.infoHash||'').join(',');
   useEffect(()=>{let live=true;const controller=new AbortController();
-    if(isWebOS||mobileEngine)return;
+    // Checks connect to peers, so they wait until the source list is actually on screen.
+    if(isWebOS||mobileEngine||!open)return;
     const pending=[...new Map(sources.filter(o=>o.stream.infoHash).map(o=>[o.stream.infoHash,o])).values()];
     async function checkSources(){while(live){const option=pending.shift();if(!option)return;const stream=option.stream,hash=stream.infoHash;if(!live)return;if(!hash||sourceTrackInfo(stream,videoId).verified)continue;
       setChecks(previous=>({...previous,[hash]:'Checking audio and subtitles…'}));
       try{const response=await fetch(engineUrl('/api/torrent-inspections'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:hash,fileIdx:stream.fileIdx,videoId}),signal:controller.signal});const result=await response.json();if(!response.ok)throw new Error(result.error||'Track inspection failed.');if(!Array.isArray(result.audioTracks)||!Array.isArray(result.subtitleTracks))throw new Error('Track information was incomplete.');if(!live)return;saveTrackSummary(hash,videoId,result.audioTracks as MediaTrack[],result.subtitleTracks as MediaTrack[]);setChecks(previous=>({...previous,[hash]:''}));setRevision(n=>n+1);}catch(e){if(!live)return;setChecks(previous=>({...previous,[hash]:e instanceof Error?e.message:'Could not inspect this source.'}));}
     }}
     if(engine.state==='ready')void Promise.all(Array.from({length:INSPECTION_CONCURRENCY},checkSources));return()=>{live=false;controller.abort();};
-  },[sourceHashes,videoId,quality,checkAttempt,engine.state]);
+  },[sourceHashes,videoId,quality,checkAttempt,engine.state,open]);
   return <section className="stream-picker" aria-label="Playback sources">
     <div className="stream-picker-heading"><div><h3>Sources</h3>{open&&!loading&&<p>{(isWebOS||mobileEngine)?'Pick a quality, then a source. Audio and subtitles are handled by the device during playback.':'Pick a quality, then a source. Audio and subtitle tracks are checked automatically.'}</p>}</div><button className="icon-button" aria-label="Refresh stream sources" onClick={onRetry} disabled={loading}><RefreshCw size={18} className={loading?'spin':''}/></button></div>
     {engine.state!=='ready'&&<EnginePanel engine={engine}/>}
