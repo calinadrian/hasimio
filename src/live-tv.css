@@ -76,3 +76,9 @@
 @media(max-width:1100px){.live-tv-layout{grid-template-columns:270px minmax(0,1fr);gap:18px}.live-tv-toolbar{align-items:flex-start;flex-direction:column}.live-tv-channel-title h2{font-size:22px}}
 @media(max-width:850px){.live-tv-layout{grid-template-columns:minmax(0,1fr)}.live-tv-channel{grid-row:1}.live-tv-browser{grid-row:2}.live-tv-channel-list{height:380px}.live-tv-heading{min-height:70px}.live-tv-intro{margin-bottom:18px}.live-tv-collections{gap:22px;margin-bottom:16px}.live-tv-stage{width:100%}.live-tv-idle{gap:10px;padding:20px}.live-tv-idle h3{font-size:18px}.live-tv-intro h1{font-size:28px}}
 @media(max-width:480px){.live-tv-total{font-size:12px}.live-tv-collections{gap:18px}.live-tv-collections button{font-size:12px;gap:5px}.live-tv-intro p{font-size:12px}.live-tv-channel-title h2{font-size:20px}.live-tv-loading{inset:8px 8px auto}.live-tv-actions{width:100%;justify-content:flex-start;flex-shrink:1}.live-tv-actions .button{min-height:44px}.live-tv-server{flex-basis:100%;justify-content:space-between;gap:16px}.live-tv-server select{flex:1;min-height:44px;max-width:220px}.live-tv-collections{gap:12px}.live-tv-row-copy strong{font-size:14px}.live-tv-row-copy small{font-size:12px}.live-tv-channel-select{min-height:70px}.live-tv-intro{gap:10px}.live-tv-filters select{min-height:44px}}
+
+.live-tv-android-player{position:absolute;inset:0}
+.live-tv-android-player .live-tv-video{background:#000}
+.live-tv-fullscreen{position:absolute;z-index:1;top:12px;right:12px;min-width:44px;min-height:44px}
+.live-tv-android-player.live-tv-expanded{position:fixed;z-index:10000;background:#000}
+.hasimio-android-tv .live-tv-fullscreen:focus-visible{outline:3px solid #fff;outline-offset:2px}

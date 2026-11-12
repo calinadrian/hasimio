@@ -38,6 +38,7 @@ import EpisodeList from './EpisodeList';
 import SyncDevices from './SyncDevices';
 import {deviceSync,useDeviceSync} from './device-sync';
 import {isWebOS} from './webos/platform';
+import {isAndroidArm32} from './android/platform';
 import TVStoragePanel from './webos/StoragePanel';
 import MobileNavigation from './android/MobileNavigation';
 import './android/mobile.css';
@@ -177,7 +178,7 @@ export default function App() {
       if(request!==detailRequest.current)return;
       if(!updated.metadataError){
         detailCache.current.delete(cacheKey);detailCache.current.set(cacheKey,updated);
-        if(detailCache.current.size>(isWebOS?10:50))detailCache.current.delete(detailCache.current.keys().next().value!);
+        if(detailCache.current.size>(isWebOS||isAndroidArm32?10:50))detailCache.current.delete(detailCache.current.keys().next().value!);
       }
       setSelected(updated);
       setEpisode(current=>current&&updated.videos?.some(v=>v.id===current)?current:nextEpisodeToWatch(updated,history)??defaultEpisode(updated)?.id);
@@ -202,7 +203,7 @@ export default function App() {
   async function importFile(file?: File) { if (!file) return; try { if (file.size > 10*1024*1024) throw new Error('Choose a Hasimio library export smaller than 10 MB.'); const merged = mergeLibrary({library,addons},parseLibrary(await file.text())); setLibrary(previous => mergeLibrary({library:previous,addons:[]},{library:merged.library,addons:[]}).library); setAddons(previous => mergeLibrary({library:[],addons:previous},{library:[],addons:merged.addons}).addons); notify(`Imported ${merged.added.titles} title${merged.added.titles === 1 ? '' : 's'} and ${merged.added.addons} extension${merged.added.addons === 1 ? '' : 's'}`); } catch (e) { notify(e instanceof Error ? e.message : 'Could not import this library.'); } }
   function refreshCalendar() {setCalendarRefresh(Date.now());}
   // A page for rows that have since been replaced is dropped as "nothing new", not as a failed load.
-  async function more(row:CatalogRow) {if(staleRows.current)return [];const request=catalogRequest.current,pending=request+':'+row.key;if(morePending.current.has(pending))return undefined;morePending.current.add(pending); try {const next = await loadCatalog(row.addon,row.catalog,query.trim(),row.skip); if (request !== catalogRequest.current) return []; setCatalogs(previous => previous.map(c => c.key !== row.key ? c : {...next,items:isWebOS?next.items.slice(0,30):[...new Map([...c.items,...next.items].map(m => [`${m.type}:${m.id}`,m])).values()],hasMore:next.hasMore && next.items.some(m => !c.items.some(old => old.id === m.id && old.type === m.type))}));return next.items.filter(m=>!row.items.some(old=>old.id===m.id&&old.type===m.type));} catch {return request === catalogRequest.current ? undefined : [];} finally {morePending.current.delete(pending);}}
+  async function more(row:CatalogRow) {if(staleRows.current)return [];const request=catalogRequest.current,pending=request+':'+row.key;if(morePending.current.has(pending))return undefined;morePending.current.add(pending); try {const next = await loadCatalog(row.addon,row.catalog,query.trim(),row.skip); if (request !== catalogRequest.current) return []; setCatalogs(previous => previous.map(c => c.key !== row.key ? c : {...next,items:isWebOS?next.items.slice(0,30):isAndroidArm32?next.items:[...new Map([...c.items,...next.items].map(m => [`${m.type}:${m.id}`,m])).values()],hasMore:next.hasMore && next.items.some(m => !c.items.some(old => old.id === m.id && old.type === m.type))}));return next.items.filter(m=>!row.items.some(old=>old.id===m.id&&old.type===m.type));} catch {return request === catalogRequest.current ? undefined : [];} finally {morePending.current.delete(pending);}}
   // IMDb numbers anime differently, so a saved or started IMDb entry stays as it is rather than losing that progress.
   const startedTitles=useMemo(()=>new Set(Object.entries(history).map(([key,entry])=>entry.titleKey??key)),[history]);
   const keepImdbTitle=(meta:Meta)=>startedTitles.has(progressKey(meta.type,meta.id))||library.some(m=>m.id===meta.id&&m.type===meta.type);

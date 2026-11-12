@@ -2,7 +2,7 @@ import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 
 export function installationNotes(platform){
-  if(platform==='android')return 'Requires Android 9+ and ARM64.\n\nDownload the APK below, open it on your device, allow installation from that source if prompted, and install.';
+  if(platform==='android')return 'Requires Android 9+ on ARM64 or 32-bit ARM.\n\nDownload the arm64 APK for 64-bit ARM or the armeabi-v7a APK for 32-bit ARM. Open it on your device and allow installation from that source if prompted.';
   if(platform==='webos')return 'Download the IPK below. Enable Developer Mode on your LG TV and install the package using the webOS CLI.\n\n[Installation steps](https://github.com/calinadrian/hasimio#lg-tv)';
   if(platform==='desktop')return 'Windows: download Hasimio-Setup-<version>.exe below and run the installer.\n\nmacOS (Apple Silicon): if a DMG is attached, download it, open it, and drag Hasimio into Applications.';
   throw Error('Unknown release platform: '+platform);

@@ -1,8 +1,8 @@
 # Standalone Android edition
 
-Android 9+ (API 28), ARM64 phones/tablets. The APK includes the React interface,
-Node.js Mobile 18.20.4, a TCP/DHT torrent client and a 64 MiB bounded video-piece
-RAM cache. It binds only to `127.0.0.1:11476`; no PC or hosted engine is needed.
+Android 9+ (API 28) on ARM64 and 32-bit ARM phones, tablets and TVs. The APK includes the React interface,
+Node.js Mobile 18.20.4, a TCP/DHT torrent client and a bounded video-piece RAM cache that defaults to 32 MiB on 32-bit ARM
+and 64 MiB on ARM64. It binds only to `127.0.0.1:11476`; no PC or hosted engine is needed.
 Library, profiles and sync settings persist across APK updates. Android's back
 button closes playback/details first, then offers to exit and stop the engine.
 Playback pauses when the activity leaves the foreground. There is no background
@@ -47,7 +47,10 @@ npm run package:android
 ```
 
 Output: `release/android/Hasimio-<version>-android-arm64.apk` and
-`release/android/hasimio-android-update.json`. The runtime downloads to `.cache`
+`release/android/hasimio-android-update.json`. For 32-bit ARM, run
+`npm run package:android -- --arm32` to build the `android-armeabi-v7a.apk`
+variant and its `hasimio-android-update-armeabi-v7a.json` manifest.
+The runtime downloads to `.cache`
 and its SHA-256 is pinned in the build script. No app is launched by packaging.
 Copy the APK to the phone and open it to install, or use
 `adb install -r <apk-path>` yourself.
@@ -78,7 +81,10 @@ Android version. Version code = major × 1,000,000 + minor × 1,000 + patch;
 each component must be below 1,000 and the resulting code must increase.
 Published Android releases are not marked as the repository's latest desktop
 release. The updater scans up to 90 recent releases, ignores drafts/prereleases
-and other platforms, and selects the highest Android version code.
+and other platforms, and selects the highest Android version code for its
+architecture. The original 32-bit build requires a one-time manual install
+of a newer 32-bit APK signed with the same key before it can receive in-app
+updates.
 
 Installed copies check GitHub after startup, on resume when six hours have
 elapsed, and from Extensions → Hasimio → Check for updates. A newer APK downloads

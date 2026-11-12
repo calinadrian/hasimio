@@ -14,6 +14,7 @@ public class MainActivity extends Activity {
   static final String ORIGIN="http://127.0.0.1:11476";
   WebView web;
   private Updates updates;
+  private FrameLayout appView;
   private View fullscreen;
   private WebChromeClient.CustomViewCallback fullscreenCallback;
   private ValueCallback<Uri[]> filePicker;
@@ -79,10 +80,15 @@ public class MainActivity extends Activity {
   @SuppressWarnings("SetJavaScriptEnabled") private void openApp(){
     if(destroyed||engineFailed)return;
     web=new WebView(this);
+    appView=new FrameLayout(this);
+    appView.addView(web,new FrameLayout.LayoutParams(-1,-1));
+    final boolean television=getPackageManager().hasSystemFeature(android.content.pm.PackageManager.FEATURE_LEANBACK)
+      ||((UiModeManager)getSystemService(UI_MODE_SERVICE)).getCurrentModeType()==android.content.res.Configuration.UI_MODE_TYPE_TELEVISION;
     WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);
     settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
     settings.setMediaPlaybackRequiresUserGesture(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
     web.addJavascriptInterface(new Object(){
+      @JavascriptInterface public boolean isTelevision(){return television;}
       @JavascriptInterface public String state(){return updates.state();}
       @JavascriptInterface public void check(){updates.check();}
       @JavascriptInterface public void install(){runOnUiThread(()->updates.install());}
@@ -102,10 +108,25 @@ public class MainActivity extends Activity {
         try{startActivityForResult(params.createIntent(),100);return true;}
         catch(ActivityNotFoundException error){filePicker=null;return false;}
       }
-      @Override public void onShowCustomView(View view,CustomViewCallback callback){fullscreen=view;fullscreenCallback=callback;setContentView(view);getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);}
-      @Override public void onHideCustomView(){if(fullscreen!=null){setContentView(web);fullscreen=null;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);fullscreenCallback.onCustomViewHidden();}}
+      @Override public void onShowCustomView(View view,CustomViewCallback callback){
+        if(fullscreen!=null){callback.onCustomViewHidden();return;}
+        fullscreen=view;fullscreenCallback=callback;
+        appView.addView(view,new FrameLayout.LayoutParams(-1,-1));
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        appView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        view.requestFocus();
+      }
+      @Override public void onHideCustomView(){
+        if(fullscreen==null)return;
+        appView.removeView(fullscreen);fullscreen=null;
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        appView.setSystemUiVisibility(0);
+        WebChromeClient.CustomViewCallback callback=fullscreenCallback;fullscreenCallback=null;
+        callback.onCustomViewHidden();
+        web.requestFocus();
+      }
     });
-    setContentView(web);web.loadUrl(ORIGIN+"/");
+    setContentView(appView);web.loadUrl(ORIGIN+"/");
     web.postDelayed(()->updates.check(),10000);
   }
   void emit(String json){runOnUiThread(()->{if(web!=null&&!destroyed)web.evaluateJavascript("window.hasimioAndroidUpdate?.("+json+")",null);});}
@@ -115,7 +136,7 @@ public class MainActivity extends Activity {
   }
   @Override protected void onResume(){super.onResume();if(web!=null){web.onResume();updates.periodic();}}
   @Override protected void onPause(){if(web!=null){web.evaluateJavascript("document.querySelectorAll('video').forEach(v=>v.pause())",null);web.onPause();}super.onPause();}
-  @Override protected void onDestroy(){destroyed=true;if(bound){unbindService(engineConnection);bound=false;}if(filePicker!=null)filePicker.onReceiveValue(null);updates.close();if(web!=null){web.removeJavascriptInterface("HasimioAndroid");web.destroy();}super.onDestroy();}
+  @Override protected void onDestroy(){destroyed=true;if(bound){unbindService(engineConnection);bound=false;}if(filePicker!=null)filePicker.onReceiveValue(null);updates.close();if(web!=null){appView.removeAllViews();web.removeJavascriptInterface("HasimioAndroid");web.destroy();}super.onDestroy();}
   @Override public void onBackPressed(){
     if(fullscreen!=null){web.getWebChromeClient().onHideCustomView();return;}
     if(web==null){super.onBackPressed();return;}

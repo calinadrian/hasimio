@@ -12,6 +12,7 @@ import {fetchSkipSegments,introSegmentAt,upNextStart,type SkipSegments} from './
 import type {EpisodeAction} from './next-episode';
 import './player.css';
 import {isWebOS,tvVideoBufferBytes} from './webos/platform';
+import {androidHlsLimits,isAndroidArm32} from './android/platform';
 import {useNativeTracks} from './webos/NativeTracks';
 import {usePictureInPicture} from './use-picture-in-picture';
 
@@ -146,7 +147,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
     const video=videoRef.current;scrubbing.current=false;setScrubPosition(undefined);setError('');setNotice('');resume.current=resumePosition(progressKey);restoring.current=false;setPosition(timeOffset);setDuration(durationHint||0);setBufferEnd(timeOffset);setPlaying(false);setBuffering(!!url);if(!video||!url)return;
     let active=true,hls:import('hls.js').default|undefined;
     if(/\.m3u8(?:\?|$)/i.test(url)&&!(isWebOS&&video.canPlayType('application/vnd.apple.mpegurl'))){
-      void import('hls.js').then(({default:Hls})=>{if(!active)return;if(!Hls.isSupported()){video.src=url;return;}hls=new Hls(isWebOS?{maxBufferLength:15,maxMaxBufferLength:20,maxBufferSize:tvVideoBufferBytes,backBufferLength:0,enableWorker:false}:preparedStream?preparedHlsConfig:{});hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal){if(import.meta.env.DEV)console.warn('Playback failure',data.details,data.error?.message);setBuffering(false);setError('The stream stopped responding. Retry playback or choose another source.');}});}).catch(()=>{if(active){setBuffering(false);setError('The streaming player could not load. Retry playback.');}});
+      void import('hls.js').then(({default:Hls})=>{if(!active)return;if(!Hls.isSupported()){video.src=url;return;}hls=new Hls(isWebOS?{maxBufferLength:15,maxMaxBufferLength:20,maxBufferSize:tvVideoBufferBytes,backBufferLength:0,enableWorker:false}:isAndroidArm32?{...(preparedStream?preparedHlsConfig:{}),...androidHlsLimits}:preparedStream?preparedHlsConfig:{});hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal){if(import.meta.env.DEV)console.warn('Playback failure',data.details,data.error?.message);setBuffering(false);setError('The stream stopped responding. Retry playback or choose another source.');}});}).catch(()=>{if(active){setBuffering(false);setError('The streaming player could not load. Retry playback.');}});
     }else video.src=url;
     return()=>{active=false;hls?.destroy();video.pause();video.removeAttribute('src');video.load();};
   },[url,retry,preparedStream,timeOffset]);

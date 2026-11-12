@@ -51,13 +51,15 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-        run: npm run package:android
+        run: |
+          npm run package:android
+          npm run package:android -- --arm32
       - uses: actions/upload-artifact@v4
         with:
-          name: Hasimio-Android-arm64
+          name: Hasimio-Android
           path: |
             release/android/*.apk
-            release/android/hasimio-android-update.json
+            release/android/hasimio-android-update*.json
           if-no-files-found: error
       - name: Publish Android release
         if: inputs.publish
@@ -78,7 +80,7 @@ jobs:
           else
             gh release create "$TAG" --target "$GITHUB_SHA" --draft --title "Hasimio Android $VERSION" --notes-file "$RUNNER_TEMP/release-notes.md" --latest=false
           fi
-          gh release upload "$TAG" "release/android/Hasimio-$VERSION-android-arm64.apk" release/android/hasimio-android-update.json --clobber
+          gh release upload "$TAG" "release/android/Hasimio-$VERSION-android-arm64.apk" "release/android/Hasimio-$VERSION-android-armeabi-v7a.apk" release/android/hasimio-android-update.json release/android/hasimio-android-update-armeabi-v7a.json --clobber
           gh release edit "$TAG" --draft=false --latest=false --notes-file "$RUNNER_TEMP/release-notes.md"
           node scripts/release-presentation.mjs android
       - name: Remove temporary signing key
