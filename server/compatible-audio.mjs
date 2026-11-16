@@ -54,12 +54,16 @@ export function keyframeTime(input,start,signal) {
     });
   });
 }
+// FFmpeg copies the whole video into segments on disk. Unthrottled it does so as fast as the torrent downloads,
+// writing the entire movie even when playback stops after a few minutes. Instead it converts the first minute at
+// once, so playback starts and seeks quickly, and then runs at twice the playback speed: always ahead, never far.
+export const CONVERSION_BURST_SECONDS=60,CONVERSION_SPEED=2;
 export function audioArguments(input,folder,hevc=false,track=0,start=0) {
   if(!Number.isInteger(track)||track<0)throw new Error('Invalid audio track.');
   if(!Number.isFinite(start)||start<0)throw new Error('Invalid seek position.');
   // Copied video retains keyframe preroll. Keep the same audio preroll instead
   // of trimming only the transcoded track to the requested seek position.
-  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...inputGuard,...(start?['-ss',String(start),'-noaccurate_seek']:[]),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-ar','48000','-af','aresample=async=1','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
+  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...inputGuard,...(start?['-ss',String(start),'-noaccurate_seek']:[]),'-readrate',String(CONVERSION_SPEED),'-readrate_initial_burst',String(CONVERSION_BURST_SECONDS),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-ar','48000','-af','aresample=async=1','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
 }
 export async function createAudioJob(id,index,input,filename='',track=0,start=0) {
   if(!/^[a-f\d]{36}$/.test(id)||!Number.isInteger(index)||index<0)throw new Error('Invalid audio session.');
