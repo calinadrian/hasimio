@@ -20,13 +20,20 @@ export class DeviceSync {
   status:Status={state:'off',devices:[]};listeners=new Set<()=>void>();document:SyncDocument=emptyDocument();observed:Record<string,unknown>={};private running=false;private timer:ReturnType<typeof setInterval>|undefined;private scheduled:ReturnType<typeof setTimeout>|undefined;private applied=false;private lastAttempt=0;private dirty=false;
   // The remote revision this.document already includes, and whether it has local changes not uploaded yet.
   private revision=0;private pending=true;
+  // Changes captured but not yet written to the local sync cache.
+  private unsaved=false;private saveTimer:ReturnType<typeof setTimeout>|undefined;
   private publish(update:Partial<Status>){this.status={...this.status,...update};for(const listener of this.listeners)listener();}
   subscribe=(listener:()=>void)=>{this.listeners.add(listener);return()=>{this.listeners.delete(listener);};};
   snapshot=()=>this.status;
-  private persist(){const packed=storedJson(this.document);profileStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:packed.startsWith('gz1:')?packed:this.document,revision:this.revision,pending:this.pending}));}
+  private persist(pending=this.pending){clearTimeout(this.saveTimer);this.saveTimer=undefined;this.unsaved=false;const packed=storedJson(this.document);profileStorage.setItem(documentKey,JSON.stringify({spaceId:this.status.identity?.spaceId,document:packed.startsWith('gz1:')?packed:this.document,revision:this.revision,pending}));}
+  // The cache is a whole compressed document. Playback moves a bookmark every few seconds, so bookmark-only changes
+  // are saved after the upload, on leaving the page, or after a pause; one lost with the page is captured again on
+  // the next start. A deferred save may land while an upload is in flight, so it always records work to upload.
+  private persistSoon(){this.unsaved=true;if(this.saveTimer)return;this.saveTimer=setTimeout(this.flush,30000);(this.saveTimer as {unref?:()=>void}).unref?.();}
+  flush=()=>{if(!this.unsaved)return;try{this.persist(true);}catch{/* The device's own data is saved separately and is captured again later. */}};
   capture=()=>{
     if(this.applied||!this.status.identity)return;
-    try{const current=localValues(),next=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);const changed=Object.keys(next.records).some(key=>next.records[key]!==this.document.records[key]);if(changed){this.pending=true;this.document=next;}this.observed=current;if(changed)this.persist();}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
+    try{const current=localValues(),next=captureChanges(this.document,this.status.identity.deviceId,this.observed,current);const keys=Object.keys(next.records).filter(key=>next.records[key]!==this.document.records[key]),changed=keys.length>0;if(changed){this.pending=true;this.document=next;}this.observed=current;if(changed){if(keys.every(key=>key.startsWith('progress:')))this.persistSoon();else this.persist();}}catch(error){this.publish({state:'offline',error:error instanceof Error?error.message:'Could not save pending sync changes.'});}
   };
   changed=()=>{if(this.applied)return;this.capture();if(!this.status.identity||this.status.state==='revoked')return;if(this.running)this.dirty=true;if(this.scheduled)return;this.scheduled=setTimeout(()=>{this.scheduled=undefined;void this.sync();},Math.max(1000,5000-(Date.now()-this.lastAttempt)));};
   start(){
@@ -36,10 +43,11 @@ export class DeviceSync {
       this.publish({identity,state:'syncing'});this.capture();try{this.persist();}catch{/* Retain the previous saved document if storage is unavailable. */}void this.sync();
     }
     this.timer=setInterval(()=>{if(this.status.identity&&this.status.state!=='revoked'&&document.visibilityState!=='hidden')void this.sync();},15000);
-    window.addEventListener('hasimio:local-data',this.changed);window.addEventListener('hasimio:playback-progress',this.changed);window.addEventListener('online',this.changed);window.addEventListener('pagehide',this.capture);
+    window.addEventListener('hasimio:local-data',this.changed);window.addEventListener('hasimio:playback-progress',this.changed);window.addEventListener('online',this.changed);window.addEventListener('pagehide',this.leaving);
     document.addEventListener('visibilitychange',this.visibility);
   }
-  private visibility=()=>{this.capture();if(document.visibilityState==='visible')void this.sync();};
+  private leaving=()=>{this.capture();this.flush();};
+  private visibility=()=>{this.capture();if(document.visibilityState==='visible')void this.sync();else this.flush();};
   private setIdentity(identity:Identity,joining=false){
     profileStorage.setItem(identityKey,JSON.stringify(identity));this.document=captureChanges(emptyDocument(),identity.deviceId,{},localValues(),joining?0:Date.now());this.observed=localValues();this.revision=0;this.pending=true;this.publish({identity,state:'syncing',error:undefined,devices:[]});this.persist();
   }
@@ -118,7 +126,7 @@ export class DeviceSync {
     return pairingFingerprint(keys.publicKey);
   }
   async unlink(deviceId:string){const i=this.status.identity;if(!i)return;await syncRequest(i.server,'spaces/'+i.spaceId+'/devices/'+deviceId,{method:'DELETE',token:i.deviceToken});if(deviceId===i.deviceId)this.forget();else await this.sync();}
-  forget(){profileStorage.removeItem(identityKey);profileStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.revision=0;this.pending=true;this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
+  forget(){clearTimeout(this.saveTimer);this.saveTimer=undefined;this.unsaved=false;profileStorage.removeItem(identityKey);profileStorage.removeItem(documentKey);this.document=emptyDocument();this.observed={};this.revision=0;this.pending=true;this.publish({identity:undefined,state:'off',devices:[],error:undefined,lastSynced:undefined});}
 }
 export const deviceSync=new DeviceSync();
 export function useDeviceSync(){return useSyncExternalStore(deviceSync.subscribe,deviceSync.snapshot);}

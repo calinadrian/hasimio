@@ -1,6 +1,7 @@
 import {DatabaseSync} from 'node:sqlite';
 import {mkdir,rename,rm,stat} from 'node:fs/promises';
 import path from 'node:path';
+import {removeStaleTemps} from './paths.mjs';
 import {datasetRows,normalize,titleMeta} from './title-index.mjs';
 
 const fields=['id','type','name','search','start','end','runtime','genres','rating','votes'];
@@ -40,7 +41,7 @@ export function createPeopleIndex({dir,titleRows,fetchImpl=fetch}){
     building=(async()=>{
       const temp=file+'.'+process.pid+'.tmp';
       try{
-        await mkdir(dir,{recursive:true});status={state:'building',step:'Preparing title list'};
+        await mkdir(dir,{recursive:true});await removeStaleTemps(file);status={state:'building',step:'Preparing title list'};
         await buildPeopleIndex(temp,{titleRows,fetchImpl,signal:controller.signal,onStep:step=>{status={state:'building',step};}});
         db?.close();db=undefined;await rename(temp,file);status={state:'ready'};
       }catch(error){status={state:'error',error:error.message};await rm(temp,{force:true}).catch(()=>{});}

@@ -9,6 +9,7 @@ import {Readable} from 'node:stream';
 import {mkdir,rename,rm,stat} from 'node:fs/promises';
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
+import {removeStaleTemps,CACHE_PRAGMAS} from './paths.mjs';
 import {romanianSeries,romanianSeriesIds,romanianCatalog} from '../shared/romanian-series.mjs';
 
 export const datasetBase='https://datasets.imdbws.com';
@@ -130,7 +131,7 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
   let lastRequest=0,artDb;
   // Artwork survives restarts and weekly rebuilds in its own file, so each title is looked up once a month at most.
   function artCache() {
-    if (!artDb) { mkdirSync(dir,{recursive:true}); artDb=new DatabaseSync(path.join(dir,'artwork.db')); artDb.exec('CREATE TABLE IF NOT EXISTS art(imdb TEXT PRIMARY KEY,value TEXT,expires INTEGER NOT NULL) WITHOUT ROWID; CREATE TABLE IF NOT EXISTS online_series(id TEXT PRIMARY KEY,value TEXT NOT NULL) WITHOUT ROWID'); }
+    if (!artDb) { mkdirSync(dir,{recursive:true}); artDb=new DatabaseSync(path.join(dir,'artwork.db')); artDb.exec(CACHE_PRAGMAS+'CREATE TABLE IF NOT EXISTS art(imdb TEXT PRIMARY KEY,value TEXT,expires INTEGER NOT NULL) WITHOUT ROWID; CREATE TABLE IF NOT EXISTS online_series(id TEXT PRIMARY KEY,value TEXT NOT NULL) WITHOUT ROWID'); }
     return artDb;
   }
   // TVmaze allows about 20 requests every 10 seconds per address; stay under it.
@@ -261,7 +262,7 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
   }
   function refresh() {
     building??=(async()=>{
-      await mkdir(dir,{recursive:true});
+      await mkdir(dir,{recursive:true});await removeStaleTemps(file);
       const temp=`${file}.${process.pid}.${Date.now()}.tmp`;
       try {
         await buildIndex(temp,{fetchImpl,signal:controller.signal,romanian:new Set(romanian.map(show=>show.id)),onStep:step=>{status={state:'building',step};}});

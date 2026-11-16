@@ -3,7 +3,11 @@
 const ENTITIES={amp:'&',lt:'<',gt:'>',quot:'"',apos:"'",nbsp:' ',mdash:'—',ndash:'–',hellip:'…'};
 function decode(text) {
   return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi,(match,entity)=>{
-    if(entity[0]==='#')return String.fromCodePoint(entity[1]==='x'||entity[1]==='X'?parseInt(entity.slice(2),16):Number(entity.slice(1)));
+    if(entity[0]==='#'){
+      // fromCodePoint throws beyond U+10FFFF, and this runs inside an updater event in the main process.
+      const code=entity[1]==='x'||entity[1]==='X'?parseInt(entity.slice(2),16):Number(entity.slice(1));
+      return code<=0x10ffff?String.fromCodePoint(code):match;
+    }
     return ENTITIES[entity.toLowerCase()]??match;
   });
 }

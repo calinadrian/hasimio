@@ -1,7 +1,7 @@
 import {profileStorage} from './profile-storage';
 import {readStoredJson} from './compact-json';
 import {type Meta,type Addon,validateManifest} from './media';
-import {playbackHistory,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
+import {playbackHistory,dropLivePosition,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
 import {validSetting,settingsKey} from './preferences';
 import {builtinSourceUrls} from './catalogs';
 
@@ -64,6 +64,10 @@ export function captureChanges(document:SyncDocument,device:string,previous:Reco
   for(const key of new Set([...Object.keys(previous),...Object.keys(current)]))if(!(key.startsWith('library:')&&previous[key]&&current[key])&&!(key.startsWith('progress:')&&current[key]===undefined)&&JSON.stringify(previous[key])!==JSON.stringify(current[key]))records[key]={stamp:++stamp,device,value:current[key]??null};
   return {v:1,records};
 }
+// Rewriting a store that already holds these values only wears the disk: a sync during playback changes one bookmark.
+function sameValues(stored:unknown,values:Record<string,unknown>){if(!plain(stored))return false;const keys=Object.keys(values);return keys.length===Object.keys(stored).length&&keys.every(key=>key in stored&&JSON.stringify(stored[key])===JSON.stringify(values[key]));}
+function sameEntries(text:string|null,values:Record<string,unknown>){try{return sameValues(JSON.parse(text??'null'),values);}catch{return false;}}
+function store(key:string,value:unknown,same=(text:string|null)=>text===JSON.stringify(value)){if(!same(profileStorage.getItem(key)))profileStorage.setItem(key,JSON.stringify(value));}
 export function applyDocument(document:SyncDocument){
   const existing=read('hasimio:library',[]) as Meta[];const metadata=new Map((Array.isArray(existing)?existing:[]).filter(title).map(meta=>[meta.type+':'+meta.id,meta]));
   const saved=new Map<string,Meta>(),addons:Addon[]=[],progress:Record<string,unknown>={},settings:Record<string,unknown>={};
@@ -76,6 +80,8 @@ export function applyDocument(document:SyncDocument){
   }
   // Keep this device's library order and append titles saved elsewhere.
   const library=[...[...metadata.keys()].filter(id=>saved.has(id)),...[...saved.keys()].filter(id=>!metadata.has(id))].map(id=>saved.get(id)!);
-  profileStorage.setItem('hasimio:library',JSON.stringify(library));profileStorage.setItem('hasimio:addons',JSON.stringify(addons));profileStorage.setItem('hasimio:playback-progress:v1',JSON.stringify(progress));profileStorage.setItem(settingsKey,JSON.stringify(settings));
+  store('hasimio:library',library);store('hasimio:addons',addons);store(settingsKey,settings,text=>sameEntries(text,settings));
+  // The playing position counts as stored: an upload that only carried it leaves the history file alone.
+  if(!sameValues(playbackHistory(),progress)){profileStorage.setItem('hasimio:playback-progress:v1',JSON.stringify(progress));dropLivePosition();}
   window.dispatchEvent(new Event('hasimio:remote-data'));window.dispatchEvent(new Event('hasimio:playback-progress'));
 }

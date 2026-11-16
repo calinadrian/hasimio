@@ -48,4 +48,7 @@ describe('desktop updates',()=>{
     expect(releaseSections('<h3>Fixed</h3><ul><li>Audio &amp; subtitles</li></ul><script>x</script>')).toEqual([{title:'Fixed',items:['Audio & subtitles']}]);
     expect(releaseSections(null)).toEqual([]);
   });
+  it('keeps release notes readable when they contain an impossible character reference',()=>{
+    expect(releaseSections('<ul><li>Fixed &#x110000; and &#99999999999; &#128512;</li></ul>')).toEqual([{title:'',items:['Fixed &#x110000; and &#99999999999; \u{1F600}']}]);
+  });
 });

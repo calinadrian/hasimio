@@ -1,5 +1,7 @@
 // Hasimio Engine: the local streaming service on its own, for hosted copies of the Hasimio UI.
 // node server/engine.mjs [--config engine.json] [--port 11475] [--lan] [--allow-origin https://hasimio.example]
+// Torrent pieces are held in memory (512 MB by default) rather than written to disk. Set HASIMIO_PIECE_CACHE_MB
+// to change the amount, or to 0 to store them on disk.
 import {createServer} from 'node:http';
 import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';

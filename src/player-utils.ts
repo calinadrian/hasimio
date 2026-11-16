@@ -7,6 +7,10 @@ export function seekPosition(target:number,start:number,end:number){
   return Number.isFinite(target)&&Number.isFinite(start)&&Number.isFinite(end)&&end>start?Math.max(start,Math.min(end,target)):undefined;
 }
 
+// How often the playing position is saved, and uploaded when sync is on. Pausing, seeking, finishing
+// and leaving the player save at once, so only a crash can lose up to this much.
+export const PROGRESS_SAVE_INTERVAL=10000;
+
 // Prepared movies use growing EVENT playlists but must never chase their live edge.
 export const preparedHlsConfig={startPosition:0,lowLatencyMode:false,liveSyncDurationCount:Number.MAX_SAFE_INTEGER,liveMaxLatencyDurationCount:Infinity,maxLiveSyncPlaybackRate:1};
 export function timelineDuration(mediaDuration:number,hint?:number,seekableEnd=0){

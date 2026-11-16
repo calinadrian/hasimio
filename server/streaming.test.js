@@ -72,6 +72,18 @@ describe('torrent video selection',()=>{
   const files=[{name:'sample.mp4',length:1000},{name:'Show.S01E01.mkv',length:300},{name:'Show.S01E02.mp4',length:200},{name:'readme.exe',length:100}];
   it('selects the requested episode rather than the biggest unrelated file',()=>{expect(selectVideo(files,'tt123:1:2').selected).toBe(2);});
   it('asks for a file when an episode cannot be matched inside a season pack',()=>{const result=selectVideo(files,'tt123:1:3');expect(result.selected).toBeUndefined();expect(result.files).toHaveLength(2);});
+  it('matches zero-padded and double-episode file names',()=>{
+    const padded=[{name:'Show.S01E001.mkv',length:300},{name:'Show.S01E002.mkv',length:200},{name:'Show.S01E010.mkv',length:100}];
+    expect(selectVideo(padded,'tt123:1:2').selected).toBe(1);
+    expect(selectVideo(padded,'tt123:1:1').selected).toBe(0);
+    const doubles=[{name:'Show.S02E01E02.mkv',length:300},{name:'Show.S02E03-E04.mkv',length:300},{name:'Show.S02E05.mkv',length:200}];
+    expect(selectVideo(doubles,'tt123:2:2').selected).toBe(0);
+    expect(selectVideo(doubles,'tt123:2:4').selected).toBe(1);
+    expect(selectVideo(doubles,'tt123:2:5').selected).toBe(2);
+    expect(selectVideo(doubles,'tt123:2:6').selected).toBeUndefined();
+    // A single-episode file wins over a double episode that also contains it.
+    expect(selectVideo([{name:'Show.S02E01E02.mkv',length:300},{name:'Show.S02E02.mkv',length:200}],'tt123:2:2').selected).toBe(1);
+  });
   it('does not select executable or sample files',()=>{expect(selectVideo(files).selected).toBe(1);expect(selectVideo([{name:'installer.exe',length:1000}]).selected).toBeUndefined();});
 });
 describe('HTTP video ranges and localhost boundary',()=>{

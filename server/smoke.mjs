@@ -1,26 +1,33 @@
 // A real TCP torrent transfer of generated test bytes. No public torrents are downloaded.
+// --audio adds conversion and track checks. --disk keeps pieces on disk as older versions did. --evict plays a
+// file much larger than the memory cache. Each run reports how many bytes of torrent pieces reached the disk.
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {once} from 'node:events';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {mkdir,readFile,unlink,access,writeFile} from 'node:fs/promises';
+import {mkdir,readFile,unlink,access,writeFile,readdir,stat} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import ffmpegPath from 'ffmpeg-static';
 import {audioRoot} from './compatible-audio.mjs';
 import WebTorrent from 'webtorrent';
 import {createMediaService} from './service.mjs';
+import {cacheDir} from './paths.mjs';
 
 const options={dht:false,tracker:false,lsd:false,natUpnp:false,natPmp:false,utp:false};
 const seeder=new WebTorrent(options);
 const downloader=new WebTorrent(options);const inspector=new WebTorrent(options);
 seeder.on('error',error=>console.error('Seeder:',error.message));
 downloader.on('error',error=>console.error('Downloader:',error.message));
-const service=createMediaService({clientFactory:()=>downloader,inspectionClientFactory:()=>inspector});
+const diskTest=process.argv.includes('--disk'),evictTest=process.argv.includes('--evict');
+const service=createMediaService({clientFactory:()=>downloader,inspectionClientFactory:()=>inspector,...(diskTest?{pieceCache:0}:evictTest?{pieceCache:64*1024}:{})});
+async function bytesOnDisk(folder){let total=0;for(const entry of await readdir(folder,{withFileTypes:true}).catch(()=>[])){const target=path.join(folder,entry.name);total+=entry.isDirectory()?await bytesOnDisk(target):(await stat(target)).size;}return total;}
 const server=createServer((req,res)=>{void service.handle(req,res);});
 const audioTest=process.argv.includes('--audio');const run=promisify(execFile);let fixture;const subtitleFixtures=[];
-let source=Buffer.alloc(256*1024);for(let i=0;i<source.length;i++)source[i]=i%251;
+let source=Buffer.alloc(evictTest?6*1024*1024:256*1024);for(let i=0;i<source.length;i++)source[i]=evictTest?(Math.imul(i,2654435761)>>>13)&255:i%251;
+// The engine only serves files whose first bytes are a video container.
+Buffer.from([0,0,0,24,0x66,0x74,0x79,0x70,0x69,0x73,0x6f,0x6d]).copy(source);
 if(audioTest){const folder=fileURLToPath(new URL('../.cache/audio-fixtures/',import.meta.url));await mkdir(folder,{recursive:true});fixture=path.join(folder,`generated-${process.pid}.mkv`);for(const [language,text] of [['eng','English subtitle cue'],['jpn','Japanese subtitle cue']]){const file=path.join(folder,`subtitle-${process.pid}-${language}.srt`);await writeFile(file,`1\n00:00:00,100 --> 00:00:02,500\n${text}\n\n`);subtitleFixtures.push(file);}await run(ffmpegPath,['-hide_banner','-loglevel','error','-y','-f','lavfi','-i','testsrc2=size=160x90:rate=12','-f','lavfi','-i','sine=frequency=440:sample_rate=48000','-f','lavfi','-i','sine=frequency=880:sample_rate=48000','-i',subtitleFixtures[0],'-i',subtitleFixtures[1],'-map','0:v','-map','1:a','-map','2:a','-map','3:s','-map','4:s','-c:s','srt','-metadata:s:s:0','language=eng','-metadata:s:s:1','language=jpn','-metadata:s:a:0','language=eng','-metadata:s:a:1','language=jpn','-t','3','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-c:a','pcm_s16le',fixture],{windowsHide:true});source=await readFile(fixture);}
 const filename=audioTest?'hasimio-audio-test.mkv':'hasimio-stream-test.mp4';
 const watchdog=setTimeout(()=>{console.error('Torrent streaming smoke test timed out.');process.exit(1);},30000);
@@ -54,6 +61,24 @@ try {
     }
     console.log('PASS: seeking restarts conversion at the requested time, preserves audio/video, rejects stale segments, and supports seeking backward.');
   }
+  if(evictTest){
+    const whole=await fetch(`${base}${status.mediaUrl}`);assert.equal(whole.status,200);assert.ok(Buffer.from(await whole.arrayBuffer()).equals(source),'The whole file must arrive intact while pieces are dropped from memory.');
+    const again=await fetch(`${base}${status.mediaUrl}`,{headers:{Range:'bytes=1000-200999'}});assert.ok(Buffer.from(await again.arrayBuffer()).equals(source.subarray(1000,201000)),'Seeking back to dropped pieces must download them again.');
+    const tail=await fetch(`${base}${status.mediaUrl}`,{headers:{Range:`bytes=${source.length-5000}-`}});assert.ok(Buffer.from(await tail.arrayBuffer()).equals(source.subarray(source.length-5000)));
+    const health=await(await fetch(`${base}/api/streaming/health`)).json(),cache=health.pieceCache.sessions[0];
+    // A viewer reading at its own pace beside a reader at full speed, as subtitle extraction is: the fast one
+    // pushes pieces out that the slow one has not reached. Both must still finish with the right bytes.
+    const slow=async()=>{const reader=(await fetch(`${base}${status.mediaUrl}`)).body.getReader(),chunks=[];for(;;){const {value,done}=await reader.read();if(done)break;chunks.push(value);await new Promise(r=>setTimeout(r,4));}return Buffer.concat(chunks);};
+    const fast=async()=>Buffer.from(await(await fetch(`${base}${status.mediaUrl}`)).arrayBuffer());
+    const [slowBytes,fastBytes,middle]=await Promise.all([slow(),fast(),fetch(`${base}${status.mediaUrl}`,{headers:{Range:'bytes=3000000-3999999'}}).then(async r=>Buffer.from(await r.arrayBuffer()))]);
+    assert.ok(slowBytes.equals(source),'A slow reader must not lose pieces to a fast one.');assert.ok(fastBytes.equals(source));assert.ok(middle.equals(source.subarray(3000000,4000000)));
+    console.log('PASS: a slow reader, a fast reader and a mid-file reader shared the small cache and all received the right bytes.');
+    assert.ok(cache.evictedBytes>source.length/2,'The test must actually drop pieces.');assert.ok(cache.evictedBytes<source.length*4,'Pieces must not be downloaded over and over: '+cache.evictedBytes);assert.ok(cache.bytes<=1024*1024,'Memory must stay near the limit: '+cache.bytes);
+    assert.equal((await(await fetch(`${base}/api/torrents/${id}`)).json()).progress,1);
+    console.log(`PASS: a ${source.length>>20} MiB file played through a cache holding ${cache.bytes>>10} KiB; ${cache.evictedBytes>>10} KiB dropped and re-read on demand.`);
+  }
+  const pieces=await bytesOnDisk(cacheDir('torrents'));console.log(`DISK: ${pieces} bytes of torrent pieces on disk for a ${source.length} byte file (${diskTest?'disk store':'memory store'}).`);
+  if(diskTest)assert.ok(pieces>0,'The disk store must still write pieces.');else assert.equal(pieces,0,'The memory store must not write torrent pieces to disk.');
   response=await fetch(`${base}/api/torrents/${id}`,{method:'DELETE'});assert.equal(response.status,200);
   assert.equal((await fetch(`${base}/api/torrents/${id}`)).status,404);
   if(audioTest)assert.equal(await access(path.join(audioRoot,id,'0','1')).then(()=>false,()=>true),true,'Converted segments must be removed on stop.');

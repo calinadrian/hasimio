@@ -1,6 +1,7 @@
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
+import {CACHE_PRAGMAS} from './paths.mjs';
 
 const headers={'User-Agent':'Hasimio (https://github.com/calinadrian/hasimio)',Accept:'application/json'};
 const plain=value=>String(value??'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').trim().slice(0,400);
@@ -40,7 +41,7 @@ export async function lookupActorPhotos(ids,{fetchImpl=fetch,signal}={}){
 }
 export function createActorPhotos({dir,fetchImpl=fetch,now=Date.now}){
   let db;const controller=new AbortController(),pending=new Map();let closed=false;
-  function cache(){if(!db){mkdirSync(dir,{recursive:true});db=new DatabaseSync(path.join(dir,'photos.db'));db.exec('CREATE TABLE IF NOT EXISTS photos(id TEXT PRIMARY KEY,value TEXT,expires INTEGER) WITHOUT ROWID');}return db;}
+  function cache(){if(!db){mkdirSync(dir,{recursive:true});db=new DatabaseSync(path.join(dir,'photos.db'));db.exec(CACHE_PRAGMAS+'CREATE TABLE IF NOT EXISTS photos(id TEXT PRIMARY KEY,value TEXT,expires INTEGER) WITHOUT ROWID');}return db;}
   async function photos(ids){
     ids=[...new Set(ids)];if(ids.length>30||!ids.length||ids.some(id=>!/^nm\d+$/.test(id)))throw Object.assign(Error('Invalid actor photo IDs.'),{status:400});
     if(closed)return {photos:{}};

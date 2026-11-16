@@ -26,8 +26,10 @@ export function selectVideo(files,videoId,fileIdx) {
   const episode=anime ? null : /:(\d+):(\d+)$/.exec(videoId ?? '');
   if(episode) {
     const season=Number(episode[1]),number=Number(episode[2]);
-    const pattern=new RegExp(`(?:s0?${season}[ ._-]*e0?${number}(?!\\d)|(?:^|[ ._-])0?${season}x0?${number}(?!\\d))`,'i');
-    const match=videos.find(f=>pattern.test(f.name));
+    const pattern=new RegExp(`(?:s0*${season}[ ._-]*e0*${number}(?!\\d)|(?:^|[ ._-])0*${season}x0*${number}(?!\\d))`,'i');
+    // Double episodes (S02E01E02, S02E03-E04) hold the later episode too; a file of its own still wins.
+    const joined=new RegExp(`s0*${season}(?:[ ._-]*e\\d+)+[ ._-]*e0*${number}(?!\\d)`,'i');
+    const match=videos.find(f=>pattern.test(f.name))??videos.find(f=>joined.test(f.name));
     if(match)return {files:videos,selected:match.index};
     if(videos.length>1)return {files:videos,selected:undefined};
   }

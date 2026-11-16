@@ -4,7 +4,7 @@ import {type Stream,safeHttp} from './media';
 import {languageName,parseVtt,sameLanguage} from './playback-tracks';
 import {CaptionOverlay,CaptionStyleControls,OnlineSubtitles,loadOnlineSubtitle,subtitleFile,useOnlineSubtitles,type CaptionSettings,type Frame} from './Captions';
 import {useSubtitleSelection,type SubtitleFile,type SubtitleSelection} from './subtitle-selection';
-import {playbackTime,seekPosition,timelineDuration,preparedHlsConfig} from './player-utils';
+import {playbackTime,seekPosition,timelineDuration,preparedHlsConfig,PROGRESS_SAVE_INTERVAL} from './player-utils';
 import {resumePosition,saveProgress} from './playback-progress';
 import {playerSettings,savePlayerSettings} from './preferences';
 import {useChromecast} from './casting';
@@ -73,7 +73,7 @@ export default function Player({episodeLabel,progressKey,titleKey,videoId,durati
   const online=useOnlineSubtitles(videoId,download?.filename||stream.filename,panel==='subtitles'||(needsOnline&&autoOnline.current!==autoSubtitleKey),captions.subtitleLanguage);
   function reveal(){const now=performance.now();hideAt.current=now+2500;if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
   function openPanel(next:Panel,button:HTMLButtonElement){trigger.current=button;setPanel(previous=>previous===next?undefined:next);reveal();}
-  function persist(force=false,leaving=false){if(!progressKey||!latestProgress.current||(!force&&Date.now()-lastSave.current<2000))return;const p=latestProgress.current;if(leaving&&episodeLabel&&p.duration>0&&p.position>=upNextStart(latestSkipSegments.current,p.duration))completionRequested.current=true;saveProgress(progressKey,p.position,p.duration,{completed:p.completed||completionRequested.current,titleKey,videoId,episodeLabel});lastSave.current=Date.now();}
+  function persist(force=false,leaving=false){if(!progressKey||!latestProgress.current||(!force&&Date.now()-lastSave.current<PROGRESS_SAVE_INTERVAL))return;const p=latestProgress.current;if(leaving&&episodeLabel&&p.duration>0&&p.position>=upNextStart(latestSkipSegments.current,p.duration))completionRequested.current=true;saveProgress(progressKey,p.position,p.duration,{completed:p.completed||completionRequested.current,titleKey,videoId,episodeLabel,live:!force});lastSave.current=Date.now();}
   function switchEpisode(target?:EpisodeAction,completed=false){
     if(!target)return;
     sync();

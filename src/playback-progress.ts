@@ -2,6 +2,12 @@ import {profileStorage,storageKey as scopedStorageKey} from './profile-storage';
 import {seasonShortName,validRelease,type Meta,type Video} from './media';
 const storageKey='hasimio:playback-progress:v1';
 const progressEvent='hasimio:playback-progress';
+// Saving the history rewrites all of it, which is megabytes for a long history. While a video plays, its
+// position goes to this small store instead and joins the history on the next whole save: pausing, seeking,
+// finishing, leaving the player, or any other change to the history. Readers always see the two combined.
+const liveKey='hasimio:playback-progress:live';
+// Joins the two stores in one snapshot. JSON text cannot contain this character unescaped.
+const liveMark='\0';
 // Manually watched entries have no real runtime yet, so cards hide their play time.
 const manualDuration=1;
 export type PlaybackProgress={position:number;duration:number;updatedAt:number;completed:boolean;titleKey?:string;videoId?:string;episodeLabel?:string;manual?:boolean};
@@ -9,34 +15,50 @@ export type ProgressMap=Record<string,PlaybackProgress>;
 export type WatchTarget={key:string;titleKey?:string;videoId?:string;episodeLabel?:string};
 export const progressLimit=500;
 export const newestFirst=(a:[string,PlaybackProgress],b:[string,PlaybackProgress])=>b[1].updatedAt-a[1].updatedAt||(a[0]<b[0]?-1:a[0]>b[0]?1:0);
-export function progressSnapshot(){try{return profileStorage.getItem(storageKey)??'{}';}catch{return '{}';}}
+export function progressSnapshot(){try{const history=profileStorage.getItem(storageKey)??'{}',live=profileStorage.getItem(liveKey);return live?history+liveMark+live:history;}catch{return '{}';}}
 export function subscribeProgress(changed:()=>void){
-  const storage=(event:StorageEvent)=>{if(event.key===scopedStorageKey(storageKey)||event.key===null)changed();};
+  const storage=(event:StorageEvent)=>{if(event.key===scopedStorageKey(storageKey)||event.key===scopedStorageKey(liveKey)||event.key===null)changed();};
   window.addEventListener(progressEvent,changed);window.addEventListener('storage',storage);
   return()=>{window.removeEventListener(progressEvent,changed);window.removeEventListener('storage',storage);};
 }
 
 export function playbackHistory(snapshot=progressSnapshot()):ProgressMap {
   try {
-    const value=JSON.parse(snapshot);
+    const cut=snapshot.indexOf(liveMark),value=JSON.parse(cut<0?snapshot:snapshot.slice(0,cut));
     if(!value||typeof value!=='object'||Array.isArray(value))return {};
-    return Object.fromEntries(Object.entries(value).filter(([,item])=>{
-      const p=item as PlaybackProgress;
-      return p&&Number.isFinite(p.position)&&p.position>=0&&Number.isFinite(p.duration)&&p.duration>0&&Number.isFinite(p.updatedAt)&&typeof p.completed==='boolean';
-    })) as ProgressMap;
+    const history=Object.fromEntries(Object.entries(value).filter(([,item])=>validProgress(item))) as ProgressMap;
+    const live=cut<0?undefined:livePosition(snapshot.slice(cut+1));
+    // The history wins only when it is newer, as after another device's position arrived.
+    if(live&&!(history[live.key]?.updatedAt>live.entry.updatedAt))history[live.key]=live.entry;
+    return history;
   }catch{return {};}
 }
+function validProgress(item:unknown):item is PlaybackProgress {
+  const p=item as PlaybackProgress;
+  return !!p&&Number.isFinite(p.position)&&p.position>=0&&Number.isFinite(p.duration)&&p.duration>0&&Number.isFinite(p.updatedAt)&&typeof p.completed==='boolean';
+}
+function livePosition(text:string|null):{key:string;entry:PlaybackProgress}|undefined {
+  try{const value=JSON.parse(text??'null');return value&&typeof value.key==='string'&&value.key&&validProgress(value.entry)?value:undefined;}catch{return undefined;}
+}
+// Called after the whole history is written with the playing position already included, or replaced by sync.
+export function dropLivePosition() {try{if(profileStorage.getItem(liveKey)!==null)profileStorage.removeItem(liveKey);}catch{/* A leftover position is ignored once the history holds a newer one. */}}
 export const progressKey=(type:string,videoId:string)=>`${type}:${videoId}`;
 export function savedProgress(key?:string):PlaybackProgress|undefined {return key?playbackHistory()[key]:undefined;}
 export function resumePosition(key?:string) {
   const progress=savedProgress(key);
   return progress&&!progress.completed&&progress.position<progress.duration?progress.position:0;
 }
-export function saveProgress(key:string,position:number,duration:number,details:{completed?:boolean;titleKey?:string;videoId?:string;episodeLabel?:string}={}) {
+export function saveProgress(key:string,position:number,duration:number,details:{completed?:boolean;titleKey?:string;videoId?:string;episodeLabel?:string;live?:boolean}={}) {
   if(!key||!Number.isFinite(position)||position<0||!Number.isFinite(duration)||duration<=0)return;
   try{
+    const entry:PlaybackProgress={position:Math.min(position,duration),duration,updatedAt:Date.now(),completed:details.completed??false,titleKey:details.titleKey,videoId:details.videoId,episodeLabel:details.episodeLabel};
+    if(details.live){
+      // A position left by another video, as after a crash, joins the history below instead of being overwritten.
+      const current=profileStorage.getItem(liveKey);
+      if(current===null||livePosition(current)?.key===key){profileStorage.setItem(liveKey,JSON.stringify({key,entry}));if(typeof window!=='undefined')window.dispatchEvent(new Event(progressEvent));return;}
+    }
     const all=playbackHistory();
-    all[key]={position:Math.min(position,duration),duration,updatedAt:Date.now(),completed:details.completed??false,titleKey:details.titleKey,videoId:details.videoId,episodeLabel:details.episodeLabel};
+    all[key]=entry;
     persistHistory(all);
   }catch{/* Playback continues if browser storage is blocked or full. */}
 }
@@ -45,6 +67,7 @@ function persistHistory(all:ProgressMap) {
   let unfinished=0;
   const recent=Object.entries(all).sort(newestFirst).filter(([,p])=>p.completed||unfinished++<progressLimit);
   profileStorage.setItem(storageKey,JSON.stringify(Object.fromEntries(recent)));
+  dropLivePosition();
   if(typeof window!=='undefined')window.dispatchEvent(new Event(progressEvent));
 }
 // Marking watched does not invent a runtime; keep a known one so resuming still starts at the beginning.

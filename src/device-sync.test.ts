@@ -54,6 +54,50 @@ describe('complete device sync',()=>{
     storage=phoneStorage;await phone.sync();expect(JSON.parse(storage.get('hasimio:library')!)).toEqual([]);
     await relay.close();relay=createSyncRelay({dataDir:directory,publicUrl:server});storage=new Map();const recovered=new DeviceSync();await recovered.recover(recovery,'Recovered device');expect(resumePosition('movie:tt1')).toBe(120);expect(JSON.parse(storage.get('hasimio:library')!)).toEqual([]);
   });
+  it('writes little to storage while a video plays, and loses nothing if the app closes without saving',async()=>{
+    const desktop=new DeviceSync();
+    storage.set('hasimio:library',JSON.stringify([{id:'tt1',type:'movie',name:'Film'},{id:'tt2',type:'movie',name:'Other'}]));storage.set('hasimio:settings',JSON.stringify({volume:0.6,captionSize:100}));
+    saveProgress('movie:tt2',300,1000);saveProgress('movie:tt1',10,1000);
+    await desktop.create(server,'Desktop');const invite=await desktop.invitation();await desktop.sync();
+    const writes:Record<string,number>={},set=storage.set.bind(storage);storage.set=(key:string,value:string)=>{writes[key]=(writes[key]??0)+1;return set(key,value);};
+    // Three progress ticks: each one saves the bookmark, but the sync document waits.
+    for(const position of [20,30,40]){saveProgress('movie:tt1',position,1000);desktop.capture();}
+    expect(writes).toEqual({'hasimio:playback-progress:v1':3});
+    // The upload saves the document once and leaves stores that did not change alone.
+    await desktop.sync();
+    expect(writes).toEqual({'hasimio:playback-progress:v1':3,'hasimio:sync:document':1});
+    // Closing before the deferred save still uploads the newest position on the next start.
+    saveProgress('movie:tt1',50,1000);desktop.capture();expect(writes['hasimio:sync:document']).toBe(1);
+    vi.stubGlobal('document',Object.assign(new EventTarget(),{visibilityState:'visible'}));
+    const restarted=new DeviceSync();restarted.start();await vi.waitFor(()=>expect(restarted.status.state).toBe('ready'));
+    storage=new Map();const phone=new DeviceSync();await phone.join(invite.url,'Phone');expect(resumePosition('movie:tt1')).toBe(50);expect(resumePosition('movie:tt2')).toBe(300);
+    // Leaving the page saves pending changes at once.
+    const phoneStorage=storage;saveProgress('movie:tt1',60,1000);phone.capture();const before=phoneStorage.get('hasimio:sync:document');phone.flush();expect(phoneStorage.get('hasimio:sync:document')).not.toBe(before);
+  });
+  it('syncs the playing position without rewriting the watch history on either side of the upload',async()=>{
+    const desktop=new DeviceSync(),desktopStorage=storage;saveProgress('movie:tt2',300,1000);saveProgress('movie:tt1',10,1000);
+    await desktop.create(server,'Desktop');const invite=await desktop.invitation();await desktop.sync();
+    const main='hasimio:playback-progress:v1',before=storage.get(main);
+    saveProgress('movie:tt1',20,1000,{live:true});await desktop.sync();
+    expect(storage.get(main)).toBe(before);expect(storage.has('hasimio:playback-progress:live')).toBe(true);
+    storage=new Map();const phone=new DeviceSync();await phone.join(invite.url,'Phone');expect(resumePosition('movie:tt1')).toBe(20);
+    // A newer position from the other device replaces the playing position here.
+    saveProgress('movie:tt1',700,1000);await phone.sync();
+    storage=desktopStorage;await desktop.sync();expect(resumePosition('movie:tt1')).toBe(700);expect(storage.has('hasimio:playback-progress:live')).toBe(false);
+  });
+  it('saves library and setting changes at once, and marks a save made during an upload as still pending',async()=>{
+    const desktop=new DeviceSync();saveProgress('movie:tt1',10,1000);await desktop.create(server,'Desktop');await desktop.sync();
+    const saved=()=>JSON.parse(storage.get('hasimio:sync:document')!);
+    expect(saved().pending).toBe(false);
+    storage.set('hasimio:settings',JSON.stringify({volume:0.2}));desktop.capture();
+    expect(saved().pending).toBe(true);expect(JSON.stringify(saved().document)).toContain('setting:volume');
+    await desktop.sync();expect(saved().pending).toBe(false);
+    // The page is hidden while the upload is in flight: the cache must not claim everything was uploaded.
+    saveProgress('movie:tt1',20,1000);desktop.capture();const send=globalThis.fetch;let during:boolean|undefined;
+    vi.stubGlobal('fetch',async(url:string,options:RequestInit={})=>{if(options.method==='PUT'&&during===undefined){desktop.flush();during=saved().pending;}return send(url,options);});
+    await desktop.sync();expect(during).toBe(true);
+    expect(saved().pending).toBe(false);expect(JSON.stringify(saved().document)).toContain('"position":20');
+  });
   it('pairs a TV using ephemeral encryption and blocks it after unlinking',async()=>{
     const desktop=new DeviceSync(),desktopStorage=storage;await desktop.create(server,'Desktop');
     storage=new Map();const tvStorage=storage,tv=new DeviceSync(),request=await tv.requestPairing(server,'Living room TV');expect(await tv.pollPairing(request)).toBe(false);

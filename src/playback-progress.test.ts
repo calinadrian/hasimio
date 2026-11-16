@@ -4,11 +4,38 @@ import {lastPlayedEpisode,progressKey,resumePosition,savedProgress,saveProgress,
 let data:Map<string,string>;
 beforeEach(()=>{
   data=new Map();
-  vi.stubGlobal('localStorage',{getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>data.set(key,value)});
+  vi.stubGlobal('localStorage',{getItem:(key:string)=>data.get(key)??null,setItem:(key:string,value:string)=>data.set(key,value),removeItem:(key:string)=>data.delete(key)});
 });
 afterEach(()=>{vi.unstubAllGlobals();vi.restoreAllMocks();});
 
 describe('persistent playback progress',()=>{
+  it('keeps the playing position in its own small store and folds it into the history later',()=>{
+    vi.stubGlobal('window',new EventTarget());
+    const main='hasimio:playback-progress:v1',live='hasimio:playback-progress:live';
+    setWatched(Array.from({length:50},(_,i)=>({key:`series:tt9:1:${i+1}`,titleKey:'series:tt9'})));saveProgress('movie:tt1',10,1000,{titleKey:'movie:tt1'});
+    const before=data.get(main)!,changed=vi.fn(),unsubscribe=subscribeProgress(changed);
+    // Playback ticks leave the whole history untouched, yet every reader sees the new position.
+    saveProgress('movie:tt1',20,1000,{titleKey:'movie:tt1',live:true});saveProgress('movie:tt1',30,1000,{titleKey:'movie:tt1',live:true});
+    expect(data.get(main)).toBe(before);expect(data.get(live)!.length).toBeLessThan(300);
+    expect(changed).toHaveBeenCalledTimes(2);unsubscribe();
+    expect(resumePosition('movie:tt1')).toBe(30);expect(playbackHistory()['movie:tt1']).toMatchObject({position:30,titleKey:'movie:tt1'});expect(Object.keys(playbackHistory())).toHaveLength(51);
+    // A video never saved before appears too.
+    data.delete(live);saveProgress('movie:tt2',5,1000,{live:true});expect(resumePosition('movie:tt2')).toBe(5);expect(data.get(main)).toBe(before);
+    // Starting another video folds the earlier bookmark in, so a crash-time position is not overwritten.
+    saveProgress('movie:tt3',7,1000,{live:true});expect(JSON.parse(data.get(main)!)['movie:tt2'].position).toBe(5);expect(resumePosition('movie:tt3')).toBe(7);
+    // Pausing, seeking or leaving saves the whole history and clears the small store.
+    saveProgress('movie:tt3',9,1000);expect(data.has(live)).toBe(false);expect(JSON.parse(data.get(main)!)['movie:tt3'].position).toBe(9);
+    // Any other whole-history change folds the playing position in as well.
+    saveProgress('movie:tt3',11,1000,{live:true});setWatched([{key:'movie:tt1'}]);expect(data.has(live)).toBe(false);expect(JSON.parse(data.get(main)!)['movie:tt3'].position).toBe(11);
+    // Removing an entry cannot be undone by a leftover playing position.
+    saveProgress('movie:tt3',12,1000,{live:true});restoreProgress({'movie:tt3':undefined});expect(playbackHistory()['movie:tt3']).toBeUndefined();
+  });
+  it('ignores a damaged or older playing position',()=>{
+    saveProgress('movie:tt1',40,1000);const live='hasimio:playback-progress:live';
+    data.set(live,'{broken');expect(resumePosition('movie:tt1')).toBe(40);
+    data.set(live,JSON.stringify({key:'movie:tt1',entry:{position:-1,duration:1000,updatedAt:Date.now()+1000,completed:false}}));expect(resumePosition('movie:tt1')).toBe(40);
+    data.set(live,JSON.stringify({key:'movie:tt1',entry:{position:5,duration:1000,updatedAt:1,completed:false}}));expect(resumePosition('movie:tt1')).toBe(40);
+  });
   it('retains every watched episode when marking a series longer than the bookmark limit',()=>{
     const targets=Array.from({length:600},(_,i)=>({key:`series:long:1:${i+1}`,titleKey:'series:long',videoId:`long:1:${i+1}`}));
     setWatched(targets);

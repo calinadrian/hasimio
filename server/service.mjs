@@ -28,6 +28,7 @@ import {createRomanianSubtitles} from './romanian-subtitles.mjs';
 import {readRarSubtitles} from './rar-subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
 import {inspectionStream} from './inspection-stream.mjs';
+import {createMemoryStore,pieceCacheBytes,PLAYBACK_READ_WINDOW} from './memory-store.mjs';
 import {createSkipSegmentLookup,imdbVideoId} from './segments.mjs';
 
 const cacheRoot=cacheDir('torrents');
@@ -37,7 +38,7 @@ export const UPLOAD_LIMIT=64*1024;
 // A crash skips stop(), so the first torrent of each run clears what an earlier run left behind.
 let swept;
 const sweepCache=()=>swept??=Promise.all([cacheRoot,audioRoot].map(dir=>rm(dir,{recursive:true,force:true,maxRetries:3,retryDelay:200}).catch(()=>{})));
-export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')}),lan=false,castMediaOrigins}={}) {
+export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')}),lan=false,castMediaOrigins,pieceCache=pieceCacheBytes()}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
   const onlineSubtitles=createOnlineSubtitleService({fetchImpl,romanian:createRomanianSubtitles({fetchImpl,extractRar:readRarSubtitles})});
@@ -59,7 +60,9 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   async function clearAudio(session){if(session.audioPending){try{await session.audioPending;}catch{/* Failed startup still needs any completed job cleaned. */}}await stopAudioJob(session.audioJob);session.audioJob=undefined;}
   async function clearSubtitles(session){if(session.subtitleQueue)await session.subtitleQueue.catch(()=>{});await stopAudioJob(session.subtitleJob);session.subtitleJob=undefined;}
   async function stop(id) {const session=sessions.get(id);if(!session)return; sessions.delete(id);clearTimeout(session.timer);session.probeController?.abort();if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);await clearSubtitles(session);for(const stream of session.readers)stream.destroy();if(session.torrent&&!session.torrent.destroyed)await new Promise(resolve=>session.torrent.destroy({destroyStore:true},resolve));}
-  function snapshot(session) {session.touched=Date.now();return {id:session.id,state:session.error?'error':session.ready?'ready':'buffering',error:session.error,files:session.files,selected:session.selected,duration:session.duration,audio:audioStatus(session.audioJob,session.id),audioTracks:session.audioTracks,subtitleTracks:session.subtitleTracks,subtitle:subtitleStatus(session.subtitleJob,session.id),numPeers:session.torrent?.numPeers ?? 0,downloadSpeed:session.torrent?.downloadSpeed ?? 0,downloaded:session.torrent?.downloaded ?? 0,progress:session.torrent?.progress ?? 0,mediaUrl:session.ready&&session.selected!=null?`/api/torrents/${session.id}/files/${session.selected}`:undefined};}
+  function snapshot(session) {session.touched=Date.now();return {id:session.id,state:session.error?'error':session.ready?'ready':'buffering',error:session.error,files:session.files,selected:session.selected,duration:session.duration,audio:audioStatus(session.audioJob,session.id),audioTracks:session.audioTracks,subtitleTracks:session.subtitleTracks,subtitle:subtitleStatus(session.subtitleJob,session.id),numPeers:session.torrent?.numPeers ?? 0,downloadSpeed:session.torrent?.downloadSpeed ?? 0,downloaded:session.memory?session.torrent?.received ?? 0:session.torrent?.downloaded ?? 0,progress:session.memory?reached(session):session.torrent?.progress ?? 0,mediaUrl:session.ready&&session.selected!=null?`/api/torrents/${session.id}/files/${session.selected}`:undefined};}
+  // Pieces in memory come and go, so progress is how far into the selected video any reader has got.
+  function reached(session){const length=session.selected==null?0:session.torrent?.files[session.selected]?.length;return length?Math.min(1,(session.reach??0)/length):0;}
   async function start(input,inspection=false) {
     if(!validHash(input.infoHash))throw new Error('A valid torrent info hash is required.');
     const hash=input.infoHash.toLowerCase();
@@ -67,14 +70,20 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     if(shuttingDown)throw new Error('Streaming service is stopping.');
     const engine=await client(inspection);
     const id=randomBytes(18).toString('hex');
-    const session={id,inspection,touched:Date.now(),ready:false,files:[],selected:undefined,readers:new Set()};sessions.set(id,session);
+    // Track checks read a few hundred kilobytes; playback gets the configured cache. 0 keeps pieces on disk as before.
+    const memory=pieceCache>0?{limit:inspection?Math.min(pieceCache,64*1024*1024):pieceCache}:undefined;
+    // Two windows are selected at once. Kept to half the cache, the download cannot push out what a reader still needs.
+    if(memory)memory.window=Math.max(64*1024,Math.min(PLAYBACK_READ_WINDOW,Math.floor(memory.limit/4)));
+    const session={id,inspection,touched:Date.now(),ready:false,files:[],selected:undefined,readers:new Set(),memory};sessions.set(id,session);
     const magnet=`magnet:?xt=urn:btih:${hash}`;
     let torrent;
-    try{torrent=engine.add(magnet,{path:path.join(cacheRoot,inspection?'inspections':'playback',hash),addUID:true,destroyStoreOnDestroy:true,deselect:true,strategy:'sequential',announce:trackers});session.torrent=torrent;}
+    try{torrent=engine.add(magnet,{...(memory?{store:createMemoryStore(memory.limit,memory),storeCacheSlots:0}:{path:path.join(cacheRoot,inspection?'inspections':'playback',hash),addUID:true}),destroyStoreOnDestroy:true,deselect:true,strategy:'sequential',announce:trackers});session.torrent=torrent;}
     catch(error){await stop(id);throw error;}
     session.timer=setTimeout(()=>{session.error='No torrent metadata arrived within 90 seconds. Try a source with more seeders.';if(!torrent.destroyed)torrent.destroy({destroyStore:true},()=>{});},90000);session.timer.unref();
     torrent.on('error',error=>{clearTimeout(session.timer);session.error=error.message;});
-    torrent.once('ready',()=>{clearTimeout(session.timer);const selection=selectVideo(torrent.files,input.videoId,input.fileIdx);session.files=selection.files;session.selected=selection.selected;if(!session.files.length){session.error='This torrent contains no supported video files.';return;}session.ready=true;for(const file of torrent.files)file.deselect();if(!inspection&&session.selected!=null)torrent.files[session.selected].select();});
+    torrent.once('ready',()=>{clearTimeout(session.timer);const selection=selectVideo(torrent.files,input.videoId,input.fileIdx);session.files=selection.files;session.selected=selection.selected;if(!session.files.length){session.error='This torrent contains no supported video files.';return;}session.ready=true;for(const file of torrent.files)file.deselect();
+      // Selecting the whole file would download far ahead of the reader and push unread pieces out of memory.
+      if(!inspection&&!memory&&session.selected!=null)torrent.files[session.selected].select();});
     return snapshot(session);
   }
   // Every read of a file, FFmpeg's included, waits for its first bytes to prove it is a video container.
@@ -127,7 +136,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       }
       if(req.method==='GET'&&url.pathname==='/api/streaming/health'){
         let port='';try {port=new URL(`http://${req.headers.host ?? ''}`).port;}catch{/* A malformed Host header was already rejected by localRequest. */}
-        return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size,...(lan?{lanOrigins:lanOrigins(port)}:{})});
+        return json(res,200,{available:true,apiVersion:ENGINE_API_VERSION,engineVersion,provider:'The Pirate Bay',engine:'WebTorrent',audioCompatibility:'aac-stereo-hls',active:sessions.size,pieceCache:pieceCache>0?{limit:pieceCache,sessions:[...sessions.values()].filter(s=>s.memory).map(s=>({inspection:s.inspection,bytes:s.memory.bytes??0,pieces:s.memory.pieces??0,evictedBytes:s.memory.evictedBytes??0}))}:undefined,...(lan?{lanOrigins:lanOrigins(port)}:{})});
       }
       // Native Chromecast control for the desktop app, where the Google Cast sender SDK is unavailable.
       if(req.method==='GET'&&url.pathname==='/api/cast')return json(res,200,{available:Boolean(castMediaOrigins)});
@@ -283,14 +292,16 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       if(sessionRoute){const session=sessions.get(sessionRoute[1]);if(!session)return json(res,404,{error:'This streaming session has ended.'});
         if(req.method==='DELETE'){await stop(session.id);return json(res,200,{stopped:true});}
         if(req.method==='GET'&&!sessionRoute[2])return json(res,200,snapshot(session));
-        if(req.method==='PATCH'&&!sessionRoute[2]){const input=await body(req);const file=session.files.find(f=>f.index===input.fileIndex);if(!file)return json(res,400,{error:'Choose a video file from this torrent.'});session.probeController?.abort();session.probePending=undefined;session.duration=undefined;session.audioTracks=undefined;session.subtitleTracks=undefined;await clearSubtitles(session);if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);for(const f of session.torrent.files)f.deselect();session.selected=file.index;session.torrent.files[file.index].select();return json(res,200,snapshot(session));}
+        if(req.method==='PATCH'&&!sessionRoute[2]){const input=await body(req);const file=session.files.find(f=>f.index===input.fileIndex);if(!file)return json(res,400,{error:'Choose a video file from this torrent.'});session.probeController?.abort();session.probePending=undefined;session.duration=undefined;session.audioTracks=undefined;session.subtitleTracks=undefined;await clearSubtitles(session);if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);for(const f of session.torrent.files)f.deselect();session.selected=file.index;session.reach=0;if(!session.memory)session.torrent.files[file.index].select();return json(res,200,snapshot(session));}
         if(['GET','HEAD'].includes(req.method)&&sessionRoute[2]){const index=Number(sessionRoute[2]),file=session.torrent?.files[index];if(!session.ready||!file||!VIDEO_EXTENSIONS.test(file.name))return json(res,404,{error:'Video file is not ready.'});session.touched=Date.now();
           try{await checkContainer(session,index);}catch(error){return json(res,415,{error:error.message});}
           const range=byteRange(req.headers.range,file.length);if(!range){res.writeHead(416,{'Content-Range':`bytes */${file.length}`});return res.end();}
           const ext=path.extname(file.name).toLowerCase();const mime={'.mp4':'video/mp4','.m4v':'video/mp4','.webm':'video/webm','.mkv':'video/x-matroska','.mov':'video/quicktime','.avi':'video/x-msvideo'}[ext];
           const headers={'Content-Type':mime,'Content-Length':range.end-range.start+1,'Accept-Ranges':'bytes','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};if(range.partial)headers['Content-Range']=`bytes ${range.start}-${range.end}/${file.length}`;
           if(url.searchParams.get('download')==='1')headers['Content-Disposition']="attachment; filename*=UTF-8''"+encodeURIComponent(path.basename(file.name)).replace(/['()*]/g,char=>'%'+char.charCodeAt(0).toString(16).toUpperCase());
-          res.writeHead(range.partial?206:200,headers);if(req.method==='HEAD')return res.end();const stream=session.inspection?inspectionStream(file,range):file.createReadStream({start:range.start,end:range.end});session.readers.add(stream);const waiting=setTimeout(()=>{session.error='Peers connected, but no video data arrived. Try a source with more active seeders.';stream.destroy(new Error(session.error));},45000);waiting.unref();stream.once('data',()=>clearTimeout(waiting));stream.on('error',()=>{clearTimeout(waiting);res.destroy();});res.once('close',()=>{clearTimeout(waiting);session.readers.delete(stream);stream.destroy();});stream.pipe(res);return;
+          res.writeHead(range.partial?206:200,headers);if(req.method==='HEAD')return res.end();const pin=session.memory&&((first,last)=>{const item={from:file.offset+first,to:file.offset+last};session.memory.pins.add(item);return()=>session.memory.pins.delete(item);});
+          const stream=session.inspection?inspectionStream(file,range,undefined,false,pin):session.memory?inspectionStream(file,range,session.memory.window,true,pin):file.createReadStream({start:range.start,end:range.end});session.readers.add(stream);
+          if(session.memory&&!session.inspection&&index===session.selected){let position=range.start;stream.on('data',chunk=>{position+=chunk.length;if(position>(session.reach??0))session.reach=position;});}const waiting=setTimeout(()=>{session.error='Peers connected, but no video data arrived. Try a source with more active seeders.';stream.destroy(new Error(session.error));},45000);waiting.unref();stream.once('data',()=>clearTimeout(waiting));stream.on('error',()=>{clearTimeout(waiting);res.destroy();});res.once('close',()=>{clearTimeout(waiting);session.readers.delete(stream);stream.destroy();});stream.pipe(res);return;
         }
       }
       return json(res,404,{error:'Unknown local streaming endpoint.'});
