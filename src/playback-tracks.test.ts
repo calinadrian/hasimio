@@ -1,7 +1,17 @@
 import {describe,it,expect,vi,afterEach} from 'vitest';
-import {parseVtt,srtToVtt,sourceTrackInfo,trackLabel,saveTrackSummary,defaultAudioTrack,audioAction,captionLines} from './playback-tracks';
+import {parseVtt,srtToVtt,sourceTrackInfo,trackLabel,saveTrackSummary,defaultAudioTrack,audioAction,captionLines,preferredTrack,sameLanguage} from './playback-tracks';
 
 describe('subtitle and source track information',()=>{
+  it('normalizes language aliases and prioritizes exact or default matches',()=>{
+    expect(sameLanguage('RUM','ro')).toBe(true);
+    expect(sameLanguage('ron','ro_RO')).toBe(true);
+    expect(sameLanguage('pt-PT','pt-BR')).toBe(false);
+    expect(sameLanguage('und','und')).toBe(false);
+    const tracks=[{index:0,language:'eng',default:true},{index:1,language:'rum'},{index:2,language:'ro',default:true}];
+    expect(preferredTrack(tracks,'RON')?.index).toBe(2);
+    expect(preferredTrack(tracks,'de')).toBeUndefined();
+    expect(preferredTrack(tracks,'')).toBeUndefined();
+  });
   it('selects a file’s marked default dub even when it is not the first audio track',()=>{
     const tracks=[{index:0,language:'eng',codec:'ac3',default:false,title:'Commentary'},{index:1,language:'eng',codec:'eac3',default:true}];
     expect(defaultAudioTrack(tracks)).toBe(1);

@@ -4,7 +4,7 @@ import path from 'node:path';
 import {Readable} from 'node:stream';
 import {createSyncRelay} from '../server/sync-relay.mjs';
 import {DeviceSync} from './device-sync';
-import {saveProgress,resumePosition} from './playback-progress';
+import {saveProgress,resumePosition,savedProgress,setWatched} from './playback-progress';
 
 let relay:ReturnType<typeof createSyncRelay>,directory:string,storage:Map<string,string>,offline=false,requests:string[]=[],responses:string[]=[];
 const server='http://127.0.0.1:8787';
@@ -98,12 +98,85 @@ describe('complete device sync',()=>{
     await desktop.sync();expect(during).toBe(true);
     expect(saved().pending).toBe(false);expect(JSON.stringify(saved().document)).toContain('"position":20');
   });
+  it('keeps a new device linked, but reports the initial transfer failure until a retry succeeds',async()=>{
+    const desktop=new DeviceSync();
+    saveProgress('movie:tt1',320,1000);
+    await desktop.create(server,'Desktop');
+    const invite=await desktop.invitation(),send=globalThis.fetch;
+    storage=new Map();
+    const phone=new DeviceSync();
+    vi.stubGlobal('fetch',async(url:string,options?:RequestInit)=>{
+      if(url.includes('/spaces/')&&!options?.method?.match(/POST/i))throw new TypeError('Disconnected');
+      return send(url,options);
+    });
+    await phone.join(invite.url,'Phone');
+    expect(phone.status.identity).toBeDefined();
+    expect(phone.status).toMatchObject({state:'offline',pending:true});
+    expect(phone.status.lastSynced).toBeUndefined();
+    expect(resumePosition('movie:tt1')).toBe(0);
+    vi.stubGlobal('fetch',send);
+    expect(await phone.sync()).toBe(true);
+    expect(phone.status).toMatchObject({state:'ready',pending:false});
+    expect(resumePosition('movie:tt1')).toBe(320);
+  });
+  it('shares the active transfer and uploads edits made while it is in flight',async()=>{
+    const desktop=new DeviceSync(),desktopStorage=storage;
+    await desktop.create(server,'Desktop');
+    const invite=await desktop.invitation(),send=globalThis.fetch;
+    saveProgress('movie:tt2',120,1000);
+    let editsDuringUpload=false;
+    vi.stubGlobal('fetch',async(url:string,options?:RequestInit)=>{
+      if(options?.method==='PUT'&&!editsDuringUpload){
+        editsDuringUpload=true;
+        saveProgress('movie:tt2',550,1000);
+        storage.set('hasimio:settings',JSON.stringify({audioLanguage:'ron',subtitleLanguage:'jpn',autoSubtitles:true}));
+      }
+      return send(url,options);
+    });
+    const transfer=desktop.sync();
+    expect(desktop.sync()).toBe(transfer);
+    expect(await transfer).toBe(true);
+    expect(JSON.parse(storage.get('hasimio:sync:document')!).pending).toBe(true);
+    expect(await desktop.sync()).toBe(true);
+    storage=new Map();
+    const phone=new DeviceSync(),phoneStorage=storage;
+    await phone.join(invite.url,'Phone');
+    expect(resumePosition('movie:tt2')).toBe(550);
+    expect(JSON.parse(storage.get('hasimio:settings')!)).toMatchObject({audioLanguage:'ron',subtitleLanguage:'jpn',autoSubtitles:true});
+    setWatched([{key:'movie:tt2'}],true);
+    await phone.sync();
+    storage=desktopStorage;await desktop.sync();
+    expect(savedProgress('movie:tt2')?.completed).toBe(true);
+    setWatched([{key:'movie:tt2'}],false);
+    await desktop.sync();
+    storage=phoneStorage;await phone.sync();
+    expect(savedProgress('movie:tt2')).toMatchObject({completed:false,position:0});
+  });
   it('pairs a TV using ephemeral encryption and blocks it after unlinking',async()=>{
     const desktop=new DeviceSync(),desktopStorage=storage;await desktop.create(server,'Desktop');
     storage=new Map();const tvStorage=storage,tv=new DeviceSync(),request=await tv.requestPairing(server,'Living room TV');expect(await tv.pollPairing(request)).toBe(false);
     storage=desktopStorage;const preview=await desktop.previewPairing(request.code);expect(preview.name).toBe('Living room TV');expect(preview.fingerprint).toBe(request.fingerprint);const approver=await desktop.approvePairing(request.code,preview);
     storage=tvStorage;expect(await tv.pollPairing(request)).toBe(approver);expect(tv.status.identity).toBeUndefined();await tv.finishPairing(request);expect(tv.status.identity?.recoveryToken).toBeUndefined();const tvId=tv.status.identity!.deviceId;
     storage=desktopStorage;await desktop.unlink(tvId);storage=tvStorage;await tv.sync();expect(tv.status.state).toBe('revoked');
+  });
+  it('stores a linked profile’s identity, preferences and bookmarks in its own storage keys',async()=>{
+    vi.resetModules();
+    const {createProfile,selectProfile,profileStorage}=await import('./profile-storage');
+    const {DeviceSync:ProfileDeviceSync}=await import('./device-sync');
+    const {saveProgress:saveProfileProgress}=await import('./playback-progress');
+    const profile=createProfile('Second profile',2);
+    storage.set('hasimio:settings',JSON.stringify({audioLanguage:'eng'}));
+    selectProfile(profile.id);
+    profileStorage.setItem('hasimio:settings',JSON.stringify({audioLanguage:'ron'}));
+    saveProfileProgress('movie:tt3',240,1000);
+    const device=new ProfileDeviceSync();
+    await device.create(server,'Second profile desktop');
+    expect(device.status.state).toBe('ready');
+    expect(storage.has('hasimio:sync:identity')).toBe(false);
+    expect(storage.has('hasimio:playback-progress:v1')).toBe(false);
+    expect(JSON.parse(storage.get('hasimio:settings')!)).toEqual({audioLanguage:'eng'});
+    expect(profileStorage.getItem('hasimio:sync:identity')).toBeTruthy();
+    expect(JSON.parse(profileStorage.getItem('hasimio:settings')!)).toEqual({audioLanguage:'ron'});
   });
   it('rejects malformed recovery codes and pairing links with a readable message',async()=>{
     const device=new DeviceSync(),forged=(value:object)=>btoa(JSON.stringify(value)).replace(/=+$/,'');

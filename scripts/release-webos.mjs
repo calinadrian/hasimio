@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import {verifyReleaseRelay} from './check-sync-relay.mjs';
 import {pruneReleases} from './release-presentation.mjs';
 import {spawn} from 'node:child_process';
 import {createRequire} from 'node:module';
@@ -30,6 +31,7 @@ if(await run('git',['status','--porcelain'],{capture:true}))throw Error('Commit 
 const branch=await run('git',['branch','--show-current'],{capture:true});if(!branch)throw Error('Check out a branch before publishing.');
 const existing=await run(gh,['release','view',tag,'--repo',repository,'--json','isDraft'],{capture:true,optional:true});
 if(existing&&!JSON.parse(existing).isDraft)throw Error(tag+' is already published. Bump package.json before releasing another TV update.');
+await verifyReleaseRelay(root);
 const privateKey=await fs.readFile(process.env.HASIMIO_WEBOS_SIGNING_KEY_FILE||path.join(root,'.cache','webos-update-signing-key.pem'),'utf8');
 const publicKey=await fs.readFile(path.join(root,'webos','update-public-key.pem'),'utf8');
 if(crypto.createPublicKey(privateKey).export({type:'spki',format:'pem'}).trim()!==crypto.createPublicKey(publicKey).export({type:'spki',format:'pem'}).trim())throw Error('The signing key does not match the public key trusted by installed TVs.');

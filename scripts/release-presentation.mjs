@@ -9,6 +9,7 @@ export function installationNotes(platform){
 }
 const patterns={desktop:/^v(\d+)\.(\d+)\.(\d+)$/,webos:/^webos-v(\d+)\.(\d+)\.(\d+)$/,android:/^android-v(\d+)\.(\d+)\.(\d+)$/};
 export function pruneReleases(platform,{gh=process.env.GH_CLI||'gh',repository='calinadrian/hasimio'}={}){
+  if(process.env.HASIMIO_KEEP_PRIOR_RELEASES==='1')return;
   const pattern=patterns[platform];if(!pattern)throw Error('Unknown release platform: '+platform);
   const run=args=>{const result=spawnSync(gh,args,{encoding:'utf8',windowsHide:true});if(result.error||result.status!==0)throw Error(result.error?.message||result.stderr||'GitHub command failed');return result.stdout;};
   const releases=JSON.parse(run(['api','repos/'+repository+'/releases?per_page=100','--paginate','--slurp'])).flat().filter(r=>!r.draft&&!r.prerelease&&pattern.test(r.tag_name));

@@ -1,6 +1,7 @@
 import {type Stream,safeHttp} from './media';
-import {playerSettings,type PreferredQuality} from './preferences';
+import {playerSettings,type PlayerSettings,type PreferredQuality} from './preferences';
 import {detectQuality,detectCodec,detectRelease,QUALITY_ORDER,type Quality} from '../shared/stream-info.mjs';
+import {languageMatch,preferredTrack,verifiedTracks} from './playback-tracks';
 export type StreamOption={stream:Stream;quality:Quality;provider:string;release?:string;codec?:string;seeders?:number;sizeBytes?:number;filename:string;detail:string};
 export function describeStream(stream:Stream):StreamOption {
   const text=`${stream.name ?? ''}\n${stream.title ?? ''}\n${stream.filename ?? ''}`;
@@ -23,5 +24,35 @@ export function defaultQuality(qualities:Quality[],preferred:PreferredQuality='A
 }
 export function formatSize(bytes?:number) {if(bytes==null||!Number.isFinite(bytes)||bytes<0)return 'Size unknown';return bytes>=1024**3?`${(bytes/1024**3).toFixed(1)} GB`:`${Math.round(bytes/1024**2)} MB`;}
 export function sortSources(options:StreamOption[],sort:string) {return [...options].sort((a,b)=>sort==='size'?(a.sizeBytes??Infinity)-(b.sizeBytes??Infinity):(b.seeders??-1)-(a.seeders??-1));}
-// One-click playback picks what the picker would show first, skipping torrents nobody seeds.
-export function bestSource(streams:Stream[],preferred=playerSettings().preferredQuality) {const options=streams.map(describeStream).filter(o=>o.stream.infoHash||safeHttp(o.stream.url));const ranked=sortSources(options.filter(o=>o.quality===defaultQuality(availableQualities(options),preferred)),'seeders');return (ranked.find(o=>!o.stream.infoHash||(o.seeders??0)>0)??ranked[0])?.stream;}
+export type SourcePreferences=Pick<PlayerSettings,'audioLanguage'|'subtitleLanguage'|'autoSubtitles'|'preferredQuality'>;
+export function sourceLanguageMatches(stream:Stream,videoId:string,preferences:SourcePreferences){
+  const tracks=verifiedTracks(stream,videoId);
+  const audio=preferredTrack(tracks?.audio??[],preferences.audioLanguage);
+  const subtitles=preferences.autoSubtitles
+    ? preferredTrack([...(tracks?.subtitles.filter(track=>track.supported)??[]),...(stream.subtitleTrack?[stream.subtitleTrack]:[])],preferences.subtitleLanguage)
+    : undefined;
+  return {audio:audio?languageMatch(audio.language,preferences.audioLanguage):0,subtitles:subtitles?languageMatch(subtitles.language,preferences.subtitleLanguage):0};
+}
+export function usableSource(stream:Stream){
+  return stream.infoHash?(describeStream(stream).seeders??1)>0:!!safeHttp(stream.url);
+}
+function qualityOrder(options:StreamOption[],preferred:PreferredQuality){
+  const remaining=availableQualities(options),ordered:Quality[]=[];
+  while(remaining.length){
+    const quality=defaultQuality(remaining,preferred);
+    ordered.push(quality);
+    remaining.splice(remaining.indexOf(quality),1);
+  }
+  return ordered;
+}
+export function rankSources(streams:Stream[],preferences:SourcePreferences,videoId:string){
+  const options=streams.filter(stream=>stream.infoHash||safeHttp(stream.url)).map(describeStream);
+  const quality=qualityOrder(options,preferences.preferredQuality);
+  return options.map(option=>({option,usable:usableSource(option.stream),matches:sourceLanguageMatches(option.stream,videoId,preferences)}))
+    .sort((a,b)=>Number(b.usable)-Number(a.usable)||b.matches.audio-a.matches.audio||b.matches.subtitles-a.matches.subtitles||
+      quality.indexOf(a.option.quality)-quality.indexOf(b.option.quality)||(b.option.seeders??-1)-(a.option.seeders??-1))
+    .map(({option})=>option.stream);
+}
+export function bestSource(streams:Stream[],preferences:SourcePreferences=playerSettings(),videoId=''){
+  return rankSources(streams,preferences,videoId)[0];
+}

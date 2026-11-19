@@ -15,7 +15,9 @@ You need a server with Node.js 24 or newer, a domain pointing to it, and an HTTP
 
 The proxy handles TLS certificates; only it should be public. The package contains only the built web UI and the relay, static-file, and sync-protocol modules.
 
-The app now includes the public Hasimio service at `https://hasimio-sync.aqualoom256.chatgpt.site`. The instructions above are for publishers who prefer their own relay. Normal users need no hosting setup.
+Release scripts check the configured service’s HTTPS API and cross-origin access before publication. Run `node scripts/check-sync-relay.mjs` to check it independently.
+
+The app uses the public Hasimio service at `https://hasimio-sync.aqualoom256.chatgpt.site`. The instructions above are for publishers who prefer their own relay. Normal users need no hosting setup.
 
 ## Development
 

@@ -6,6 +6,7 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import yaml from 'js-yaml';
+import {verifyReleaseRelay} from './check-sync-relay.mjs';
 import {installationNotes,pruneReleases} from './release-presentation.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -15,7 +16,7 @@ const require=createRequire(import.meta.url);
 
 export function releaseNotes() { return installationNotes('desktop'); }
 
-function main() {
+async function main() {
   const run=(exe,args,optional=false)=>{
     const result=spawnSync(exe,args,{cwd:ROOT,encoding:'utf8',windowsHide:true});
     if(result.error||result.status!==0){if(optional)return null;throw Error(result.error?.message||result.stderr||result.stdout||exe+' failed');}
@@ -40,6 +41,7 @@ function main() {
   const release=run(ghExe,['release','view',tag,'--repo',REPO,'--json','isDraft'],true);
   if(release&&!JSON.parse(release).isDraft)throw Error(tag+' is already published. Bump the version.');
 
+  await verifyReleaseRelay(ROOT);
   const notesFile=path.join(DIST,'release-notes.md');
   fs.mkdirSync(path.dirname(notesFile),{recursive:true});
   fs.writeFileSync(notesFile,releaseNotes()+'\n');
@@ -71,5 +73,5 @@ function main() {
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
-  try {main();}catch(error){console.error(error.message);process.exitCode=1;}
+  try {await main();}catch(error){console.error(error.message);process.exitCode=1;}
 }

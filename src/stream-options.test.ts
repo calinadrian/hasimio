@@ -1,3 +1,4 @@
+import {saveTrackSummary} from './playback-tracks';
 import {describe,it,expect} from 'vitest';
 import {describeStream,availableQualities,defaultQuality,sortSources,bestSource} from './stream-options';
 import {detectQuality} from '../shared/stream-info.mjs';
@@ -24,5 +25,31 @@ describe('quality-first stream selection',()=>{
     expect(bestSource([{infoHash:hash('a'),quality:'4K',seeders:90},{infoHash:hash('b'),quality:'1080p',seeders:5},{infoHash:hash('c'),quality:'1080p',seeders:40},{externalUrl:'https://example.org',quality:'1080p'}])?.infoHash).toBe(hash('c'));
     expect(bestSource([{infoHash:hash('d'),quality:'720p',seeders:0},{url:'https://example.org/a.mp4',quality:'720p'}])?.url).toBe('https://example.org/a.mp4');
     expect(bestSource([{externalUrl:'https://example.org'}])).toBeUndefined();
+  });
+});
+
+describe('preferred playback languages',()=>{
+  const preferences={audioLanguage:'ro',subtitleLanguage:'eng',autoSubtitles:true,preferredQuality:'1080p'} as const;
+  const dub={index:0,language:'ron',codec:'aac',default:false};
+  const subtitles={index:0,language:'en',codec:'subrip',default:false,supported:true};
+  it('picks the confirmed dub across qualities and never associates another file with the requested one',()=>{
+    const videoId='tt-language:1:2';
+    const lower={infoHash:'1'.repeat(40),fileIdx:4,quality:'720p',seeders:5};
+    const higher={infoHash:'2'.repeat(40),quality:'1080p',seeders:50};
+    saveTrackSummary(lower.infoHash,videoId,[dub],[],4,4);
+    expect(bestSource([higher,lower],preferences,videoId)).toBe(lower);
+    expect(bestSource([higher,{...lower,fileIdx:5}],preferences,videoId)).toBe(higher);
+    expect(bestSource([higher,lower],preferences,'tt-language:1:3')).toBe(higher);
+    expect(bestSource([higher,{...lower,seeders:0}],preferences,videoId)).toBe(higher);
+  });
+  it('uses playable subtitles after audio, and quality when subtitles are off or unsupported',()=>{
+    const videoId='tt-subtitle';
+    const lower={infoHash:'3'.repeat(40),quality:'720p',seeders:4};
+    const higher={infoHash:'4'.repeat(40),quality:'1080p',seeders:50};
+    saveTrackSummary(lower.infoHash,videoId,[],[subtitles]);
+    expect(bestSource([higher,lower],preferences,videoId)).toBe(lower);
+    expect(bestSource([higher,lower],{...preferences,autoSubtitles:false},videoId)).toBe(higher);
+    saveTrackSummary(lower.infoHash,videoId,[],[{...subtitles,supported:false}]);
+    expect(bestSource([higher,lower],preferences,videoId)).toBe(higher);
   });
 });

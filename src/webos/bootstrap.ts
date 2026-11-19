@@ -37,7 +37,7 @@ window.fetch=(input,options)=>{
   const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url,location.href);
   // Extension HTTP APIs go through the TV service, avoiding browser CORS and
   // old browser certificate stores. Video/image resources remain native URLs.
-  if(url.origin!==location.origin&&['http:','https:'].includes(url.protocol)&&!new Headers(options?.headers??(input instanceof Request?input.headers:undefined)).has('Authorization')&&(options?.method??(input instanceof Request?input.method:'GET')).toUpperCase()==='GET'){
+  if(options?.mode!=='cors'&&url.origin!==location.origin&&['http:','https:'].includes(url.protocol)&&!new Headers(options?.headers??(input instanceof Request?input.headers:undefined)).has('Authorization')&&(options?.method??(input instanceof Request?input.method:'GET')).toUpperCase()==='GET'){
     return nativeFetch('/api/webos/fetch?url='+encodeURIComponent(url.href),{signal:options?.signal,cache:'no-store'});
   }
   return nativeFetch(input,options);

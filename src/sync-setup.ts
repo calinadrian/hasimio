@@ -1,3 +1,4 @@
+import syncService from '../shared/sync-service.json';
 import {profileStorage} from './profile-storage';
 import {serviceUrl} from './sync-crypto';
 const overrideKey='hasimio:sync:service';
@@ -28,12 +29,26 @@ export function deviceLabels(devices:{id:string;name:string;addedAt:number}[]){
 }
 export function savedService(){try{return profileStorage.getItem(overrideKey)||'';}catch{return '';}}
 export function rememberService(value:string){profileStorage.setItem(overrideKey,serviceUrl(value));}
-export const defaultSyncService='https://hasimio-sync.aqualoom256.chatgpt.site';
+export const defaultSyncService=syncService.defaultUrl;
+export async function withSyncTimeout<T>(milliseconds:number,work:(signal:AbortSignal)=>Promise<T>):Promise<T>{
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),milliseconds);
+  try{return await work(controller.signal);}
+  finally{clearTimeout(timer);}
+}
 export async function discoverSyncService({configured=import.meta.env.VITE_SYNC_URL||defaultSyncService,origin=location.origin,override=savedService(),fetcher=fetch}:{configured?:string;origin?:string;override?:string;fetcher?:typeof fetch}={}){
   const candidates=[...new Set([override,configured,origin].filter(Boolean))];
   for(const candidate of candidates){
     let server;try{server=serviceUrl(candidate!);}catch{continue;}
-    try{const response=await fetcher(server+'/api/sync/info',{cache:'no-store',signal:AbortSignal.timeout(4000)});if(!response.ok||!response.headers.get('content-type')?.includes('application/json'))continue;const info=await response.json();if(info.version===1)return info.appUrl?serviceUrl(info.appUrl):server;}catch{/* Try the next publisher-provided or same-origin address. */}
+    try{
+      const ok=await withSyncTimeout(4000,async signal=>{
+        const response=await fetcher(server+'/api/sync/info',{cache:'no-store',mode:'cors',signal});
+        if(!response.ok||!response.headers.get('content-type')?.includes('application/json'))return '';
+        const info=await response.json();
+        return info.version===1?(info.appUrl?serviceUrl(info.appUrl):server):'';
+      });
+      if(ok)return ok;
+    }catch{/* Try the next publisher-provided or same-origin address. */}
   }
   return '';
 }

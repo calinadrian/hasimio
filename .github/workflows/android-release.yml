@@ -61,6 +61,9 @@ jobs:
             release/android/*.apk
             release/android/hasimio-android-update*.json
           if-no-files-found: error
+      - name: Verify public sync service
+        if: inputs.publish
+        run: node scripts/check-sync-relay.mjs
       - name: Publish Android release
         if: inputs.publish
         env:

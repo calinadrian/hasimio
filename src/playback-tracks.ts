@@ -15,24 +15,74 @@ export function audioAction({ready,compatible,audioTracks,tracksError}:{ready:bo
 }
 const codes:Record<string,string>={eng:'en',jpn:'ja',spa:'es',spn:'es',fre:'fr',fra:'fr',ger:'de',deu:'de',ita:'it',por:'pt',pob:'pt-BR',rum:'ro',ron:'ro',chi:'zh',zho:'zh',zht:'zh-Hant',kor:'ko',rus:'ru',hin:'hi',ara:'ar',dut:'nl',nld:'nl',pol:'pl',tur:'tr',gre:'el',ell:'el',heb:'he',swe:'sv',dan:'da',fin:'fi',nor:'no',cze:'cs',ces:'cs',hun:'hu',bul:'bg',hrv:'hr',scc:'sr',srp:'sr',slv:'sl',slo:'sk',slk:'sk',ukr:'uk',vie:'vi',tha:'th',ind:'id',may:'ms',msa:'ms',per:'fa',fas:'fa',est:'et',lav:'lv',lit:'lt',ice:'is',isl:'is',alb:'sq',sqi:'sq',mac:'mk',mkd:'mk',bos:'bs',cat:'ca',baq:'eu',eus:'eu',glg:'gl',ben:'bn',tam:'ta',tel:'te',mal:'ml',urd:'ur',kur:'ku',geo:'ka',kat:'ka',arm:'hy',hye:'hy'};
 export const subtitleLanguages=Object.keys(codes).filter((code,index,all)=>all.findIndex(other=>codes[other]===codes[code])===index);
-export function sameLanguage(a:string,b:string){return (codes[a]||a)===(codes[b]||b);}
-export function languageName(code:string){try{return new Intl.DisplayNames(['en'],{type:'language'}).of(codes[code]||code)||code;}catch{return code;}}
+function normalizedLanguage(value:string){
+  const [base,...suffix]=value.trim().toLowerCase().replaceAll('_','-').split('-');
+  const language=codes[base]?.toLowerCase()||base;
+  return [language,...suffix].join('-');
+}
+export function languageMatch(a:string,b:string){
+  const left=normalizedLanguage(a),right=normalizedLanguage(b);
+  if(!left||!right||left==='und'||right==='und')return 0;
+  return left===right?2:left.split('-')[0]===right.split('-')[0]&&(!left.includes('-')||!right.includes('-'))?1:0;
+}
+export function sameLanguage(a:string,b:string){return languageMatch(a,b)>0;}
+export function preferredTrack<T extends {language?:string;default?:boolean}>(tracks:readonly T[],language:string){
+  let best:T|undefined,score=0;
+  for(const track of tracks){
+    const match=languageMatch(track.language||'',language);
+    if(match>score||(match>0&&match===score&&track.default&&!best?.default)){best=track;score=match;}
+  }
+  return best;
+}
+export function languageName(code:string){try{return new Intl.DisplayNames(['en'],{type:'language'}).of(normalizedLanguage(code))||code;}catch{return code;}}
 export function trackLabel(track:MediaTrack,kind='Audio'){
   let language=`${kind} track ${track.index+1}`;
   if(track.language!=='und')language=languageName(track.language);
   return `${language}${track.title&&track.title.toLowerCase()!==language.toLowerCase()?' · '+track.title:''} · ${track.codec}${track.default?' · Default':''}${track.supported===false?' · Image format (unsupported)':''}`;
 }
-export type TrackSummary={audio:number;subtitles:number;audioLanguages:string[];subtitleLanguages:string[]};
-const key='hasimio:verified-tracks';const memoryCache:Record<string,TrackSummary>={};
-function cache():Record<string,TrackSummary>{try{const value=JSON.parse(profileStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?{...value,...memoryCache}:{...memoryCache};}catch{return {...memoryCache};}}
-export function saveTrackSummary(hash:string,videoId:string,audio:MediaTrack[],subtitles:MediaTrack[]){
-  const id=`${hash}:${videoId}`;memoryCache[id]={audio:audio.length,subtitles:subtitles.length,audioLanguages:audio.map(t=>trackLabel(t)),subtitleLanguages:subtitles.map(t=>trackLabel(t,'Subtitle'))};if(Object.keys(memoryCache).length>100)delete memoryCache[Object.keys(memoryCache)[0]];
-  try{const entries=Object.entries(cache()).filter(([id])=>id!==`${hash}:${videoId}`).slice(-99);entries.push([`${hash}:${videoId}`,{audio:audio.length,subtitles:subtitles.length,audioLanguages:audio.map(t=>trackLabel(t)),subtitleLanguages:subtitles.map(t=>trackLabel(t,'Subtitle'))}]);profileStorage.setItem(key,JSON.stringify(Object.fromEntries(entries)));}catch{/* Playback works without persistent storage. */}
+type TrackSummary={fileIndex?:number;audio:MediaTrack[];subtitles:MediaTrack[]};
+const key='hasimio:verified-tracks:v2';
+let memoryCache:Record<string,TrackSummary>|undefined;
+const listeners=new Set<()=>void>();
+let revision=0;
+export const trackRevision=()=>revision;
+export function subscribeTrackChanges(listener:()=>void){listeners.add(listener);return()=>{listeners.delete(listener);};}
+function cache(){
+  if(!memoryCache){
+    try{
+      const saved=JSON.parse(profileStorage.getItem(key)||'{}') as Record<string,TrackSummary>|null;
+      memoryCache=Object.fromEntries(Object.entries(saved??{}).filter(([,entry])=>Array.isArray(entry?.audio)&&Array.isArray(entry?.subtitles)));
+    }
+    catch{memoryCache={};}
+  }
+  return memoryCache??(memoryCache={});
+}
+export function trackSourceKey(stream:Stream,videoId:string){
+  return JSON.stringify([stream.infoHash?.toLowerCase(),videoId,stream.fileIdx??null]);
+}
+export function verifiedTracks(stream:Stream,videoId:string){
+  return stream.infoHash?cache()[trackSourceKey(stream,videoId)]:undefined;
+}
+export function saveTrackSummary(hash:string,videoId:string,audio:MediaTrack[],subtitles:MediaTrack[],requestedFile?:number,actualFile?:number){
+  const cacheKey=trackSourceKey({infoHash:hash,fileIdx:requestedFile},videoId);
+  const summary={fileIndex:actualFile,audio,subtitles};
+  const entries=cache();
+  if(JSON.stringify(entries[cacheKey])===JSON.stringify(summary))return;
+  delete entries[cacheKey];
+  entries[cacheKey]=summary;
+  if(Object.keys(entries).length>100)delete entries[Object.keys(entries)[0]];
+  try{profileStorage.setItem(key,JSON.stringify(entries));}catch{/* Playback works without persistent storage. */}
+  revision++;
+  for(const listener of listeners)listener();
 }
 function languageNames(labels:string[]){return [...new Set(labels.map(label=>label.split(' · ')[0]).map(name=>/^(?:Audio|Subtitle) track \d+$/.test(name)?'Unspecified':name))];}
 export function sourceTrackInfo(stream:Stream,videoId:string){
-  const verified=stream.infoHash?cache()[`${stream.infoHash}:${videoId}`]:undefined;
-  if(verified)return {audioNames:languageNames(verified.audioLanguages),subtitleNames:languageNames(verified.subtitleLanguages),audioCount:verified.audio,subtitleCount:verified.subtitles,audio:`${verified.audio} audio / dub ${verified.audio===1?'track':'tracks'}`,subtitles:`${verified.subtitles} subtitle ${verified.subtitles===1?'track':'tracks'}`,verified:true,detail:[...verified.audioLanguages,...verified.subtitleLanguages].join('\n')};
+  const verified=verifiedTracks(stream,videoId);
+  if(verified){
+    const audio=verified.audio.map(track=>trackLabel(track));
+    const subtitles=verified.subtitles.map(track=>trackLabel(track,'Subtitle'));
+    return {audioNames:languageNames(audio),subtitleNames:languageNames(subtitles),audioCount:audio.length,subtitleCount:subtitles.length,audio:`${audio.length} audio / dub ${audio.length===1?'track':'tracks'}`,subtitles:`${subtitles.length} subtitle ${subtitles.length===1?'track':'tracks'}`,verified:true,detail:[...audio,...subtitles].join('\n')};
+  }
   const text=`${stream.filename||''} ${stream.title||''}`.replaceAll('_','.');
   const multiAudio=/\b(?:dual[ ._-]*audio|multi[ ._-]*(?:audio|dub)|dual[ ._-]*dub)\b/i.test(text);
   const multiSubs=/\b(?:multi[ ._-]*(?:sub|subs|subtitles))\b/i.test(text);

@@ -11,7 +11,7 @@ export default function Settings(){
   const settings=usePlayerSettings();
   const engine=useEngine();
   const profile=currentProfile();
-  const languages=[...new Set([settings.subtitleLanguage,...subtitleLanguages])].sort((a,b)=>languageName(a).localeCompare(languageName(b)));
+  const languages=[...new Set([settings.subtitleLanguage,...(settings.audioLanguage?[settings.audioLanguage]:[]),...subtitleLanguages])].sort((a,b)=>languageName(a).localeCompare(languageName(b)));
   const update=(next:Partial<PlayerSettings>)=>savePlayerSettings({...playerSettings(),...next});
   return <section className="app-settings">
     <div className="section-intro"><h1>Settings</h1></div>
@@ -28,8 +28,9 @@ export default function Settings(){
     </div>
     <div className="settings-card">
       <h2>Playback</h2>
+      <label className="settings-field">Preferred audio language<select value={settings.audioLanguage} onChange={event=>update({audioLanguage:event.target.value})}><option value="">Source default</option>{languages.map(code=><option key={code} value={code}>{languageName(code)}</option>)}</select></label>
       <label className="settings-field">Preferred quality<select value={settings.preferredQuality} onChange={event=>update({preferredQuality:event.target.value as PreferredQuality})}>{preferredQualities.map(quality=><option key={quality} value={quality}>{quality==='Auto'?'Auto (1080p preferred)':quality==='2K'?'2K · 1440p':quality==='4K'?'4K · 2160p':quality}</option>)}</select></label>
-      <p>Used for Play, the source picker, and the next episode. If unavailable, the closest lower quality is used, followed by the closest higher quality. You can choose a different source for each video.</p>
+      <p>Automatic playback prefers known matches for your audio and subtitle languages, then uses your quality preference. You can choose a different source for each video.</p>
     </div>
     <div className="settings-card">
       <h2>Subtitles</h2>

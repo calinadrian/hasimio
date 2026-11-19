@@ -49,6 +49,8 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
+      - name: Verify public sync service
+        run: node scripts/check-sync-relay.mjs
       - name: Build, sign and notarize Apple Silicon installer
         env:
           CSC_LINK: ${{ secrets.MAC_CSC_LINK }}

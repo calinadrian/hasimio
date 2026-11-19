@@ -25,7 +25,7 @@ const originalFetch=window.fetch.bind(window);
 window.fetch=(input,options)=>{
   const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url,location.href);
   const headers=new Headers(options?.headers??(input instanceof Request?input.headers:undefined));
-  if(url.origin!==location.origin&&['http:','https:'].includes(url.protocol)&&!headers.has('Authorization')&&(options?.method??(input instanceof Request?input.method:'GET')).toUpperCase()==='GET'){
+  if(options?.mode!=='cors'&&url.origin!==location.origin&&['http:','https:'].includes(url.protocol)&&!headers.has('Authorization')&&(options?.method??(input instanceof Request?input.method:'GET')).toUpperCase()==='GET'){
     return originalFetch('/api/webos/fetch?url='+encodeURIComponent(url.href),{signal:options?.signal,cache:'no-store'});
   }
   return originalFetch(input,options);
