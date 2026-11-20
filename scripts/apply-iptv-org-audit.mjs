@@ -1,4 +1,4 @@
-import {readFile,writeFile} from 'node:fs/promises';
+import {readFile,rename,unlink,writeFile} from 'node:fs/promises';
 
 const snapshot=JSON.parse(await readFile(new URL('../.cache/iptv-org-audit/verified.json',import.meta.url),'utf8'));
 const report=JSON.parse(await readFile(new URL('../.cache/iptv-org-audit/report.json',import.meta.url),'utf8'));
@@ -9,8 +9,17 @@ for(const language of ['eng','ron'])if(!snapshot.channels.some(channel=>channel.
 for(const channel of snapshot.channels){
   if(!channel.language||channel.language.split('+').some(language=>!languages.includes(language)))throw Error('A channel without a verified language is present: '+channel.name);
   for(const server of channel.servers){
-    if(!report.results[server.url]?.ok)throw Error('An unverified stream is present: '+channel.name);
+    const check=report.results[server.url];
+    if(!check?.ok||!Number.isFinite(Date.parse(check.checkedAt)))throw Error('Missing playback verification for '+channel.name);
+    server.checkedAt=check.checkedAt;
   }
 }
-await writeFile(new URL('../server/iptv-org-verified.mjs',import.meta.url),'// Generated from the completed IPTV-org stream audit.\nexport default '+JSON.stringify(snapshot,null,2)+';\n');
+const output=new URL('../server/iptv-org-verified.mjs',import.meta.url);
+const temporary=new URL(output.href+'.'+process.pid+'.tmp');
+try{
+  await writeFile(temporary,'// Generated from the completed IPTV-org stream audit.\nexport default '+JSON.stringify(snapshot,null,2)+';\n');
+  await rename(temporary,output);
+}finally{
+  await unlink(temporary).catch(problem=>{if(problem.code!=='ENOENT')throw problem;});
+}
 console.log('Applied '+snapshot.channels.length+' verified English and Romanian channels, checked '+snapshot.checkedAt);

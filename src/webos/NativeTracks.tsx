@@ -1,33 +1,58 @@
 import {useEffect,useMemo,useRef,useState,type RefObject} from 'react';
 import type Hls from 'hls.js';
 import {isWebOS,mediaCommand} from './platform';
-import {languageName,preferredTrack,sameLanguage} from '../playback-tracks';
+import {languageName,preferredTrack,sameLanguage,type MediaTrack} from '../playback-tracks';
 import type {SubtitleSelection} from '../subtitle-selection';
 
 type AudioTrack={language?:string;label?:string;enabled:boolean};
 type AudioList=EventTarget&{length:number;[index:number]:AudioTrack};
 type NativeVideo=HTMLVideoElement&{audioTracks?:AudioList;mediaId?:string};
 type Track={index:number;language:string;label:string;default?:boolean};
+export type HeaderTracks={audio:MediaTrack[];subtitles:MediaTrack[]};
 export type HlsTracks={url:string;engine:Hls;events:typeof Hls.Events};
 
-function tracksFor(video:NativeVideo|undefined,hls?:Hls,overlay?:TextTrack){
+const tagged=(value:string)=>!!value&&value.toLowerCase()!=='und';
+
+export function rememberedTrack(tracks:Track[],choice:{index:number;label:string;language:string}){
+  const named=tracks.filter(track=>track.label===choice.label);
+  const indexed=named.find(track=>track.index===choice.index);
+  if(indexed&&(!tagged(choice.language)||!tagged(indexed.language)||sameLanguage(indexed.language,choice.language)))return indexed;
+  return named.find(track=>sameLanguage(track.language,choice.language));
+}
+
+// Device track lists can omit language tags. Match named tracks first and use
+// file order only when every available identifier agrees with that ordering.
+export function nativeLanguages(tracks:Track[],header?:MediaTrack[]){
+  if(!header?.length)return tracks;
+  const aligned=tracks.length===header.length&&tracks.every((track,i)=>
+    (!tagged(track.language)||!tagged(header[i].language)||sameLanguage(track.language,header[i].language))&&
+    (!track.label||!header.some(item=>item.title===track.label)||track.label===header[i].title));
+  return tracks.map((track,i)=>{
+    if(tagged(track.language))return track;
+    const named=track.label?header.filter(item=>item.title===track.label):[];
+    const match=named.length===1?named[0]:aligned?header[i]:undefined;
+    return match&&tagged(match.language)?{...track,language:match.language}:track;
+  });
+}
+
+function tracksFor(video:NativeVideo|undefined,hls?:Hls,overlay?:TextTrack,header?:HeaderTracks){
   const nativeAudio=Array.from(video?.audioTracks??[]);
   const nativeText=Array.from(video?.textTracks??[]);
   return {
     audio:hls?hls.audioTracks.map((track,index):Track=>({index,language:track.lang||'',label:track.name,default:track.default}))
-      :nativeAudio.map((track,index):Track=>({index,language:track.language||'',label:track.label||'',default:track.enabled})),
+      :nativeLanguages(nativeAudio.map((track,index):Track=>({index,language:track.language||'',label:track.label||'',default:track.enabled})),header?.audio),
     subtitles:hls?hls.subtitleTracks.map((track,index):Track=>({index,language:track.lang||'',label:track.name,default:track.default&&!track.forced}))
-      :nativeText.flatMap((track,index):Track[]=>track!==overlay&&(track.kind==='subtitles'||track.kind==='captions')
-        ?[{index,language:track.language,label:track.label}]:[]),
+      :nativeLanguages(nativeText.flatMap((track,index):Track[]=>track!==overlay&&(track.kind==='subtitles'||track.kind==='captions')
+        ?[{index,language:track.language,label:track.label}]:[]),header?.subtitles),
     audioIndex:hls?hls.audioTrack:nativeAudio.findIndex(track=>track.enabled),
     subtitleIndex:hls?(hls.subtitleDisplay?hls.subtitleTrack:-1):nativeText.findIndex(track=>track.mode==='showing'),
   };
 }
 
 export function useNativeTracks(reference:RefObject<HTMLVideoElement|null>,{
-  url,hls,audioLanguage,subtitleLanguage,autoSubtitles,selection,manageAudio,manageSubtitles,overlay,
+  url,hls,headerTracks,audioLanguage,subtitleLanguage,autoSubtitles,selection,manageAudio,manageSubtitles,overlay,
 }:{
-  url?:string;hls?:HlsTracks;audioLanguage:string;subtitleLanguage:string;autoSubtitles:boolean;
+  url?:string;hls?:HlsTracks;headerTracks?:HeaderTracks;audioLanguage:string;subtitleLanguage:string;autoSubtitles:boolean;
   selection:SubtitleSelection;manageAudio:boolean;manageSubtitles:boolean;overlay:RefObject<TextTrack|undefined>;
 }){
   const [revision,refresh]=useState(0);
@@ -35,7 +60,7 @@ export function useNativeTracks(reference:RefObject<HTMLVideoElement|null>,{
   const [error,setError]=useState('');
   const manualAudio=useRef<{url?:string;track:Track}>(undefined);
   const backend=hls?.url===url?hls:undefined;
-  const tracks=useMemo(()=>tracksFor((reference.current as NativeVideo|null)??undefined,backend?.engine,overlay.current),[reference,backend,overlay,url,revision]);
+  const tracks=useMemo(()=>tracksFor((reference.current as NativeVideo|null)??undefined,backend?.engine,overlay.current,headerTracks),[reference,backend,overlay,url,revision,headerTracks]);
 
   useEffect(()=>{
     const media=reference.current as NativeVideo|null;
@@ -70,12 +95,10 @@ export function useNativeTracks(reference:RefObject<HTMLVideoElement|null>,{
   },[reference,url,backend]);
 
   const manual=manualAudio.current?.url===url?manualAudio.current?.track:undefined;
-  const manualMatches=manual?tracks.audio.filter(track=>track.label===manual.label&&track.language===manual.language):[];
-  const audio=manual?manualMatches.find(track=>track.index===manual.index)??manualMatches[0]:preferredTrack(tracks.audio,audioLanguage);
+  const audio=manual?rememberedTrack(tracks.audio,manual):preferredTrack(tracks.audio,audioLanguage);
   const choice=selection.choice;
   const original=choice?.kind==='embedded'&&choice.source==='native'?choice:undefined;
-  const subtitles=original?tracks.subtitles.filter(track=>(track.language===original.language||sameLanguage(track.language,original.language))&&track.label===original.title):[];
-  const subtitle=original?subtitles.find(track=>track.index===original.index)??subtitles[0]
+  const subtitle=original?rememberedTrack(tracks.subtitles,{...original,label:original.title??''})
     :!choice&&autoSubtitles?preferredTrack(tracks.subtitles,subtitleLanguage):undefined;
   const subtitleIndex=subtitle?.index??-1;
 

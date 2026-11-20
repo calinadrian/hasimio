@@ -80,7 +80,7 @@ export function createIptvOrg({fetchImpl=fetch,now=Date.now,catalogChannels}={})
     })().finally(()=>{pending=undefined;});
     return pending;
   }
-  async function channels(){return [...(await load()).values()].map(channel=>({...channel,servers:channel.servers.map(({id,name,supported})=>({id,name,supported}))}));}
+  async function channels(){return [...(await load()).values()].map(channel=>({...channel,servers:channel.servers.map(({id,name,supported,checkedAt})=>({id,name,supported,checkedAt}))}));}
   function asset(channel,id,value){
     const url=publicUrl(value).href,key=hash(channel+':'+id+':'+url);
     assets.delete(key);assets.set(key,{channel,id,url,expires:now()+10*60000});

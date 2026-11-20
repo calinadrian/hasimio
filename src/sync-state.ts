@@ -1,7 +1,7 @@
 import {profileStorage} from './profile-storage';
 import {readStoredJson} from './compact-json';
 import {type Meta,type Addon,validateManifest} from './media';
-import {playbackHistory,dropLivePosition,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
+import {playbackHistory,readProgress,progressSnapshot,removalLifetime,dropLivePosition,newestFirst,progressLimit,type PlaybackProgress} from './playback-progress';
 import {validSetting,settingsKey} from './preferences';
 import {builtinSourceUrls} from './catalogs';
 
@@ -37,12 +37,19 @@ export function validDocument(value:unknown):SyncDocument{
 export function mergeDocuments(a:SyncDocument,b:SyncDocument):SyncDocument{
   const records={...a.records};for(const [key,item] of Object.entries(b.records)){const old=records[key];if(!old||item.stamp>old.stamp||(item.stamp===old.stamp&&item.device>old.device))records[key]=item;}return {v:1,records};
 }
+// Version 0.1.84 immediately discards null progress records. A third completion
+// state is invisible to its bookmark reader (which requires a boolean) and is
+// retained by its compactor, so an offline older peer cannot resurrect Undo.
+const removedProgress={completed:'removed'} as const;
+const isRemovedProgress=(value:unknown)=>plain(value)&&value.completed==='removed';
 // Removals older than this may reappear from a device that stayed offline longer.
-const tombstoneAge=90*24*60*60*1000;
 export function compactDocument(document:SyncDocument,clock=Date.now()):SyncDocument{
-  const entries=Object.entries(document.records).filter(([key,record])=>record.value!==null||(!key.startsWith('progress:')&&record.stamp>clock-tombstoneAge));
+  const entries=Object.entries(document.records).filter(([key,record])=>{
+    const removed=record.value===null||(key.startsWith('progress:')&&isRemovedProgress(record.value));
+    return !removed||record.stamp>clock-removalLifetime;
+  });
   // Mirror the local unfinished-bookmark cap; completed entries keep watched totals intact.
-  const evicted=new Set(entries.filter(([key,record])=>key.startsWith('progress:')&&!(record.value as PlaybackProgress).completed).map(([key,record]):[string,PlaybackProgress]=>[key.slice(9),{...record.value as PlaybackProgress,updatedAt:Number((record.value as PlaybackProgress).updatedAt)||0}]).sort(newestFirst).slice(progressLimit).map(([key])=>'progress:'+key));
+  const evicted=new Set(entries.filter(([key,record])=>key.startsWith('progress:')&&record.value!==null&&!(record.value as PlaybackProgress).completed).map(([key,record]):[string,PlaybackProgress]=>[key.slice(9),{...record.value as PlaybackProgress,updatedAt:Number((record.value as PlaybackProgress).updatedAt)||0}]).sort(newestFirst).slice(progressLimit).map(([key])=>'progress:'+key));
   return {v:1,records:Object.fromEntries(entries.filter(([key])=>!evicted.has(key)))};
 }
 export function sameDocument(a:SyncDocument,b:SyncDocument){const keys=Object.keys(a.records);return keys.length===Object.keys(b.records).length&&keys.every(key=>{const left=a.records[key],right=b.records[key];return right&&left.stamp===right.stamp&&left.device===right.device&&JSON.stringify(left.value)===JSON.stringify(right.value);});}
@@ -55,13 +62,24 @@ export function localValues():Record<string,unknown>{
     values['library:'+meta.type+':'+meta.id]=Object.fromEntries((['id','type','name','poster','background','releaseInfo','category','sourceUrl'] as const).filter(key=>meta[key]!==undefined).map(key=>[key,meta[key]]));
   }
   for(const addon of Array.isArray(addons)?addons:[])if(source(addon))values['addon:'+addon.manifest.id]=addon;
-  for(const [key,value] of Object.entries(playbackHistory()))values['progress:'+key]=value;
+  for(const [key,value] of Object.entries(readProgress(progressSnapshot(),true)))values['progress:'+key]=typeof value==='number'?removedProgress:value;
   if(plain(settings))for(const [key,value] of Object.entries(settings))if(validSetting(key,value))values['setting:'+key]=value;
   return values;
 }
 export function captureChanges(document:SyncDocument,device:string,previous:Record<string,unknown>,current:Record<string,unknown>,clock=Date.now()):SyncDocument{
   let stamp=Math.max(clock,...Object.values(document.records).map(r=>r.stamp),0);const records={...document.records};
-  for(const key of new Set([...Object.keys(previous),...Object.keys(current)]))if(!(key.startsWith('library:')&&previous[key]&&current[key])&&!(key.startsWith('progress:')&&current[key]===undefined)&&JSON.stringify(previous[key])!==JSON.stringify(current[key]))records[key]={stamp:++stamp,device,value:current[key]??null};
+  for(const key of new Set([...Object.keys(previous),...Object.keys(current)])){
+    if(key.startsWith('library:')&&previous[key]&&current[key])continue;
+    if(key.startsWith('progress:')){
+      // An absent entry can be a bookmark evicted from a full device. Only a
+      // stored, explicit Undo may delete progress.
+      if(current[key]===undefined)continue;
+      if(isRemovedProgress(current[key])&&isRemovedProgress(records[key]?.value))continue;
+    }
+    if(JSON.stringify(previous[key])!==JSON.stringify(current[key])){
+      records[key]={stamp:++stamp,device,value:current[key]??null};
+    }
+  }
   return {v:1,records};
 }
 // Rewriting a store that already holds these values only wears the disk: a sync during playback changes one bookmark.

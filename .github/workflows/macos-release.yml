@@ -13,7 +13,7 @@ concurrency:
 jobs:
   installer:
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,7 +58,7 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: npm run package:mac -- -c.forceCodeSigning=true -c.mac.notarize=true
+        run: npm run package:mac -- -c.extraMetadata.main=electron/bootstrap.cjs -c.forceCodeSigning=true -c.mac.notarize=true
       - name: Verify Developer ID and notarization
         run: |
           APP="release/desktop/mac-arm64/Hasimio.app"
@@ -66,6 +66,31 @@ jobs:
           codesign --display --verbose=2 "$APP" 2>&1 | grep -F 'Authority=Developer ID Application:'
           xcrun stapler validate "$APP"
           spctl --assess --type execute --verbose=2 "$APP"
+      - name: Build the preceding release as the installed upgrade baseline
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+        run: |
+          previous=$(git describe --abbrev=0 --tags --match 'v[0-9]*' "$RELEASE_TAG^")
+          git worktree add --detach "$RUNNER_TEMP/mac-baseline" "$previous"
+          cd "$RUNNER_TEMP/mac-baseline"
+          npm ci
+          npm run icon
+          npm run build
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import yaml from 'js-yaml';
+          const config=yaml.load(fs.readFileSync('electron-builder.yml','utf8'));
+          config.publish=[{provider:'generic',url:'http://127.0.0.1:18741/'}];
+          config.mac.notarize=false;
+          config.forceCodeSigning=true;
+          config.extraMetadata={...config.extraMetadata,main:'electron/bootstrap.cjs'};
+          fs.writeFileSync('upgrade-baseline.json',JSON.stringify(config));
+          JS
+          npx --no-install electron-builder --config upgrade-baseline.json --mac zip --arm64 --publish never
+      - name: Install and update the preceding signed build
+        run: node scripts/check-mac-upgrade.mjs "$RUNNER_TEMP/mac-baseline/release/desktop/mac-arm64/Hasimio.app"
       - name: Save installer artifacts
         uses: actions/upload-artifact@v4
         with:

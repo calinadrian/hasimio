@@ -22,17 +22,30 @@ export function subscribeProgress(changed:()=>void){
   return()=>{window.removeEventListener(progressEvent,changed);window.removeEventListener('storage',storage);};
 }
 
-export function playbackHistory(snapshot=progressSnapshot()):ProgressMap {
+// A deletion timestamp shares the same storage write as Undo. It survives an offline
+// restart, while bookmarks dropped by the capacity limit simply disappear.
+export const removalLifetime=90*24*60*60*1000;
+type StoredProgress=Record<string,PlaybackProgress|number>;
+export function readProgress(snapshot:string,includeRemovals:true):StoredProgress;
+export function readProgress(snapshot:string,includeRemovals:false):ProgressMap;
+export function readProgress(snapshot:string,includeRemovals:boolean):StoredProgress {
   try {
     const cut=snapshot.indexOf(liveMark),value=JSON.parse(cut<0?snapshot:snapshot.slice(0,cut));
     if(!value||typeof value!=='object'||Array.isArray(value))return {};
-    const history=Object.fromEntries(Object.entries(value).filter(([,item])=>validProgress(item))) as ProgressMap;
+    const history=Object.fromEntries(Object.entries(value).filter(([,item])=>
+      validProgress(item)||(includeRemovals&&typeof item==='number'&&item>Date.now()-removalLifetime)
+    )) as StoredProgress;
     const live=cut<0?undefined:livePosition(snapshot.slice(cut+1));
     // The history wins only when it is newer, as after another device's position arrived.
-    if(live&&!(history[live.key]?.updatedAt>live.entry.updatedAt))history[live.key]=live.entry;
+    if(live){
+      const stored=value[live.key];
+      const savedAt=typeof stored==='number'?stored:validProgress(stored)?stored.updatedAt:undefined;
+      if(savedAt===undefined||live.entry.updatedAt>=savedAt)history[live.key]=live.entry;
+    }
     return history;
   }catch{return {};}
 }
+export function playbackHistory(snapshot=progressSnapshot()):ProgressMap {return readProgress(snapshot,false);}
 function validProgress(item:unknown):item is PlaybackProgress {
   const p=item as PlaybackProgress;
   return !!p&&Number.isFinite(p.position)&&p.position>=0&&Number.isFinite(p.duration)&&p.duration>0&&Number.isFinite(p.updatedAt)&&typeof p.completed==='boolean';
@@ -57,16 +70,22 @@ export function saveProgress(key:string,position:number,duration:number,details:
       const current=profileStorage.getItem(liveKey);
       if(current===null||livePosition(current)?.key===key){profileStorage.setItem(liveKey,JSON.stringify({key,entry}));if(typeof window!=='undefined')window.dispatchEvent(new Event(progressEvent));return;}
     }
-    const all=playbackHistory();
+    const all=readProgress(progressSnapshot(),true);
     all[key]=entry;
     persistHistory(all);
   }catch{/* Playback continues if browser storage is blocked or full. */}
 }
-function persistHistory(all:ProgressMap) {
+function persistHistory(all:StoredProgress) {
   // Keep completed history for watched totals, while bounding unfinished bookmarks.
   let unfinished=0;
-  const recent=Object.entries(all).sort(newestFirst).filter(([,p])=>p.completed||unfinished++<progressLimit);
-  profileStorage.setItem(storageKey,JSON.stringify(Object.fromEntries(recent)));
+  const deleted:Record<string,number>={};
+  const bookmarks:[string,PlaybackProgress][]=[];
+  for(const [key,entry] of Object.entries(all)){
+    if(typeof entry==='number')deleted[key]=entry;
+    else bookmarks.push([key,entry]);
+  }
+  const recent=bookmarks.sort(newestFirst).filter(([,p])=>p.completed||unfinished++<progressLimit);
+  profileStorage.setItem(storageKey,JSON.stringify({...deleted,...Object.fromEntries(recent)}));
   dropLivePosition();
   if(typeof window!=='undefined')window.dispatchEvent(new Event(progressEvent));
 }
@@ -74,10 +93,11 @@ function persistHistory(all:ProgressMap) {
 export function setWatched(targets:WatchTarget[],watched=true) {
   if(!targets.length)return;
   try{
-    const all=playbackHistory(),updatedAt=Date.now();
+    const all=readProgress(progressSnapshot(),true),updatedAt=Date.now();
     for(const target of targets){
       if(!target.key)continue;
-      const existing=all[target.key];
+      const stored=all[target.key];
+      const existing=typeof stored==='number'?undefined:stored;
       if(!watched){
         if(!existing)continue;
         const next={...existing,position:0,updatedAt,completed:false};
@@ -94,9 +114,10 @@ export function setWatched(targets:WatchTarget[],watched=true) {
 // Undo restores the exact earlier bookmarks instead of guessing what was watched before.
 export function restoreProgress(entries:Record<string,PlaybackProgress|undefined>) {
   try{
-    const all=playbackHistory();
+    const all=readProgress(progressSnapshot(),true);
     for(const [key,progress] of Object.entries(entries)){
-      if(progress)all[key]=progress;else delete all[key];
+      if(progress)all[key]=progress;
+      else if(all[key]!==undefined)all[key]=Date.now();
     }
     persistHistory(all);
   }catch{/* The toast still closes when storage is unavailable. */}

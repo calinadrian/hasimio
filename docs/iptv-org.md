@@ -21,6 +21,9 @@ has a 25-second limit. Unsupported formats, other video codecs, unavailable
 streams, and streams blocked on this connection are excluded. This is a short
 sample check, not a guarantee of uninterrupted playback or browser compatibility.
 
+Live TV displays the last successful playback check for the selected stream.
+Choosing another server shows the check recorded for that server.
+
 Progress and failure details are saved in `.cache/iptv-org-audit/report.json`.
 To resume against the same downloaded playlists after an interruption:
 

@@ -1,3 +1,4 @@
+import type {PlaybackStartup} from './quick-play';
 import {useEffect,useRef,useState} from 'react';
 import {LoaderCircle,Radio,RefreshCw,X,Play,FileVideo} from 'lucide-react';
 import {type Stream} from './media';
@@ -14,20 +15,21 @@ import TVTorrentPlayer from './webos/TorrentPlayer';
 import {type MediaTrack,audioAction,defaultAudioTrack,trackLabel,saveTrackSummary,sameLanguage,preferredTrack} from './playback-tracks';
 type Session={duration?:number;id:string;state:'buffering'|'ready'|'error';error?:string;files:{index:number;name:string;length:number}[];selected?:number;numPeers:number;downloadSpeed:number;downloaded:number;progress:number;mediaUrl?:string;audioTracks?:MediaTrack[];subtitleTracks?:MediaTrack[];subtitle?:{track:number;state:'preparing'|'ready'|'error';error?:string;url:string};audio?:{state:'preparing'|'ready'|'error';track:number;start?:number;offset?:number;error?:string;mediaUrl?:string}};
 async function request(url:string,options?:RequestInit):Promise<Session>{const response=await fetch(engineUrl(url),options);if(!response.headers.get('content-type')?.includes('application/json'))throw new Error('Hasimio Engine is unavailable. Start it on this PC (npm run engine), or keep Hasimio running with npm run dev or npm run preview.');const result=await response.json();if(!response.ok)throw new Error(result.error || 'The local streaming service did not respond.');return result;}
-type Props={stream:Stream;videoId:string;onClose:()=>void;title?:string;progressKey?:string;titleKey?:string;episodeLabel?:string;previous?:EpisodeAction;next?:EpisodeAction};
+type Props={startup?:PlaybackStartup;stream:Stream;videoId:string;onClose:()=>void;title?:string;progressKey?:string;titleKey?:string;episodeLabel?:string;previous?:EpisodeAction;next?:EpisodeAction};
 export default function TorrentPlayer(props:Props){return isWebOS||import.meta.env.VITE_ANDROID==='true'?<TVTorrentPlayer {...props}/>:<DesktopTorrentPlayer {...props}/>;}
-function DesktopTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,previous,next}:Props) {
+function DesktopTorrentPlayer({startup,stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,previous,next}:Props) {
   const [session,setSession]=useState<Session>();const [error,setError]=useState('');const [attempt,setAttempt]=useState(0);const [choosing,setChoosing]=useState(false);const sessionId=useRef<string|undefined>(undefined);
   const [compatible,setCompatible]=useState(true);const [seekStart,setSeekStart]=useState(()=>resumePosition(progressKey));
   const [manualTrack,setTrack]=useState<number>();const [tracksError,setTracksError]=useState('');const [tracksLoading,setTracksLoading]=useState(false);const [tracksAttempt,setTracksAttempt]=useState(0);
   const [subtitleAttempt,setSubtitleAttempt]=useState(0);const [subtitleError,setSubtitleError]=useState('');
-  const [audioError,setAudioError]=useState('');const [audioAttempt,setAudioAttempt]=useState(0);
+  const [audioFailure,setAudioFailure]=useState<{track:number;message:string}>();const [audioAttempt,setAudioAttempt]=useState(0);
   const preferences=usePlayerSettings();
   const [audioLanguage]=useState(preferences.audioLanguage);
   const [defaultAudioFallback,setDefaultAudioFallback]=useState(false);
   const defaultTrack=defaultAudioTrack(session?.audioTracks);
   const preferredAudio=preferredTrack(session?.audioTracks??[],audioLanguage)?.index;
   const track=manualTrack??(defaultAudioFallback?undefined:preferredAudio)??defaultTrack;
+  const audioError=audioFailure?.track===track?audioFailure.message:undefined;
   const automaticAudioFailed=compatible&&manualTrack===undefined&&track!==defaultTrack&&
     !!(audioError||session?.audio?.track===track&&session.audio.state==='error');
   useEffect(()=>{if(automaticAudioFailed)setDefaultAudioFallback(true);},[automaticAudioFailed]);
@@ -57,11 +59,11 @@ function DesktopTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey
     request('/api/torrents/'+session.id+'/audio-tracks',{signal:controller.signal}).then(value=>{if(live)setSession(value);}).catch(e=>{if(live)setTracksError(e instanceof Error?e.message:'Could not read audio and subtitle tracks.');}).finally(()=>{if(live)setTracksLoading(false);});
     return()=>{live=false;controller.abort();};
   },[session?.id,session?.selected,session?.state,tracksAttempt]);
-  useEffect(()=>{let live=true;setAudioError('');
+  useEffect(()=>{let live=true;setAudioFailure(undefined);
     const plan=audioAction({ready:!!session?.id&&session.selected!=null&&session.state==='ready',compatible,audioTracks:session?.audioTracks,tracksError});
     if(!session||plan.action==='wait')return;
-    if(plan.action==='fail'){setAudioError(plan.message);return;}
-    if(plan.action==='start'){request(`/api/torrents/${session.id}/audio`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({track,start:seekStart})}).then(value=>{if(live)setSession(value);}).catch(e=>{if(live)setAudioError(e instanceof Error?e.message:'Compatible audio could not start.');});}
+    if(plan.action==='fail'){setAudioFailure({track,message:plan.message});return;}
+    if(plan.action==='start'){request(`/api/torrents/${session.id}/audio`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({track,start:seekStart})}).then(value=>{if(live)setSession(value);}).catch(e=>{if(live)setAudioFailure({track,message:e instanceof Error?e.message:'Compatible audio could not start.'});});}
     else{request(`/api/torrents/${session.id}/audio`,{method:'DELETE'}).then(value=>{if(live)setSession(value);}).catch(()=>{});}
     return()=>{live=false;};
   },[session?.id,session?.selected,session?.state,session?.audioTracks?.length,tracksError,compatible,track,seekStart,audioAttempt]);
@@ -69,10 +71,13 @@ function DesktopTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey
   useEffect(()=>{let live=true;setSubtitleError('');if(!session?.id||session.selected==null||session.state!=='ready')return;
     request('/api/torrents/'+session.id+'/subtitles/'+(embeddedIndex??0),{method:embeddedIndex===undefined?'DELETE':'POST'}).then(value=>{if(live)setSession(value);}).catch(e=>{if(live)setSubtitleError(e instanceof Error?e.message:'Could not prepare subtitles.');});return()=>{live=false;};
   },[session?.id,session?.selected,session?.state,embeddedIndex,subtitleAttempt]);
-  async function retryAudio(){if(!session)return;try{await request(`/api/torrents/${session.id}/audio`,{method:'DELETE'});setSession(previous=>previous?{...previous,audio:undefined}:previous);setAudioAttempt(n=>n+1);}catch(e){setAudioError(e instanceof Error?e.message:'Could not restart audio conversion.');}}
+  async function retryAudio(){if(!session)return;try{await request(`/api/torrents/${session.id}/audio`,{method:'DELETE'});setSession(previous=>previous?{...previous,audio:undefined}:previous);setAudioAttempt(n=>n+1);}catch(e){setAudioFailure({track,message:e instanceof Error?e.message:'Could not restart audio conversion.'});}}
   async function choose(index:number){if(!session)return;setChoosing(true);try{const updated=await request(`/api/torrents/${session.id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileIndex:index})});setSeekStart(resumePosition(progressKey));automaticFile.current=false;setTrack(undefined);setDefaultAudioFallback(false);setSession(updated);}catch(e){setError(e instanceof Error?e.message:'Could not select that video.');}finally{setChoosing(false);}}
+  const audioProblem=compatible?(audioError||(session?.audio?.track===track&&(session.audio.start??0)===seekStart?session.audio.error:undefined)):undefined;
+  useEffect(()=>{
+    if(error||(audioProblem&&!automaticAudioFailed))startup?.failed();
+  },[error,audioProblem,automaticAudioFailed,startup]);
   if(session?.mediaUrl&&!error){
-    const audioProblem=compatible?(audioError||(session.audio?.track===track&&(session.audio.start??0)===seekStart?session.audio.error:undefined)):undefined;
     const subtitleTrack=embeddedSubtitle&&session.subtitle?.track===embeddedSubtitle.index&&session.subtitle.state==='ready'?{url:engineUrl(session.subtitle.url),label:trackLabel(embeddedSubtitle,'Subtitle'),language:embeddedSubtitle.language}:undefined;
     const subtitleProblem=subtitleError||(embeddedSubtitle&&session.subtitle?.track===embeddedSubtitle.index?session.subtitle?.error:undefined);
     const audioReady=compatible&&session.audio?.track===track&&(session.audio.start??0)===seekStart;
@@ -101,7 +106,7 @@ function DesktopTorrentPlayer({stream,videoId,onClose,title,progressKey,titleKey
       {subtitleProblem&&<div role="alert"><p>{subtitleProblem}</p><button className="cinema-text-action" onClick={()=>setSubtitleAttempt(value=>value+1)}>Retry subtitles</button></div>}
     </div>;
     const preparation=audioProblem?<><FileVideo size={36}/><h2>Audio conversion unavailable</h2><p role="alert">{audioProblem}</p><button className="cinema-action" onClick={retryAudio}><RefreshCw size={16}/> Retry compatible audio</button></>:!url?<><LoaderCircle size={36} className="spin"/><h2>Preparing your video</h2><p>Buffering compatible sound. The video will start when the first segment is ready.</p></>:undefined;
-    return <Player episodeLabel={episodeLabel} progressKey={progressKey} titleKey={titleKey} videoId={videoId} timeOffset={compatible?(audioReady?session.audio!.offset??seekStart:seekStart):0} onSeek={compatible?setSeekStart:undefined} durationHint={session.duration} preparedStream={compatible} title={title} stream={{...stream,url:url?engineUrl(url):undefined,subtitleTrack:subtitleTrack??((!embeddedSubtitle||subtitleProblem)&&!choice&&preferences.autoSubtitles&&stream.subtitleTrack&&sameLanguage(stream.subtitleTrack.language,preferences.subtitleLanguage)?stream.subtitleTrack:undefined)}} onClose={onClose} onRecoverAudio={!compatible?()=>{setSeekStart(resumePosition(progressKey));setCompatible(true);}:undefined} panels={{audio:audioPanel,subtitles:subtitlePanel}} subtitleSelection={subtitleSelection} embeddedSubtitleLanguages={subtitleProblem?[]:session.subtitleTracks?supportedSubtitles.map(item=>item.language):tracksError?[]:undefined} download={{url:engineUrl(session.mediaUrl+'?download=1'),filename:videoFile?.name||stream.filename||'video'}} loading={preparation} previous={previous} next={next} status={<><Radio size={14}/><span>{session.numPeers} peers · {(session.downloadSpeed/1024/1024).toFixed(1)} MB/s · {Math.round(session.progress*100)}%</span></>}/>;
+    return <Player startup={startup} episodeLabel={episodeLabel} progressKey={progressKey} titleKey={titleKey} videoId={videoId} timeOffset={compatible?(audioReady?session.audio!.offset??seekStart:seekStart):0} onSeek={compatible?setSeekStart:undefined} durationHint={session.duration} preparedStream={compatible} title={title} stream={{...stream,url:url?engineUrl(url):undefined,subtitleTrack:subtitleTrack??((!embeddedSubtitle||subtitleProblem)&&!choice&&preferences.autoSubtitles&&stream.subtitleTrack&&sameLanguage(stream.subtitleTrack.language,preferences.subtitleLanguage)?stream.subtitleTrack:undefined)}} onClose={onClose} onRecoverAudio={!compatible?()=>{setSeekStart(resumePosition(progressKey));setCompatible(true);}:undefined} panels={{audio:audioPanel,subtitles:subtitlePanel}} subtitleSelection={subtitleSelection} embeddedSubtitleLanguages={subtitleProblem?[]:session.subtitleTracks?supportedSubtitles.map(item=>item.language):tracksError?[]:undefined} download={{url:engineUrl(session.mediaUrl+'?download=1'),filename:videoFile?.name||stream.filename||'video'}} loading={preparation} previous={previous} next={next} status={<><Radio size={14}/><span>{session.numPeers} peers · {(session.downloadSpeed/1024/1024).toFixed(1)} MB/s · {Math.round(session.progress*100)}%</span></>}/>;
   }
   return <div className="torrent-buffering"><div className="player-bar"><strong>{stream.name || 'Torrent stream'}</strong><button className="icon-button" onClick={onClose} aria-label="Stop torrent playback"><X/></button></div><div className="buffering-body">{error?<><FileVideo size={40}/><h2>Couldn’t start this stream</h2><p role="alert">{error}</p><div className="hero-actions"><button className="button primary" onClick={()=>setAttempt(n=>n+1)}><RefreshCw size={17}/> Retry</button><button className="button secondary" onClick={onClose}>Choose another source</button></div></>:session?.state==='ready'&&session.selected==null?<><FileVideo size={40}/><h2>Choose the video file</h2><p>This torrent contains several videos. Select the episode you want to play.</p><div className="torrent-files">{session.files.map(file=><button key={file.index} className="button secondary" onClick={()=>choose(file.index)} disabled={choosing}><Play size={16}/>{file.name}</button>)}</div></>:<><LoaderCircle className="spin" size={40}/><h2>Connecting to torrent peers</h2><p>Fetching video information. This can take a moment, especially with fewer seeders.</p><span>{session?.numPeers ?? 0} peers connected</span><button className="button secondary" onClick={onClose}>Cancel and choose another source</button></>}<small>Torrent playback shares data with peers and exposes your IP to them. Temporary downloads are removed when playback stops. MP4/H.264 has the broadest browser support; other codecs may not play.</small></div></div>;
 }

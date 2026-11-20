@@ -2,6 +2,7 @@
 const crypto = require('crypto');
 const WebTorrent = require('webtorrent');
 const Piece = require('torrent-piece');
+const {headerLimit, matroskaTracks} = require('./matroska-tracks.cjs');
 const createBoundedStore = require('./bounded-store.cjs');
 
 const MiB = 1024 * 1024;
@@ -21,7 +22,7 @@ module.exports = function createTorrents(options) {
     downloaded:session.torrent ? session.torrent.downloaded : 0, progress:session.torrent ? session.torrent.progress : 0,
     cacheBytes:session.store ? session.store.bytes : 0, cacheLimit:limit(), nativePlayback:true,
     mediaUrl:session.ready && session.selected != null ? '/api/torrents/' + session.id + '/files/' + session.selected : undefined,
-    audioTracks:[], subtitleTracks:[]
+    ...(session.tracks || {})
   });
   function get(id) {
     if (!active || active.id !== id) fail('This playback session has ended.');
@@ -56,6 +57,8 @@ module.exports = function createTorrents(options) {
   function choose(session, index) {
     if (!Number.isInteger(index) || !session.files.some(file => file.index === index)) fail('Choose a supported video file.');
     session.readers.forEach(reader => reader.cancel());
+    session.header = undefined;
+    session.tracks = undefined;
     session.selected = index;
     return snapshot(session);
   }
@@ -66,7 +69,7 @@ module.exports = function createTorrents(options) {
     if (options.onStart) options.onStart();
     record('info','playback-start','A fresh torrent session started with an empty video buffer.');
     // TCP/UDP/DHT only. No WebRTC native addons and no filesystem store.
-    client = new WebTorrent({maxConns:8, lsd:false, tracker:{wrtc:false}, dht:{maxTables:16,maxValues:32,maxPeers:128}});
+    client = new WebTorrent({maxConns:options.inspection ? 2 : 8, lsd:false, tracker:{wrtc:false}, dht:{maxTables:16,maxValues:32,maxPeers:128}});
     client.on('error', () => { session.error = 'The TV torrent service could not connect. Choose another source.'; record('error','torrent-client',session.error); });
     const Store = createBoundedStore(limit(), index => {
       const torrent = session.torrent;
@@ -115,6 +118,48 @@ module.exports = function createTorrents(options) {
     const task = starting.then(() => begin(input));
     starting = task.catch(() => {});
     return task;
+  }
+  function observeHeader(session, file, position, data) {
+    if (session.tracks || session.header === null || !/\.(mkv|webm)$/i.test(file.name)) return;
+    if (!session.header) {
+      if (position !== 0) return;
+      session.header = {bytes:Buffer.allocUnsafe(Math.min(headerLimit, file.length)), length:0};
+    }
+    const header = session.header;
+    if (header.length !== position) return;
+    header.length += data.copy(header.bytes, position);
+    session.tracks = matroskaTracks(header.bytes.slice(0,header.length));
+    if (session.tracks || header.length === header.bytes.length) session.header = null;
+  }
+  async function inspect(input, signal) {
+    const {id} = await start(input);
+    const session = get(id);
+    // The caller enforces the deadline and owns this dedicated probe client.
+    while (!session.ready && !session.error && !signal.aborted) {
+      await new Promise(resolve => setTimeout(resolve, 80));
+    }
+    if (signal.aborted) fail('Track check timed out or was cancelled.');
+    if (session.error) fail(session.error);
+    if (session.selected == null) fail('Choose an episode file to check its tracks.');
+    const file = session.torrent.files[session.selected];
+    if (!/\.(mkv|webm)$/i.test(file.name)) fail('This device checks embedded tracks in MKV and WebM files.');
+    if (!file.length) fail('The video file is empty.');
+    const stream = file.createReadStream({start:0,end:Math.min(file.length,headerLimit)-1});
+    const tracks = await new Promise((resolve,reject) => {
+      const bytes = Buffer.allocUnsafe(Math.min(file.length,headerLimit));
+      let received = 0;
+      const cancel = () => {stream.destroy(); reject(Error('Track check timed out or was cancelled.'));};
+      signal.addEventListener('abort',cancel);
+      stream.on('data',chunk => {
+        received += chunk.copy(bytes,received);
+        const parsed = matroskaTracks(bytes.slice(0,received));
+        if (parsed) {resolve(parsed); stream.destroy();}
+      });
+      stream.once('end',() => reject(Error('The track list was outside the readable file header.')));
+      stream.once('error',reject);
+      stream.once('close',() => {signal.removeEventListener('abort',cancel);reject(Error('Track check stopped.'));});
+    });
+    return {...tracks,fileIndex:session.selected,filename:file.name};
   }
   function serve(session, index, req, res) {
     if (!session.ready || index !== session.selected) fail('Select a video before playing it.');
@@ -170,9 +215,11 @@ module.exports = function createTorrents(options) {
         // Small writes honor the native player's backpressure; never assemble
         // a movie, or let a slow player queue an entire 4 MB torrent piece.
         const length = Math.min(64 * 1024, buffer.length - offset, end - position + 1);
+        const data = buffer.slice(offset, offset + length);
+        observeHeader(session,file,position,data);
         position += length;
         session.servedBytes += length;
-        if (res.write(buffer.slice(offset, offset + length))) setImmediate(pump);
+        if (res.write(data)) setImmediate(pump);
         else res.once('drain', pump);
       });
     }
@@ -182,7 +229,7 @@ module.exports = function createTorrents(options) {
   }
   const reap = setInterval(() => { if (active && Date.now() - active.touched > 90000) void stop(); }, 15000);
   reap.unref();
-  return {start, stop, get, choose, snapshot, serve, stats:() => ({
+  return {start, stop, get, choose, snapshot, serve, inspect, stats:() => ({
     bytes:active && active.store ? active.store.bytes : 0, limit:limit(), active:Boolean(active), stopping:Boolean(stopping), stoppingSince,
     id:active && active.id, generation, startedAt:active && active.startedAt, state:active ? active.error?'error':active.ready?'ready':'connecting':'idle',
     error:active && active.error, peers:active && active.torrent ? active.torrent.numPeers : 0,

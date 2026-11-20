@@ -65,6 +65,15 @@ describe('offline device merging',()=>{
     applyDocument(captureChanges(emptyDocument(),a,{},{'library:movie:tt1':{id:'tt1',type:'movie',name:'First'},'library:movie:tt3':{id:'tt3',type:'movie',name:'Third'},'library:movie:tt2':{id:'tt2',type:'movie',name:'Second'}},100));
     expect(JSON.parse(storage.get('hasimio:library')!).map((m:{id:string})=>m.id)).toEqual(['tt2','tt1','tt3']);
   });
+  it('retains explicit progress deletions for offline peers and expires them after 90 days',()=>{
+    const day=86400000,stamp=100*day;
+    const key='progress:movie:test';
+    const doc={v:1 as const,records:{[key]:{stamp,device:a,value:{completed:'removed'}}}};
+    expect(compactDocument(doc,stamp+89*day).records[key]).toEqual(doc.records[key]);
+    expect(compactDocument(doc,stamp+91*day).records[key]).toBeUndefined();
+    applyDocument(doc);
+    expect(localValues()[key]).toBeUndefined();
+  });
   it('bounds playback history and expires old removals so sync never outgrows its limits',()=>{
     const day=24*60*60*1000,now=200*day,progress=(i:number)=>({position:1,duration:10,updatedAt:i,completed:false});
     const previous=Object.fromEntries(Array.from({length:600},(_,i)=>['progress:movie:tt'+i,progress(i)]));

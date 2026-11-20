@@ -1,10 +1,10 @@
-name: Mac installer
+name: Mac startup diagnostic
 on:
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
-  group: macos-publish-${{ github.ref }}
+  group: macos-diagnostic-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   installer:
@@ -40,9 +40,3 @@ jobs:
             release/desktop/*-mac-arm64.zip
             release/desktop/latest-mac.yml
           if-no-files-found: error
-      - name: Publish installer
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION=$(node -p 'require("./package.json").version')
-          gh release upload "v$VERSION" release/desktop/*-mac-arm64.dmg release/desktop/*-mac-arm64.zip release/desktop/latest-mac.yml --repo "$GITHUB_REPOSITORY" --clobber

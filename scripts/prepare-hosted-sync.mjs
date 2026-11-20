@@ -1,13 +1,15 @@
 import {cp,mkdir,readFile,writeFile} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import path from 'node:path';
-const root=path.resolve(import.meta.dirname,'..'),site=path.join(root,'sites/hasimio-sync');
+const root=path.resolve(import.meta.dirname,'..'),site=path.resolve(root,process.argv[2]||'sites/hasimio-sync');
 const result=spawnSync(process.execPath,[path.join(root,'node_modules/vite/bin/vite.js'),'build'],{cwd:root,stdio:'inherit'});
 if(result.status!==0)process.exit(result.status||1);
 await mkdir(path.join(site,'public'),{recursive:true});
 await cp(path.join(root,'dist/assets'),path.join(site,'public/assets'),{recursive:true});
 await cp(path.join(root,'public/favicon.png'),path.join(site,'public/favicon.png'));
+await mkdir(path.join(site,'lib'),{recursive:true});
 await cp(path.join(root,'shared/sync-protocol.mjs'),path.join(site,'lib/sync-protocol.mjs'));
 const html=await readFile(path.join(root,'dist/index.html'),'utf8');
-await writeFile(path.join(site,'public/connect.html'),html.replace('<head>','<head><meta name="referrer" content="no-referrer"/>'));
+const {version}=JSON.parse(await readFile(path.join(root,'package.json'),'utf8'));
+await writeFile(path.join(site,'public/connect.html'),html.replace('<head>',`<head><meta name="referrer" content="no-referrer"/><meta name="hasimio-version" content="${version}"/>`));
 console.log('Prepared hosted Hasimio sync interface.');

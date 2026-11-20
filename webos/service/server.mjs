@@ -29,6 +29,27 @@ try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].incl
 const onlineSubtitles=createOnlineSubtitleService({romanian:createRomanianSubtitles()});
 const torrents=createTorrents({cacheMiB:()=>cacheMiB,
   record:(...event)=>monitor.record(...event), onStart:()=>monitor.counters.downloads++, onCleanup:()=>monitor.counters.cleanups++});
+// One temporary probe at a time on televisions. Never replace the playback torrent.
+let probeController;
+async function inspectSource(req,res){
+  if(probeController){json(res,429,{error:'Another track check is in progress.'});return;}
+  const controller=new AbortController();
+  probeController=controller;
+  const cancel=()=>controller.abort();
+  const timeout=setTimeout(cancel,10000);
+  res.once('close',cancel);
+  const probe=createTorrents({inspection:true,cacheMiB:()=>8});
+  try{
+    const input=await readBody(req);
+    if(controller.signal.aborted)throw Error('Track check timed out or was cancelled.');
+    const result=await probe.inspect(input,controller.signal);
+    if(!controller.signal.aborted)json(res,200,result);
+  }finally{
+    clearTimeout(timeout);
+    res.removeListener('close',cancel);
+    try{await probe.close();}finally{probeController=undefined;}
+  }
+}
 const metadata=new Map(), pending=new Map();
 let metadataBytes=0, cacheGeneration=0;
 function clearMetadata(){cacheGeneration++;metadata.clear();metadataBytes=0;}
@@ -119,8 +140,8 @@ async function route(req,res){
     res.writeHead(200,{'Content-Type':result.type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(result.text);return;
   }
   if(pathname==='/api/cast'){json(res,200,{available:false});return;}
-  if(pathname==='/api/torrent-inspections'){json(res,409,{error:'Tracks are read by the TV after playback starts.'});return;}
-  if(pathname==='/api/torrents'&&req.method==='POST'){json(res,200,await torrents.start(await readBody(req)));return;}
+  if(pathname==='/api/torrent-inspections'&&req.method==='POST'){await inspectSource(req,res);return;}
+  if(pathname==='/api/torrents'&&req.method==='POST'){if(probeController)probeController.abort();json(res,200,await torrents.start(await readBody(req)));return;}
   const torrentRoute=/^\/api\/torrents\/([a-f\d]{36})(?:\/files\/(\d+)|\/(audio-tracks|audio|subtitles(?:\/\d+)?))?$/.exec(pathname);
   if(torrentRoute){
     const session=torrents.get(torrentRoute[1]);

@@ -88,10 +88,14 @@ It publishes `latest-mac.yml` alongside the DMG and ZIP for Mac updates.
 The first ad-hoc build must be replaced manually with the Developer ID build;
 automatic updates from an ad-hoc build are not guaranteed.
 
-## Current validation status
+## Upgrade verification
 
-The initial ad-hoc installer was built successfully on GitHub's Mac runner.
-Developer ID signing and notarization await publisher credentials. Mac
-installation, torrent playback, media conversion and updates have not been
-tested. Builds require native Mac dependencies; a Windows dependency folder
-cannot be reused.
+The signed release workflow installs a Developer ID build of the preceding release
+from its tagged source on the Apple Silicon runner. The installed app uses its
+normal update controls against a loopback feed serving the candidate release ZIP
+and manifest. Publication requires the app to download the update, replace its
+installed bundle, and restart at the candidate version with a valid signature.
+
+The Mac startup diagnostic workflow uploads build artifacts for troubleshooting.
+The signed workflow publishes the Mac installers. Existing ad-hoc installations
+may require a one-time manual install of the first Developer ID release.

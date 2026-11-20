@@ -1,9 +1,12 @@
+import {isWebOS} from './webos/platform';
 import {useEffect,useRef,useState} from 'react';
 import {INSPECTION_CONCURRENCY} from '../shared/inspection-policy.mjs';
 import {engineUrl} from './engine';
 import type {Stream} from './media';
 import {saveTrackSummary,trackSourceKey,verifiedTracks,type MediaTrack} from './playback-tracks';
 
+export const deviceTrackChecks=isWebOS||import.meta.env.VITE_ANDROID==='true';
+export const inspectionWorkers=deviceTrackChecks?1:INSPECTION_CONCURRENCY;
 export async function inspectStreamTracks(stream:Stream,videoId:string,signal:AbortSignal){
   if(!stream.infoHash)return;
   const response=await fetch(engineUrl('/api/torrent-inspections'),{
@@ -31,7 +34,7 @@ export function useQuickTrackInspection(videoId:string,active:boolean,streams:St
     const job=work.current;
     if(!active||!job)return;
     for(const stream of candidates){
-      if(job.started.size>=INSPECTION_CONCURRENCY)break;
+      if(job.pending.size>=inspectionWorkers||job.started.size>=INSPECTION_CONCURRENCY)break;
       const key=trackSourceKey(stream,videoId);
       if(job.started.has(key))continue;
       job.started.add(key);

@@ -4,7 +4,7 @@ import path from 'node:path';
 import {Readable} from 'node:stream';
 import {createSyncRelay} from '../server/sync-relay.mjs';
 import {DeviceSync} from './device-sync';
-import {saveProgress,resumePosition,savedProgress,setWatched} from './playback-progress';
+import {saveProgress,resumePosition,savedProgress,setWatched,restoreProgress} from './playback-progress';
 
 let relay:ReturnType<typeof createSyncRelay>,directory:string,storage:Map<string,string>,offline=false,requests:string[]=[],responses:string[]=[];
 const server='http://127.0.0.1:8787';
@@ -53,6 +53,46 @@ describe('complete device sync',()=>{
     storage=desktopStorage;await desktop.sync();expect(JSON.parse(storage.get('hasimio:settings')!).volume).toBe(0.4);
     storage=phoneStorage;await phone.sync();expect(JSON.parse(storage.get('hasimio:library')!)).toEqual([]);
     await relay.close();relay=createSyncRelay({dataDir:directory,publicUrl:server});storage=new Map();const recovered=new DeviceSync();await recovered.recover(recovery,'Recovered device');expect(resumePosition('movie:tt1')).toBe(120);expect(JSON.parse(storage.get('hasimio:library')!)).toEqual([]);
+  });
+  it('syncs an offline bulk Undo after a restart and accepts a later rewatch',async()=>{
+    const desktop=new DeviceSync(),desktopStorage=storage;
+    const first='series:episode:1',second='series:episode:2';
+    saveProgress(first,60,120);
+    const before={[first]:savedProgress(first),[second]:undefined};
+    const targets=[{key:first},{key:second}];
+    setWatched(targets);
+    await desktop.create(server,'PC');
+    const invite=await desktop.invitation();
+    storage=new Map();
+    const tv=new DeviceSync(),tvStorage=storage;
+    await tv.join(invite.url,'TV');
+    expect(savedProgress(second)?.completed).toBe(true);
+
+    storage=desktopStorage;
+    offline=true;
+    restoreProgress(before);
+    // Other history writes and an abrupt restart before upload must preserve the Undo.
+    saveProgress('movie:other',5,100);
+    expect(savedProgress(second)).toBeUndefined();
+    vi.stubGlobal('document',Object.assign(new EventTarget(),{visibilityState:'visible'}));
+    const restarted=new DeviceSync();
+    restarted.start();
+    await vi.waitFor(()=>expect(restarted.status.state).toBe('offline'));
+    offline=false;
+    expect(await restarted.sync()).toBe(true);
+
+    const pcWindow=window;
+    vi.stubGlobal('window',new EventTarget());
+    storage=tvStorage;
+    await tv.sync();
+    expect(savedProgress(first)).toEqual(before[first]);
+    expect(savedProgress(second)).toBeUndefined();
+    expect(savedProgress('movie:other')?.position).toBe(5);
+    setWatched([{key:second}]);
+    await tv.sync();
+    storage=desktopStorage;
+    await restarted.sync();
+    expect(savedProgress(second)?.completed).toBe(true);
   });
   it('writes little to storage while a video plays, and loses nothing if the app closes without saving',async()=>{
     const desktop=new DeviceSync();

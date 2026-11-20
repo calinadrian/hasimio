@@ -96,6 +96,7 @@ function ChannelPlayer({channel,favorite,topRank,onFavorite}:{channel:LiveChanne
   const [serverIndex,setServerIndex]=useState(()=>Math.max(0,channel.servers.findIndex(server=>server.supported!==false))),[playing,setPlaying]=useState(false);
   const [attempt,setAttempt]=useState(0),[loading,setLoading]=useState(false),[slow,setSlow]=useState(false),[reconnecting,setReconnecting]=useState(false);
   const server=channel.servers[serverIndex];
+  const verifiedTime=Date.parse(server.checkedAt??'');
   const failures=useRef(0),retryTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),session=useRef(Date.now().toString(36));
   const cancelRetry=()=>{clearTimeout(retryTimer.current);retryTimer.current=undefined;};
   useEffect(()=>()=>clearTimeout(retryTimer.current),[]);
@@ -136,6 +137,7 @@ function ChannelPlayer({channel,favorite,topRank,onFavorite}:{channel:LiveChanne
         <div className="live-tv-channel-title"><div className="live-tv-eyebrow"><span className={playing?'live-tv-live-dot is-playing':'live-tv-live-dot'}/>{playing?'Live now':'Ready to watch'}{topRank!==undefined&&<span className="live-tv-top-tag">Top 100 · #{topRank}</span>}</div><h2>{channel.name.replace(/ \(\d+p\)/g,'')}</h2><p>{channel.provider}{/\((\d+p)\)/.exec(channel.name)?.[1]&&<> <span aria-hidden="true">·</span> {/\((\d+p)\)/.exec(channel.name)?.[1]}</>}</p></div>
         <button className="live-tv-favorite" aria-pressed={favorite} title={favorite?'Remove from favorites':'Add to favorites'} onClick={onFavorite} aria-label={(favorite?'Remove '+channel.name+' from':'Add '+channel.name+' to')+' favorites'}><Star size={20} fill={favorite?'currentColor':'none'}/></button>
       </header>
+      {Number.isFinite(verifiedTime)&&<p className="live-tv-note">{server.name} playback verified <time dateTime={server.checkedAt}>{new Date(verifiedTime).toLocaleString()}</time></p>}
       <div className="live-tv-stage" aria-busy={loading}>
         {playing?<>
           <LiveVideo url={engineUrl('/api/live-tv/'+channel.id+'/'+server.id+'/index.m3u8'+(attempt?'?reconnect='+session.current+'-'+attempt:''))} onLoading={loadingChanged} onError={recover}/>

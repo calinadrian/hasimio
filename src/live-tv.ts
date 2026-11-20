@@ -1,4 +1,4 @@
-export type LiveChannel={id:string;name:string;provider:string;group?:string;servers:readonly {id:string;name:string;url?:string;supported?:boolean}[]};
+export type LiveChannel={id:string;name:string;provider:string;group?:string;servers:readonly {id:string;name:string;url?:string;supported?:boolean;checkedAt?:string}[]};
 
 export const liveChannels:readonly LiveChannel[]=[{
   id:'cartoon-network',

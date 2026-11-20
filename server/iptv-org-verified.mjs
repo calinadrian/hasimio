@@ -21,7 +21,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62ba60f059624e000781c436.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:20.952Z"
         }
       ],
       "language": "eng"
@@ -36,7 +37,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dce3793146fef017.mediapackage.us-west-2.amazonaws.com/out/v1/55cdf73af7894775ba6de8f57482b66a/CMAF_HLS/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.371Z"
         }
       ],
       "language": "eng"
@@ -51,7 +53,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5db313b643fd8.streamlock.net/111/111/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:26.231Z"
         }
       ],
       "language": "eng"
@@ -66,7 +69,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.freevisiontv.co.za/sttv/smil:1kzn.stream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.276Z"
         }
       ],
       "language": "eng"
@@ -81,7 +85,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/darcizzle.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.822Z"
         }
       ],
       "language": "eng"
@@ -96,7 +101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/gh.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:22.257Z"
         }
       ],
       "language": "eng"
@@ -111,7 +117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/vidaa/golf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:22.303Z"
         }
       ],
       "language": "eng"
@@ -126,7 +133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/xodglobal/30atv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:22.308Z"
         }
       ],
       "language": "eng"
@@ -141,7 +149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/vidaa/luxelife.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.184Z"
         }
       ],
       "language": "eng"
@@ -156,7 +165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/music.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.290Z"
         }
       ],
       "language": "eng"
@@ -171,7 +181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/720p/63.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.316Z"
         }
       ],
       "language": "eng"
@@ -186,7 +197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/sidewalks.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.520Z"
         }
       ],
       "language": "eng"
@@ -201,7 +213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/masters/30atv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.779Z"
         }
       ],
       "language": "eng"
@@ -216,7 +229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/pzaz/30atvmovies.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.936Z"
         }
       ],
       "language": "eng"
@@ -231,7 +245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://30a-tv.com/feeds/vidaa/cars.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:23.942Z"
         }
       ],
       "language": "eng"
@@ -246,7 +261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash3.antik.sk/live/test_360_tunebox_medium_atk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:26.359Z"
         }
       ],
       "language": "eng"
@@ -261,7 +277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abncanada/3ABN/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.284Z"
         }
       ],
       "language": "eng"
@@ -276,7 +293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abn2/3abn_live/smil:3abn_live.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.287Z"
         }
       ],
       "language": "eng"
@@ -291,7 +309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abn2/Int_live/smil:Int_live.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.290Z"
         }
       ],
       "language": "eng"
@@ -306,7 +325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.294Z"
         }
       ],
       "language": "eng"
@@ -321,7 +341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abn1/PraiseHim/smil:PraiseHim.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.298Z"
         }
       ],
       "language": "eng"
@@ -336,7 +357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abn2/Pro_live/smil:Pro_live.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.303Z"
         }
       ],
       "language": "eng"
@@ -351,7 +373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-us1.thaimomo.com/live-as/ch3hd-3/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.322Z"
         }
       ],
       "language": "eng"
@@ -366,7 +389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dai.google.com/linear/hls/event/JUr94WL2QAiVpGNHY5n5dA/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:24.202Z"
         }
       ],
       "language": "eng"
@@ -381,7 +405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e925bc68d18a00077bb990.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:24.255Z"
         }
       ],
       "language": "eng"
@@ -396,7 +421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d2c571faeb3e2738ae27933.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.330Z"
         }
       ],
       "language": "eng"
@@ -411,7 +437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68487fb3f212bedacf5a53e3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:24.521Z"
         }
       ],
       "language": "eng"
@@ -426,7 +453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f4d878d3d19b30007d2e782.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:24.655Z"
         }
       ],
       "language": "eng"
@@ -441,7 +469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728cab6e482950008b76d8c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.346Z"
         }
       ],
       "language": "eng"
@@ -456,7 +485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728c9c85534bb0008b320a4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.350Z"
         }
       ],
       "language": "eng"
@@ -471,7 +501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728ca75529ac9000830ab14.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:21.354Z"
         }
       ],
       "language": "eng"
@@ -486,7 +517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ca525b650be2571e3943c63.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:25.117Z"
         }
       ],
       "language": "eng"
@@ -501,7 +533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f4d86f519358a00072b978e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:25.797Z"
         }
       ],
       "language": "eng"
@@ -516,7 +549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live2.tensila.com/pearl-v-1.pearlfm/hls/live/mystream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:26.102Z"
         }
       ],
       "language": "eng"
@@ -531,7 +565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.sen-gt.com/A2itv/myStream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:27.282Z"
         }
       ],
       "language": "eng"
@@ -546,7 +581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a7tvlive.ro/A7TV/A7TV/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:27.311Z"
         }
       ],
       "language": "ron"
@@ -561,7 +597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg19223-amg19223c12-amgplt0352.playout.now3.amagi.tv/playlist/amg19223-amg19223c12-amgplt0352/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:27.829Z"
         }
       ],
       "language": "eng"
@@ -576,7 +613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01942-amg01942c6-stirr-us-10178.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:27.977Z"
         }
       ],
       "language": "eng"
@@ -591,7 +629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/1a352414-3a30-4f42-b14b-c091d02a5e45/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:28.787Z"
         }
       ],
       "language": "eng"
@@ -606,7 +645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fuel-streaming-prod01.fuelmedia.io/v1/sem/c4067ddc-0e67-4928-b7ec-624481f721a6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:29.843Z"
         }
       ],
       "language": "eng"
@@ -621,7 +661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/64ca339f04964a5e961c3207a7771bf1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:30.022Z"
         }
       ],
       "language": "eng"
@@ -636,7 +677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/2dba5dd9-4097-45e3-b169-56735cc48476/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:31.273Z"
         }
       ],
       "language": "eng"
@@ -651,7 +693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/9d4e02c9c3544c269d32e6b316792c8f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:31.700Z"
         }
       ],
       "language": "eng"
@@ -666,7 +709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://c.mjh.nz/abc-sa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:38.113Z"
         }
       ],
       "language": "eng"
@@ -681,7 +725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://c.mjh.nz/abc-wa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:38.837Z"
         }
       ],
       "language": "eng"
@@ -696,7 +741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/ec903a48-3638-4d0b-ac89-813e147bca58/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:33.852Z"
         }
       ],
       "language": "eng"
@@ -711,7 +757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://townnews.g-mana.live/media/14d1fd2c-0548-4803-80ad-6657831a7981/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:35.133Z"
         }
       ],
       "language": "eng"
@@ -726,7 +773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://townnews.g-mana.live/media/027a05c7-43b6-49eb-ad10-a0c0f10a0754/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:35.247Z"
         }
       ],
       "language": "eng"
@@ -741,7 +789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mediaserver.abnvideos.com/streams/abnafrica.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:39.058Z"
         }
       ],
       "language": "eng"
@@ -756,7 +805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mediaserver.abnvideos.com/streams/abnbiblemovies.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.183Z"
         }
       ],
       "language": "eng"
@@ -771,7 +821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-472500/abpnews/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.230Z"
         }
       ],
       "language": "eng"
@@ -786,7 +837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amc-absolutereality-1-us.plex.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.436Z"
         }
       ],
       "language": "eng"
@@ -801,7 +853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://raycom-accdn-firetv.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.753Z"
         }
       ],
       "language": "eng"
@@ -816,7 +869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch6/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.787Z"
         }
       ],
       "language": "ron"
@@ -831,7 +885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-montgomerycommunitymedia.cablecast.tv/live-8/live/stream-3/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.884Z"
         }
       ],
       "language": "eng"
@@ -846,7 +901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-channel18vod-springfield-il-us.cablecast.tv/live-16/live/stream-4/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:40.852Z"
         }
       ],
       "language": "eng"
@@ -861,7 +917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/accvision1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:41.929Z"
         }
       ],
       "language": "eng"
@@ -876,7 +933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/accvision2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:42.028Z"
         }
       ],
       "language": "eng"
@@ -891,7 +949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/206858-4412960-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:42.401Z"
         }
       ],
       "language": "eng"
@@ -906,7 +965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://acheloostv.streamings.gr/live/stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:43.281Z"
         }
       ],
       "language": "eng"
@@ -921,7 +981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_014/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:43.743Z"
         }
       ],
       "language": "eng"
@@ -936,7 +997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/athens/live/ch2/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:44.065Z"
         }
       ],
       "language": "eng"
@@ -951,7 +1013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.afintl.com/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:45.074Z"
         }
       ],
       "language": "eng"
@@ -966,7 +1029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge20.vedge.infomaniak.com/livecast/ik:africa24english/manifest.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:45.398Z"
         }
       ],
       "language": "eng"
@@ -981,7 +1045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.ecable.tv/afrobeats/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:45.927Z"
         }
       ],
       "language": "eng"
@@ -996,7 +1061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://alt-al.otteravision.com/alt/al/al.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.081Z"
         }
       ],
       "language": "eng"
@@ -1011,7 +1077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/accframingham1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.178Z"
         }
       ],
       "language": "eng"
@@ -1026,7 +1093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-12.frequency.stream/dist/plex/12/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.271Z"
         }
       ],
       "language": "eng"
@@ -1041,7 +1109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://agrotv.streamnet.ro/mobile_tv/agrotv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.370Z"
         }
       ],
       "language": "ron"
@@ -1056,7 +1125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cd198.anystream.uk:8082/hls/abtv3ng/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.412Z"
         }
       ],
       "language": "eng"
@@ -1071,7 +1141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-globecast.akamaized.net/live/eds/akaal_tv/hls1_smart_akaal/akaal_tv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.429Z"
         }
       ],
       "language": "eng"
@@ -1086,7 +1157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/akaku/live/ch1/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.726Z"
         }
       ],
       "language": "eng"
@@ -1101,7 +1173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/akaku/live/ch2/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.953Z"
         }
       ],
       "language": "eng"
@@ -1116,7 +1189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/akaku/live/ch3/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:46.986Z"
         }
       ],
       "language": "eng"
@@ -1131,7 +1205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://broadcast.blivenyc.com/speed/broadcast/22/desktop-playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:47.562Z"
         }
       ],
       "language": "eng"
@@ -1146,7 +1221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://install.akctvcontrol.com/speed/broadcast/140/desktop-playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:48.596Z"
         }
       ],
       "language": "eng"
@@ -1161,7 +1237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://m6.livecdn.io/akilikids.co.ke/akilikids.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:48.678Z"
         }
       ],
       "language": "eng"
@@ -1176,7 +1253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.alarabiya.net/alarabiapublish/english/playlist_dvr.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:49.363Z"
         }
       ],
       "language": "eng"
@@ -1191,7 +1269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:49.656Z"
         }
       ],
       "language": "eng"
@@ -1206,7 +1285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/131/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:49.907Z"
         }
       ],
       "language": "eng"
@@ -1221,7 +1301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.live.easybroadcast.io/abr_corp/66_al24_u4yga6h/corp/66_al24_u4yga6h_240p/chunks.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:49.213Z"
         }
       ],
       "language": "eng"
@@ -1236,7 +1317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://albuk.dyndns.tv:1935/albuk/albuk.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:49.969Z"
         }
       ],
       "language": "eng"
@@ -1251,7 +1333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamw.m.ro/Aleph/ngrp:Alephbiz.stream_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.146Z"
         }
       ],
       "language": "ron"
@@ -1266,7 +1349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-aleph.m.ro/Aleph/ngrp:Alephnewsmain.stream_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.275Z"
         }
       ],
       "language": "ron"
@@ -1281,7 +1365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aom-live.maghost.ro/aomTV/streams/OOztu5o9Fx6dh9mD1711027803849.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.308Z"
         }
       ],
       "language": "ron"
@@ -1296,7 +1381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e82530945600e0007ca076c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.350Z"
         }
       ],
       "language": "eng"
@@ -1311,7 +1397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amc-allweddings-1-us.xumo.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.492Z"
         }
       ],
       "language": "eng"
@@ -1326,7 +1413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1yl6bf4hrzbr0.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-5km3zs4zs9sp0/allo.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.949Z"
         }
       ],
       "language": "eng"
@@ -1341,7 +1429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://597f64b67707a.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:50.962Z"
         }
       ],
       "language": "eng"
@@ -1356,7 +1445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5aafcc5de91f1.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:51.009Z"
         }
       ],
       "language": "eng"
@@ -1371,7 +1461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://uni01rtmp.tulix.tv/amazingdtv/amazingdtv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:51.354Z"
         }
       ],
       "language": "eng"
@@ -1386,7 +1477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hlspackager.akamaized.net/live/DB/AMAZING_FACTS/HLS/AMAZING_FACTS.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:51.395Z"
         }
       ],
       "language": "eng"
@@ -1401,7 +1493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/amc_hun/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:52.296Z"
         }
       ],
       "language": "eng"
@@ -1416,7 +1509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68757c45759366af05b3b199.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:52.464Z"
         }
       ],
       "language": "eng"
@@ -1431,7 +1525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68679fc6bb46d0bdd38ac9a4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:52.696Z"
         }
       ],
       "language": "eng"
@@ -1446,7 +1541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e84f54a82f05300080e6746.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:53.003Z"
         }
       ],
       "language": "eng"
@@ -1461,7 +1557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/26bd482ffe364a1282bc3df28bd3c21f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:53.076Z"
         }
       ],
       "language": "eng"
@@ -1476,7 +1573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e1f7da4bc7d740009831259.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:53.184Z"
         }
       ],
       "language": "eng"
@@ -1491,7 +1589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883104",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:53.409Z"
         }
       ],
       "language": "eng"
@@ -1506,7 +1605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_AMERICAN_HEROES/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:54.052Z"
         }
       ],
       "language": "eng"
@@ -1521,7 +1621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://107.167.7.162:8081/playlist/amhor/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:54.891Z"
         }
       ],
       "language": "eng"
@@ -1536,7 +1637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d4whmvwm0rdvi.cloudfront.net/10007/99951318/hls/master.m3u8?ads._fw_app_bundle=web.xumo.com&ads._fw_app_store_url=&ads._fw_content_category=&ads._fw_content_genre=&ads._fw_content_language=en&ads._fw_content_rating=&ads._fw_coppa=0&ads._fw_deviceMake=GitHubAction&ads._fw_deviceType=3-Connected_TV&ads._fw_device_model=PythonScript&ads._fw_did=a5090924-15b1-4b7f-b6cd-2f06e2ba51e1&ads._fw_is_lat=0&ads._fw_us_privacy=&ads._fw_vcid2=512116:a5090924-15b1-4b7f-b6cd-2f06e2ba51e1&ads.afid=405342864&ads.appName=XumoPlay&ads.appVersion=1.0.0&ads.asnw=169843&ads.channelId=99951318&ads.csid=xumo_web_NBCUAmericanNinjaWarrior_ssai_cro&ads.sfid=19647852&ads.xumo_channelId=99951318&ads.xumo_contentId=4063&ads.xumo_contentName=NBCUAmericanNinjaWarrior&ads.xumo_providerId=4063&ads.xumo_providerName=NBCUAmericanNinjaWarrior",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:55.211Z"
         }
       ],
       "language": "eng"
@@ -1551,7 +1653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tdameritrade-vizio.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:55.291Z"
         }
       ],
       "language": "eng"
@@ -1566,7 +1669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_138/201660-1270634-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:55.383Z"
         }
       ],
       "language": "eng"
@@ -1581,7 +1685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamer1.connectto.com/AMGA_WEB_1202/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:55.895Z"
         }
       ],
       "language": "eng"
@@ -1596,7 +1701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e8db96bccae160007c71eec.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:56.384Z"
         }
       ],
       "language": "eng"
@@ -1611,7 +1717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-904559/africa/ngrp:angelafrica_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:56.998Z"
         }
       ],
       "language": "eng"
@@ -1626,7 +1733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-213167/arabia/ngrp:angelarabia_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:57.013Z"
         }
       ],
       "language": "eng"
@@ -1641,7 +1749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-310787/australia/ngrp:angelaustralia_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:58.080Z"
         }
       ],
       "language": "eng"
@@ -1656,7 +1765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-512011/europe/ngrp:angeleurope_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:58.234Z"
         }
       ],
       "language": "eng"
@@ -1671,7 +1781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-438760/fareast/ngrp:angelfareast_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:58.947Z"
         }
       ],
       "language": "eng"
@@ -1686,7 +1797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-703035/indochina/ngrp:angelindochina_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:59.137Z"
         }
       ],
       "language": "eng"
@@ -1701,7 +1813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janya-digimix.akamaized.net/vglive-sk-234616/indonesia/ngrp:angelindonesia_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:59.156Z"
         }
       ],
       "language": "eng"
@@ -1716,7 +1829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00353-lionsgatestudio-angermgmt-samsungau-o9jg9.amagi.tv/playlist/amg00353-lionsgatestudio-angermgmt-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:33:59.394Z"
         }
       ],
       "language": "eng"
@@ -1731,7 +1845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6793eaa4bc03978b9bc63db1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:02.111Z"
         }
       ],
       "language": "eng"
@@ -1746,7 +1861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_aws4_sdi01/live2_aws4_sdi01_5000k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:02.398Z"
         }
       ],
       "language": "ron"
@@ -1761,7 +1877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live3vox.antenaplay.ro/a3free/a3free.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:02.444Z"
         }
       ],
       "language": "ron"
@@ -1776,7 +1893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_aws4_sdi02/live2_aws4_sdi02_5000k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:02.631Z"
         }
       ],
       "language": "ron"
@@ -1791,7 +1909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streaming.eforie.city/memfs/7223115a-4f22-4e2c-86f5-354552acab7f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:02.668Z"
         }
       ],
       "language": "eng+ron"
@@ -1806,7 +1925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_sdi06/live2_sdi06.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:03.538Z"
         }
       ],
       "language": "ron"
@@ -1821,7 +1941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.antenaplay.ro/live/AntenaMonden/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:04.403Z"
         }
       ],
       "language": "ron"
@@ -1836,7 +1957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_aws4_sdi10/live2_aws4_sdi10_5000k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:04.689Z"
         }
       ],
       "language": "ron"
@@ -1851,7 +1973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_sport07/live2_sport07_3500k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:04.803Z"
         }
       ],
       "language": "eng+ron"
@@ -1866,7 +1989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.antenaplay.ro/as/AS.ro/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:04.846Z"
         }
       ],
       "language": "ron"
@@ -1881,7 +2005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69173ce8abd4703b27f71d44.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:04.951Z"
         }
       ],
       "language": "eng"
@@ -1896,7 +2021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bbc-antiquesroadshowuk-1-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:05.247Z"
         }
       ],
       "language": "eng"
@@ -1911,7 +2037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://59nyqg8elwap-hls-live.5centscdn.com/APTV/85c20905211659d143febd7c32592ee0.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:05.859Z"
         }
       ],
       "language": "eng"
@@ -1926,7 +2053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.approvaltv.com/approvaltv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:06.169Z"
         }
       ],
       "language": "eng"
@@ -1941,7 +2069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream8.cinerama.uz/1205/tracks-v1a1/mono.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:06.396Z"
         }
       ],
       "language": "eng"
@@ -1956,7 +2085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00353-lionsgatestudio-arewethereyet-samsunguk-6h2ju.amagi.tv/playlist/amg00353-lionsgatestudio-arewethereyet-samsunguk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:06.460Z"
         }
       ],
       "language": "eng"
@@ -1971,7 +2101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0ac242bb0cf0007015f89.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:06.629Z"
         }
       ],
       "language": "eng"
@@ -1986,7 +2117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c091c39863900007ac9e8f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:06.884Z"
         }
       ],
       "language": "eng"
@@ -2001,7 +2133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://btutzctahuf0wjoq.cdn.streamingserver.io/hls/yjvam8hlp2g3u08z02tv0yz66rq3cy.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:07.272Z"
         }
       ],
       "language": "ron"
@@ -2016,7 +2149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=111",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:07.518Z"
         }
       ],
       "language": "eng"
@@ -2031,7 +2165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amdlive-ch02-ctnd-com.akamaized.net/arirang_2ch/smil:arirang_2ch.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:07.713Z"
         }
       ],
       "language": "eng"
@@ -2046,7 +2181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.hydeinnovations.com/arktv-international/index.fmp4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:07.836Z"
         }
       ],
       "language": "eng"
@@ -2061,7 +2197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amogonetworx-artflix-1-nl.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:08.395Z"
         }
       ],
       "language": "eng"
@@ -2076,7 +2213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn01.setar.aw/Canal49/canal49/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:08.510Z"
         }
       ],
       "language": "eng"
@@ -2091,7 +2229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://s2.netstreaming.eu/astv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:09.849Z"
         }
       ],
       "language": "ron"
@@ -2106,7 +2245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_sport05/live2_sport05.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:09.942Z"
         }
       ],
       "language": "ron"
@@ -2121,7 +2261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=215",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:10.740Z"
         }
       ],
       "language": "eng"
@@ -2136,7 +2277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-900.frequency.stream/dist/cineverse/900/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:11.041Z"
         }
       ],
       "language": "eng"
@@ -2151,7 +2293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream11.champds.com/LIVE/AtlantaGALIVE/AtlantaGALIVE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:11.434Z"
         }
       ],
       "language": "eng"
@@ -2166,7 +2309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media4.tripsmarter.com:1935/LiveTV/ACVBHD/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:11.725Z"
         }
       ],
       "language": "eng"
@@ -2181,7 +2325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.whiplash.cc/whiplash-atlas/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:11.841Z"
         }
       ],
       "language": "eng"
@@ -2196,7 +2341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://atomic.streamnet.ro/academia.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:12.493Z"
         }
       ],
       "language": "ron"
@@ -2211,7 +2357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://atomic.streamnet.ro/atomictv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:12.769Z"
         }
       ],
       "language": "eng+ron"
@@ -2226,7 +2373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-atxn-01.vos360.video/Content/HLS/Live/channel(f97b5ddc-b7e4-dff8-9f10-8c16d0833639)/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:12.924Z"
         }
       ],
       "language": "eng"
@@ -2241,7 +2389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62ac50e92c48f900071444c9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:13.813Z"
         }
       ],
       "language": "eng"
@@ -2256,7 +2405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62da7380478a5b0007e610d9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:14.145Z"
         }
       ],
       "language": "eng"
@@ -2271,7 +2421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62da73c4ec46c000070f4cb1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:14.173Z"
         }
       ],
       "language": "eng"
@@ -2286,7 +2437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62da7159ca8f220008032730.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:14.277Z"
         }
       ],
       "language": "eng"
@@ -2301,7 +2453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://124.109.47.101/hls/stream1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:14.406Z"
         }
       ],
       "language": "eng"
@@ -2316,7 +2469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d9quh89lh7dtw.cloudfront.net/public-output/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:14.648Z"
         }
       ],
       "language": "eng"
@@ -2331,7 +2485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://9e754fa707344ccca6d84955c8fcaf36.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AutenticHistory/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:15.199Z"
         }
       ],
       "language": "eng"
@@ -2346,7 +2501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cb0c87cc605942ff9766a4e6744bbadc.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AutenticTravel/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:16.167Z"
         }
       ],
       "language": "eng"
@@ -2361,7 +2517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-656df599c0fc8800089c75ab.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:16.245Z"
         }
       ],
       "language": "eng"
@@ -2376,7 +2533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09b48d6d97900076e91c5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:16.354Z"
         }
       ],
       "language": "eng"
@@ -2391,7 +2549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live1/awe_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:17.071Z"
         }
       ],
       "language": "eng"
@@ -2406,7 +2565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live1/aweint/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:17.903Z"
         }
       ],
       "language": "eng"
@@ -2421,7 +2581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.herringnetwork.com/affiliate/awee/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:18.195Z"
         }
       ],
       "language": "eng"
@@ -2436,7 +2597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_120/206858-4404552-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:18.200Z"
         }
       ],
       "language": "eng"
@@ -2451,7 +2613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0925c738ecd000882450a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:18.422Z"
         }
       ],
       "language": "eng"
@@ -2466,7 +2629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/test_black/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:19.462Z"
         }
       ],
       "language": "eng"
@@ -2481,7 +2645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/axn_hun/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:20.916Z"
         }
       ],
       "language": "eng"
@@ -2496,7 +2661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/viasat_film/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:21.551Z"
         }
       ],
       "language": "eng"
@@ -2511,7 +2677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/b1-tv-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:21.923Z"
         }
       ],
       "language": "ron"
@@ -2526,7 +2693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://newidco-babysharktv-1-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:21.974Z"
         }
       ],
       "language": "eng"
@@ -2541,7 +2709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c7b683162943.streamlock.net/live/ngrp:bahraininternational_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:24.003Z"
         }
       ],
       "language": "eng"
@@ -2556,7 +2725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://www.btv.ro/hls/banat-tv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:24.366Z"
         }
       ],
       "language": "ron"
@@ -2571,7 +2741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60a3d889a5b3690008dc7fe8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:24.661Z"
         }
       ],
       "language": "eng"
@@ -2586,7 +2757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-655f2ee6c0fc88000877d26c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:24.921Z"
         }
       ],
       "language": "eng"
@@ -2601,7 +2773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bbb-barkt-streamstak.otteravision.com/bbb/barkt/barkt.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:25.613Z"
         }
       ],
       "language": "eng"
@@ -2616,7 +2789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69d7ebff029c431826bd328e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:25.857Z"
         }
       ],
       "language": "eng"
@@ -2631,7 +2805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/billerica2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:26.371Z"
         }
       ],
       "language": "eng"
@@ -2646,7 +2821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/billerica3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:26.519Z"
         }
       ],
       "language": "eng"
@@ -2661,7 +2837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/billerica1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:26.855Z"
         }
       ],
       "language": "eng"
@@ -2676,7 +2853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00793-amg00793c6-xumo-us-2669.playouts.now.amagi.tv/BBCStudios-BBCEarthA-hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:27.195Z"
         }
       ],
       "language": "eng"
@@ -2691,7 +2869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/bbc_first/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:27.400Z"
         }
       ],
       "language": "eng"
@@ -2706,7 +2885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumbai-edge.smartplaytv.in/BBCNews/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:28.782Z"
         }
       ],
       "language": "eng"
@@ -2721,7 +2901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_001/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:31.188Z"
         }
       ],
       "language": "eng"
@@ -2736,7 +2917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media4.tripsmarter.com:1935/LiveTV/DTVHD/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:31.378Z"
         }
       ],
       "language": "eng"
@@ -2751,7 +2933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5ed325193d4e1.streamlock.net:444/LiveTV/KTVHD/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:31.964Z"
         }
       ],
       "language": "eng"
@@ -2766,7 +2949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media4.tripsmarter.com:1935/LiveTV/MTVHD/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:32.520Z"
         }
       ],
       "language": "eng"
@@ -2781,7 +2965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media4.tripsmarter.com:1935/LiveTV/BTVHD/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:33.084Z"
         }
       ],
       "language": "eng"
@@ -2796,7 +2981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6486e8b48e3c0a0008e56914.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:33.186Z"
         }
       ],
       "language": "eng"
@@ -2811,7 +2997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6486e8984cfc2c0008b6844e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:33.348Z"
         }
       ],
       "language": "eng"
@@ -2826,7 +3013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6486e8328e3c0a0008e5686c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:33.545Z"
         }
       ],
       "language": "eng"
@@ -2841,7 +3029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-672e16f5daad7f0008929a0d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:33.767Z"
         }
       ],
       "language": "eng"
@@ -2856,7 +3045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-672e157d7d5da5000812872d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:34.424Z"
         }
       ],
       "language": "eng"
@@ -2871,7 +3061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-672e1634e482950008c759a5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:37.231Z"
         }
       ],
       "language": "eng"
@@ -2886,7 +3077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/beinsports/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:37.572Z"
         }
       ],
       "language": "eng"
@@ -2901,7 +3093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bein-xtra-bein.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:37.590Z"
         }
       ],
       "language": "eng"
@@ -2916,7 +3109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/ZWQ1K2NYTmpFbGsr/BEK-WOWZA-1/smil:BEKPRIMEeast.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:37.861Z"
         }
       ],
       "language": "eng"
@@ -2931,7 +3125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/ZWQ1K2NYTmpFbGsr/BEK-WOWZA-1/smil:BEKPRIMEW.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:37.897Z"
         }
       ],
       "language": "eng"
@@ -2946,7 +3141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://ott-7.sevstar.net/belarus24/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:37.901Z"
         }
       ],
       "language": "eng"
@@ -2961,7 +3157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ngtrk.dc.beltelecom.by/ngtrk/smil:belarus24.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:38.208Z"
         }
       ],
       "language": "eng"
@@ -2976,7 +3173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ebc8688f3697d00072f7cf8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:38.239Z"
         }
       ],
       "language": "eng"
@@ -2991,7 +3189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d25tgymtnqzu8s.cloudfront.net/smil:berita/playlist.m3u8?id=5",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:38.335Z"
         }
       ],
       "language": "eng"
@@ -3006,7 +3205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/berkscmttv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:38.351Z"
         }
       ],
       "language": "eng"
@@ -3021,7 +3221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/billerica4/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:38.662Z"
         }
       ],
       "language": "eng"
@@ -3036,7 +3237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://m1b2.worldcast.tv/dancetelevisionone/dancetelevisionone.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:39.127Z"
         }
       ],
       "language": "eng"
@@ -3051,7 +3253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-666815f24b9fb400083f7e31.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:39.419Z"
         }
       ],
       "language": "eng"
@@ -3066,7 +3269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-632afdf820e83e000710ea12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:39.939Z"
         }
       ],
       "language": "eng"
@@ -3081,7 +3285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-632aff5e44111b00076ad9b1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:40.057Z"
         }
       ],
       "language": "eng"
@@ -3096,7 +3301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-632afc466699570007ed1106.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:40.369Z"
         }
       ],
       "language": "eng"
@@ -3111,7 +3317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e97d41f7f0af0008da2543.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:40.737Z"
         }
       ],
       "language": "eng"
@@ -3126,7 +3333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65b1077e0d9ab40008245b20.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:40.959Z"
         }
       ],
       "language": "eng"
@@ -3141,7 +3349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e97d760d456100082da660.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:41.147Z"
         }
       ],
       "language": "eng"
@@ -3156,7 +3365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e97cd118036500082ed0ce.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:41.355Z"
         }
       ],
       "language": "eng"
@@ -3171,7 +3381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-630483153a21200007f1920f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:41.969Z"
         }
       ],
       "language": "eng"
@@ -3186,7 +3397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62beb692cda2b10007d5fd76.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:42.671Z"
         }
       ],
       "language": "eng"
@@ -3201,7 +3413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-630478cfdb5a4a0007ec255e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:43.442Z"
         }
       ],
       "language": "eng"
@@ -3216,7 +3429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6310cbee5a8ad300070fdb7c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:43.776Z"
         }
       ],
       "language": "eng"
@@ -3231,7 +3445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c187ef1efe1b0007571711.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:44.182Z"
         }
       ],
       "language": "eng"
@@ -3246,7 +3461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-58af4c093a41ca9d4ecabe96.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:44.837Z"
         }
       ],
       "language": "eng"
@@ -3261,7 +3477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c32d88f56983aba40052bd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:45.745Z"
         }
       ],
       "language": "eng"
@@ -3276,7 +3493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1939b8929e40007ff6382.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:44.633Z"
         }
       ],
       "language": "eng"
@@ -3291,7 +3509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ca670f6593a5d78f0e85aed.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:46.117Z"
         }
       ],
       "language": "eng"
@@ -3306,7 +3525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61326275b3c86a00078e4833.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:46.434Z"
         }
       ],
       "language": "eng"
@@ -3321,7 +3541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-663946c1b18d700008d9c168.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:46.530Z"
         }
       ],
       "language": "eng"
@@ -3336,7 +3557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/betterlife/betterhealth/betterhealth/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:47.070Z"
         }
       ],
       "language": "eng"
@@ -3351,7 +3573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/betterlife/betternature/betternature/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:47.524Z"
         }
       ],
       "language": "eng"
@@ -3366,7 +3589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/betterlife/betterlife/betterlife/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:48.277Z"
         }
       ],
       "language": "eng"
@@ -3381,7 +3605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f7796e470510900070d4e3d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:49.015Z"
         }
       ],
       "language": "eng"
@@ -3396,7 +3621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f4d83e0a382c00007bc02e7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:49.268Z"
         }
       ],
       "language": "eng"
@@ -3411,7 +3637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-611f85396abc84000738417b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:49.376Z"
         }
       ],
       "language": "eng"
@@ -3426,7 +3653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-687ff00ff6bc08130f16ab81.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:49.663Z"
         }
       ],
       "language": "eng"
@@ -3441,7 +3669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/1139/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:49.669Z"
         }
       ],
       "language": "eng"
@@ -3456,7 +3685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/beverlyhills/G0072_006/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:50.054Z"
         }
       ],
       "language": "eng"
@@ -3471,7 +3701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/beverlyhills/G0072_007/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:50.447Z"
         }
       ],
       "language": "eng"
@@ -3486,7 +3717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6661f11a41af6400080e90d8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:50.941Z"
         }
       ],
       "language": "eng"
@@ -3501,7 +3733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-brookline-interactive-group.cablecast.tv/live-5/live/stream-2/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:52.445Z"
         }
       ],
       "language": "eng"
@@ -3516,7 +3749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-brookline-interactive-group.cablecast.tv/live-4/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:52.756Z"
         }
       ],
       "language": "eng"
@@ -3531,7 +3765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_BTN/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:53.358Z"
         }
       ],
       "language": "eng"
@@ -3546,7 +3781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bihor-tv.ro/hls/bihortv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:53.704Z"
         }
       ],
       "language": "ron"
@@ -3561,7 +3797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg19223-amg19223c11-amgplt0352.playout.now3.amagi.tv/playlist/amg19223-amg19223c11-amgplt0352/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:54.289Z"
         }
       ],
       "language": "eng"
@@ -3576,7 +3813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://videostack1.cdnstream1.com:1936/binge-tv/binge-tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:54.496Z"
         }
       ],
       "language": "eng"
@@ -3591,7 +3829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_154/205722-2251224-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:54.634Z"
         }
       ],
       "language": "eng"
@@ -3606,7 +3845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.bizzmedia.biz/bizz_tv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:54.899Z"
         }
       ],
       "language": "eng"
@@ -3621,7 +3861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-686d61503484d6073283059d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:54.984Z"
         }
       ],
       "language": "eng"
@@ -3636,7 +3877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d51e2bceca5b4b2c0e06c50.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:55.207Z"
         }
       ],
       "language": "eng"
@@ -3651,7 +3893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://blacknewschannel-xumo-us.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:55.527Z"
         }
       ],
       "language": "eng"
@@ -3666,7 +3909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e46fba0c43b0d00096e5ac1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:55.711Z"
         }
       ],
       "language": "eng"
@@ -3681,7 +3925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/qt.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:55.780Z"
         }
       ],
       "language": "eng"
@@ -3696,7 +3941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://86fdc85a.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfQmxvb21iZXJnT3JpZ2luYWxzX0hMUw/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:55.955Z"
         }
       ],
       "language": "eng"
@@ -3711,7 +3957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_BLOOMBERG/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:56.053Z"
         }
       ],
       "language": "eng"
@@ -3726,7 +3973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/asia.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:56.344Z"
         }
       ],
       "language": "eng"
@@ -3741,7 +3989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/asia-event.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:56.653Z"
         }
       ],
       "language": "eng"
@@ -3756,7 +4005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/aus.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:56.705Z"
         }
       ],
       "language": "eng"
@@ -3771,7 +4021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/eu-event.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:56.735Z"
         }
       ],
       "language": "eng"
@@ -3786,7 +4037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/eu.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:57.355Z"
         }
       ],
       "language": "eng"
@@ -3801,7 +4053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/us-event.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:57.474Z"
         }
       ],
       "language": "eng"
@@ -3816,7 +4069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bloomberg.com/media-manifest/streams/politics.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:57.791Z"
         }
       ],
       "language": "eng"
@@ -3831,7 +4085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/belmontmedia4/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:58.346Z"
         }
       ],
       "language": "eng"
@@ -3846,7 +4101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream2.bokradio.co.za/hls/Bok5c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:58.675Z"
         }
       ],
       "language": "eng"
@@ -3861,7 +4117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1dc21b9587d0007e3fc15.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:58.914Z"
         }
       ],
       "language": "eng"
@@ -3876,7 +4133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63c6a1c46d126a000760b91c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:59.220Z"
         }
       ],
       "language": "eng"
@@ -3891,7 +4149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63c6a27a4faf1c0007b48f7b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:59.516Z"
         }
       ],
       "language": "eng"
@@ -3906,7 +4165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/bollywood-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:34:59.955Z"
         }
       ],
       "language": "ron"
@@ -3921,7 +4181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bonappetit-samsung.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:00.294Z"
         }
       ],
       "language": "eng"
@@ -3936,7 +4197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68e9913c4a666b9054849832.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:00.559Z"
         }
       ],
       "language": "eng"
@@ -3951,7 +4213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-696e647b07ea70192d49f6a5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:00.710Z"
         }
       ],
       "language": "eng"
@@ -3966,7 +4229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660d67eec8311c0008b8c3f7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:00.972Z"
         }
       ],
       "language": "eng"
@@ -3981,7 +4245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660d66be7bcd8600087cfee5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:01.217Z"
         }
       ],
       "language": "eng"
@@ -3996,7 +4261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660d67c419ca71000849a4e9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:01.918Z"
         }
       ],
       "language": "eng"
@@ -4011,7 +4277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66166989635c7500084105a2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:01.985Z"
         }
       ],
       "language": "eng"
@@ -4026,7 +4293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvboom.ro/live-tv/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:02.398Z"
         }
       ],
       "language": "ron"
@@ -4041,7 +4309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.botflix.tv/radioo/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:02.676Z"
         }
       ],
       "language": "eng"
@@ -4056,7 +4325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.botflix.tv/tv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:02.802Z"
         }
       ],
       "language": "eng"
@@ -4071,7 +4341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_BOUNCE/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:03.246Z"
         }
       ],
       "language": "eng"
@@ -4086,7 +4357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-bouncexl-tablo/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:03.365Z"
         }
       ],
       "language": "eng"
@@ -4101,7 +4373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://buenapark.cablecast.tv/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:03.464Z"
         }
       ],
       "language": "eng"
@@ -4116,7 +4389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/04072b68-dc6a-4d5e-98af-f356ba8d5063/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:03.728Z"
         }
       ],
       "language": "eng"
@@ -4131,7 +4405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://41.205.93.154/BRAVO/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:04.399Z"
         }
       ],
       "language": "eng"
@@ -4146,7 +4421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/brevardfl/G2111_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:05.211Z"
         }
       ],
       "language": "eng"
@@ -4161,7 +4437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_013/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:06.105Z"
         }
       ],
       "language": "eng"
@@ -4176,7 +4453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.autopo.st/hls/britasiatv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:06.139Z"
         }
       ],
       "language": "eng"
@@ -4191,7 +4469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67a09e5921af38000808900a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:06.877Z"
         }
       ],
       "language": "eng"
@@ -4206,7 +4485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67a09ddc21af380008088dc3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:07.022Z"
         }
       ],
       "language": "eng"
@@ -4221,7 +4501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67a09e25c070cf00083c40fa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:07.215Z"
         }
       ],
       "language": "eng"
@@ -4236,7 +4517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/c95700f8-e51c-4a36-ad46-56f70fc9f1d9/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:07.353Z"
         }
       ],
       "language": "eng"
@@ -4251,7 +4533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65cba7b1ec452d0008acbed8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:07.657Z"
         }
       ],
       "language": "eng"
@@ -4266,7 +4549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65cba73611ced700082123bc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:07.756Z"
         }
       ],
       "language": "eng"
@@ -4281,7 +4565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65cba778ec452d0008acbe86.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:08.227Z"
         }
       ],
       "language": "eng"
@@ -4296,7 +4581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-685029cda1e091e16ff57fc8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:08.584Z"
         }
       ],
       "language": "eng"
@@ -4311,7 +4597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://emisja2.btb.j00r.us/iptv/session/4/hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:10.687Z"
         }
       ],
       "language": "eng"
@@ -4326,7 +4613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamfi-alphadgtl1.zettawiseroutes.com:8181/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:10.932Z"
         }
       ],
       "language": "eng"
@@ -4341,7 +4629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://www.bucovinatv.ro/proxy/video/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:10.987Z"
         }
       ],
       "language": "ron"
@@ -4356,7 +4645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.hydeinnovations.com/bukedde2flussonic/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:11.067Z"
         }
       ],
       "language": "eng"
@@ -4371,7 +4661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964b9e19bf57be1537fc7d7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:11.357Z"
         }
       ],
       "language": "eng"
@@ -4386,7 +4677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964b9b97d2afdec4f9390f6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:12.137Z"
         }
       ],
       "language": "eng"
@@ -4401,7 +4693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2220",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:12.869Z"
         }
       ],
       "language": "eng"
@@ -4416,7 +4709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdnapisec.kaltura.com/p/2184561/sp/218456100/playManifest/entryId/1_68qxw4eu/format/applehttp/a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:12.982Z"
         }
       ],
       "language": "eng"
@@ -4431,7 +4725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63c6a7544faf1c0007b496d7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:13.097Z"
         }
       ],
       "language": "eng"
@@ -4446,7 +4741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883099",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:13.533Z"
         }
       ],
       "language": "eng"
@@ -4461,7 +4757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_BUZZR/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:13.592Z"
         }
       ],
       "language": "eng"
@@ -4476,7 +4773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-stream-bronxnet.cablecast.tv/live-16/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:14.966Z"
         }
       ],
       "language": "eng"
@@ -4491,7 +4789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1k6kax80wecy5.cloudfront.net/RLnAKY/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:15.952Z"
         }
       ],
       "language": "eng"
@@ -4506,7 +4805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6960c5a906d76f50db2816dc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:16.582Z"
         }
       ],
       "language": "eng"
@@ -4521,7 +4821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cmc-cmctv-cineverse.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:16.862Z"
         }
       ],
       "language": "eng"
@@ -4536,7 +4837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-camerasmile/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:16.901Z"
         }
       ],
       "language": "eng"
@@ -4551,7 +4853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6400bf66dff38e00083f4ee8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:17.338Z"
         }
       ],
       "language": "eng"
@@ -4566,7 +4869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=269",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:17.965Z"
         }
       ],
       "language": "eng"
@@ -4581,7 +4885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cantv.streamguys1.com/cantv/cantv19hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:18.005Z"
         }
       ],
       "language": "eng"
@@ -4596,7 +4901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cantv.streamguys1.com/cantv/cantv21hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:18.988Z"
         }
       ],
       "language": "eng"
@@ -4611,7 +4917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cantv.streamguys1.com/cantv/cantv27hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:18.994Z"
         }
       ],
       "language": "eng"
@@ -4626,7 +4933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cantv.streamguys1.com/cantv/cantv36hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:19.104Z"
         }
       ],
       "language": "eng"
@@ -4641,7 +4949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5caf24a595d94.streamlock.net:1937/pvyugfkzkc/pvyugfkzkc/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:19.291Z"
         }
       ],
       "language": "eng"
@@ -4656,7 +4965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://digicom.hls.iptvdc.com/canalmotor/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:19.666Z"
         }
       ],
       "language": "eng"
@@ -4671,7 +4981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.freevisiontv.co.za/sttv/smil:ctv.stream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:19.683Z"
         }
       ],
       "language": "eng"
@@ -4686,7 +4997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://capitalcityconnection.cablecast.tv/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:19.737Z"
         }
       ],
       "language": "eng"
@@ -4701,7 +5013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://goliveafrica.media:9998/live/64227f58b8413/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:20.833Z"
         }
       ],
       "language": "eng"
@@ -4716,7 +5029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65a93b0607e03a000895abda.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.271Z"
         }
       ],
       "language": "eng"
@@ -4731,7 +5045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65244c403fd33c0008ffff31.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.331Z"
         }
       ],
       "language": "eng"
@@ -4746,7 +5061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://25466019af9b7aed.servers.dvcloud.tv/hls/iptv_providers/fhvtgifbqbcjp0g19mdd76t18tpalu4k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.363Z"
         }
       ],
       "language": "eng"
@@ -4761,7 +5077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66a7ab4dcd0d3100084395b4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.681Z"
         }
       ],
       "language": "eng"
@@ -4776,7 +5093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66a7aa44cd0d31000843942b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.762Z"
         }
       ],
       "language": "eng"
@@ -4791,7 +5109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66a7aac9d512590008ab2dcb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.778Z"
         }
       ],
       "language": "eng"
@@ -4806,7 +5125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/carstv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.793Z"
         }
       ],
       "language": "eng"
@@ -4821,7 +5141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vodzong.mjunoon.tv:8087/streamtest/cartoon-network-87/live/87H/chunks.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:21.951Z"
         }
       ],
       "language": "eng"
@@ -4836,7 +5157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn4.skygo.mn/live/disk1/Cartoon_Network/HLSv3-FTA/Cartoon_Network.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:22.214Z"
         }
       ],
       "language": "eng"
@@ -4851,7 +5173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.253.74.210:7070/stream/118/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:22.245Z"
         }
       ],
       "language": "eng"
@@ -4866,7 +5189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://cdn4.skygo.mn/live/disk1/Boomerang/HLSv3-FTA/Boomerang.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:22.710Z"
         }
       ],
       "language": "eng"
@@ -4881,7 +5205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://uni8rtmp.tulix.tv/cfntv/cfntv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:24.100Z"
         }
       ],
       "language": "eng"
@@ -4896,7 +5221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://catholictvhd-lh.akamaized.net/hls/live/2043390/CTVLiveHD/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:25.129Z"
         }
       ],
       "language": "eng"
@@ -4911,7 +5237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video2.getstreamhosting.com:19360/8216/8216.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:25.595Z"
         }
       ],
       "language": "eng"
@@ -4926,7 +5253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://1740288887.rsc.cdn77.org/1740288887/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:26.135Z"
         }
       ],
       "language": "eng"
@@ -4941,7 +5269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://92.114.85.87:8017/play/a004/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:26.148Z"
         }
       ],
       "language": "eng"
@@ -4956,7 +5285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastly.live.brightcove.com/6380399588112/us-east-1/734546207001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiczFpM3ZpLmVncmVzcy50N2M3emwiLCJhY2NvdW50X2lkIjoiNzM0NTQ2MjA3MDAxIiwiZWhuIjoiZmFzdGx5LmxpdmUuYnJpZ2h0Y292ZS5jb20iLCJpc3MiOiJibGl2ZS1wbGF5YmFjay1zb3VyY2UtYXBpIiwic3ViIjoicGF0aG1hcHRva2VuIiwiYXVkIjpbIjczNDU0NjIwNzAwMSJdLCJqdGkiOiI2MzgwMzk5NTg4MTEyIn0.LYfIeObmX4AEStY_xCnPZwMJHXgOAPFMTKfztq-9F8U/playlist-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:26.153Z"
         }
       ],
       "language": "eng"
@@ -4971,7 +5301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://59d39900ebfb8.streamlock.net/ccbn/ccbn/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:26.160Z"
         }
       ],
       "language": "eng"
@@ -4986,7 +5317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastly.live.brightcove.com/6380396819112/us-east-1/734546207001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiczFpM3ZpLmVncmVzcy50N2M3emwiLCJhY2NvdW50X2lkIjoiNzM0NTQ2MjA3MDAxIiwiZWhuIjoiZmFzdGx5LmxpdmUuYnJpZ2h0Y292ZS5jb20iLCJpc3MiOiJibGl2ZS1wbGF5YmFjay1zb3VyY2UtYXBpIiwic3ViIjoicGF0aG1hcHRva2VuIiwiYXVkIjpbIjczNDU0NjIwNzAwMSJdLCJqdGkiOiI2MzgwMzk2ODE5MTEyIn0.GDYp4IWtzwPkupEWeeOavnioVknO-Ev3UGlHvM1rE6I/playlist-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:26.175Z"
         }
       ],
       "language": "eng"
@@ -5001,7 +5333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5790d294af2dc.streamlock.net/CBNVI/CBNVI/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:26.186Z"
         }
       ],
       "language": "eng"
@@ -5016,7 +5349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fuel-streaming-prod01.fuelmedia.io/v1/sem/e48409e7-672d-42f2-b5e0-ebb6744b0425.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:27.691Z"
         }
       ],
       "language": "eng"
@@ -5031,7 +5365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/d1f868588ae5476dadaeff450170a183.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:27.704Z"
         }
       ],
       "language": "eng"
@@ -5046,7 +5381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lineup.cbsivideo.com/playout/8877a7d5-b094-4ac8-bc72-75a5fed68e5b/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:29.335Z"
         }
       ],
       "language": "eng"
@@ -5061,7 +5397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cbsn-mia.cbsnstream.cbsnews.com/out/v1/ac174b7938264d24ae27e56f6584bca0/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:31.303Z"
         }
       ],
       "language": "eng"
@@ -5076,7 +5413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lineup.cbsivideo.com/playout/c1ed69db-6b71-4581-a937-a70ab4089f8a/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:32.263Z"
         }
       ],
       "language": "eng"
@@ -5091,7 +5429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e9f2c05172a0f0007db4786.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:33.093Z"
         }
       ],
       "language": "eng"
@@ -5106,7 +5445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://townnews.g-mana.live/media/4efc62fa-ad0b-445c-a839-4d1e7636988e/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:27.977Z"
         }
       ],
       "language": "eng"
@@ -5121,7 +5461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://townnews.g-mana.live/media/a54a6409-5e91-46f0-9fee-06904c1fd094/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:28.295Z"
         }
       ],
       "language": "eng"
@@ -5136,7 +5477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/d8fc1d6c-fd55-45c8-973b-b7327ee1a6e0/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:28.774Z"
         }
       ],
       "language": "eng"
@@ -5151,7 +5493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cHYzekYzM2kvTVFH/charlotte/G0055_009/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:33.159Z"
         }
       ],
       "language": "eng"
@@ -5166,7 +5509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://74.91.26.218:82/live/cctv4hd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:33.569Z"
         }
       ],
       "language": "eng"
@@ -5181,7 +5525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash2.antik.sk/live/test_cctv_tizen/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:33.761Z"
         }
       ],
       "language": "eng"
@@ -5196,7 +5541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://reflect-ccx.cablecast.tv/live-9/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:33.806Z"
         }
       ],
       "language": "eng"
@@ -5211,7 +5557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-celebrityscene/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.103Z"
         }
       ],
       "language": "eng"
@@ -5226,7 +5573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/cerritos/G0010_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.110Z"
         }
       ],
       "language": "eng"
@@ -5241,7 +5589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/djRwZmQvTEJidmZD/cityftmyers/G2083_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.152Z"
         }
       ],
       "language": "eng"
@@ -5256,7 +5605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00405-rakutentv-cgtn-rakuten-i9tar.amagi.tv/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.168Z"
         }
       ],
       "language": "eng"
@@ -5271,7 +5621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00405-rakutentv-cgtndocumentary-rakuten-0ql8j.amagi.tv/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.266Z"
         }
       ],
       "language": "eng"
@@ -5286,7 +5637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastlive.cctvplus.com/out/v1/2b3d8a0c805d437f9dc85b764c2ac599/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.375Z"
         }
       ],
       "language": "eng"
@@ -5301,7 +5653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://champaign-cablecast.cablecast.tv/live/stream-2/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.679Z"
         }
       ],
       "language": "eng"
@@ -5316,7 +5669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cFh0V0QwUVc4SDl2/santa-paula/G0930_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:35.976Z"
         }
       ],
       "language": "eng"
@@ -5331,7 +5685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-channel18vod-springfield-il-us.cablecast.tv/live-13/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:35.988Z"
         }
       ],
       "language": "eng"
@@ -5346,7 +5701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1k6kax80wecy5.cloudfront.net/WFqZJc/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:36.182Z"
         }
       ],
       "language": "eng"
@@ -5361,7 +5717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.qd.je/163189/ch5",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:34.943Z"
         }
       ],
       "language": "eng"
@@ -5376,7 +5733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/channels.stream/live-orgin/channels.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:36.211Z"
         }
       ],
       "language": "eng"
@@ -5391,7 +5749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/chsukoff.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:36.273Z"
         }
       ],
       "language": "eng"
@@ -5406,7 +5765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.qd.je/163189/chu",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:36.345Z"
         }
       ],
       "language": "eng"
@@ -5421,7 +5781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e9783b0d456100082d9e05.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:36.690Z"
         }
       ],
       "language": "eng"
@@ -5436,7 +5797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e976ad0d456100082d9b74.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:36.784Z"
         }
       ],
       "language": "eng"
@@ -5451,7 +5813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e977a618036500082ec972.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:37.061Z"
         }
       ],
       "language": "eng"
@@ -5466,7 +5829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fast-channels.sinclairstoryline.com/CHARGE/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:37.262Z"
         }
       ],
       "language": "eng"
@@ -5481,7 +5845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1dda0fe470d00080f85b8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:37.733Z"
         }
       ],
       "language": "eng"
@@ -5496,7 +5861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.livecdn.io/cheddar.com/cheddar/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:37.850Z"
         }
       ],
       "language": "eng"
@@ -5511,7 +5877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63e389dcc111bc0008ee5b8c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:37.904Z"
         }
       ],
       "language": "eng"
@@ -5526,7 +5893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdb7f0db2eb30007376d4d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:37.942Z"
         }
       ],
       "language": "eng"
@@ -5541,7 +5909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66ba495ffe11e5000881f049.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:38.340Z"
         }
       ],
       "language": "eng"
@@ -5556,7 +5925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-chefchampion/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:38.476Z"
         }
       ],
       "language": "eng"
@@ -5571,7 +5941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-chefrock/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:38.536Z"
         }
       ],
       "language": "eng"
@@ -5586,7 +5957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch5/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:38.672Z"
         }
       ],
       "language": "ron"
@@ -5601,7 +5973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_aws4_sdi13/live2_aws4_sdi13.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:38.913Z"
         }
       ],
       "language": "ron"
@@ -5616,7 +5989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_aws4_sdi13/live2_aws4_sdi13_5000k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:39.093Z"
         }
       ],
       "language": "eng+ron"
@@ -5631,7 +6005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/399/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:39.392Z"
         }
       ],
       "language": "eng"
@@ -5646,7 +6021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://v2.tustreaming.cl/chilechannel/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:39.407Z"
         }
       ],
       "language": "eng"
@@ -5661,7 +6037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastlive.cctvplus.com/out/v1/ca6f9297b7314a63959435028af287fc/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:39.888Z"
         }
       ],
       "language": "eng"
@@ -5676,7 +6053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-11.frequency.stream/dist/glewedtv/11/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:40.010Z"
         }
       ],
       "language": "eng"
@@ -5691,7 +6069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_024/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:40.071Z"
         }
       ],
       "language": "eng"
@@ -5706,7 +6085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media3.smc-host.com:1935/cycnow.com/smil:cyc.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:40.232Z"
         }
       ],
       "language": "eng"
@@ -5721,7 +6101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cc-hqw8u5r1nshjc.akamaized.net/scheduler/scheduleMaster/352.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:40.630Z"
         }
       ],
       "language": "eng"
@@ -5736,7 +6117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60fb2f47c133270007327375.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:41.016Z"
         }
       ],
       "language": "eng"
@@ -5751,7 +6133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5cf96b1c4f1ca3f0629f4bf0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:41.260Z"
         }
       ],
       "language": "eng"
@@ -5766,7 +6149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1si3n1st4nkgb.cloudfront.net/10502/88886011/hls/master.m3u8?ads.xumo_channelId=88886011",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:41.849Z"
         }
       ],
       "language": "eng"
@@ -5781,7 +6165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/cinemaraton-plus-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:42.668Z"
         }
       ],
       "language": "ron"
@@ -5796,7 +6181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_CINEMAX_WEST/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:42.883Z"
         }
       ],
       "language": "eng"
@@ -5811,7 +6197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_5STARMAX/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:44.274Z"
         }
       ],
       "language": "eng"
@@ -5826,7 +6213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_MOREMAX/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:44.315Z"
         }
       ],
       "language": "eng"
@@ -5841,7 +6229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://gsn-cinevault-westerns-2-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:45.107Z"
         }
       ],
       "language": "eng"
@@ -5856,7 +6245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/cinewow-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:45.316Z"
         }
       ],
       "language": "ron"
@@ -5871,7 +6261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://circle-roku.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:45.526Z"
         }
       ],
       "language": "eng"
@@ -5886,7 +6277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/fortpiercefl/live-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:45.704Z"
         }
       ],
       "language": "eng"
@@ -5901,7 +6293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-monroe-mi-ci.cablecast.tv/live-1/live/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:46.306Z"
         }
       ],
       "language": "eng"
@@ -5916,7 +6309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/pompano/G0765_005/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:46.354Z"
         }
       ],
       "language": "eng"
@@ -5931,7 +6325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/carlsbadca/live-3-a-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:47.038Z"
         }
       ],
       "language": "eng"
@@ -5946,7 +6341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/chinohillsca/live-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:47.559Z"
         }
       ],
       "language": "eng"
@@ -5961,7 +6357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://citynewsregional.akamaized.net/hls/live/1024053/Regional_Live_8/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:48.320Z"
         }
       ],
       "language": "eng"
@@ -5976,7 +6373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://citynewsregional.akamaized.net/hls/live/1024053/Regional_Live_8/Video-2Mbps.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:48.506Z"
         }
       ],
       "language": "eng"
@@ -5991,7 +6389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://citynewsregional.akamaized.net/hls/live/1024052/Regional_Live_7/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:48.769Z"
         }
       ],
       "language": "eng"
@@ -6006,7 +6405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://citynewsregional.akamaized.net/hls/live/1024054/Regional_Live_9/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:48.848Z"
         }
       ],
       "language": "eng"
@@ -6021,7 +6421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/bGZUOHp2TnhudnM2/santamonica/G0039_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:49.342Z"
         }
       ],
       "language": "eng"
@@ -6036,7 +6437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/sandiego/G1826_005/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:49.506Z"
         }
       ],
       "language": "eng"
@@ -6051,7 +6453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://whittier.cablecast.tv/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:49.690Z"
         }
       ],
       "language": "eng"
@@ -6066,7 +6469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://videostream.jpbgdigital.com/NOWTV.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:50.847Z"
         }
       ],
       "language": "eng"
@@ -6081,7 +6485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://classicarts.akamaized.net/hls/live/1024257/CAS/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:51.345Z"
         }
       ],
       "language": "eng"
@@ -6096,7 +6501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-classiccinema/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:51.432Z"
         }
       ],
       "language": "eng"
@@ -6111,7 +6517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-561c5b0dada51f8004c4d855.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:51.551Z"
         }
       ],
       "language": "eng"
@@ -6126,7 +6533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f15e32b297f96000768f928.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:51.566Z"
         }
       ],
       "language": "eng"
@@ -6141,7 +6549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61325c4f982acd000723287e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:51.837Z"
         }
       ],
       "language": "eng"
@@ -6156,7 +6565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f15e3cccf49290007053c67.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:52.059Z"
         }
       ],
       "language": "eng"
@@ -6171,7 +6581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61325d18f5166c00081b84e0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:52.502Z"
         }
       ],
       "language": "eng"
@@ -6186,7 +6597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e91af00c43540007f2bb43.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:52.509Z"
         }
       ],
       "language": "eng"
@@ -6201,7 +6613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f779951372da90007fd45e8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:52.515Z"
         }
       ],
       "language": "eng"
@@ -6216,7 +6629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cloudflare.tv/hls/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:53.037Z"
         }
       ],
       "language": "eng"
@@ -6231,7 +6645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live3/clubbingtv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:53.642Z"
         }
       ],
       "language": "eng"
@@ -6246,7 +6661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-vod-cmac.cablecast.tv/live-11/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:53.718Z"
         }
       ],
       "language": "eng"
@@ -6261,7 +6677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-vod-cmac.cablecast.tv/live-11/live/stream-2/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:53.923Z"
         }
       ],
       "language": "eng"
@@ -6276,7 +6693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-vod-cmac.cablecast.tv/live-11/live/stream-3/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:54.335Z"
         }
       ],
       "language": "eng"
@@ -6291,7 +6709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/cmap1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:54.502Z"
         }
       ],
       "language": "eng"
@@ -6306,7 +6725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/cmap3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:54.690Z"
         }
       ],
       "language": "eng"
@@ -6321,7 +6741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/cmap4/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:54.869Z"
         }
       ],
       "language": "eng"
@@ -6336,7 +6757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/cmap5/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:55.025Z"
         }
       ],
       "language": "eng"
@@ -6351,7 +6773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hwlive.streamingmediahosting.com/14215-live/0_obd393sh/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:55.269Z"
         }
       ],
       "language": "eng"
@@ -6366,7 +6789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_CMT/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:55.742Z"
         }
       ],
       "language": "eng"
@@ -6381,7 +6805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f68f53eb1e5800007390bf8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:55.769Z"
         }
       ],
       "language": "eng"
@@ -6396,7 +6821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/costamesa/G0075_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:57.082Z"
         }
       ],
       "language": "eng"
@@ -6411,7 +6837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:57.711Z"
         }
       ],
       "language": "eng"
@@ -6426,7 +6853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=112",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:57.742Z"
         }
       ],
       "language": "eng"
@@ -6441,7 +6869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01082-cna-amg01082c1-rlaxx-us-11304.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:57.829Z"
         }
       ],
       "language": "eng"
@@ -6456,7 +6885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=9855",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:57.994Z"
         }
       ],
       "language": "eng"
@@ -6471,7 +6901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn4.skygo.mn/live/disk1/CNBC/HLSv3-FTA/CNBC.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:58.300Z"
         }
       ],
       "language": "eng"
@@ -6486,7 +6917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01079-nbcuuk-amg01079c2-samsung-gb-1258.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:58.414Z"
         }
       ],
       "language": "eng"
@@ -6501,7 +6933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/cnn/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:58.869Z"
         }
       ],
       "language": "eng"
@@ -6516,7 +6949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3bp6dwmpbdajl.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-ury0meh5m4nzm/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:59.387Z"
         }
       ],
       "language": "eng"
@@ -6531,7 +6965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://168.228.44.241:9997/play/a073/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:59.394Z"
         }
       ],
       "language": "eng"
@@ -6546,7 +6981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d2sybdl23b9psq.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-bocx3i7bjz0dg/CNNFAST_GB.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:59.485Z"
         }
       ],
       "language": "eng"
@@ -6561,7 +6997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.253.74.210:7070/stream/115/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:35:59.976Z"
         }
       ],
       "language": "eng"
@@ -6576,7 +7013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/1e764712-0649-4946-bd7e-f1bbba3be6fa/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:00.488Z"
         }
       ],
       "language": "eng"
@@ -6591,7 +7029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.streamnet.pro/columnatv/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:01.241Z"
         }
       ],
       "language": "ron"
@@ -6606,7 +7045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0b550e0d3a700072b6a2a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:01.247Z"
         }
       ],
       "language": "eng"
@@ -6621,7 +7061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64f8a408bd341e000818fcda.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:01.542Z"
         }
       ],
       "language": "eng"
@@ -6636,7 +7077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64f8a949f5b5e4000862467c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:01.618Z"
         }
       ],
       "language": "eng"
@@ -6651,7 +7093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ca671f215a62078d2ec0abf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:02.240Z"
         }
       ],
       "language": "eng"
@@ -6666,7 +7109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6641fd41b18d700008e7e2b8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:02.284Z"
         }
       ],
       "language": "eng"
@@ -6681,7 +7125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.antenaplay.ro/live/ComedyPlay/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:03.085Z"
         }
       ],
       "language": "ron"
@@ -6696,7 +7141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/comedytv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:03.114Z"
         }
       ],
       "language": "eng"
@@ -6711,7 +7157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fast-channels.sinclairstoryline.com/COMET/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:03.161Z"
         }
       ],
       "language": "eng"
@@ -6726,7 +7173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-tacm.cablecast.tv/live-3/live/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:04.045Z"
         }
       ],
       "language": "eng"
@@ -6741,7 +7189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://concordca.cablecast.tv/live/stream-2/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:04.762Z"
         }
       ],
       "language": "eng"
@@ -6756,7 +7205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_COOKING/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:05.045Z"
         }
       ],
       "language": "eng"
@@ -6771,7 +7221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=46",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:05.182Z"
         }
       ],
       "language": "eng"
@@ -6786,7 +7237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live2.tensila.com/cool-v-1.arubara/hls/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:05.504Z"
         }
       ],
       "language": "eng"
@@ -6801,7 +7253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.themediacdn.com/pl_122/206280-3059514-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:05.801Z"
         }
       ],
       "language": "eng"
@@ -6816,7 +7269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://irctv.cablecast.tv/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:05.894Z"
         }
       ],
       "language": "eng"
@@ -6831,7 +7285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_019/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:06.166Z"
         }
       ],
       "language": "eng"
@@ -6846,7 +7301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/cp24/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:06.930Z"
         }
       ],
       "language": "eng"
@@ -6861,7 +7317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693ae5b792fad2e93412a2c7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:07.053Z"
         }
       ],
       "language": "eng"
@@ -6876,7 +7333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://create.lls.pbs.org/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:07.408Z"
         }
       ],
       "language": "eng"
@@ -6891,7 +7349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/amlst:201814-2122456/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:07.537Z"
         }
       ],
       "language": "eng"
@@ -6906,7 +7365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://651c69fa2ff4e.streamlock.net/ctv/_definst_/livecredo/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:08.190Z"
         }
       ],
       "language": "ron"
@@ -6921,7 +7381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams2.sofast.tv/ptnr-yupptv/title-cricketgold/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/b2048bb8-1686-4432-aa50-647245383e0c/manifest.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:08.293Z"
         }
       ],
       "language": "eng"
@@ -6936,7 +7397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_CRIME_INVESTIGATION/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:08.357Z"
         }
       ],
       "language": "eng"
@@ -6951,7 +7413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e94cd036cc69d0007e8a1ba.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:08.814Z"
         }
       ],
       "language": "eng"
@@ -6966,7 +7429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://10gb1.acangroup.org:1929/crtv/crtv_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:08.852Z"
         }
       ],
       "language": "eng"
@@ -6981,7 +7445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media.smc-host.com:1935/csat.tv/smil:csat.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:10.810Z"
         }
       ],
       "language": "eng"
@@ -6996,7 +7461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-632b606e12a67b0007c9e371.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:13.947Z"
         }
       ],
       "language": "eng"
@@ -7011,7 +7477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3k5y954fiztgy.cloudfront.net/FREECAST/CTN-2b0dd347-f7b0-e7ed-9096-68966d29db50/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:18.749Z"
         }
       ],
       "language": "eng"
@@ -7026,7 +7493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/calabasas/G0009_003/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:25.161Z"
         }
       ],
       "language": "eng"
@@ -7041,7 +7509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/425/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:27.298Z"
         }
       ],
       "language": "eng"
@@ -7056,7 +7525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/cvtv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:27.367Z"
         }
       ],
       "language": "eng"
@@ -7071,7 +7541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/cvtv1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:27.375Z"
         }
       ],
       "language": "eng"
@@ -7086,7 +7557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream-us-east-edge-2.granicusops.com/live/cypressca/live-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:27.379Z"
         }
       ],
       "language": "eng"
@@ -7101,7 +7573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vmttv.dpdns.org/tv360?id=davinci-hd",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:27.736Z"
         }
       ],
       "language": "eng"
@@ -7116,7 +7589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64e77016324d190008291c13.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:31.126Z"
         }
       ],
       "language": "eng"
@@ -7131,7 +7605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://dancehits80.denvs.ru:8080/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:31.267Z"
         }
       ],
       "language": "eng"
@@ -7146,7 +7621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://m2b2.worldcast.tv:7443/dancetelevisionfour/dancetelevisionfour.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:31.830Z"
         }
       ],
       "language": "eng"
@@ -7161,7 +7637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://m1b2.worldcast.tv/dancetelevisiontwo/dancetelevisiontwo.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:32.124Z"
         }
       ],
       "language": "eng"
@@ -7176,7 +7653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://m2b2.worldcast.tv:7443/dancetelevisionfive/dancetelevisionfive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:32.406Z"
         }
       ],
       "language": "eng"
@@ -7191,7 +7669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://m2b2.worldcast.tv:7443/dancetelevisionthree/dancetelevisionthree.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:32.656Z"
         }
       ],
       "language": "eng"
@@ -7206,7 +7685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3abn.bozztv.com/3abn2/d2d_live/smil:d2d_live.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:32.873Z"
         }
       ],
       "language": "eng"
@@ -7221,7 +7701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tricoast-tv-dark-matter-01-us.ono.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:32.907Z"
         }
       ],
       "language": "eng"
@@ -7236,7 +7717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1si3n1st4nkgb.cloudfront.net/10502/88896029/hls/master.m3u8?ads.xumo_channelId=88896029",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:33.359Z"
         }
       ],
       "language": "eng"
@@ -7251,7 +7733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-651f239d9c7aeb0008286823.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:33.710Z"
         }
       ],
       "language": "eng"
@@ -7266,7 +7749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-692edd6bdb8695f63e14f3b9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:34.235Z"
         }
       ],
       "language": "eng"
@@ -7281,7 +7765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-692edc78d52ea9e4858cf78f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:34.255Z"
         }
       ],
       "language": "eng"
@@ -7296,7 +7781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-692edcff77f0147d69f19498.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:34.327Z"
         }
       ],
       "language": "eng"
@@ -7311,7 +7797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-mcl.cdn01.net/smarttv/48vy43564/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:34.471Z"
         }
       ],
       "language": "eng"
@@ -7326,7 +7813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/1992858a34c3423dbdad491d07ae6f75.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:34.706Z"
         }
       ],
       "language": "eng"
@@ -7341,7 +7829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64d626ac9b414d000820e2fc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:35.251Z"
         }
       ],
       "language": "eng"
@@ -7356,7 +7845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.dbstvstlucia.com/hls/dbstv_main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:35.574Z"
         }
       ],
       "language": "eng"
@@ -7371,7 +7861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video.oct.dc.gov/out/u/97_12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:35.672Z"
         }
       ],
       "language": "eng"
@@ -7386,7 +7877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video.oct.dc.gov/out/u/15_12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:35.695Z"
         }
       ],
       "language": "eng"
@@ -7401,7 +7893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d40855b3fb0855028c99b6f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:35.867Z"
         }
       ],
       "language": "eng"
@@ -7416,7 +7909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fta.ektv.in/live/119/119_0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:36.364Z"
         }
       ],
       "language": "eng"
@@ -7431,7 +7925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/4f81bc8d13dd49b484da35988abb8729/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:36.478Z"
         }
       ],
       "language": "eng"
@@ -7446,7 +7941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/1161/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:37.455Z"
         }
       ],
       "language": "eng"
@@ -7461,7 +7957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/8/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:37.605Z"
         }
       ],
       "language": "eng"
@@ -7476,7 +7973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1mgh147xpmgs8.cloudfront.net/DeadlyWomen_GB.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:37.994Z"
         }
       ],
       "language": "eng"
@@ -7491,7 +7989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00627-banijaygroup-dealornodeal-samsungau-si7xg.amagi.tv/playlist/amg00627-banijaygroup-dealornodeal-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:38.025Z"
         }
       ],
       "language": "eng"
@@ -7506,7 +8005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01529-defiancetv-defiancemedia-glewed-tre8x.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:38.206Z"
         }
       ],
       "language": "eng"
@@ -7521,7 +8021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66b22714d512590008c3d573.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:38.984Z"
         }
       ],
       "language": "eng"
@@ -7536,7 +8037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/bGZUOHp2TnhudnM2/denver/G0080_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:39.016Z"
         }
       ],
       "language": "eng"
@@ -7551,7 +8053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch4/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:39.079Z"
         }
       ],
       "language": "ron"
@@ -7566,7 +8069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.berosat.live/hls/der-tv/der-tv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:39.134Z"
         }
       ],
       "language": "eng"
@@ -7581,7 +8085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/derrynh1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:39.625Z"
         }
       ],
       "language": "eng"
@@ -7596,7 +8101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/derrynh2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:39.653Z"
         }
       ],
       "language": "eng"
@@ -7611,7 +8117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_DESTINATION_AMERICA/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:39.981Z"
         }
       ],
       "language": "eng"
@@ -7626,7 +8133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-detroit-vod.cablecast.tv/live-2/live/stream-6/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:40.241Z"
         }
       ],
       "language": "eng"
@@ -7641,7 +8149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-detroit-vod.cablecast.tv/live-9/live/stream-4/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:40.525Z"
         }
       ],
       "language": "eng"
@@ -7656,7 +8165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-detroit-vod.cablecast.tv/live-3/live/stream-3/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:40.567Z"
         }
       ],
       "language": "eng"
@@ -7671,7 +8181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-detroit-vod.cablecast.tv/live-10/live/stream-5/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:41.367Z"
         }
       ],
       "language": "eng"
@@ -7686,7 +8197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mdn.dg.church/683c0cb036885-1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:41.437Z"
         }
       ],
       "language": "eng"
@@ -7701,7 +8213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mdn.dg.church/673ac57a073a4-1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:41.470Z"
         }
       ],
       "language": "eng"
@@ -7716,7 +8229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://603c568fccdf5.streamlock.net/live/dhaweb1_C5efC/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:42.206Z"
         }
       ],
       "language": "eng"
@@ -7731,7 +8245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-668bf9be0642e5000815102d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:42.780Z"
         }
       ],
       "language": "eng"
@@ -7746,7 +8261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-668bf7dd74f5ec000817e6d1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:43.467Z"
         }
       ],
       "language": "eng"
@@ -7761,7 +8277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-668bf91208d5490008065ffd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:43.675Z"
         }
       ],
       "language": "eng"
@@ -7776,7 +8293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-ar.rcs-rds.ro/digi24ar/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:43.834Z"
         }
       ],
       "language": "ron"
@@ -7791,7 +8309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ghaasiflu.online/Dijlah/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:44.141Z"
         }
       ],
       "language": "eng"
@@ -7806,7 +8325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vs2129.vcdn.biz/781da550c3e711e56f17de33318050f9_megogo/live/hls/b/700_2490_4000/u_sid/0/o/183395021/rsid/39f910cb-e9d4-46a0-b2fb-a12bfc104baf/u_uid/2260062697/u_vod/0/u_device/cms_html5/u_devicekey/_site/lip/81.196.174.41*asn/u_srvc/109126/u_did/web_c02d0d195494991ada83b5ae2a2f87d6041c11b1b8f79fc86ae5b7b557894fa0/type.live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:44.147Z"
         }
       ],
       "language": "eng+ron"
@@ -7821,7 +8341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastlive.cctvplus.com/out/v1/8442c3bfd4c64a3984389328f6087879/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:44.165Z"
         }
       ],
       "language": "eng"
@@ -7836,7 +8357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://92.180.26.103/stream/28/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:44.443Z"
         }
       ],
       "language": "ron"
@@ -7851,7 +8373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://45.171.64.30:6060/play/a032/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:44.810Z"
         }
       ],
       "language": "eng"
@@ -7866,7 +8389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://41.205.93.154/ESPNNEWS/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:45.312Z"
         }
       ],
       "language": "eng"
@@ -7881,7 +8405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://4.30.180.36:8420/disneychannel/index.m3u8?token=test",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:45.865Z"
         }
       ],
       "language": "eng"
@@ -7896,7 +8421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video.oct.dc.gov/out/u/DCN.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:46.135Z"
         }
       ],
       "language": "eng"
@@ -7911,7 +8437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://15.204.142.109:22880/TELEVISA-PROVEEDOR-DISTRITO-COMEDIA/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:46.199Z"
         }
       ],
       "language": "eng"
@@ -7926,7 +8453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video.oct.dc.gov/out/u/DKN.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:46.570Z"
         }
       ],
       "language": "eng"
@@ -7941,7 +8469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv01.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:46.605Z"
         }
       ],
       "language": "eng"
@@ -7956,7 +8485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv10.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:48.727Z"
         }
       ],
       "language": "eng"
@@ -7971,7 +8501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv11.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:48.732Z"
         }
       ],
       "language": "eng"
@@ -7986,7 +8517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:49.174Z"
         }
       ],
       "language": "eng"
@@ -8001,7 +8533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv13.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:50.455Z"
         }
       ],
       "language": "eng"
@@ -8016,7 +8549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv14.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:50.663Z"
         }
       ],
       "language": "eng"
@@ -8031,7 +8565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv15.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:50.878Z"
         }
       ],
       "language": "eng"
@@ -8046,7 +8581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv02.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:46.661Z"
         }
       ],
       "language": "eng"
@@ -8061,7 +8597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv03.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:46.715Z"
         }
       ],
       "language": "eng"
@@ -8076,7 +8613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv04.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:47.171Z"
         }
       ],
       "language": "eng"
@@ -8091,7 +8629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv05.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:47.677Z"
         }
       ],
       "language": "eng"
@@ -8106,7 +8645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv06.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:47.723Z"
         }
       ],
       "language": "eng"
@@ -8121,7 +8661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv07.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:47.871Z"
         }
       ],
       "language": "eng"
@@ -8136,7 +8677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv08.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:47.933Z"
         }
       ],
       "language": "eng"
@@ -8151,7 +8693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-live.dltv.ac.th/dltv09.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:48.391Z"
         }
       ],
       "language": "eng"
@@ -8166,7 +8709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streaming.aurora.enhanced.live/live/mpc/enl0eG1mLmVncmVzcy5mZDJ2eHI=/out/v1/IT_SIMULCAST/DMAX/CMAF/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:50.916Z"
         }
       ],
       "language": "eng"
@@ -8181,7 +8725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://102.129.186.182:81/dmax/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:51.057Z"
         }
       ],
       "language": "eng"
@@ -8196,7 +8741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bbc-classicdrwho-1-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:51.884Z"
         }
       ],
       "language": "eng"
@@ -8211,7 +8757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash3.antik.sk/live/test_docubox_medium_atk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:52.686Z"
         }
       ],
       "language": "eng"
@@ -8226,7 +8773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ef79b15c8c7c46c7a9de9d33001dbd07.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-859-DOCUMENTARYPLUS-DOCUMENTARYPLUS/mt/documentaryplus/859/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:53.208Z"
         }
       ],
       "language": "eng"
@@ -8241,7 +8789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/ff0ad399-75ed-42ba-8c60-75bb6cb8c929/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:53.594Z"
         }
       ],
       "language": "eng"
@@ -8256,7 +8805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00276-amg00276c11-rakuten-uk-3446.playouts.now.amagi.tv/playlist/amg00276-aetelevisionnetworksfast-dogthebountyhunterall-rakutenuk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:53.601Z"
         }
       ],
       "language": "eng"
@@ -8271,7 +8821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.dottotv.ro/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:54.101Z"
         }
       ],
       "language": "ron"
@@ -8286,7 +8837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-896.frequency.stream/dist/cineverse/896/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:54.133Z"
         }
       ],
       "language": "eng"
@@ -8301,7 +8853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://na.linear.zype.com/e0bd0e23-a958-4e43-8164-4f2fef8876a8/fd3614bd-90bf-4530-a277-65ae3a1720c8-zype/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:55.451Z"
         }
       ],
       "language": "eng"
@@ -8316,7 +8869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamfi-dreamtv1.zettawiseroutes.com:8181/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:55.500Z"
         }
       ],
       "language": "eng"
@@ -8331,7 +8885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://drybar-drybarcomedy-1-au.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:55.632Z"
         }
       ],
       "language": "eng"
@@ -8346,7 +8901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://main.duckhunting.playout.vju.tv/duckhuntingtv/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:56.397Z"
         }
       ],
       "language": "eng"
@@ -8361,7 +8917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/stvp-ESBC4700001GR",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:56.603Z"
         }
       ],
       "language": "eng"
@@ -8376,7 +8933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash3.antik.sk/live/duck_tv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:56.754Z"
         }
       ],
       "language": "eng"
@@ -8391,7 +8949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ukintl.dunyanews.tv/liveuk/ngrp:dunyalive_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:57.332Z"
         }
       ],
       "language": "eng"
@@ -8406,7 +8965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_E/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:58.565Z"
         }
       ],
       "language": "eng"
@@ -8421,7 +8981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.eac-news.com/LiveApp/streams/eacnews.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:36:58.704Z"
         }
       ],
       "language": "eng"
@@ -8436,7 +8997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ebsonair.ebs.co.kr/plus3familypc/familypc1m/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:00.792Z"
         }
       ],
       "language": "eng"
@@ -8451,7 +9013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/ebstv/ebstv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:00.071Z"
         }
       ],
       "language": "eng"
@@ -8466,7 +9029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ebsonair.ebs.co.kr/plus2familypc/familypc1m/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:00.879Z"
         }
       ],
       "language": "eng"
@@ -8481,7 +9045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://eu.streamjo.com/eetlive/eettv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:01.275Z"
         }
       ],
       "language": "eng"
@@ -8496,7 +9061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-1066.frequency.stream/dist/stirr/1066/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.015Z"
         }
       ],
       "language": "eng"
@@ -8511,7 +9077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/emi-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.286Z"
         }
       ],
       "language": "ron"
@@ -8526,7 +9093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sincerecloud.stream/loadbalancer/public/actMdyoE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.366Z"
         }
       ],
       "language": "eng"
@@ -8541,7 +9109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream8.cinerama.uz/1442/tracks-v1a1/mono.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.640Z"
         }
       ],
       "language": "eng"
@@ -8556,7 +9125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://45.5.117.57:8999/play/a01c/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.794Z"
         }
       ],
       "language": "eng"
@@ -8571,7 +9141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://enterbcef94b.airspace-cdn.cbsivideo.com/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.878Z"
         }
       ],
       "language": "eng"
@@ -8586,7 +9157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2506",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:02.952Z"
         }
       ],
       "language": "eng"
@@ -8601,7 +9173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmc-live.ercdn.net/eritreatv/eritreatv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:03.246Z"
         }
       ],
       "language": "eng"
@@ -8616,7 +9189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/estv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:03.285Z"
         }
       ],
       "language": "eng"
@@ -8631,7 +9205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://85.237.89.160:9590/usa-s/ESPN-HD/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:04.468Z"
         }
       ],
       "language": "eng"
@@ -8646,7 +9221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://85.237.89.160:9590/usa-s/ESPN-2-HD/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:04.026Z"
         }
       ],
       "language": "eng"
@@ -8661,7 +9237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://85.237.89.160:9590/usa-s/ESPN-U-HD/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:04.768Z"
         }
       ],
       "language": "eng"
@@ -8676,7 +9253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/etno-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:05.044Z"
         }
       ],
       "language": "ron"
@@ -8691,7 +9269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61de96114757070008d33cae.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:05.199Z"
         }
       ],
       "language": "eng"
@@ -8706,7 +9285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash4.antik.sk/live/test_euronews/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:05.379Z"
         }
       ],
       "language": "eng"
@@ -8721,7 +9301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/euronews-ro-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:05.452Z"
         }
       ],
       "language": "ron"
@@ -8736,7 +9317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.253.74.210:7070/stream/122/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:05.724Z"
         }
       ],
       "language": "eng"
@@ -8751,7 +9333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1de93244e500007581d69.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:05.993Z"
         }
       ],
       "language": "eng"
@@ -8766,7 +9349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-697b5be36dc3c71eb14d728a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:06.022Z"
         }
       ],
       "language": "eng"
@@ -8781,7 +9365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-697b5a6c9567bf7b5f71a350.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:06.277Z"
         }
       ],
       "language": "eng"
@@ -8796,7 +9381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/1/ZVBYYXFLLzE0c3NC/Qk1FMURC/hls/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:06.576Z"
         }
       ],
       "language": "eng"
@@ -8811,7 +9397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/1/QmVNUVhTNTZSS3Uz/YWQ0aHpi/hls/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:06.742Z"
         }
       ],
       "language": "eng"
@@ -8826,7 +9413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/1/YW5wSWZiRGd2eFlU/bGV0aVBq/hls/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:06.819Z"
         }
       ],
       "language": "eng"
@@ -8841,7 +9429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/1/T2NXeHF6UGlGbHY3/WFluRldQ/hls/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:07.089Z"
         }
       ],
       "language": "eng"
@@ -8856,7 +9445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsnhlslivetest.akamaized.net/hls/live/2034711/EXPO-MSL4/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:08.658Z"
         }
       ],
       "language": "eng"
@@ -8871,7 +9461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://livestreamcdn.net:1935/ExtremaTV/ExtremaTV/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:09.326Z"
         }
       ],
       "language": "eng"
@@ -8886,7 +9477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://failarmy-international-au.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:09.672Z"
         }
       ],
       "language": "eng"
@@ -8901,7 +9493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bd93cfed.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZhaWxBcm15X0hMUw/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:10.550Z"
         }
       ],
       "language": "eng"
@@ -8916,7 +9509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://failarmy-international-gb.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:10.857Z"
         }
       ],
       "language": "eng"
@@ -8931,7 +9525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/rok-b484db42f3d31b6dc2f604d453c694a0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:12.368Z"
         }
       ],
       "language": "eng"
@@ -8946,7 +9541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://faithnow-hls.secdn.net/faithnow-holland-channel/play/FaithAfrica.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:12.497Z"
         }
       ],
       "language": "eng"
@@ -8961,7 +9557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://faithnow-hls.secdn.net/faithnow-holland-channel/play/FaithTV.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:12.517Z"
         }
       ],
       "language": "eng"
@@ -8976,7 +9573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://faithworldtv.abs.tv/1826926230/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:13.670Z"
         }
       ],
       "language": "eng"
@@ -8991,7 +9589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rjrfame-ioriver-cdn.encoders.immergo.tv/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:14.369Z"
         }
       ],
       "language": "eng"
@@ -9006,7 +9605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19c8c9863900007acaa57.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:15.055Z"
         }
       ],
       "language": "eng"
@@ -9021,7 +9621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a510d986ad20008a45874.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:15.115Z"
         }
       ],
       "language": "eng"
@@ -9036,7 +9637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a4a3ef91d250008ac089b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:15.228Z"
         }
       ],
       "language": "eng"
@@ -9051,7 +9653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f77939a630f530007dde654.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:15.672Z"
         }
       ],
       "language": "eng"
@@ -9066,7 +9669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-699c1b4c9c3b075ecd513139.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:16.769Z"
         }
       ],
       "language": "eng"
@@ -9081,7 +9685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:16.959Z"
         }
       ],
       "language": "eng"
@@ -9096,7 +9701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/287/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:17.707Z"
         }
       ],
       "language": "eng"
@@ -9111,7 +9717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/119/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:18.350Z"
         }
       ],
       "language": "eng"
@@ -9126,7 +9733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash2.antik.sk/live/test_fashionbox_medium_atk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:18.876Z"
         }
       ],
       "language": "eng"
@@ -9141,7 +9749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ssai.aniview.com/api/v1/hls/stream.m3u8?AVS_SSAIID=67c0c39764ad6f7dab07aa0b&AV_APPNAME=[ADS.APP_NAME]&AV_APPPKGNAME=[ADS.APP_BUNDLE]&AV_APPSTOREURL=[ADS.APP_STORE_URL]&AV_CCPA=[ADS.US_PRIVACY]&AV_CLIENT_SECTION=ftv_secrets&AV_CONSENT=[ADS.GDPR_CONSENT]&AV_CONTENT_CAT=IAB7&AV_CONTENT_CHANNEL=&AV_CONTENT_CONTEXT=&AV_CONTENT_EPISODE=&AV_CONTENT_GENRE=fashion+and+lifestyle&AV_CONTENT_ID=[ADS.VIDAA_ADS_CONTENTID]&AV_CONTENT_KEYWORDS=&AV_CONTENT_LANGUAGE=en&AV_CONTENT_LENGTH=&AV_CONTENT_NETWORK=&AV_CONTENT_PROVIDER=FTV&AV_CONTENT_RATING=R&AV_CONTENT_SEASON=&AV_CONTENT_SERIES=&AV_CONTENT_TITLE=&AV_CONTENT_URL=&AV_DNT=[ADS.DNT]&AV_GDPR=[ADS.GDPR]&AV_HEIGHT=[ADS.H]&AV_IDFA=[ADS.IFA]&AV_IFA_TYPE=[ADS.IFA_TYPE]&AV_LANGUAGE=[ADS.DEVICE_LANGUAGE]&AV_OSVERS=[ADS.DEVICE_OSV]&AV_RTB_DEVICE_TYPE=[ADS.DEVICE_TYPE]&AV_VAUTH=[ADS.VAUTH]&AV_WIDTH=[ADS.W]&Content_Id=[ADS.ADS_CONTENTID]&ads.vidaa_ads_param=1191723366&cb=[CACHEBUSTER]&content_channel_name=ftv+-fashiontv+Secrets&content_livestream=1",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:19.424Z"
         }
       ],
       "language": "eng"
@@ -9156,7 +9765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash3.antik.sk/live/test_fast_and_funbox_medium_atk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:19.807Z"
         }
       ],
       "language": "eng"
@@ -9171,7 +9781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/favorit-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.397Z"
         }
       ],
       "language": "ron"
@@ -9186,7 +9797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://cdn9.live247stream.com/punjabitvcanada/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.504Z"
         }
       ],
       "language": "eng"
@@ -9201,7 +9813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://1hskrdto.rocketcdn.com/fenerbahcetv.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.600Z"
         }
       ],
       "language": "eng"
@@ -9216,7 +9829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdaa32a1b2fd00076693e8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.715Z"
         }
       ],
       "language": "eng"
@@ -9231,7 +9845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6790d6c7bc03978b9bfbfd44.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.771Z"
         }
       ],
       "language": "eng"
@@ -9246,7 +9861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-fcpublicmedia.cablecast.tv/live-5/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.815Z"
         }
       ],
       "language": "eng"
@@ -9261,7 +9877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac5403de4a734954b5ab75.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:20.859Z"
         }
       ],
       "language": "eng"
@@ -9276,7 +9893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00627-banijaygroup-fearfactor-samsungau-9vdod.amagi.tv/playlist/amg00627-banijaygroup-fearfactor-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:21.191Z"
         }
       ],
       "language": "eng"
@@ -9291,7 +9909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65775af3b3801200084a3aa4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:21.297Z"
         }
       ],
       "language": "eng"
@@ -9306,7 +9925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/fernandinabeachfl/live-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:21.591Z"
         }
       ],
       "language": "eng"
@@ -9321,7 +9941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream11.champds.com/LIVE/FultonCoGALIVE/FultonCoGALIVE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:21.874Z"
         }
       ],
       "language": "eng"
@@ -9336,7 +9957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:22.489Z"
         }
       ],
       "language": "eng"
@@ -9351,7 +9973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d2w9q46ikgrcwx.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-of5cbk3sav3w5/v1/sysdata_s_p_a_fifa_7/samsungheadend_us/latest/main/hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:22.582Z"
         }
       ],
       "language": "eng"
@@ -9366,7 +9989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cffda8ff.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9GSUZBUGx1c3dvbWVuX0hMUw/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:23.436Z"
         }
       ],
       "language": "eng"
@@ -9381,7 +10005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/fightbox.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:23.769Z"
         }
       ],
       "language": "eng"
@@ -9396,7 +10021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nosignal1.antenaplay.ro/hls/fightbox-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:24.000Z"
         }
       ],
       "language": "eng"
@@ -9411,7 +10037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nosignal1.antenaplay.ro/hls/fb-comedy-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:25.311Z"
         }
       ],
       "language": "eng"
@@ -9426,7 +10053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/filmbox_extra.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:25.429Z"
         }
       ],
       "language": "eng"
@@ -9441,7 +10069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash3.antik.sk/live/test_filmbox_arthouse_atk_1200/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:25.667Z"
         }
       ],
       "language": "eng"
@@ -9456,7 +10085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nosignal1.antenaplay.ro/hls/fb-festival-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:25.673Z"
         }
       ],
       "language": "eng"
@@ -9471,7 +10101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/filmbox_premium.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.020Z"
         }
       ],
       "language": "eng"
@@ -9486,7 +10117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/fb_premium_hungary/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.115Z"
         }
       ],
       "language": "eng"
@@ -9501,7 +10133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nosignal1.antenaplay.ro/hls/fb-hits-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.140Z"
         }
       ],
       "language": "ron"
@@ -9516,7 +10149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/filmbox_stars.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.168Z"
         }
       ],
       "language": "eng"
@@ -9531,7 +10165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nosignal1.antenaplay.ro/hls/fb-love-and-crime-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.205Z"
         }
       ],
       "language": "eng"
@@ -9546,7 +10181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nosignal1.antenaplay.ro/hls/fb-one-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.236Z"
         }
       ],
       "language": "ron"
@@ -9561,7 +10197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://uni01rtmp.tulix.tv/firstlight/firstlight.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.386Z"
         }
       ],
       "language": "eng"
@@ -9576,7 +10213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_010/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.485Z"
         }
       ],
       "language": "eng"
@@ -9591,7 +10229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-58e55b14ad8e9c364d55f717.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.505Z"
         }
       ],
       "language": "eng"
@@ -9606,7 +10245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg02278-amg02278c2-flosports-worldwide-9916.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.517Z"
         }
       ],
       "language": "eng"
@@ -9621,7 +10261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg02278-amg02278c1-flosports-worldwide-7592.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.544Z"
         }
       ],
       "language": "eng"
@@ -9636,7 +10277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/flowers_nim_https/050522/flowers/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.554Z"
         }
       ],
       "language": "eng"
@@ -9651,7 +10293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fnx.lls.pbs.org/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.781Z"
         }
       ],
       "language": "eng"
@@ -9666,7 +10309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/kvcr/live/ch1/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:26.950Z"
         }
       ],
       "language": "eng"
@@ -9681,7 +10325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6272511cb389bb0007b30b09.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:28.638Z"
         }
       ],
       "language": "eng"
@@ -9696,7 +10341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-56171fafada51f8004c4b40f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:28.981Z"
         }
       ],
       "language": "eng"
@@ -9711,7 +10357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19dcefbb4b50007d242e1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:29.073Z"
         }
       ],
       "language": "eng"
@@ -9726,7 +10373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fort.co-works.org/memfs/87017643-274a-4bc0-a786-7767a0d159c2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:29.219Z"
         }
       ],
       "language": "eng"
@@ -9741,7 +10389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.fortistv.com/hls/fortis-news/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:29.320Z"
         }
       ],
       "language": "eng"
@@ -9756,7 +10405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.field59.com/kbsi/kbsi1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:29.763Z"
         }
       ],
       "language": "eng"
@@ -9771,7 +10421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-fox4dallaskdfw-vizious/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:29.903Z"
         }
       ],
       "language": "eng"
@@ -9786,7 +10437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-kriv-lgus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:30.497Z"
         }
       ],
       "language": "eng"
@@ -9801,7 +10453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-ksaz-lgus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:30.648Z"
         }
       ],
       "language": "eng"
@@ -9816,7 +10469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-ktbc-lgus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:30.746Z"
         }
       ],
       "language": "eng"
@@ -9831,7 +10485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-fox11losangeleskttv-vizious/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:30.937Z"
         }
       ],
       "language": "eng"
@@ -9846,7 +10501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/8975f81e6efd4e609873c3e8e25c7756.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:31.269Z"
         }
       ],
       "language": "eng"
@@ -9861,7 +10517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://pubads.g.doubleclick.net/ssai/event/1kItNgwtQUe54NjjBiiTGg/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:31.319Z"
         }
       ],
       "language": "eng"
@@ -9876,7 +10533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg02104-imagicommcommun-whbqbreaking-ono/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:32.476Z"
         }
       ],
       "language": "eng"
@@ -9891,7 +10549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-witi-lgus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:32.664Z"
         }
       ],
       "language": "eng"
@@ -9906,7 +10565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-fox2detroitwjbk-vizious/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:32.885Z"
         }
       ],
       "language": "eng"
@@ -9921,7 +10581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-wnyw-lgus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:32.900Z"
         }
       ],
       "language": "eng"
@@ -9936,7 +10597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-fox5dcwttg-vizious/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:33.709Z"
         }
       ],
       "language": "eng"
@@ -9951,7 +10613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-fox13tampabaywtvt-vizious/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:33.836Z"
         }
       ],
       "language": "eng"
@@ -9966,7 +10629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-fox29philadelphiawtx-vizious/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:34.444Z"
         }
       ],
       "language": "eng"
@@ -9981,7 +10645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://townnews.g-mana.live/media/c8c354e0-672f-4368-a17d-a862ee98af4a/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:34.883Z"
         }
       ],
       "language": "eng"
@@ -9996,7 +10661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/foxbusiness/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:34.905Z"
         }
       ],
       "language": "eng"
@@ -10011,7 +10677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://radiovid.foxnews.com/hls/live/661547/RADIOVID/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:36.401Z"
         }
       ],
       "language": "eng"
@@ -10026,7 +10693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://foxsoul-vizio.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:36.952Z"
         }
       ],
       "language": "eng"
@@ -10041,7 +10709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://85.237.89.160:9590/usa-s/FOX-SPORTS-1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:37.304Z"
         }
       ],
       "language": "eng"
@@ -10056,7 +10725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://skynewsau-live-premium.akamaized.net/hls/live/2105307/foxsportsnews/live_1080p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:38.506Z"
         }
       ],
       "language": "eng"
@@ -10071,7 +10741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://247wlive.foxweather.com/stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:38.527Z"
         }
       ],
       "language": "eng"
@@ -10086,7 +10757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=96",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:38.701Z"
         }
       ],
       "language": "eng"
@@ -10101,7 +10773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6400c095498393000878a634.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:39.554Z"
         }
       ],
       "language": "eng"
@@ -10116,7 +10789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62f4f90e39183b000769f12b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:39.729Z"
         }
       ],
       "language": "eng"
@@ -10131,7 +10805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://na.linear.zype.com/f2f02a72-71d0-45f3-829f-4ae51f721102/86ef0177-697d-41c4-be57-c4d1a2b83cad-hls4/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:39.967Z"
         }
       ],
       "language": "eng"
@@ -10146,7 +10821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2229",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:40.621Z"
         }
       ],
       "language": "eng"
@@ -10161,7 +10837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19099bf8c520007a93cff.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:41.241Z"
         }
       ],
       "language": "eng"
@@ -10176,7 +10853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://1593604785.rsc.cdn77.org/FTF/FTF_SCTE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:41.404Z"
         }
       ],
       "language": "eng"
@@ -10191,7 +10869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01074-fueltv-fueltvemeaen-rakuten-b6j62.amagi.tv/hls/amagi_hls_data_rakutenAA-fueltvemeaen/CDN/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:42.663Z"
         }
       ],
       "language": "eng"
@@ -10206,7 +10885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01074-fueltv-fueltvau-samsungau-g09kq.amagi.tv/playlist/amg01074-fueltv-fueltvau-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:42.862Z"
         }
       ],
       "language": "eng"
@@ -10221,7 +10901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=978",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:43.445Z"
         }
       ],
       "language": "eng"
@@ -10236,7 +10917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/funbox.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:43.450Z"
         }
       ],
       "language": "eng"
@@ -10251,7 +10933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-580e87ff497c73ba2f321dd3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:43.477Z"
         }
       ],
       "language": "eng"
@@ -10266,7 +10949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_FUSE/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:43.502Z"
         }
       ],
       "language": "eng"
@@ -10281,7 +10965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/458/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:44.161Z"
         }
       ],
       "language": "eng"
@@ -10296,7 +10981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2230",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:44.576Z"
         }
       ],
       "language": "eng"
@@ -10311,7 +10997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e54187aae660e00093561d6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:44.940Z"
         }
       ],
       "language": "eng"
@@ -10326,7 +11013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/gsn_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:45.402Z"
         }
       ],
       "language": "eng"
@@ -10341,7 +11029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:45.463Z"
         }
       ],
       "language": "eng"
@@ -10356,7 +11045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/gametoon.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:45.633Z"
         }
       ],
       "language": "eng"
@@ -10371,7 +11061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-677f927554f43dad4b3258aa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:46.114Z"
         }
       ],
       "language": "eng"
@@ -10386,7 +11077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://liveen24-manminglobal3.ktcdn.co.kr/liveen24/gcnus_1300k.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:46.502Z"
         }
       ],
       "language": "eng"
@@ -10401,7 +11093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01460-gemshoppingnetw-gem-ono-x662c.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:46.843Z"
         }
       ],
       "language": "eng"
@@ -10416,7 +11109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lo3.gemporia.com/abrgemporiaukgfx/smil:livestream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:46.932Z"
         }
       ],
       "language": "eng"
@@ -10431,7 +11125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/amlst:206018-2645902/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:46.981Z"
         }
       ],
       "language": "eng"
@@ -10446,7 +11141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65c4960d11ced7000812c433.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:47.012Z"
         }
       ],
       "language": "eng"
@@ -10461,7 +11157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64424be3e94c380008d0a66d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:47.282Z"
         }
       ],
       "language": "eng"
@@ -10476,7 +11173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6442512cee6a2f0008d3351f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:47.532Z"
         }
       ],
       "language": "eng"
@@ -10491,7 +11189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64424a1d5a0cd500083ed27c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:47.552Z"
         }
       ],
       "language": "eng"
@@ -10506,7 +11205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1nhni5l2n8hjt.cloudfront.net/gf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:47.730Z"
         }
       ],
       "language": "eng"
@@ -10521,7 +11221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-619e1bb3e9af5a0007f235ad.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:48.027Z"
         }
       ],
       "language": "eng"
@@ -10536,7 +11237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streaming.aurora.enhanced.live/live/mpc/enl0eG1mLmVncmVzcy5mZDJ2eHI=/out/v1/IT_SIMULCAST/GIALLO/CMAF/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:48.280Z"
         }
       ],
       "language": "eng"
@@ -10551,7 +11253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream11.champds.com/LIVE/GilletteWYLIVE3/GilletteWYLIVE3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:48.448Z"
         }
       ],
       "language": "eng"
@@ -10566,7 +11269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream11.champds.com/LIVE/GilletteWYLIVE/GilletteWYLIVE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:48.711Z"
         }
       ],
       "language": "eng"
@@ -10581,7 +11285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream11.champds.com/LIVE/GilletteWYLIVE2/GilletteWYLIVE2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:48.931Z"
         }
       ],
       "language": "eng"
@@ -10596,7 +11301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66ba1e4446762a000855cd87.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:50.591Z"
         }
       ],
       "language": "eng"
@@ -10611,7 +11317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/glendaleaz/live-1-a-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:51.122Z"
         }
       ],
       "language": "eng"
@@ -10626,7 +11333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://pubgfc.teleosmedia.com/linear/globalfashionchannel/globalfashionchannel/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:51.332Z"
         }
       ],
       "language": "eng"
@@ -10641,7 +11349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.streambrothers.com:1936/8052/8052/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:51.418Z"
         }
       ],
       "language": "eng"
@@ -10656,7 +11365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://6f972d29.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0dsb3J5S2lja2JveGluZ19ITFM/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:51.475Z"
         }
       ],
       "language": "eng"
@@ -10671,7 +11381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://na.linear.zype.com/bf94f9f4-383c-40e0-9d49-279a4f33ab8d/f29b8836-d990-4c8d-b421-192a8f43edc4-zype/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.107Z"
         }
       ],
       "language": "eng"
@@ -10686,7 +11397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://online.godstands.tv:5443/WebRTCApp/streams/kidsenglish.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.145Z"
         }
       ],
       "language": "eng"
@@ -10701,7 +11413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://online.godstands.tv:5443/WebRTCApp/streams/mainlive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.230Z"
         }
       ],
       "language": "eng"
@@ -10716,7 +11429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://online.godstands.tv:5443/WebRTCApp/streams/EnglishStreaming.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.306Z"
         }
       ],
       "language": "eng"
@@ -10731,7 +11445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/1391/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.918Z"
         }
       ],
       "language": "eng"
@@ -10746,7 +11461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1msejlow1t3l4.cloudfront.net/211125/godtv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.957Z"
         }
       ],
       "language": "eng"
@@ -10761,7 +11477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/200562-1176456-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:52.994Z"
         }
       ],
       "language": "eng"
@@ -10776,7 +11493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/golfchannel/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:53.161Z"
         }
       ],
       "language": "eng"
@@ -10791,7 +11509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_118/201450-1248872-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:53.263Z"
         }
       ],
       "language": "eng"
@@ -10806,7 +11525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bpgdlwwar3ze-hls-live.wmncdn.net/goodnews/live.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:53.408Z"
         }
       ],
       "language": "eng"
@@ -10821,7 +11541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/c8364f36-c60b-4a39-8d86-0b92db4611c0/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:53.880Z"
         }
       ],
       "language": "eng"
@@ -10836,7 +11557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://na.linear.zype.com/bf94f9f4-383c-40e0-9d49-279a4f33ab8d/f29b8836-d990-4c8d-b421-192a8f43edc4-zype/manifest.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:54.251Z"
         }
       ],
       "language": "eng"
@@ -10851,7 +11573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/nashuanh3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:54.440Z"
         }
       ],
       "language": "eng"
@@ -10866,7 +11589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/grace/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:54.446Z"
         }
       ],
       "language": "eng"
@@ -10881,7 +11605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://samitaorigin.tangotv.in/GRACETV/SAMITAORIGIN/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:54.450Z"
         }
       ],
       "language": "eng"
@@ -10896,7 +11621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d6dg3ebeih71x.cloudfront.net/Gravitas_Movies.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:54.473Z"
         }
       ],
       "language": "eng"
@@ -10911,7 +11637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/dvrfl04/itv04019/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:55.262Z"
         }
       ],
       "language": "eng"
@@ -10926,7 +11653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-gritxtra-tablo/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:55.490Z"
         }
       ],
       "language": "eng"
@@ -10941,7 +11669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amogonetworx-grjngo-3-dk.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:55.629Z"
         }
       ],
       "language": "eng"
@@ -10956,7 +11685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://gstv-gsshop.gsshop.com/gsshop_hd/gsshop_hd.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:56.013Z"
         }
       ],
       "language": "eng"
@@ -10971,7 +11701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamer12.vdn.dstreamone.net/carishowtime/showtime/chunks.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:56.306Z"
         }
       ],
       "language": "eng"
@@ -10986,7 +11717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamer1.nexgen.bz/GUADALUPE_MEDIA/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:56.976Z"
         }
       ],
       "language": "eng"
@@ -11001,7 +11733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-edge1.streamcomedia.com/abr_tngr969fm/abr-tngr969fm_streams/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:57.054Z"
         }
       ],
       "language": "eng"
@@ -11016,7 +11749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60f75771dfc72a00071fd0e0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:57.169Z"
         }
       ],
       "language": "eng"
@@ -11031,7 +11765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69c290eeed1b1f1acb446dd8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:57.184Z"
         }
       ],
       "language": "eng"
@@ -11046,7 +11781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://e75fc053c0d2406fb74cdd71d77e1a7f.mediatailor.us-east-1.amazonaws.com/v1/master/f4e8c53a8367a5b58e20ce054ea3ce25a3e904d3/RakutenTV-eu_GustoTV/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:57.364Z"
         }
       ],
       "language": "eng"
@@ -11061,7 +11797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dbrb49pjoymg4.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod_default_xumo-ams-aws/master.m3u8?ads.xumo_channelId=99991709",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:57.740Z"
         }
       ],
       "language": "eng"
@@ -11076,7 +11813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://41.205.93.154/HALLMARK/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:58.100Z"
         }
       ],
       "language": "eng"
@@ -11091,7 +11829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_aws4_sdi12/live2_aws4_sdi12_5000k.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:58.248Z"
         }
       ],
       "language": "ron"
@@ -11106,7 +11845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a52254d6d8f00084eacfc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:58.592Z"
         }
       ],
       "language": "eng"
@@ -11121,7 +11861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a4e29ab05240008a18625.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:59.073Z"
         }
       ],
       "language": "eng"
@@ -11136,7 +11877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a508d986ad20008a456a5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:59.451Z"
         }
       ],
       "language": "eng"
@@ -11151,7 +11893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f7794162a4559000781fc12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:37:59.980Z"
         }
       ],
       "language": "eng"
@@ -11166,7 +11909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e917b5e354cf0007b97a67.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:00.049Z"
         }
       ],
       "language": "eng"
@@ -11181,7 +11925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv.mediacp.eu:8081/happyradio/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:00.095Z"
         }
       ],
       "language": "eng"
@@ -11196,7 +11941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dil9xdvretp0f.cloudfront.net/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:00.283Z"
         }
       ],
       "language": "eng"
@@ -11211,7 +11957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/watc57/watc57-harmony/watc57-harmony/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:01.224Z"
         }
       ],
       "language": "eng"
@@ -11226,7 +11973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01446-blueantmediacan-haunttvaussam-samsungau-vcnai.amagi.tv/playlist/amg01446-blueantmediacan-haunttvaussam-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:01.708Z"
         }
       ],
       "language": "eng"
@@ -11241,7 +11989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63934c218ef524000757b122.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:01.953Z"
         }
       ],
       "language": "eng"
@@ -11256,7 +12005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live3/hbcugo_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:02.145Z"
         }
       ],
       "language": "eng"
@@ -11271,7 +12021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://202.150.165.66:8088/play/100-HBO/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:02.507Z"
         }
       ],
       "language": "eng"
@@ -11286,7 +12037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://202.150.165.66:8088/play/101-HBOSignature/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:03.090Z"
         }
       ],
       "language": "eng"
@@ -11301,7 +12053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-hudsonctv.cablecast.tv/live-26/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:03.366Z"
         }
       ],
       "language": "eng"
@@ -11316,7 +12069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-hudsonctv.cablecast.tv/live-26/live/stream-2/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:03.657Z"
         }
       ],
       "language": "eng"
@@ -11331,7 +12085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-hudsonctv.cablecast.tv/live-26/live/stream-5/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:03.708Z"
         }
       ],
       "language": "eng"
@@ -11346,7 +12101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://s2.netstreaming.eu/hd365.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:03.871Z"
         }
       ],
       "language": "ron"
@@ -11361,7 +12117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live2.tensila.com/heart-v-1.heartar/hls/live/mystream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:03.903Z"
         }
       ],
       "language": "eng"
@@ -11376,7 +12133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_120/201950-2724904-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:04.108Z"
         }
       ],
       "language": "eng"
@@ -11391,7 +12149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61f07513227feb00073ee6bc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:04.293Z"
         }
       ],
       "language": "eng"
@@ -11406,7 +12165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-us-east-prod-ingest-infra-dacast-com.akamaized.net/8424fb7f-99a9-87ae-3861-f0620849d11c/source/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:05.656Z"
         }
       ],
       "language": "eng"
@@ -11421,7 +12181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streaming.aurora.enhanced.live/live/mpc/enl0eG1mLmVncmVzcy5mZDJ2eHI=/out/v1/IT_SIMULCAST/HGTV/CMAF/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:05.683Z"
         }
       ],
       "language": "eng"
@@ -11436,7 +12197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mediapackage-sky-hgtv-source.fullscreen.nz/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:06.171Z"
         }
       ],
       "language": "eng"
@@ -11451,7 +12213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/224/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:06.798Z"
         }
       ],
       "language": "eng"
@@ -11466,7 +12229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-59.frequency.stream/dist/plex/59/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:07.060Z"
         }
       ],
       "language": "eng"
@@ -11481,7 +12245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68bff9a63efb41cd97562e46.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:07.670Z"
         }
       ],
       "language": "eng"
@@ -11496,7 +12261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/hillsboroughcounty/G2155_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:07.695Z"
         }
       ],
       "language": "eng"
@@ -11511,7 +12277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://customer-6itfaqopbksp5p0q.cloudflarestream.com/3972e89fb79bf6d6dd2a16c75455087a/manifest/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:07.978Z"
         }
       ],
       "language": "eng"
@@ -11526,7 +12293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://92.114.85.87:8015/play/a00c/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:08.385Z"
         }
       ],
       "language": "eng"
@@ -11541,7 +12309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=9856",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:08.530Z"
         }
       ],
       "language": "eng"
@@ -11556,7 +12325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lds-timeline-rakuten.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:08.642Z"
         }
       ],
       "language": "eng"
@@ -11571,7 +12341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hitfm.nfthost.net/hls/hitfm/live_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:09.414Z"
         }
       ],
       "language": "ron"
@@ -11586,7 +12357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_HLN/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:10.330Z"
         }
       ],
       "language": "eng"
@@ -11601,7 +12373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lo3.gemporia.com/abrhobbymakerukgfx/smil:livestreamFullHD.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:10.427Z"
         }
       ],
       "language": "eng"
@@ -11616,7 +12389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68939e206727ec919bb39061.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:10.441Z"
         }
       ],
       "language": "eng"
@@ -11631,7 +12405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6537abf42cf1310008441686.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:10.626Z"
         }
       ],
       "language": "eng"
@@ -11646,7 +12421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bozztv.com/hwotta/playlist/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:10.656Z"
         }
       ],
       "language": "eng"
@@ -11661,7 +12437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5dc1cb279c91420009db261d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:11.007Z"
         }
       ],
       "language": "eng"
@@ -11676,7 +12453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_022/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:11.227Z"
         }
       ],
       "language": "eng"
@@ -11691,7 +12469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://all3media-homes-under-the-hammer-1-au.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:11.846Z"
         }
       ],
       "language": "eng"
@@ -11706,7 +12485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jstre.am/live/jsl:i1onRBELcGV.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:12.635Z"
         }
       ],
       "language": "eng"
@@ -11721,7 +12501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/1385/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:12.732Z"
         }
       ],
       "language": "eng"
@@ -11736,7 +12517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jstre.am/live/jsl:UP9KAdlVrm8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:12.868Z"
         }
       ],
       "language": "eng"
@@ -11751,7 +12533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jstre.am/live/jsl:cZXINbwrFj6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:13.095Z"
         }
       ],
       "language": "eng"
@@ -11766,7 +12549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jstre.am/live/jsl:0sUSK6VA7GT.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:13.160Z"
         }
       ],
       "language": "eng"
@@ -11781,7 +12565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge1-us-miami.picarto.tv/stream/hls/golive%2bXSTUDIOCODE/0_1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:13.336Z"
         }
       ],
       "language": "eng"
@@ -11796,7 +12581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fta.ektv.in/live/710/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:13.667Z"
         }
       ],
       "language": "eng"
@@ -11811,7 +12597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hnc-free-viewlift.amagi.tv/HNC_AUSTRALIA.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:14.701Z"
         }
       ],
       "language": "eng"
@@ -11826,7 +12613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ktismaservers.in:3349/live/hosannatvlive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:14.766Z"
         }
       ],
       "language": "eng"
@@ -11841,7 +12629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6036e6e7ac69c400072afca2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:15.314Z"
         }
       ],
       "language": "eng"
@@ -11856,7 +12645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:16.280Z"
         }
       ],
       "language": "eng"
@@ -11871,7 +12661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:16.327Z"
         }
       ],
       "language": "eng"
@@ -11886,7 +12677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn2us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:15.648Z"
         }
       ],
       "language": "eng"
@@ -11901,7 +12693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.castmaxcloud.com/live/hstv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:16.505Z"
         }
       ],
       "language": "eng"
@@ -11916,7 +12709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swagit.com/live-edge/houstontx/smil:hd-16x9-2-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:18.077Z"
         }
       ],
       "language": "eng"
@@ -11931,7 +12725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swagit.com/live-edge/houstontx/smil:hd-16x9-2-b/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:18.089Z"
         }
       ],
       "language": "eng"
@@ -11946,7 +12741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.bestream.io:19360/elfaro1/elfaro1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:19.125Z"
         }
       ],
       "language": "eng"
@@ -11961,7 +12757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://netstreaming.eu/hd1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:19.557Z"
         }
       ],
       "language": "ron"
@@ -11976,7 +12773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streammix.alsolnet.com/hyperadio/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:19.844Z"
         }
       ],
       "language": "eng"
@@ -11991,7 +12789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-634f3011f4fff20007431641.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:20.116Z"
         }
       ],
       "language": "eng"
@@ -12006,7 +12805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a2f1dda0d69700078b7cba.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:20.367Z"
         }
       ],
       "language": "eng"
@@ -12021,7 +12821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://138.68.138.119:8080/live/5a8993709ea19/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:20.677Z"
         }
       ],
       "language": "eng"
@@ -12036,7 +12837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://68.183.41.209:8080/live/5d9a537c64b9c/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:21.325Z"
         }
       ],
       "language": "eng"
@@ -12051,7 +12853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0b9aab7facb0007913908.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:22.464Z"
         }
       ],
       "language": "eng"
@@ -12066,7 +12869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1d9b31a9c310008f8ee57.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:23.184Z"
         }
       ],
       "language": "eng"
@@ -12081,7 +12885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6450209d939a5900084dba1d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:23.791Z"
         }
       ],
       "language": "eng"
@@ -12096,7 +12901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amdici.akamaized.net/hls/live/873426/ICI-Live-Stream/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:24.246Z"
         }
       ],
       "language": "eng"
@@ -12111,7 +12917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_IFC/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:24.722Z"
         }
       ],
       "language": "eng"
@@ -12126,7 +12933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.presstv.co.uk/hls/ifilmen.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:24.839Z"
         }
       ],
       "language": "eng"
@@ -12141,7 +12949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/ignitelive/ignitetv/ignitetv/tracks-v1a1/mono.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:25.205Z"
         }
       ],
       "language": "eng"
@@ -12156,7 +12965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://f-tx-edge-87.christianworldmedia.com/313watkins/mp4:313watkins/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:25.322Z"
         }
       ],
       "language": "eng"
@@ -12171,7 +12981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/dvrfl03/iipctv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:26.220Z"
         }
       ],
       "language": "eng"
@@ -12186,7 +12997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://en.imamhossaintv.com/live/ih3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:26.386Z"
         }
       ],
       "language": "eng"
@@ -12201,7 +13013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge1.lifestreamcdn.com/live/impactroku1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:26.443Z"
         }
       ],
       "language": "eng"
@@ -12216,7 +13029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://online.tvimpact.live/hls/impact_tv2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:26.653Z"
         }
       ],
       "language": "ron"
@@ -12231,7 +13045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://online.tvimpact.live/hls/dancetv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:27.766Z"
         }
       ],
       "language": "ron"
@@ -12246,7 +13061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://online.tvimpact.live/hls/impact_tv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:28.003Z"
         }
       ],
       "language": "ron"
@@ -12261,7 +13077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bbc-impossible-1-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:28.148Z"
         }
       ],
       "language": "eng"
@@ -12276,7 +13093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch7/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:28.552Z"
         }
       ],
       "language": "ron"
@@ -12291,7 +13109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc4us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:28.693Z"
         }
       ],
       "language": "eng"
@@ -12306,7 +13125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-243529.castr.net/6842a712b68c56f675d988f1/live_b60a96e056fc11f084c05f5d0649296b/rewind-1800.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:28.826Z"
         }
       ],
       "language": "eng"
@@ -12321,7 +13141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/269/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:28.939Z"
         }
       ],
       "language": "eng"
@@ -12336,7 +13157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://43wrzjnpqoxe-hls-live.wmncdn.net/indywood/indywoodtv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:29.341Z"
         }
       ],
       "language": "eng"
@@ -12351,7 +13173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/inedit-tv-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:29.348Z"
         }
       ],
       "language": "ron"
@@ -12366,7 +13189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00861-terninternation-lifestyle-samsungau-kdlyy.amagi.tv/playlist/amg00861-terninternation-lifestyle-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:29.383Z"
         }
       ],
       "language": "eng"
@@ -12381,7 +13205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://informatia.streamnet.ro/mobile_tv/informatiatv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:29.393Z"
         }
       ],
       "language": "ron"
@@ -12396,7 +13221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60807fd5db701400078219c2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:29.844Z"
         }
       ],
       "language": "eng"
@@ -12411,7 +13237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-655f2d713944b60008bc7e90.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:29.990Z"
         }
       ],
       "language": "eng"
@@ -12426,7 +13253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-onesignal.royalmedia.co.ke/live/T-MxRsFebq6zx7k2QFMbLw.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:30.326Z"
         }
       ],
       "language": "eng"
@@ -12441,7 +13269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream8.cinerama.uz/1416/tracks-v1a1/mono.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:30.428Z"
         }
       ],
       "language": "eng"
@@ -12456,7 +13285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aenetworks-insidecrime-rakuten.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:30.527Z"
         }
       ],
       "language": "eng"
@@ -12471,7 +13301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/insp_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:31.099Z"
         }
       ],
       "language": "eng"
@@ -12486,7 +13317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_sdi05/live2_sdi05.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:31.269Z"
         }
       ],
       "language": "ron"
@@ -12501,7 +13333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.intermediatv.ro/ram/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:31.410Z"
         }
       ],
       "language": "ron"
@@ -12516,7 +13349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00861-amg00861c10-rakuten-uk-3152.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:31.672Z"
         }
       ],
       "language": "eng"
@@ -12531,7 +13365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00861-amg00861c6-stirr-us-8229.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:31.909Z"
         }
       ],
       "language": "eng"
@@ -12546,7 +13381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5cf96b8f4f1ca3f0629f4bf1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:31.940Z"
         }
       ],
       "language": "eng"
@@ -12561,7 +13397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/id_hun/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:32.482Z"
         }
       ],
       "language": "eng"
@@ -12576,7 +13413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00861-terninternation-inwild-samsunguk-w5wic.amagi.tv/playlist/amg00861-terninternation-inwild-samsunguk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:32.661Z"
         }
       ],
       "language": "eng"
@@ -12591,7 +13429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00861-terninternation-inwonder-samsungau-1k63k.amagi.tv/playlist/amg00861-terninternation-inwonder-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:32.714Z"
         }
       ],
       "language": "eng"
@@ -12606,7 +13445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-ionplus-tablo/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:32.953Z"
         }
       ],
       "language": "eng"
@@ -12621,7 +13461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_ION/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:33.127Z"
         }
       ],
       "language": "eng"
@@ -12636,7 +13477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:33.418Z"
         }
       ],
       "language": "eng"
@@ -12651,7 +13493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:33.492Z"
         }
       ],
       "language": "eng"
@@ -12666,7 +13509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch3/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:33.815Z"
         }
       ],
       "language": "ron"
@@ -12681,7 +13525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/isaac/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:34.018Z"
         }
       ],
       "language": "eng"
@@ -12696,7 +13541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/b880a791bf95426d917a509e0c44796a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:34.734Z"
         }
       ],
       "language": "eng"
@@ -12711,7 +13557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch2/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:34.940Z"
         }
       ],
       "language": "ron"
@@ -12726,7 +13573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5f22d76e220e1.streamlock.net/iuniortv/iuniortv/chunklist_w774879328.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:34.945Z"
         }
       ],
       "language": "eng"
@@ -12741,7 +13589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a515f986ad20008a4593b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:34.977Z"
         }
       ],
       "language": "eng"
@@ -12756,7 +13605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a4ab92c1d330008657ae5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:35.034Z"
         }
       ],
       "language": "eng"
@@ -12771,7 +13621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a4fc753fc9700083ae79f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:35.386Z"
         }
       ],
       "language": "eng"
@@ -12786,7 +13637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66a105f4a79dea0008aa5e0f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:35.429Z"
         }
       ],
       "language": "eng"
@@ -12801,7 +13653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn3.bozztv.com/jbstv-srt/srt-push/jbstv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:35.885Z"
         }
       ],
       "language": "eng"
@@ -12816,7 +13669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv.webmedialive.com/jmrtv/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:35.985Z"
         }
       ],
       "language": "eng"
@@ -12831,7 +13685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64424b21e1979c0008379681.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:36.559Z"
         }
       ],
       "language": "eng"
@@ -12846,7 +13701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-609bfa51fbecc1000733152e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:36.584Z"
         }
       ],
       "language": "eng"
@@ -12861,7 +13717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728c8b45534bb0008b31f35.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:36.607Z"
         }
       ],
       "language": "eng"
@@ -12876,7 +13733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728c831c7626f0008b28127.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:36.762Z"
         }
       ],
       "language": "eng"
@@ -12891,7 +13749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728c87cc7626f0008b28149.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:36.767Z"
         }
       ],
       "language": "eng"
@@ -12906,7 +13765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.jwplatform.com/live/broadcast/oe7UD7Ag.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:37.832Z"
         }
       ],
       "language": "eng"
@@ -12921,7 +13781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.jwplayer.com/live/broadcast/0rrJ3kkM.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:37.336Z"
         }
       ],
       "language": "eng"
@@ -12936,7 +13797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jlt-jltv-strimm.otteravision.com/jlt/jltv/jltv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:38.127Z"
         }
       ],
       "language": "eng"
@@ -12951,7 +13813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/jim_jam_hun/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:38.290Z"
         }
       ],
       "language": "eng"
@@ -12966,7 +13829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jobtvserver.eu/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:38.515Z"
         }
       ],
       "language": "ron"
@@ -12981,7 +13845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-860.frequency.stream/dist/xumo/860/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:38.662Z"
         }
       ],
       "language": "eng"
@@ -12996,7 +13861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/475550ae-8708-46a5-a7c3-54acb3d91480/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:38.813Z"
         }
       ],
       "language": "eng"
@@ -13011,7 +13877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/joomusic/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:38.818Z"
         }
       ],
       "language": "eng"
@@ -13026,7 +13893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/joshua/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:39.254Z"
         }
       ],
       "language": "eng"
@@ -13041,7 +13909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jtbsclassic.dpdns.org/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:39.516Z"
         }
       ],
       "language": "eng"
@@ -13056,7 +13925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-622f498d119b4c000719c0b7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:39.969Z"
         }
       ],
       "language": "eng"
@@ -13071,7 +13941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6380c4ab81c8d2000790fbf3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:39.976Z"
         }
       ],
       "language": "eng"
@@ -13086,7 +13957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6380c36389eccc000858c50f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:40.024Z"
         }
       ],
       "language": "eng"
@@ -13101,7 +13973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6380c428dd0f47000799907c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:40.929Z"
         }
       ],
       "language": "eng"
@@ -13116,7 +13989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00514-noseybaxterllc-realnosey-cineverse-tqbpv.amagi.tv/playlist/amg00514-noseybaxterllc-realnosey-cineverse/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:41.129Z"
         }
       ],
       "language": "eng"
@@ -13131,7 +14005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams2.sofast.tv/ptnr-yupptv/title-JUST_FOR_LAUGHS_GAGS_YUPPTV/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/2790d143-5874-4146-bf91-9063c52b2f15/manifest.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:41.524Z"
         }
       ],
       "language": "eng"
@@ -13146,7 +14021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/justicecentral_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:43.206Z"
         }
       ],
       "language": "eng"
@@ -13161,7 +14037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d2q0mzb9bm4w5z.cloudfront.net/68fee8e1_605a_437b_b968_244c3c0d5f24/hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:44.640Z"
         }
       ],
       "language": "eng"
@@ -13176,7 +14053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamingserver000.viewtv.cloud/VIEWTVNETWORK-KALOOPY/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:44.878Z"
         }
       ],
       "language": "eng"
@@ -13191,7 +14069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.kanald.ro/iphone/knd-live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:45.460Z"
         }
       ],
       "language": "ron"
@@ -13206,7 +14085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ktvhdsg.ekantipur.com:8443/high_quality_85840165/hd/kantipurtv/hd_1080/chunks.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:45.514Z"
         }
       ],
       "language": "eng"
@@ -13221,7 +14101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/kapital-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:45.673Z"
         }
       ],
       "language": "ron"
@@ -13236,7 +14117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lightning-fnf-samsungaus.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:45.704Z"
         }
       ],
       "language": "eng"
@@ -13251,7 +14133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream8.cinerama.uz/1448/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:46.510Z"
         }
       ],
       "language": "eng"
@@ -13266,7 +14149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://66.242.170.53/hls/live/temp/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:46.577Z"
         }
       ],
       "language": "eng"
@@ -13281,7 +14165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://197.243.19.131:1935/kc2/kc2/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:46.782Z"
         }
       ],
       "language": "eng"
@@ -13296,7 +14181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg02159-amg02159c7-samsung-in-4001.playouts.now.amagi.tv/playlist/amg02159-kcglobal-kcm-samsungin/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:46.947Z"
         }
       ],
       "language": "eng"
@@ -13311,7 +14197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/kern/G0169_003/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:47.301Z"
         }
       ],
       "language": "eng"
@@ -13326,7 +14213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65cba798d77d450008d056e5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:47.911Z"
         }
       ],
       "language": "eng"
@@ -13341,7 +14229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65cba715dc10a40008034917.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:47.925Z"
         }
       ],
       "language": "eng"
@@ -13356,7 +14245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65cba7573ba51e00084d76e1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:48.669Z"
         }
       ],
       "language": "eng"
@@ -13371,7 +14261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5db0ad56edc89300090d2ebb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:49.495Z"
         }
       ],
       "language": "eng"
@@ -13386,7 +14277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=50",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:49.704Z"
         }
       ],
       "language": "eng"
@@ -13401,7 +14293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://livestream.usatv.com/hls/master-iUSATVLIVENET.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:49.860Z"
         }
       ],
       "language": "eng"
@@ -13416,7 +14309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamer1.connectto.com/AABC_WEB_1201/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:50.348Z"
         }
       ],
       "language": "eng"
@@ -13431,7 +14325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamer12.vdn.dstreamone.net/kingtv/kingtv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:50.407Z"
         }
       ],
       "language": "eng"
@@ -13446,7 +14341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv.broadcasting.ro/kisstv/a629c031-2170-4ee9-a36d-87a891aa3131.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:51.072Z"
         }
       ],
       "language": "ron"
@@ -13461,7 +14357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=9901",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:51.316Z"
         }
       ],
       "language": "eng"
@@ -13476,7 +14373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65a63ff00d9ab400080b101c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:51.572Z"
         }
       ],
       "language": "eng"
@@ -13491,7 +14389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wggstv16.ddns.net:9953/hls/KMCT1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:51.747Z"
         }
       ],
       "language": "eng"
@@ -13506,7 +14405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://media4.tripsmarter.com:1935/LiveTV/NOTVHD/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:52.717Z"
         }
       ],
       "language": "eng"
@@ -13521,7 +14421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1wal6k3d7ssin.cloudfront.net/out/v1/ea91db0906c847a4931b46a9ec36e77b/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:52.740Z"
         }
       ],
       "language": "eng"
@@ -13536,7 +14437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/e923f4ce-7229-4e01-a25e-d453993dab82/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:52.891Z"
         }
       ],
       "language": "eng"
@@ -13551,7 +14453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660d667519ca71000849a1e1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:53.322Z"
         }
       ],
       "language": "eng"
@@ -13566,7 +14469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream10.champds.com/LIVE/KOCTCALIVE/KOCTCALIVE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:53.425Z"
         }
       ],
       "language": "eng"
@@ -13581,7 +14485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream10.champds.com/LIVE/KOCTCALIVE2/KOCTCALIVE2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:53.545Z"
         }
       ],
       "language": "eng"
@@ -13596,7 +14501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ptvlive.kordia.net.nz/out/v1/3fc2254c865a457c8d7fbbce227a2aae/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:53.926Z"
         }
       ],
       "language": "eng"
@@ -13611,7 +14517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/fdd6f243-f971-4a1a-9510-97ac01d6b37f/manifest.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:54.348Z"
         }
       ],
       "language": "eng"
@@ -13626,7 +14533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cloud.tvomix.com/KPOPMIX/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:54.794Z"
         }
       ],
       "language": "eng"
@@ -13641,7 +14549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/206858-4405346-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:55.481Z"
         }
       ],
       "language": "eng"
@@ -13656,7 +14565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.ad-ug.com/live/ch03/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:55.953Z"
         }
       ],
       "language": "eng"
@@ -13671,7 +14581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_138/200226-1359204-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:56.432Z"
         }
       ],
       "language": "eng"
@@ -13686,7 +14597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:56.559Z"
         }
       ],
       "language": "eng"
@@ -13701,7 +14613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://api.v3.invintus.com/StreamURI/persis/2147483647/KTOO360TV.stream/media.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:57.260Z"
         }
       ],
       "language": "eng"
@@ -13716,7 +14629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://kwtktv2ta.cdn.mangomolo.com/ktv2/smil:ktv2.stream.smil/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:57.438Z"
         }
       ],
       "language": "eng"
@@ -13731,7 +14645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:57.602Z"
         }
       ],
       "language": "eng"
@@ -13746,7 +14661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jk3lzkn4lw79-hls-live.5centscdn.com/VTN2/bcaafe9ad8d42834b08e762ac58596b8.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:57.788Z"
         }
       ],
       "language": "eng"
@@ -13761,7 +14677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/lsn_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:58.880Z"
         }
       ],
       "language": "eng"
@@ -13776,7 +14693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cHYzekYzM2kvTVFH/lakehavasucity/G0643_003/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:59.180Z"
         }
       ],
       "language": "eng"
@@ -13791,7 +14709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a3fe6986ad20008a42add.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:59.436Z"
         }
       ],
       "language": "eng"
@@ -13806,7 +14725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5a0e89631aa14.streamlock.net/live/LatestTelevision/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:38:59.627Z"
         }
       ],
       "language": "eng"
@@ -13821,7 +14741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live3/law_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:00.008Z"
         }
       ],
       "language": "eng"
@@ -13836,7 +14757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dltiqboxjw21d.cloudfront.net/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:00.359Z"
         }
       ],
       "language": "eng"
@@ -13851,7 +14773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60fb01a24795a6000762fe83.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:00.432Z"
         }
       ],
       "language": "eng"
@@ -13866,7 +14789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/leominster2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:00.497Z"
         }
       ],
       "language": "eng"
@@ -13881,7 +14805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/leominster3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:00.628Z"
         }
       ],
       "language": "eng"
@@ -13896,7 +14821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/leominster1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:01.417Z"
         }
       ],
       "language": "eng"
@@ -13911,7 +14837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/lfucg/G0264_005/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:01.454Z"
         }
       ],
       "language": "eng"
@@ -13926,7 +14853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/lexmedia3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/lexmedia3/stream1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:01.464Z"
         }
       ],
       "language": "eng"
@@ -13941,7 +14869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/lifevision/lifevision/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:02.275Z"
         }
       ],
       "language": "eng"
@@ -13956,7 +14885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://streamer1.streamhost.org:1935/salive/GMIlcbgM/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:02.525Z"
         }
       ],
       "language": "ron"
@@ -13971,7 +14901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-51c75f7bb6f26ba1cd00002f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:03.230Z"
         }
       ],
       "language": "eng"
@@ -13986,7 +14917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5873fc21cad696fb37aa9054.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:03.610Z"
         }
       ],
       "language": "eng"
@@ -14001,7 +14933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.streambrothers.com:1936/8014/8014/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:03.580Z"
         }
       ],
       "language": "eng"
@@ -14016,7 +14949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fox-foxnewsnow-vizio.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:03.673Z"
         }
       ],
       "language": "eng"
@@ -14031,7 +14965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://brightstar-hislight-pull-secure.akamaized.net/brightstarhislight/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:05.008Z"
         }
       ],
       "language": "eng"
@@ -14046,7 +14981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://brightstar-hisword-pull-secure.akamaized.net/brightstarhisword/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:05.202Z"
         }
       ],
       "language": "eng"
@@ -14061,7 +14997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://brightstar-romanian-pull-secure.akamaized.net/brightstarromanian/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:05.512Z"
         }
       ],
       "language": "ron"
@@ -14076,7 +15013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdnstack.internetmultimediaonline.org/ln24/ln24.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:05.582Z"
         }
       ],
       "language": "eng"
@@ -14091,7 +15029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ce5a8954311f992edbe1da2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:05.931Z"
         }
       ],
       "language": "eng"
@@ -14106,7 +15045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5aafcc5de91f1.streamlock.net/logoschannel.com/logoseng/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:06.171Z"
         }
       ],
       "language": "eng"
@@ -14121,7 +15061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://6b88cde9.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0xvbmVTdGFyX0hMUw/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:06.792Z"
         }
       ],
       "language": "eng"
@@ -14136,7 +15077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d51ddf0369acdb278dfb05e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:07.079Z"
         }
       ],
       "language": "eng"
@@ -14151,7 +15093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/6d6d0f24-8445-4b4c-bdf6-44f9e38beaa4/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:07.265Z"
         }
       ],
       "language": "eng"
@@ -14166,7 +15109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bantel-cdn1.iptvperu.tv:1936/ZyphraCast/love-nature/chunks.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:08.656Z"
         }
       ],
       "language": "eng"
@@ -14181,7 +15125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumbai-edge.smartplaytv.in/LoveNature/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:07.541Z"
         }
       ],
       "language": "eng"
@@ -14196,7 +15141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01576-blueskyeenterta-lovepetsemea-samsungse-ctamh.amagi.tv/playlist/amg01576-blueskyeenterta-lovepetsemea-samsungse/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:08.793Z"
         }
       ],
       "language": "eng"
@@ -14211,7 +15157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01821-lovetvchannels-lovetheplanetuksamsung-samsunguk-apopw.amagi.tv/playlist/amg01821-lovetvchannels-lovetheplanetuksamsung-samsunguk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:08.865Z"
         }
       ],
       "language": "eng"
@@ -14226,7 +15173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/L1Uzd2FrbVlLRG1W/live/smil:lwukweb.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:09.421Z"
         }
       ],
       "language": "eng"
@@ -14241,7 +15189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/RGtVZkFxL3FOQkxX/LWU/ngrp:lwu.stream_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:09.612Z"
         }
       ],
       "language": "eng"
@@ -14256,7 +15205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:10.413Z"
         }
       ],
       "language": "eng"
@@ -14271,7 +15221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19b7785706b00072d421a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:10.692Z"
         }
       ],
       "language": "eng"
@@ -14286,7 +15237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1e060197fe600073c1ffb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:11.212Z"
         }
       ],
       "language": "eng"
@@ -14301,7 +15253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1e0f1d6d97900076ea16f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:11.340Z"
         }
       ],
       "language": "eng"
@@ -14316,7 +15269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.globalradio.lu/lgr/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:12.076Z"
         }
       ],
       "language": "eng"
@@ -14331,7 +15285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c18f62f5acaf0007f83135.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:12.097Z"
         }
       ],
       "language": "eng"
@@ -14346,7 +15301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19165decece0007e9b2f3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:12.228Z"
         }
       ],
       "language": "eng"
@@ -14361,7 +15317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67f7d328efc5473b6b4ac5f4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:12.244Z"
         }
       ],
       "language": "eng"
@@ -14376,7 +15333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://htvmada.mada.ps:4443/maannews/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:12.584Z"
         }
       ],
       "language": "eng"
@@ -14391,7 +15349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a19eceb3d0eb0007439c34.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:12.735Z"
         }
       ],
       "language": "eng"
@@ -14406,7 +15365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a59742c1d33000865a797.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:13.278Z"
         }
       ],
       "language": "eng"
@@ -14421,7 +15381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654a59d483595c0008187514.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:13.531Z"
         }
       ],
       "language": "eng"
@@ -14436,7 +15397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-mwg/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:13.910Z"
         }
       ],
       "language": "eng"
@@ -14451,7 +15413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://connection3-ent-nz.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:14.199Z"
         }
       ],
       "language": "eng"
@@ -14466,7 +15429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv.broadcasting.ro/magictv/925f90db-5c88-4190-a53d-5163cdffe6f4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:14.693Z"
         }
       ],
       "language": "ron"
@@ -14481,7 +15445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mmn1.b-cdn.net/hls/MMN-HLS.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:15.106Z"
         }
       ],
       "language": "eng"
@@ -14496,7 +15461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mahaasintv.livebox.co.in/mahaasintvhls/mahaasintv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:16.204Z"
         }
       ],
       "language": "eng"
@@ -14511,7 +15477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6825efbb9eed174f7ffbe5b0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:16.698Z"
         }
       ],
       "language": "eng"
@@ -14526,7 +15493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-678f88bb272ded16b1558c5e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:17.091Z"
         }
       ],
       "language": "eng"
@@ -14541,7 +15509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6825eeeeb19ce6d4a34ebb2a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:17.141Z"
         }
       ],
       "language": "eng"
@@ -14556,7 +15525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://w2.manasat.com/church-online/smil:church-online.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:17.369Z"
         }
       ],
       "language": "eng"
@@ -14571,7 +15541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://1601580044.rsc.cdn77.org/live/_jcn_/amls:PALMIAMI/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:17.810Z"
         }
       ],
       "language": "eng"
@@ -14586,7 +15557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livefa.marjaeyattv.com/mtv_en/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:18.300Z"
         }
       ],
       "language": "eng"
@@ -14601,7 +15573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/MarqueeSportsNetwork/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:18.311Z"
         }
       ],
       "language": "eng"
@@ -14616,7 +15589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66bb3212fe11e5000883ea6b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:18.474Z"
         }
       ],
       "language": "eng"
@@ -14631,7 +15605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/martin/G0074_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:19.494Z"
         }
       ],
       "language": "eng"
@@ -14646,7 +15621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-687fea9a4fa995eff284a1c8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:20.028Z"
         }
       ],
       "language": "eng"
@@ -14661,7 +15637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://platform-iuoamc.uk/iptv/mca-tv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:20.423Z"
         }
       ],
       "language": "eng"
@@ -14676,7 +15653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19edbf535220007075c4e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:20.706Z"
         }
       ],
       "language": "eng"
@@ -14691,7 +15669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66290a779e68c20008a18cf3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:21.207Z"
         }
       ],
       "language": "eng"
@@ -14706,7 +15685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60f754f98185580007eb0754.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:21.868Z"
         }
       ],
       "language": "eng"
@@ -14721,7 +15701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63da365f60bc8f0008a50f44.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:22.193Z"
         }
       ],
       "language": "eng"
@@ -14736,7 +15717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://maverick-maverick-black-cinema-3-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:23.346Z"
         }
       ],
       "language": "eng"
@@ -14751,7 +15733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-1-usa/fdac3a4fc0473f1f56e07ec1d63a4b7b/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:24.268Z"
         }
       ],
       "language": "eng"
@@ -14766,7 +15749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-3-usa/5d58265a862a476dc7f97694addb5ded/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:24.966Z"
         }
       ],
       "language": "eng"
@@ -14781,7 +15765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-us-east-prod-ingest-infra-dacast-com.akamaized.net/624ff8f9-db18-da92-4d42-896fa2ff3eb3/source/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:25.139Z"
         }
       ],
       "language": "eng"
@@ -14796,7 +15781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-bollywood/546eb40d7dcf9a209255dd2496903764/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:25.505Z"
         }
       ],
       "language": "eng"
@@ -14811,7 +15797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dbbv9umqcd7cs.cloudfront.net/out/v1/db15b75c3cc0400c91961468d6a232ac/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:25.740Z"
         }
       ],
       "language": "eng"
@@ -14826,7 +15813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/miamibeachfl/live-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:26.285Z"
         }
       ],
       "language": "eng"
@@ -14841,7 +15829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video.ejeserver.com/live/mcitelevision.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:26.344Z"
         }
       ],
       "language": "eng"
@@ -14856,7 +15845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63e3b33e8795f300087e6a46.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:26.714Z"
         }
       ],
       "language": "eng"
@@ -14871,7 +15861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://med-tv-it.fast.rakuten.tv/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-hls-aes128-medtv-1-restreaming/bitok/eyJzdGlkIjoiMGUzYjU2OWQtYTY3NC00ZDQxLThmZmMtNjA2NWU5YzMwNTViIiwibWt0IjoiaXQiLCJjaCI6IjUiLCJwdGYiOjV9/hls/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:26.720Z"
         }
       ],
       "language": "eng"
@@ -14886,7 +15877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://43wrzjnpqoxe-hls-live.wmncdn.net/marinebiztvlive/marinebiztvlive/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:26.744Z"
         }
       ],
       "language": "eng"
@@ -14901,7 +15893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_fast/ch1/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:26.991Z"
         }
       ],
       "language": "ron"
@@ -14916,7 +15909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68f0f642a25ba0aab3e64e66.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:27.611Z"
         }
       ],
       "language": "eng"
@@ -14931,7 +15925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68f0f54ca362b63a8df4d5a9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:27.648Z"
         }
       ],
       "language": "eng"
@@ -14946,7 +15941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mdstrm.com/live-stream-playlist/67ed74e8af482ba71d47fd7b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:27.918Z"
         }
       ],
       "language": "eng"
@@ -14961,7 +15957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://angel.btbn.tv:5443/mtmtv/streams/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:28.165Z"
         }
       ],
       "language": "eng"
@@ -14976,7 +15973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-cloudfront.eu-central-1.prod.ingest.aws-infra.dacast.com/live/bff8bd53-ee89-2c76-6a51-95a0003f7d96/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:28.239Z"
         }
       ],
       "language": "eng"
@@ -14991,7 +15989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6304854ac6073d0007259fe1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:28.920Z"
         }
       ],
       "language": "eng"
@@ -15006,7 +16005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63048147b09fd60007847a08.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:29.048Z"
         }
       ],
       "language": "eng"
@@ -15021,7 +16021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63047bd6b0726b000795341d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:29.213Z"
         }
       ],
       "language": "eng"
@@ -15036,7 +16037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://goliveafrica.media:9998/live/628e5c1991061/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:29.413Z"
         }
       ],
       "language": "eng"
@@ -15051,7 +16053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://www.livemetropolatv.ro/MetropolaTV/Metro/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:29.937Z"
         }
       ],
       "language": "ron"
@@ -15066,7 +16069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sr-live-weigel1.akamaized.net/out/v1/0d1dbf29e64e47bc991796cc24fbeb97/index_2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:30.197Z"
         }
       ],
       "language": "eng"
@@ -15081,7 +16085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/276/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:30.288Z"
         }
       ],
       "language": "eng"
@@ -15096,7 +16101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mhz-samsung-linear-ca.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:30.766Z"
         }
       ],
       "language": "eng"
@@ -15111,7 +16117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/9d35b73c264946d5945db6cdff26336e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:30.899Z"
         }
       ],
       "language": "eng"
@@ -15126,7 +16133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-897.frequency.stream/dist/cineverse/897/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:31.114Z"
         }
       ],
       "language": "eng"
@@ -15141,7 +16149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c2974786200d.streamlock.net/live-chan26/ngrp:ch26_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:31.420Z"
         }
       ],
       "language": "eng"
@@ -15156,7 +16165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c2974786200d.streamlock.net/live-chan28/ngrp:ch28_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:31.467Z"
         }
       ],
       "language": "eng"
@@ -15171,7 +16181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c2974786200d.streamlock.net/live-chan29/ngrp:ch29_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:32.662Z"
         }
       ],
       "language": "eng"
@@ -15186,7 +16197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c2974786200d.streamlock.net/live-chan30/ngrp:ch30_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:32.676Z"
         }
       ],
       "language": "eng"
@@ -15201,7 +16213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c2974786200d.streamlock.net/live-chan75/ngrp:ch75_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:33.161Z"
         }
       ],
       "language": "eng"
@@ -15216,7 +16229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://all3media-midsomer-1-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:33.222Z"
         }
       ],
       "language": "eng"
@@ -15231,7 +16245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/minikago/minikago.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:33.901Z"
         }
       ],
       "language": "eng"
@@ -15246,7 +16261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/test_minimax/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:34.290Z"
         }
       ],
       "language": "eng"
@@ -15261,7 +16277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_030/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:34.321Z"
         }
       ],
       "language": "eng"
@@ -15276,7 +16293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.antenaplay.ro/live/MireasaExtra/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:34.653Z"
         }
       ],
       "language": "ron"
@@ -15291,7 +16309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live2_mireasadoi/live2_mireasadoi.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:34.665Z"
         }
       ],
       "language": "ron"
@@ -15306,7 +16325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dai.google.com/linear/hls/event/ClPOullTQky5vGPf7fMZ8g/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:35.063Z"
         }
       ],
       "language": "eng"
@@ -15321,7 +16341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vidl.misatv.ro:5050/MSTV/romanian_720p_baseline/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:35.582Z"
         }
       ],
       "language": "ron"
@@ -15336,7 +16357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vidh.youniverse.name:5050/MSTV/english/chunklist_w1133422319.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:35.963Z"
         }
       ],
       "language": "eng"
@@ -15351,7 +16373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/missionasia/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:35.997Z"
         }
       ],
       "language": "eng"
@@ -15366,7 +16389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-639b4f14be012600070fe1be.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:36.027Z"
         }
       ],
       "language": "eng"
@@ -15381,7 +16405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6478a9e4f77b61000817034b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:36.312Z"
         }
       ],
       "language": "eng"
@@ -15396,7 +16421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-639b4eb4da3fda0008036f6e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:36.318Z"
         }
       ],
       "language": "eng"
@@ -15411,7 +16437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62ea43aa0c43540007f2db96.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:36.899Z"
         }
       ],
       "language": "eng"
@@ -15426,7 +16453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://6096a9cf11ae5.streamlock.net:1943/live/missiontv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:37.247Z"
         }
       ],
       "language": "eng"
@@ -15441,7 +16469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-643814ef479f6400086ff043.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:38.005Z"
         }
       ],
       "language": "eng"
@@ -15456,7 +16485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams2.sofast.tv/vglive-sk-462904/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:38.958Z"
         }
       ],
       "language": "eng"
@@ -15471,7 +16501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sendlive.online/hls/mmtv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:39.126Z"
         }
       ],
       "language": "eng"
@@ -15486,7 +16517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-streaming-mcdn.api.graylive.quickplay.com/woio-xos1-input-1/woio-xos1-input-1.isml/woio-xos1-input-1-audio_eng=96000-video=388000.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:41.086Z"
         }
       ],
       "language": "eng"
@@ -15501,7 +16533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://v0.trm.md/static/streaming-playlists/hls/9b79338b-1870-4cd7-91d4-0f6ce5cac7ca/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:41.688Z"
         }
       ],
       "language": "ron"
@@ -15516,7 +16549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://v0.trm.md/static/streaming-playlists/hls/d5fafab0-9c37-4746-9e7a-b2d6c0427015/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:41.692Z"
         }
       ],
       "language": "ron"
@@ -15531,7 +16565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://moldovatv.ro/live-tv/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:41.833Z"
         }
       ],
       "language": "ron"
@@ -15546,7 +16581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-monroe-public-access.cablecast.tv/live-4/live/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:41.860Z"
         }
       ],
       "language": "eng"
@@ -15561,7 +16597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/monroe/live/ch1/video.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:42.243Z"
         }
       ],
       "language": "eng"
@@ -15576,7 +16613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-montgomerycommunitymedia.cablecast.tv/live-11/live/stream-4/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:42.821Z"
         }
       ],
       "language": "eng"
@@ -15591,7 +16629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://live.greektv.ca/hls1/greektv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:42.894Z"
         }
       ],
       "language": "eng"
@@ -15606,7 +16645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://moonbug-rokuus.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:42.964Z"
         }
       ],
       "language": "eng"
@@ -15621,7 +16661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://meta.vcdn.biz/bb45aeed3156b62f01b6ca222920d46b_megogo/live/hls/b/700_2500/u_sid/0/o/183161921/rsid/20877e0c-fb47-4c47-a29d-19fadadbccb7/u_uid/2260062697/u_vod/0/u_device/cms_html5/u_devicekey/_site/lip/81.196.174.41*asn/u_srvc/109126/u_did/web_c02d0d195494991ada83b5ae2a2f87d6041c11b1b8f79fc86ae5b7b557894fa0/type.live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:43.265Z"
         }
       ],
       "language": "ron"
@@ -15636,7 +16677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/mc/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:45.774Z"
         }
       ],
       "language": "eng"
@@ -15651,7 +16693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mvg-mv.otteravision.com/mvg/mv/mv_1080p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:45.861Z"
         }
       ],
       "language": "eng"
@@ -15666,7 +16709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:46.248Z"
         }
       ],
       "language": "eng"
@@ -15681,7 +16725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_120/206858-4412962-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:46.982Z"
         }
       ],
       "language": "eng"
@@ -15696,7 +16741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00353-lionsgatestudio-moviesphere-xumo-zh5u0.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:47.066Z"
         }
       ],
       "language": "eng"
@@ -15711,7 +16757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/madrivervalleytv1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:49.001Z"
         }
       ],
       "language": "eng"
@@ -15726,7 +16773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/madrivervalleytv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:49.074Z"
         }
       ],
       "language": "eng"
@@ -15741,7 +16789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsen6.aynaott.com/msnbc/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:49.683Z"
         }
       ],
       "language": "eng"
@@ -15756,7 +16805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ma.anixa.tv/clips/stream/mtv/playlist.php",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:51.116Z"
         }
       ],
       "language": "eng"
@@ -15771,7 +16821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_MTV/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:51.225Z"
         }
       ],
       "language": "eng"
@@ -15786,7 +16837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d14fd1a252d35decbc4080c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:51.286Z"
         }
       ],
       "language": "eng"
@@ -15801,7 +16853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65410176770cf1000866bf31.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:51.335Z"
         }
       ],
       "language": "eng"
@@ -15816,7 +16869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61780d4267bf4d00077ddd73.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:51.816Z"
         }
       ],
       "language": "eng"
@@ -15831,7 +16885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6177fe76691b2e000702c7fc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:51.886Z"
         }
       ],
       "language": "eng"
@@ -15846,7 +16901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654100b4bdf3cf0008aa49c7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:52.498Z"
         }
       ],
       "language": "eng"
@@ -15861,7 +16917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6851407c21f49d1b9d177493.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:52.612Z"
         }
       ],
       "language": "eng"
@@ -15876,7 +16933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-685140bd21f49d1b9d177e21.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:52.945Z"
         }
       ],
       "language": "eng"
@@ -15891,7 +16949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64f8a0c230ab3300084369b8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:53.280Z"
         }
       ],
       "language": "eng"
@@ -15906,7 +16965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5cf96d351652631e36d4331f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:53.329Z"
         }
       ],
       "language": "eng"
@@ -15921,7 +16981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09072a09bbe00078f5692.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:53.568Z"
         }
       ],
       "language": "eng"
@@ -15936,7 +16997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1d66518447e000717e4c2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:53.814Z"
         }
       ],
       "language": "eng"
@@ -15951,7 +17013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d3609cd6a6c78d7672f2a81.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:53.863Z"
         }
       ],
       "language": "eng"
@@ -15966,7 +17029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.mtvgy.com/mtvguyana/index.fmp4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:55.145Z"
         }
       ],
       "language": "eng"
@@ -15981,7 +17045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68b9b0dbf9cf3d7cb9f56d88.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:55.402Z"
         }
       ],
       "language": "eng"
@@ -15996,7 +17061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_MTV_LIVE/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:55.416Z"
         }
       ],
       "language": "eng"
@@ -16011,7 +17077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ca672f515a62078d2ec0ad2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:55.498Z"
         }
       ],
       "language": "eng"
@@ -16026,7 +17093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62cd9641393d8400076f34db.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:39:59.193Z"
         }
       ],
       "language": "eng"
@@ -16041,7 +17109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64f9cccf110545000837912e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:01.330Z"
         }
       ],
       "language": "eng"
@@ -16056,7 +17125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d14fdb8ca91eedee1633117.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:01.859Z"
         }
       ],
       "language": "eng"
@@ -16071,7 +17141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6541010f770cf1000866be98.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:01.920Z"
         }
       ],
       "language": "eng"
@@ -16086,7 +17157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09342b3a6230007a45119.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:02.210Z"
         }
       ],
       "language": "eng"
@@ -16101,7 +17173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c092157e1b8b0007372a35.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:02.885Z"
         }
       ],
       "language": "eng"
@@ -16116,7 +17189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1df62b7672a0007b6c9ba.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:04.026Z"
         }
       ],
       "language": "eng"
@@ -16131,7 +17205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c08d7c73bdb800070eef0a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:04.084Z"
         }
       ],
       "language": "eng"
@@ -16146,7 +17221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09039ebd75200072587f9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:04.221Z"
         }
       ],
       "language": "eng"
@@ -16161,7 +17237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.streamnet.pro/musceltv/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:04.648Z"
         }
       ],
       "language": "ron"
@@ -16176,7 +17253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/mb_classic/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:04.760Z"
         }
       ],
       "language": "eng"
@@ -16191,7 +17269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/mb_dance/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:05.112Z"
         }
       ],
       "language": "eng"
@@ -16206,7 +17285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/mb_hits/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:05.228Z"
         }
       ],
       "language": "eng"
@@ -16221,7 +17301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/mb_sexy/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:05.539Z"
         }
       ],
       "language": "eng"
@@ -16236,7 +17317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://afghantv.app/hls2/muslimnetwork/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:05.669Z"
         }
       ],
       "language": "eng"
@@ -16251,7 +17333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastly.live.brightcove.com/6374054671112/eu-west-1/6058004203001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiYXplMnp5LmVncmVzcy55ODN1ZWIiLCJhY2NvdW50X2lkIjoiNjA1ODAwNDIwMzAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyI2MDU4MDA0MjAzMDAxIl0sImp0aSI6IjYzNzQwNTQ2NzExMTIifQ.3FmuTna3DAmY7xlhK5fk6LMrosrtrR5VsU2QOgYO5y4/playlist-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:05.678Z"
         }
       ],
       "language": "eng"
@@ -16266,7 +17349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://op-group1-densxvisionhd-1.dens.tv/h/h18/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:06.858Z"
         }
       ],
       "language": "eng"
@@ -16281,7 +17365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mrtvott.com/cache/MITV/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:07.440Z"
         }
       ],
       "language": "eng"
@@ -16296,7 +17381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/mydestinationtv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:07.574Z"
         }
       ],
       "language": "eng"
@@ -16311,7 +17397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aenetworks-mysterytv-rakuten.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:09.531Z"
         }
       ],
       "language": "eng"
@@ -16326,7 +17413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://appletree-mytimeuk-rakuten.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:09.969Z"
         }
       ],
       "language": "eng"
@@ -16341,7 +17429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://appletree-mytimeau-samsung.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:10.254Z"
         }
       ],
       "language": "eng"
@@ -16356,7 +17445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream2.pivotalelements.com/memfs/2d2e1038-9eb2-44df-a9b9-109de5752f3b_output_0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:10.933Z"
         }
       ],
       "language": "eng"
@@ -16371,7 +17461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/nashuanh2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:12.219Z"
         }
       ],
       "language": "eng"
@@ -16386,7 +17477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.nasul.tv/live/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:12.313Z"
         }
       ],
       "language": "ron"
@@ -16401,7 +17493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/natickpegasus1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:12.697Z"
         }
       ],
       "language": "eng"
@@ -16416,7 +17509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/natickpegasus3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:13.196Z"
         }
       ],
       "language": "eng"
@@ -16431,7 +17525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/natickpegasus2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:13.250Z"
         }
       ],
       "language": "eng"
@@ -16446,7 +17541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/n24-plus-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:13.320Z"
         }
       ],
       "language": "ron"
@@ -16461,7 +17557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/national-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:16.107Z"
         }
       ],
       "language": "ron"
@@ -16476,7 +17573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00090-blueantllc-lovenature-au-samsungau-wggcn.amagi.tv/playlist/amg00090-blueantllc-lovenature-au-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:16.353Z"
         }
       ],
       "language": "eng"
@@ -16491,7 +17589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/nautical_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:16.372Z"
         }
       ],
       "language": "eng"
@@ -16506,7 +17605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_NBA/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:16.944Z"
         }
       ],
       "language": "eng"
@@ -16521,7 +17621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://xumo-xumoent-vc-105-z0vpm.fast.nbcuni.com/live/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:23.651Z"
         }
       ],
       "language": "eng"
@@ -16536,7 +17637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d368vp0qqzvkid.cloudfront.net/11603/88889711/hls/master.m3u8?ads.xumo_channelId=88889711a&ads.xumo_ifaType=&ads.xumo_providerId=3822&ads.xumo_providerName=NBCNBA",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:17.068Z"
         }
       ],
       "language": "eng"
@@ -16551,7 +17653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/e72660594b7a4182982af1690609683d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:17.220Z"
         }
       ],
       "language": "eng"
@@ -16566,7 +17669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/8e6af50d-76df-4208-ab8d-3ff8f512cd38/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:17.603Z"
         }
       ],
       "language": "eng"
@@ -16581,7 +17685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/d5f0543d-5f83-4a69-ba01-c5a68f0c09a1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:18.124Z"
         }
       ],
       "language": "eng"
@@ -16596,7 +17701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/50d0fa1b042945a3a4f550f9b8412c83.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:18.641Z"
         }
       ],
       "language": "eng"
@@ -16611,7 +17717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d368vp0qqzvkid.cloudfront.net/11603/88889706/hls/master.m3u8?ads.xumo_channelId=88889706a&ads.xumo_ifaType=&ads.xumo_providerId=3831&ads.xumo_providerName=NBCNDAL",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:19.025Z"
         }
       ],
       "language": "eng"
@@ -16626,7 +17733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://plex-xumoent-ch485-e7l5l.fast.nbcuni.com/live/master_5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:23.666Z"
         }
       ],
       "language": "eng"
@@ -16641,7 +17749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1si3n1st4nkgb.cloudfront.net/10502/88896001/hls/master.m3u8?ads.xumo_channelId=88896001",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:23.775Z"
         }
       ],
       "language": "eng"
@@ -16656,7 +17765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d4whmvwm0rdvi.cloudfront.net/10007/99993008/hls/master.m3u8?ads.xumo_channelId=99993008",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:24.412Z"
         }
       ],
       "language": "eng"
@@ -16671,7 +17781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://205444.global.ssl.fastly.net/64ee8a084b935f9f8a6f8825/live_ab333a6093bc11eeb89fbd81423485b7/index.fmp4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:24.726Z"
         }
       ],
       "language": "eng"
@@ -16686,7 +17797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/888aedca-93fb-4aed-bb92-4beb8f1323c6/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:19.320Z"
         }
       ],
       "language": "eng"
@@ -16701,7 +17813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d368vp0qqzvkid.cloudfront.net/11603/88889713/hls/master.m3u8?ads.xumo_channelId=88889713a&ads.xumo_ifaType=&ads.xumo_providerId=3820&ads.xumo_providerName=NBCNBOS",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:19.344Z"
         }
       ],
       "language": "eng"
@@ -16716,7 +17829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/5d314174-0110-42af-8811-feaae073ea1e/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:19.826Z"
         }
       ],
       "language": "eng"
@@ -16731,7 +17845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/b32c0573-4add-4b47-b826-24412d952164/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:20.784Z"
         }
       ],
       "language": "eng"
@@ -16746,7 +17861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01942-amg01942c4-stirr-us-10190.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:20.989Z"
         }
       ],
       "language": "eng"
@@ -16761,7 +17877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://pubads.g.doubleclick.net/ssai/event/kpannrCBQ5KwdV3Hag3Wog/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:21.508Z"
         }
       ],
       "language": "eng"
@@ -16776,7 +17893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d368vp0qqzvkid.cloudfront.net/11603/88889704/hls/master.m3u8?ads.xumo_channelId=88889704a&ads.xumo_ifaType=&ads.xumo_providerId=3818&ads.xumo_providerName=NBCNCHI",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:21.697Z"
         }
       ],
       "language": "eng"
@@ -16791,7 +17909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://townnews.g-mana.live/media/e6909128-cd42-4690-8340-4b8a49455666/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:21.717Z"
         }
       ],
       "language": "eng"
@@ -16806,7 +17925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01942-amg01942c5-stirr-us-10184.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:21.814Z"
         }
       ],
       "language": "eng"
@@ -16821,7 +17941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/b02350ef854c4eef8358eead1f59a5cc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:22.339Z"
         }
       ],
       "language": "eng"
@@ -16836,7 +17957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/d4d923f2-17de-4371-b86d-43490499bcdb/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:23.098Z"
         }
       ],
       "language": "eng"
@@ -16851,7 +17973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nbculocallive.akamaized.net/hls/live/2037498/miami/stream1/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:23.574Z"
         }
       ],
       "language": "eng"
@@ -16866,7 +17989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nbculocallive.akamaized.net/hls/live/2037096/lx/use1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:24.763Z"
         }
       ],
       "language": "eng"
@@ -16881,7 +18005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-edge.iiptvcdn.com/live_event/smil:d36f-93c1-9c58-fdcc-427f.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:25.498Z"
         }
       ],
       "language": "eng"
@@ -16896,7 +18021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6901d952ec12c3c759fdc7cd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:27.212Z"
         }
       ],
       "language": "eng"
@@ -16911,7 +18037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68921b2f4fa995eff24df6c8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:27.531Z"
         }
       ],
       "language": "eng"
@@ -16926,7 +18053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66a106c8a79dea0008aa5ef3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:27.957Z"
         }
       ],
       "language": "eng"
@@ -16941,7 +18069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/ncn-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:28.828Z"
         }
       ],
       "language": "ron"
@@ -16956,7 +18085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/nctv791/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:28.850Z"
         }
       ],
       "language": "eng"
@@ -16971,7 +18101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/315/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:29.166Z"
         }
       ],
       "language": "eng"
@@ -16986,7 +18117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/NDTV24x7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:29.085Z"
         }
       ],
       "language": "eng"
@@ -17001,7 +18133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ndtvprofit.akamaized.net/hls/live/2107404/ndtvprofit/chunklist_5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:29.716Z"
         }
       ],
       "language": "eng"
@@ -17016,7 +18149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.slactech.com:1936/NTvDirect/ngrp:NTvDirect_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:30.917Z"
         }
       ],
       "language": "eng"
@@ -17031,7 +18165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ads.its-newid.net/api/manifest.m3u8?ads.service_id=GB17000088V&channel_id=newid_086&tp=samsung_tvplus",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:31.701Z"
         }
       ],
       "language": "eng"
@@ -17046,7 +18181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ads.its-newid.net/api/manifest.m3u8?ads.service_id=GB1700007PK&channel_id=newid_343&tp=samsung_tvplus",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:31.736Z"
         }
       ],
       "language": "eng"
@@ -17061,7 +18197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wf.newscentral.ng:8443/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:38.905Z"
         }
       ],
       "language": "eng"
@@ -17076,7 +18213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.nowtelly.com/now_usa/live_usa/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.085Z"
         }
       ],
       "language": "eng"
@@ -17091,7 +18229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://skynewsau-live-premium.akamaized.net/hls/live/2105305/skynewsweather/live_540p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:38.084Z"
         }
       ],
       "language": "eng"
@@ -17106,7 +18245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://skynewsau-live-premium.akamaized.net/hls/live/2105306/skynewsextra/live_540p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:38.093Z"
         }
       ],
       "language": "eng"
@@ -17121,7 +18261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00217-newsmax-newsmax-zeasn-022k9.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.184Z"
         }
       ],
       "language": "eng"
@@ -17136,7 +18277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_120/206858-4404556-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.219Z"
         }
       ],
       "language": "eng"
@@ -17151,7 +18293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nmx1ota.akamaized.net/hls/live/2107010/Live_1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.342Z"
         }
       ],
       "language": "eng"
@@ -17166,7 +18309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/1049/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.669Z"
         }
       ],
       "language": "eng"
@@ -17181,7 +18325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/e3e6e29095844c4ba7d887f01e44a5ef/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.723Z"
         }
       ],
       "language": "eng"
@@ -17196,7 +18341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ced7d5df64be98e07ed47b6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.738Z"
         }
       ],
       "language": "eng"
@@ -17211,7 +18357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.pishow.tv/ott/live/455/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:39.982Z"
         }
       ],
       "language": "eng"
@@ -17226,7 +18373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=106",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:40.205Z"
         }
       ],
       "language": "eng"
@@ -17241,7 +18389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nhl-firetv.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:40.365Z"
         }
       ],
       "language": "eng"
@@ -17256,7 +18405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/test_nick_jr/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:41.970Z"
         }
       ],
       "language": "eng"
@@ -17271,7 +18421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://94.130.48.67:8042/stream/111/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:42.080Z"
         }
       ],
       "language": "eng"
@@ -17286,7 +18437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://102.129.186.182:81/nick/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:42.346Z"
         }
       ],
       "language": "eng"
@@ -17301,7 +18453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.253.74.210:7070/stream/116/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:42.907Z"
         }
       ],
       "language": "eng"
@@ -17316,7 +18469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ca6748a37b88b269472dad9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:43.642Z"
         }
       ],
       "language": "eng"
@@ -17331,7 +18485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdb75c3afd1200079146a6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:43.857Z"
         }
       ],
       "language": "eng"
@@ -17346,7 +18501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://90.183.52.46:4000/play/a046/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:44.282Z"
         }
       ],
       "language": "eng"
@@ -17361,7 +18517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ma.anixa.tv/clips/stream/nickelodeon/playlist.php",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:44.757Z"
         }
       ],
       "language": "eng"
@@ -17376,7 +18533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/443/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:45.419Z"
         }
       ],
       "language": "eng"
@@ -17391,7 +18549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.253.74.210:7070/stream/117/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:46.340Z"
         }
       ],
       "language": "eng"
@@ -17406,7 +18565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d8d08395f39465da6fb3ec4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:46.494Z"
         }
       ],
       "language": "eng"
@@ -17421,7 +18581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ca673e0d0bd6c2689c94ce3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:46.556Z"
         }
       ],
       "language": "eng"
@@ -17436,7 +18597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://41.205.93.154/NICKTOONS/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:47.774Z"
         }
       ],
       "language": "eng"
@@ -17451,7 +18613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654ca7f92c1d3300086b608c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:47.871Z"
         }
       ],
       "language": "eng"
@@ -17466,7 +18629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://i.mjh.nz/.r/10-nicktoons-90s.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:46.705Z"
         }
       ],
       "language": "eng"
@@ -17481,7 +18645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_023/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:48.089Z"
         }
       ],
       "language": "eng"
@@ -17496,7 +18661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://playworksdigital-ninjakidztv-1-us.xumo.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:48.141Z"
         }
       ],
       "language": "eng"
@@ -17511,7 +18677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/citynmb/G2044_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:49.124Z"
         }
       ],
       "language": "eng"
@@ -17526,7 +18693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728d33f030a2c0008edf4be.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:49.387Z"
         }
       ],
       "language": "eng"
@@ -17541,7 +18709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728d2be529ac9000830dc15.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:49.516Z"
         }
       ],
       "language": "eng"
@@ -17556,7 +18725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6728d30cdaad7f000881d979.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:49.574Z"
         }
       ],
       "language": "eng"
@@ -17571,7 +18741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sscsott.com/srt/noortvuk/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:49.974Z"
         }
       ],
       "language": "eng"
@@ -17586,7 +18757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64eca23c9c1e390008524ae6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:50.285Z"
         }
       ],
       "language": "eng"
@@ -17601,7 +18773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.noroc.tv/noroc/bitrate_1080p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:50.438Z"
         }
       ],
       "language": "ron"
@@ -17616,7 +18789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://server.thelegitpro.in/northeastlive/northeastlive/index.fmp4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:50.667Z"
         }
       ],
       "language": "eng"
@@ -17631,7 +18805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5dc2ba1a9c91420009db4858.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:51.386Z"
         }
       ],
       "language": "eng"
@@ -17646,7 +18821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/nost_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:51.495Z"
         }
       ],
       "language": "eng"
@@ -17661,7 +18837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/nostalgia-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:51.541Z"
         }
       ],
       "language": "ron"
@@ -17676,7 +18853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://svs.itworkscdn.net/noursatenglive/noursateng.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:51.766Z"
         }
       ],
       "language": "eng"
@@ -17691,7 +18869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://novapress.ro:2022/live/nova/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:51.996Z"
         }
       ],
       "language": "ron"
@@ -17706,7 +18885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streaming.aurora.enhanced.live/live/mpc/enl0eG1mLmVncmVzcy5mZDJ2eHI=/out/v1/IT_SIMULCAST/NOVE/CMAF/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:52.292Z"
         }
       ],
       "language": "eng"
@@ -17721,7 +18901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01076-amg01076c19-rakuten-gb-8653.playouts.now.amagi.tv/playlist/amg01076-lightning-now90s00s-rakutengb/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:52.937Z"
         }
       ],
       "language": "eng"
@@ -17736,7 +18917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lightning-now90s-samsungnz.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:53.130Z"
         }
       ],
       "language": "eng"
@@ -17751,7 +18933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-204968.castr.net/64e0c91d08bff3041638aee3/live_a4243540d4b911f0b624bda5e9a32aa9/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:53.237Z"
         }
       ],
       "language": "eng"
@@ -17766,7 +18949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=15811",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:53.314Z"
         }
       ],
       "language": "eng"
@@ -17781,7 +18965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ntd02.akamaized.net/HD-NY/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:53.879Z"
         }
       ],
       "language": "eng"
@@ -17796,7 +18981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.ntdtv.com/mllive860/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:54.201Z"
         }
       ],
       "language": "eng"
@@ -17811,7 +18997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.ntdtv.com/cwlive220/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:54.398Z"
         }
       ],
       "language": "eng"
@@ -17826,7 +19013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg17596-ntdtv-amg17596c1-rakuten-gb-6741.playouts.now.amagi.tv/playlist/amg17596-newtangdynastytelevision-ntdtv-rakutengb/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:54.476Z"
         }
       ],
       "language": "eng"
@@ -17841,7 +19029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ntd02.akamaized.net/NTD-UK/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:54.506Z"
         }
       ],
       "language": "eng"
@@ -17856,7 +19045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ntd02.akamaized.net/HD-LA/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:53.944Z"
         }
       ],
       "language": "eng"
@@ -17871,7 +19061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/201748-1431018-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:54.983Z"
         }
       ],
       "language": "eng"
@@ -17886,7 +19077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/201748-1431018-1/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:55.419Z"
         }
       ],
       "language": "eng"
@@ -17901,7 +19093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63dbe8a1c111bc0008dec8b8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:55.508Z"
         }
       ],
       "language": "eng"
@@ -17916,7 +19109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63dbe78051f5d000083e9249.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:55.639Z"
         }
       ],
       "language": "eng"
@@ -17931,7 +19125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bebb3a67307900077a7f9d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:55.939Z"
         }
       ],
       "language": "eng"
@@ -17946,7 +19141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_002/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:55.944Z"
         }
       ],
       "language": "eng"
@@ -17961,7 +19157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-saha.cdnvideo.ru/saha/saha/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:56.085Z"
         }
       ],
       "language": "eng"
@@ -17976,7 +19173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://oan-plus-tcl.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:56.619Z"
         }
       ],
       "language": "eng"
@@ -17991,7 +19189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live77cdn2.antenaplay.ro/live_ObservatorNews/live_ObservatorNews.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:57.057Z"
         }
       ],
       "language": "ron"
@@ -18006,7 +19205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5d12bc59c4748.streamlock.net/redirect/ocnbroadcasting.com/ocnbroadcasting2?type=m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:57.082Z"
         }
       ],
       "language": "eng"
@@ -18021,7 +19221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d25tgymtnqzu8s.cloudfront.net/smil:okey/playlist.m3u8?id=3",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:58.040Z"
         }
       ],
       "language": "eng"
@@ -18036,7 +19237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/155/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:58.290Z"
         }
       ],
       "language": "eng"
@@ -18051,7 +19253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/olelo/G0125_009/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:59.550Z"
         }
       ],
       "language": "eng"
@@ -18066,7 +19269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/olelo/G0125_011/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:59.670Z"
         }
       ],
       "language": "eng"
@@ -18081,7 +19285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/olelo/G0125_012/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:40:59.879Z"
         }
       ],
       "language": "eng"
@@ -18096,7 +19301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/olelo/G0125_013/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:00.049Z"
         }
       ],
       "language": "eng"
@@ -18111,7 +19317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:00.104Z"
         }
       ],
       "language": "eng"
@@ -18126,7 +19333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://oitnhls.wns.live/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:00.119Z"
         }
       ],
       "language": "eng"
@@ -18141,7 +19349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62cd971cec90c20007081050.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:00.282Z"
         }
       ],
       "language": "eng"
@@ -18156,7 +19365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_OAN/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:00.519Z"
         }
       ],
       "language": "eng"
@@ -18171,7 +19381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://origin-http-delivery.isilive.ca/live/_definst_/ontla/house-en/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:01.131Z"
         }
       ],
       "language": "eng"
@@ -18186,7 +19397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/ontarioca/G2446_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:01.139Z"
         }
       ],
       "language": "eng"
@@ -18201,7 +19413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ontv4u-orka.b-cdn.net/ONTV4U-ORKA/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:01.148Z"
         }
       ],
       "language": "eng"
@@ -18216,7 +19429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/ogat1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:01.169Z"
         }
       ],
       "language": "eng"
@@ -18231,7 +19445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/orizont-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:01.460Z"
         }
       ],
       "language": "ron"
@@ -18246,7 +19461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5dcabf026b188.streamlock.net/OceansTV/livestream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:01.835Z"
         }
       ],
       "language": "eng"
@@ -18261,7 +19477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://otv.hibridcdn.net/otv/tv_abr/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:02.277Z"
         }
       ],
       "language": "eng"
@@ -18276,7 +19493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1e354daam8g5r.cloudfront.net/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:02.571Z"
         }
       ],
       "language": "eng"
@@ -18291,7 +19509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_OUTDOOR/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:03.050Z"
         }
       ],
       "language": "eng"
@@ -18306,7 +19525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://freem3u.xyz/api/live/play.m3u8?vid=216",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:03.130Z"
         }
       ],
       "language": "eng"
@@ -18321,7 +19541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3o593mz1glx8d.cloudfront.net/OuterSphere_US.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:03.321Z"
         }
       ],
       "language": "eng"
@@ -18336,7 +19557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/1f93c13275024afb9e0ead299624073d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:03.594Z"
         }
       ],
       "language": "eng"
@@ -18351,7 +19573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://outsidetv-firetv.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:04.033Z"
         }
       ],
       "language": "eng"
@@ -18366,7 +19589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://pac12-firetv.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:04.892Z"
         }
       ],
       "language": "eng"
@@ -18381,7 +19605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.feed.thepalmbeaches.tv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:05.193Z"
         }
       ],
       "language": "eng"
@@ -18396,7 +19621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://live.stream.cdn.pamirtv.com/ptv/d0dbe915091d400bd8ee7f27f0791303.sdp/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:05.199Z"
         }
       ],
       "language": "eng"
@@ -18411,7 +19637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://181.78.8.199:8000/play/a0bt/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:05.237Z"
         }
       ],
       "language": "eng"
@@ -18426,7 +19653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://panjabtv.akamaized.net/panjabtv/panjabtvhlsout/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:05.376Z"
         }
       ],
       "language": "eng"
@@ -18441,7 +19669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c18e1e0cd4cc00076bc4b3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:06.209Z"
         }
       ],
       "language": "eng"
@@ -18456,7 +19685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19af83fae0a00078c8918.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:06.445Z"
         }
       ],
       "language": "eng"
@@ -18471,7 +19701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5cb0cae7a461406ffe3f5213.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:07.658Z"
         }
       ],
       "language": "eng"
@@ -18486,7 +19717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_PARAMOUNT_NETWORK/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:08.228Z"
         }
       ],
       "language": "eng"
@@ -18501,7 +19733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ff8c708653d080007361b14.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:08.570Z"
         }
       ],
       "language": "eng"
@@ -18516,7 +19749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60804d85858bd00007c5d591.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:08.872Z"
         }
       ],
       "language": "eng"
@@ -18531,7 +19765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.pardesitv.online/pardesi/tracks-v1a1/mono.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:09.161Z"
         }
       ],
       "language": "eng"
@@ -18546,7 +19781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/party-mix-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:09.998Z"
         }
       ],
       "language": "eng"
@@ -18561,7 +19797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cpcdn.azureedge.net/PASCOCOFLLIVE1/PASCOCOFLLIVE1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:10.435Z"
         }
       ],
       "language": "eng"
@@ -18576,7 +19813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/cus01/ucur1/Payvand/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:10.463Z"
         }
       ],
       "language": "eng"
@@ -18591,7 +19829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://pbcvideostreams1.pbc.gov/memfs/1af49f9a-6b90-4ec2-a640-7f65ceebed4a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:10.511Z"
         }
       ],
       "language": "eng"
@@ -18606,7 +19845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60d39387706fe50007fda8e8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:10.913Z"
         }
       ],
       "language": "eng"
@@ -18621,7 +19861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00953-pbsusa-antiroadshow-xumo-x6ud5.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:12.714Z"
         }
       ],
       "language": "eng"
@@ -18636,7 +19877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.pbskids.org/out/v1/14507d931bbe48a69287e4850e53443c/est.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:12.966Z"
         }
       ],
       "language": "eng"
@@ -18651,7 +19893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.pbskids.org/out/v1/94b88ad58fc14f84a9382341f1c00b82/akst.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:13.019Z"
         }
       ],
       "language": "eng"
@@ -18666,7 +19909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.pbskids.org/out/v1/aa31792fee094b24b09045483f04d150/hast.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:13.441Z"
         }
       ],
       "language": "eng"
@@ -18681,7 +19925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.pbskids.org/out/v1/3fe3030a2c8045a3932f4289d9eba3e6/mst.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:13.468Z"
         }
       ],
       "language": "eng"
@@ -18696,7 +19941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.pbskids.org/out/v1/11f2e6b73eaa4887b3746cb863960e79/pst.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:13.518Z"
         }
       ],
       "language": "eng"
@@ -18711,7 +19957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://kqeddt2.lls.pbs.org/kqeddt2-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:11.592Z"
         }
       ],
       "language": "eng"
@@ -18726,7 +19973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://kviedt2.lls.pbs.org/kviedt2-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:12.035Z"
         }
       ],
       "language": "eng"
@@ -18741,7 +19989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wedqdt4.lls.pbs.org/wedqdt4-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:12.039Z"
         }
       ],
       "language": "eng"
@@ -18756,7 +20005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dai.google.com/linear/hls/event/RDmbn03GRCOLNG1eetEKhg/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:12.123Z"
         }
       ],
       "language": "eng"
@@ -18771,7 +20021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/pacificaca2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:14.792Z"
         }
       ],
       "language": "eng"
@@ -18786,7 +20037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/pacificaca1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.304Z"
         }
       ],
       "language": "eng"
@@ -18801,7 +20053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/pinole/G0032_004/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.496Z"
         }
       ],
       "language": "eng"
@@ -18816,7 +20069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/pinole/G0032_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.508Z"
         }
       ],
       "language": "eng"
@@ -18831,7 +20085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dzkyvlfyge.erbvr.com/PeaceTvEnglish/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.678Z"
         }
       ],
       "language": "eng"
@@ -18846,7 +20101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://iptv.peer.biz/live/peertv-en.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.817Z"
         }
       ],
       "language": "eng"
@@ -18861,7 +20117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://playlist.dacast.com/live/a72117af-d78e-7ffe-7c12-1af6cd4a8483-live-42172a86-494b-a866-498f-dbaff4b5e3c0/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.840Z"
         }
       ],
       "language": "eng"
@@ -18876,7 +20133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumbai-edge.smartplaytv.in/PeopleAreAwesome/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:15.914Z"
         }
       ],
       "language": "eng"
@@ -18891,7 +20149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3ab76e42.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X1Blb3BsZUFyZUF3ZXNvbWVfSExT/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:16.029Z"
         }
       ],
       "language": "eng"
@@ -18906,7 +20165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d14fb6c84dd37df3b4290c5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:16.177Z"
         }
       ],
       "language": "eng"
@@ -18921,7 +20181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6197086891ddd4000739941a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:16.216Z"
         }
       ],
       "language": "eng"
@@ -18936,7 +20197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63e20bd160bc8f0008b4c949.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:16.590Z"
         }
       ],
       "language": "eng"
@@ -18951,7 +20213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/petstv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:16.766Z"
         }
       ],
       "language": "eng"
@@ -18966,7 +20229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64f6180130ab3300083d896b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:17.060Z"
         }
       ],
       "language": "eng"
@@ -18981,7 +20245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d11k1mnrgfposz.cloudfront.net/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:17.584Z"
         }
       ],
       "language": "eng"
@@ -18996,7 +20261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/phillycam1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:18.578Z"
         }
       ],
       "language": "eng"
@@ -19011,7 +20277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/ctyphiladelphia1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:19.157Z"
         }
       ],
       "language": "eng"
@@ -19026,7 +20293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/bGZUOHp2TnhudnM2/phoenix/G1498_006/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:19.189Z"
         }
       ],
       "language": "eng"
@@ -19041,7 +20309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09a3894aa450007814aea.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:19.626Z"
         }
       ],
       "language": "eng"
@@ -19056,7 +20325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c091343bf4940007803e03.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:19.891Z"
         }
       ],
       "language": "eng"
@@ -19071,7 +20341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1d6e1f5acaf0007f8381d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:19.962Z"
         }
       ],
       "language": "eng"
@@ -19086,7 +20357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://toy.vcdn.fyi/placid/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:20.265Z"
         }
       ],
       "language": "eng"
@@ -19101,7 +20373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vcp.myplaytv.com/glowtv/glowtv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:20.958Z"
         }
       ],
       "language": "eng"
@@ -19116,7 +20389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66dad50215d2c60008d7afbd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:22.341Z"
         }
       ],
       "language": "eng"
@@ -19131,7 +20405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c095861782bd000780e0ba.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:23.276Z"
         }
       ],
       "language": "eng"
@@ -19146,7 +20421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1e270489a9c000874d209.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:23.294Z"
         }
       ],
       "language": "eng"
@@ -19161,7 +20437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-561d7d484dc7c8770484914a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:23.352Z"
         }
       ],
       "language": "eng"
@@ -19176,7 +20453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62ea3c2e4823db00072788ed.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:23.671Z"
         }
       ],
       "language": "eng"
@@ -19191,7 +20469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69d7ebb726eeec84158e28cb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:23.679Z"
         }
       ],
       "language": "eng"
@@ -19206,7 +20485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-653bdb0fbdf3cf00089cc395.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:24.190Z"
         }
       ],
       "language": "eng"
@@ -19221,7 +20501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6462190b7cb4b1000862dd60.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:24.342Z"
         }
       ],
       "language": "eng"
@@ -19236,7 +20517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-692ebafce72f03e07e7df985.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:24.604Z"
         }
       ],
       "language": "eng"
@@ -19251,7 +20533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ddf8ea0d000120009bcad83.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:24.609Z"
         }
       ],
       "language": "eng"
@@ -19266,7 +20549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5812b7d3249444e05d09cc49.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:26.505Z"
         }
       ],
       "language": "eng"
@@ -19281,7 +20565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68d25b620a0f3829b116bb6f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:27.397Z"
         }
       ],
       "language": "eng"
@@ -19296,7 +20581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67ed8f7e443f0671bc2b2368.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:28.237Z"
         }
       ],
       "language": "eng"
@@ -19311,7 +20597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-625e8cb585ef320007806caf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:28.468Z"
         }
       ],
       "language": "eng"
@@ -19326,7 +20613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65b915b1dc10a40008d53797.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:29.851Z"
         }
       ],
       "language": "eng"
@@ -19341,7 +20629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65b916ec3af63d00084c5841.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:31.016Z"
         }
       ],
       "language": "eng"
@@ -19356,7 +20645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660d5f2a635c75000828855f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:31.178Z"
         }
       ],
       "language": "eng"
@@ -19371,7 +20661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5812b3a4249444e05d09cc46.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:31.392Z"
         }
       ],
       "language": "eng"
@@ -19386,7 +20677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69c592dff0f1a7d732dc6e36.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:31.586Z"
         }
       ],
       "language": "eng"
@@ -19401,7 +20693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d134a74ca91eedee1630faa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:31.938Z"
         }
       ],
       "language": "eng"
@@ -19416,7 +20709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68d25c623175a2780d051d3a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:32.299Z"
         }
       ],
       "language": "eng"
@@ -19431,7 +20725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5a4d3a00ad95e4718ae8d8db.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:33.201Z"
         }
       ],
       "language": "eng"
@@ -19446,7 +20741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e92178946c8000079a3160.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:33.263Z"
         }
       ],
       "language": "eng"
@@ -19461,7 +20757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62ea3d24b8e02600071fa296.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:33.342Z"
         }
       ],
       "language": "eng"
@@ -19476,7 +20773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-603fde9026ecbf0007752c2c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:34.550Z"
         }
       ],
       "language": "eng"
@@ -19491,7 +20789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d4ae94ef1a1bbb350ca41bb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:34.814Z"
         }
       ],
       "language": "eng"
@@ -19506,7 +20805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e92708a7ce600007b2676a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:36.474Z"
         }
       ],
       "language": "eng"
@@ -19521,7 +20821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d767790d0438aceb41d03ae.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:34.948Z"
         }
       ],
       "language": "eng"
@@ -19536,7 +20837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f4d8594eb979c0007706de7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:36.518Z"
         }
       ],
       "language": "eng"
@@ -19551,7 +20853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5c5c31f2f21b553c1f673fb0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:37.583Z"
         }
       ],
       "language": "eng"
@@ -19566,7 +20869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5c665db3e6c01b72c4977bc2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:37.699Z"
         }
       ],
       "language": "eng"
@@ -19581,7 +20885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62b30b0060a9ca0007d628b4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:38.046Z"
         }
       ],
       "language": "eng"
@@ -19596,7 +20901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdb0bcd707b9000739d2e5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:38.746Z"
         }
       ],
       "language": "eng"
@@ -19611,7 +20917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5dc3fc6b9133f500099c7d98.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:38.809Z"
         }
       ],
       "language": "eng"
@@ -19626,7 +20933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5b64a245a202b3337f09e51d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:38.879Z"
         }
       ],
       "language": "eng"
@@ -19641,7 +20949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-685041d936c9361b1921c26c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:38.979Z"
         }
       ],
       "language": "eng"
@@ -19656,7 +20965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693adae77f21340ef9746f56.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:39.107Z"
         }
       ],
       "language": "eng"
@@ -19671,7 +20981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0afa0a09bbe00078f8378.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:39.236Z"
         }
       ],
       "language": "eng"
@@ -19686,7 +20997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09515fbb4b50007d221f5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:39.633Z"
         }
       ],
       "language": "eng"
@@ -19701,7 +21013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1e1e55deef000075aed0c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:40.116Z"
         }
       ],
       "language": "eng"
@@ -19716,7 +21029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ddf930548ff9b00090d5686.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:41.239Z"
         }
       ],
       "language": "eng"
@@ -19731,7 +21045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68fbf8101d26140175db8b58.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:41.628Z"
         }
       ],
       "language": "eng"
@@ -19746,7 +21061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6036e7c385749f00075dbd3b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:42.193Z"
         }
       ],
       "language": "eng"
@@ -19761,7 +21077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68dfa3e2cc3c6cd904052c41.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:43.711Z"
         }
       ],
       "language": "eng"
@@ -19776,7 +21093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-686faf533ffa5e0c912688e7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:44.548Z"
         }
       ],
       "language": "eng"
@@ -19791,7 +21109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c01bed508ba507f0d0dd60.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:44.576Z"
         }
       ],
       "language": "eng"
@@ -19806,7 +21125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c01afa3efb41cd9759dafb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:45.162Z"
         }
       ],
       "language": "eng"
@@ -19821,7 +21141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c01b9a6bdcf3b9a64febcc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:45.505Z"
         }
       ],
       "language": "eng"
@@ -19836,7 +21157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5a4d35dfa5c02e717a234f86.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:47.500Z"
         }
       ],
       "language": "eng"
@@ -19851,7 +21173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69d6c7befde57cd5ba0160c3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:48.356Z"
         }
       ],
       "language": "eng"
@@ -19866,7 +21189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a19e1b9ab2df0007bef7a7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:49.024Z"
         }
       ],
       "language": "eng"
@@ -19881,7 +21205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a1c9790cc44a0007dc8857.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:49.045Z"
         }
       ],
       "language": "eng"
@@ -19896,7 +21221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a19cb7847a090007f230d7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:49.472Z"
         }
       ],
       "language": "eng"
@@ -19911,7 +21237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-569546031a619b8f07ce6e25.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:49.747Z"
         }
       ],
       "language": "eng"
@@ -19926,7 +21253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62ea3f8a38acc80007072d26.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:50.327Z"
         }
       ],
       "language": "eng"
@@ -19941,7 +21269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64b585f84ea480000838e446.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:50.591Z"
         }
       ],
       "language": "eng"
@@ -19956,7 +21285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63808dc806aa4700075f319a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:51.551Z"
         }
       ],
       "language": "eng"
@@ -19971,7 +21301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-655caaaac0fc8800086f5d99.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:52.227Z"
         }
       ],
       "language": "eng"
@@ -19986,7 +21317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-655ca7aa635c3c000855d655.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:52.273Z"
         }
       ],
       "language": "eng"
@@ -20001,7 +21333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-655ca99dfbc15b00081f209c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:52.866Z"
         }
       ],
       "language": "eng"
@@ -20016,7 +21349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0b7eb8929e40007ff5125.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:52.950Z"
         }
       ],
       "language": "eng"
@@ -20031,7 +21365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09a78bd194c0008decc28.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:53.510Z"
         }
       ],
       "language": "eng"
@@ -20046,7 +21381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1d459fbb4b50007d24647.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:53.518Z"
         }
       ],
       "language": "eng"
@@ -20061,7 +21397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0b36d18447e000717d686.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:53.616Z"
         }
       ],
       "language": "eng"
@@ -20076,7 +21413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63dbe8c8a9957100087798a3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:53.781Z"
         }
       ],
       "language": "eng"
@@ -20091,7 +21429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63dbe80f60bc8f0008aa7c78.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:53.786Z"
         }
       ],
       "language": "eng"
@@ -20106,7 +21445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d8beeb39b5d5d5f8c672530.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:54.069Z"
         }
       ],
       "language": "eng"
@@ -20121,7 +21461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5bb3fea0f711fd76340eebff.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:54.075Z"
         }
       ],
       "language": "eng"
@@ -20136,7 +21477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac52fac9b5923e0585578b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:54.138Z"
         }
       ],
       "language": "eng"
@@ -20151,7 +21493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac51dede4a734954b5a67a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:54.908Z"
         }
       ],
       "language": "eng"
@@ -20166,7 +21509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac52b05190a45dc990ee39.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:55.272Z"
         }
       ],
       "language": "eng"
@@ -20181,7 +21525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ad8d3a31b95267e225e4e09.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:55.482Z"
         }
       ],
       "language": "eng"
@@ -20196,7 +21541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62b1e4189f5db20007ff03be.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:55.777Z"
         }
       ],
       "language": "eng"
@@ -20211,7 +21557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62b30beb81f89900071fc7b9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:56.485Z"
         }
       ],
       "language": "eng"
@@ -20226,7 +21573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5adf96e3e738977e2c31cb04.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:41:59.975Z"
         }
       ],
       "language": "eng"
@@ -20241,7 +21589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e92a58f3e4290007290c96.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:00.114Z"
         }
       ],
       "language": "eng"
@@ -20256,7 +21605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65a7b0814a10d800085ff2df.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:00.206Z"
         }
       ],
       "language": "eng"
@@ -20271,7 +21621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-617b37b361e0fd0008cfd8c5.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:01.184Z"
         }
       ],
       "language": "eng"
@@ -20286,7 +21637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69fa3faab9c0f0d444e64de3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:02.421Z"
         }
       ],
       "language": "eng"
@@ -20301,7 +21653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69a9ae4d3bd16a4ed04240d7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:03.028Z"
         }
       ],
       "language": "eng"
@@ -20316,7 +21669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69aee8a1acb7eb0bb68df641.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:03.602Z"
         }
       ],
       "language": "eng"
@@ -20331,7 +21685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-630f1e6073bd1800082107f0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:03.913Z"
         }
       ],
       "language": "eng"
@@ -20346,7 +21701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6408b41b83f58900081d91ad.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:04.351Z"
         }
       ],
       "language": "eng"
@@ -20361,7 +21717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5c5c2b9d8002db3c3e0b1c6d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:04.380Z"
         }
       ],
       "language": "eng"
@@ -20376,7 +21733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5a66795ef91fef2c7031c599.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:04.603Z"
         }
       ],
       "language": "eng"
@@ -20391,7 +21749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a19da6847a090007f230da.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:04.827Z"
         }
       ],
       "language": "eng"
@@ -20406,7 +21765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a1c954d3897300079fcb12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:05.181Z"
         }
       ],
       "language": "eng"
@@ -20421,7 +21781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63eb57d6c111bc0008fe2658.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:05.453Z"
         }
       ],
       "language": "eng"
@@ -20436,7 +21797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61f9597e78607000074f6c2a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:06.453Z"
         }
       ],
       "language": "eng"
@@ -20451,7 +21813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61f957e051cca800076f2358.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:07.636Z"
         }
       ],
       "language": "eng"
@@ -20466,7 +21829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-619247c34a270700077c8415.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:08.671Z"
         }
       ],
       "language": "eng"
@@ -20481,7 +21845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-563a970aa1a1f7fe7c9daad7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:08.858Z"
         }
       ],
       "language": "eng"
@@ -20496,7 +21861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5dc2c00abfed110009d97243.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:09.034Z"
         }
       ],
       "language": "eng"
@@ -20511,7 +21877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62f53dc6ee9a0400071dc22b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:09.326Z"
         }
       ],
       "language": "eng"
@@ -20526,7 +21893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac56363efb41cd979a8005.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:09.397Z"
         }
       ],
       "language": "eng"
@@ -20541,7 +21909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac55bb3efb41cd979a65ec.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:09.611Z"
         }
       ],
       "language": "eng"
@@ -20556,7 +21925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68ac55fe3efb41cd979a6877.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:09.803Z"
         }
       ],
       "language": "eng"
@@ -20571,7 +21941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-639b4f75d3d35c0007d37b30.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:10.392Z"
         }
       ],
       "language": "eng"
@@ -20586,7 +21957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6357f3de3643ba0007bc0b50.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:11.914Z"
         }
       ],
       "language": "eng"
@@ -20601,7 +21973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6357f33cb51d2d00077927c6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:14.413Z"
         }
       ],
       "language": "eng"
@@ -20616,7 +21989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ba3fb9c4b078e0f37ad34e8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:14.830Z"
         }
       ],
       "language": "eng"
@@ -20631,7 +22005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f4d863b98b41000076cd061.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:15.228Z"
         }
       ],
       "language": "eng"
@@ -20646,7 +22021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6887aaf4e3703b7d42b71a1e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:15.625Z"
         }
       ],
       "language": "eng"
@@ -20661,7 +22037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5c6dc88fcd232425a6e0f06e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:17.084Z"
         }
       ],
       "language": "eng"
@@ -20676,7 +22053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67352ed93a61d4000881f9fa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:17.768Z"
         }
       ],
       "language": "eng"
@@ -20691,7 +22069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5b4e69e08291147bd04a9fd7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:17.814Z"
         }
       ],
       "language": "eng"
@@ -20706,7 +22085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-600acaff5f2d6e000745effb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:18.111Z"
         }
       ],
       "language": "eng"
@@ -20721,7 +22101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-673247127d5da5000817b4d6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:18.760Z"
         }
       ],
       "language": "eng"
@@ -20736,7 +22117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0b438244e50000758083b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:18.766Z"
         }
       ],
       "language": "eng"
@@ -20751,7 +22133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c097ec8bb1830008e3f962.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:18.772Z"
         }
       ],
       "language": "eng"
@@ -20766,7 +22149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5812be1c249444e05d09cc50.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:19.301Z"
         }
       ],
       "language": "eng"
@@ -20781,7 +22165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e9289f8d467f0007fbc701.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:19.400Z"
         }
       ],
       "language": "eng"
@@ -20796,7 +22181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67f3fb1cdea1c5e0d588ac1b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:21.294Z"
         }
       ],
       "language": "eng"
@@ -20811,7 +22197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67f3fb7d07d2ba4121bd0c8b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:22.782Z"
         }
       ],
       "language": "eng"
@@ -20826,7 +22213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-677d3ad04bd63600082f7c54.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:22.868Z"
         }
       ],
       "language": "eng"
@@ -20841,7 +22229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-677d3a424bd63600082f7baf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:23.209Z"
         }
       ],
       "language": "eng"
@@ -20856,7 +22245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d4bdb635ce813b38639e6a3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:23.899Z"
         }
       ],
       "language": "eng"
@@ -20871,7 +22261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5b4e94282d4ec87bdcbb87cd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:23.938Z"
         }
       ],
       "language": "eng"
@@ -20886,7 +22277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdacc96a3751000811842d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:24.061Z"
         }
       ],
       "language": "eng"
@@ -20901,7 +22293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c017bf337652ee75db201f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:26.379Z"
         }
       ],
       "language": "eng"
@@ -20916,7 +22309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c01732b3900870ec74766f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:26.890Z"
         }
       ],
       "language": "eng"
@@ -20931,7 +22325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68c01785b3900870ec7480e4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:27.041Z"
         }
       ],
       "language": "eng"
@@ -20946,7 +22341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6909e5c3a3a4b49706b8373b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:27.422Z"
         }
       ],
       "language": "eng"
@@ -20961,7 +22357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.live247stream.com/pmi/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:27.492Z"
         }
       ],
       "language": "eng"
@@ -20976,7 +22373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dfoiz3dv1euv7.cloudfront.net/ptnlive-s3/live1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:28.119Z"
         }
       ],
       "language": "eng"
@@ -20991,7 +22389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv.pointville.ag/hls/mystream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:28.543Z"
         }
       ],
       "language": "eng"
@@ -21006,7 +22405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5fc54366b04b2300072e31af.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:29.215Z"
         }
       ],
       "language": "eng"
@@ -21021,7 +22421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://92.114.85.87:8014/play/a00d/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:29.386Z"
         }
       ],
       "language": "eng"
@@ -21036,7 +22437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01753-narrativeentert-popkids-lggb-xyy5k.amagi.tv/ts-eu-w1-n2/playlist/amg01753-narrativeentert-popkids-lggb/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:30.364Z"
         }
       ],
       "language": "eng"
@@ -21051,7 +22453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janus.xpbroadcasting.com:8443/hls/popworld.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:30.680Z"
         }
       ],
       "language": "eng"
@@ -21066,7 +22469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amc-portlandia-1-us.xumo.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:31.254Z"
         }
       ],
       "language": "eng"
@@ -21081,7 +22485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.use1-0004.jwplive.com/live/sites/fGLyccP5/media/FoWynVnP/live.isml/.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:31.261Z"
         }
       ],
       "language": "eng"
@@ -21096,7 +22501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live2.tensila.com/1-1-1.power-tv/hls/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:31.827Z"
         }
       ],
       "language": "eng"
@@ -21111,7 +22517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01258-raycomsports-powernationau-samsungau-18bwc.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:32.013Z"
         }
       ],
       "language": "eng"
@@ -21126,7 +22533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livecdn.live247stream.com/praise/tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:32.062Z"
         }
       ],
       "language": "eng"
@@ -21141,7 +22549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/prima-news-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:32.661Z"
         }
       ],
       "language": "ron"
@@ -21156,7 +22565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://primeasia.selfip.net/Samsung/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:32.865Z"
         }
       ],
       "language": "eng"
@@ -21171,7 +22581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cachestar.privesc.eu/liniar/moldova/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:32.885Z"
         }
       ],
       "language": "ron"
@@ -21186,7 +22597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.ro24tv.ro/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:33.792Z"
         }
       ],
       "language": "ron"
@@ -21201,7 +22613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/psl/G0262_003/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:34.292Z"
         }
       ],
       "language": "eng"
@@ -21216,7 +22629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.180.240.141:8080/hls/main1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:34.553Z"
         }
       ],
       "language": "eng"
@@ -21231,7 +22645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://svs.itworkscdn.net/pulse95live/pulse96/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:34.798Z"
         }
       ],
       "language": "eng"
@@ -21246,7 +22661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live3/pursuit_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:34.805Z"
         }
       ],
       "language": "eng"
@@ -21261,7 +22677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1p1siomv3cm7b.cloudfront.net/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:34.899Z"
         }
       ],
       "language": "eng"
@@ -21276,7 +22693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-696e61287d2afdec4ff2cb75.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:35.060Z"
         }
       ],
       "language": "eng"
@@ -21291,7 +22709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://acasmedia3.acangroup.org/qausaintv/qausaintv_output/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:35.163Z"
         }
       ],
       "language": "eng"
@@ -21306,7 +22725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream8.cinerama.uz/1431/tracks-v1a1/mono.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:35.604Z"
         }
       ],
       "language": "eng"
@@ -21321,7 +22741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/qello-qello001-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:36.054Z"
         }
       ],
       "language": "eng"
@@ -21336,7 +22757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://player.qtv.gm/hls/live.stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:36.074Z"
         }
       ],
       "language": "eng"
@@ -21351,7 +22773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vs2140.vcdn.biz/0ca68e9e27bff1ff8d23519b5d9acbfe_megogo/live/hls/b/700_2490_4000/u_sid/0/o/190218421/rsid/0ad6062a-da94-4998-9598-08eece834674/u_uid/0/u_vod/0/u_device/cms_webandroid/u_devicekey/_site_mobile/lip/86.120.126.66*asn/u_srvc/109126/u_did/web_00eb8979dc50e08f4572830b5a96f2db28ddd9581263144fcb95c26c90424491/type.live/chunklist-sid9102974610344929476-b2490000.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:36.127Z"
         }
       ],
       "language": "ron"
@@ -21366,7 +22789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.djemba.ro/memfs/474f9942-f72b-4130-817a-435cd54b2c36.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:37.031Z"
         }
       ],
       "language": "ron"
@@ -21381,7 +22805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/qvtv/qvtv-web/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:37.578Z"
         }
       ],
       "language": "eng"
@@ -21396,7 +22821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvcuk-live.akamaized.net/hls/live/2097112/qvc/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:38.011Z"
         }
       ],
       "language": "eng"
@@ -21411,7 +22837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc1us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:38.056Z"
         }
       ],
       "language": "eng"
@@ -21426,7 +22853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvcuk-live.akamaized.net/hls/live/2097112/qby/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:38.331Z"
         }
       ],
       "language": "eng"
@@ -21441,7 +22869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvcuk-live.akamaized.net/hls/live/2097112/qex/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:38.758Z"
         }
       ],
       "language": "eng"
@@ -21456,7 +22885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvcuk-live.akamaized.net/hls/live/2097112/qst/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:38.926Z"
         }
       ],
       "language": "eng"
@@ -21471,7 +22901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc2us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:37.906Z"
         }
       ],
       "language": "eng"
@@ -21486,7 +22917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc3us/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:37.946Z"
         }
       ],
       "language": "eng"
@@ -21501,7 +22933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://qwestjazz-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-qwestjazz-rakuten/CDN/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:39.013Z"
         }
       ],
       "language": "eng"
@@ -21516,7 +22949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://samsungau-qwestjazz-samsungtv-zw2jc.amagi.tv/playlist/samsungau-qwestjazz-samsungtv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:39.289Z"
         }
       ],
       "language": "eng"
@@ -21531,7 +22965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-698ddf5a8c21a5f2d64c14a8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:39.748Z"
         }
       ],
       "language": "eng"
@@ -21546,7 +22981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00378-mavtv-amg00378c2-rakuten-us-1048.playouts.now.amagi.tv/playlist/amg00378-mavtvfast-motorsportsnetwork-rakutenus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:40.149Z"
         }
       ],
       "language": "eng"
@@ -21561,7 +22997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00378-amg00378c4-freelivesports-emea-5637.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:40.420Z"
         }
       ],
       "language": "eng"
@@ -21576,7 +23013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/rada-abr/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:40.632Z"
         }
       ],
       "language": "eng"
@@ -21591,7 +23029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/radiant/radiant/radiant/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:40.693Z"
         }
       ],
       "language": "eng"
@@ -21606,7 +23045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://radiochisinau.md/hls/RChisinau.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.084Z"
         }
       ],
       "language": "ron"
@@ -21621,7 +23061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamlov.alsolnet.com/radiofxnet/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.118Z"
         }
       ],
       "language": "eng+ron"
@@ -21636,7 +23077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://radiolive.trm.md/hls_rma/actualitati.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.148Z"
         }
       ],
       "language": "ron"
@@ -21651,7 +23093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://radiolive.trm.md:8001/hls_rmm/muzical.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.205Z"
         }
       ],
       "language": "ron"
@@ -21666,7 +23109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://radiolive.trm.md:8001/hls_rmt/tineret.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.368Z"
         }
       ],
       "language": "ron"
@@ -21681,7 +23125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.3netmedia.ro/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.562Z"
         }
       ],
       "language": "ron"
@@ -21696,7 +23141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream3.srr.ro/live/antenasatelor/chunklist_w1642210843.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.736Z"
         }
       ],
       "language": "ron"
@@ -21711,7 +23157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream3.srr.ro/live/radio-iasi/chunklist_w1565024915.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.802Z"
         }
       ],
       "language": "ron"
@@ -21726,7 +23173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream3.srr.ro/live/Radio-Oltenia/chunklist_w1200239883.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:41.920Z"
         }
       ],
       "language": "ron"
@@ -21741,7 +23189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream3.srr.ro/live/radio-muresr/chunklist_w1731505049.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.045Z"
         }
       ],
       "language": "ron"
@@ -21756,7 +23205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video1.getstreamhosting.com:1936/8560/8560/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.261Z"
         }
       ],
       "language": "eng"
@@ -21771,7 +23221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.antenaplay.ro/zurtv/zurtv/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.272Z"
         }
       ],
       "language": "ron"
@@ -21786,7 +23237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3k8wzt41aflvx.cloudfront.net/RAIEU/Live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.326Z"
         }
       ],
       "language": "eng"
@@ -21801,7 +23253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3k8wzt41aflvx.cloudfront.net/RAIHD/Live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.365Z"
         }
       ],
       "language": "eng"
@@ -21816,7 +23269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dt9mwqwe98q7o.cloudfront.net/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.464Z"
         }
       ],
       "language": "eng"
@@ -21831,7 +23285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://54045f0c40fd442c8b06df076aaf1e85.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6065/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:42.976Z"
         }
       ],
       "language": "eng"
@@ -21846,7 +23301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://9be783d652cd4b099cf63e1dc134c4a3.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6181/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:43.090Z"
         }
       ],
       "language": "eng"
@@ -21861,7 +23317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fee09fd665814f51b939b6d106cf5f66.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6093/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:43.294Z"
         }
       ],
       "language": "eng"
@@ -21876,7 +23333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://e3207568b726401995c25670faaf32e4.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6203/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:43.519Z"
         }
       ],
       "language": "eng"
@@ -21891,7 +23349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fd18f1cadd404894a31a3362c5f319bd.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_RakutenViki-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:43.885Z"
         }
       ],
       "language": "eng"
@@ -21906,7 +23365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rally-tv-live.akamaized.net/hls/live/2117704/RallyTV-Pri/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:44.051Z"
         }
       ],
       "language": "eng"
@@ -21921,7 +23381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-hls.castr-cdn.com/6a05a899db0ebd344a759542/live_9655bc604f8211f19e748901a3f596d0/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:44.074Z"
         }
       ],
       "language": "eng"
@@ -21936,7 +23397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://hls02ns.antenaplay.ro/hls/rapsoida-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:44.084Z"
         }
       ],
       "language": "ron"
@@ -21951,7 +23413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_039/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:44.788Z"
         }
       ],
       "language": "eng"
@@ -21966,7 +23429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964bb3640c8de392514a0c6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:44.960Z"
         }
       ],
       "language": "eng"
@@ -21981,7 +23445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964ba787e92438c2754e924.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.491Z"
         }
       ],
       "language": "eng"
@@ -21996,7 +23461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964baa63dfd98e10945ac51.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.754Z"
         }
       ],
       "language": "eng"
@@ -22011,7 +23477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-634f307c7a068e00072c9982.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.762Z"
         }
       ],
       "language": "eng"
@@ -22026,7 +23493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65660223635c3c00086c2578.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.844Z"
         }
       ],
       "language": "eng"
@@ -22041,7 +23509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/riflecmttv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.931Z"
         }
       ],
       "language": "eng"
@@ -22056,7 +23525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.weathernationtv.com/RAVStirr_poekxujeisurekugzezyg/O1/playlistSCTE35.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.955Z"
         }
       ],
       "language": "eng"
@@ -22071,7 +23541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_118/206858-4404454-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:45.998Z"
         }
       ],
       "language": "eng"
@@ -22086,7 +23557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.15.50/live/real_madrid_tv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:46.016Z"
         }
       ],
       "language": "eng"
@@ -22101,7 +23573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://realitatealive.md/tv/rlive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:46.840Z"
         }
       ],
       "language": "ron"
@@ -22116,7 +23589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/recipetv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:46.983Z"
         }
       ],
       "language": "eng"
@@ -22131,7 +23605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cs.ebmcdn.net/eastbay-live-hs-1/fcps/mp4:fcps/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:47.068Z"
         }
       ],
       "language": "eng"
@@ -22146,7 +23621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:47.204Z"
         }
       ],
       "language": "eng"
@@ -22161,7 +23637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://db34cc6127ac459db55cab5f97cd66b9.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-680-WORBAUENFAST-WHALETVPLUS/680/whaletvplus/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:47.325Z"
         }
       ],
       "language": "eng"
@@ -22176,7 +23653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:47.515Z"
         }
       ],
       "language": "eng"
@@ -22191,7 +23669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://1a3566cb46914c5499fbc86fbc4ac87e.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-932-WORBUKENFAST-WHALETVPLUS/932/whaletvplus/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:47.657Z"
         }
       ],
       "language": "eng"
@@ -22206,7 +23685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://0b73ace69ebb45eaa249bb87837cb958.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-644-WORBUSENFAST-LG_US/644/lgtv/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:47.751Z"
         }
       ],
       "language": "eng"
@@ -22221,7 +23701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e9781a2873090008b48d8a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:48.185Z"
         }
       ],
       "language": "eng"
@@ -22236,7 +23717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e9766eec9fda0008cb418a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:48.473Z"
         }
       ],
       "language": "eng"
@@ -22251,7 +23733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e977874e01740008c9fb4c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:49.098Z"
         }
       ],
       "language": "eng"
@@ -22266,7 +23749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://1681360479.rsc.cdn77.org/1681360479/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:51.474Z"
         }
       ],
       "language": "eng"
@@ -22281,7 +23765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-899.frequency.stream/dist/cineverse/899/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:53.236Z"
         }
       ],
       "language": "eng"
@@ -22296,7 +23781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00453-reuters-amg00453c1-rakuten-uk-2110.playouts.now.amagi.tv/playlist/amg00453-reuters-reuters-rakutenuk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:53.311Z"
         }
       ],
       "language": "eng"
@@ -22311,7 +23797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39nqr4d4h6cv6.cloudfront.net/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:53.355Z"
         }
       ],
       "language": "eng"
@@ -22326,7 +23813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_REVOLT/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:53.790Z"
         }
       ],
       "language": "eng"
@@ -22341,7 +23829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-43.frequency.stream/dist/24i/43/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:54.351Z"
         }
       ],
       "language": "eng"
@@ -22356,7 +23845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-142.frequency.stream/dist/24i/142/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:54.515Z"
         }
       ],
       "language": "eng"
@@ -22371,7 +23861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-43.frequency.stream/dist/galxy/43/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:55.026Z"
         }
       ],
       "language": "eng"
@@ -22386,7 +23877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://6zklxwavdw9b-hls-live.5centscdn.com/RIDDIMNHOPE/0954119dc19d9003dd5f4bb37b3f559e.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:55.294Z"
         }
       ],
       "language": "eng"
@@ -22401,7 +23893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6996296087742204bff43147.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:55.611Z"
         }
       ],
       "language": "eng"
@@ -22416,7 +23909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68dfa1e7fae18f8db6218703.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:55.855Z"
         }
       ],
       "language": "eng"
@@ -22431,7 +23925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68dfa160cc3c6cd90404d798.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:55.995Z"
         }
       ],
       "language": "eng"
@@ -22446,7 +23941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-68dfa1a7fae18f8db6218222.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:56.304Z"
         }
       ],
       "language": "eng"
@@ -22461,7 +23957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wurlrifftrax.global.transmit.live/hls/68222b9cbe836edbe6f39e74/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:56.723Z"
         }
       ],
       "language": "eng"
@@ -22476,7 +23973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/rightnowtv_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:56.814Z"
         }
       ],
       "language": "eng"
@@ -22491,7 +23989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fast-channels.sinclairstoryline.com/TBD/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:57.347Z"
         }
       ],
       "language": "eng"
@@ -22506,7 +24005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://65.36.6.216:1935/live/kcwx.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:58.090Z"
         }
       ],
       "language": "eng"
@@ -22521,7 +24021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg02104-imagicommcommun-kokibreaking-ono/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:58.219Z"
         }
       ],
       "language": "eng"
@@ -22536,7 +24037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a42df60cc44a0007dd47f8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:59.166Z"
         }
       ],
       "language": "eng"
@@ -22551,7 +24053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv.broadcasting.ro/rocktv/85c83a80-4f71-4f2d-a8d6-43f676896bcb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:59.419Z"
         }
       ],
       "language": "ron"
@@ -22566,7 +24069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/romania-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:59.762Z"
         }
       ],
       "language": "ron"
@@ -22581,7 +24085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream1.antenaplay.ro/zurtv/rfmprem/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:42:59.781Z"
         }
       ],
       "language": "eng+ron"
@@ -22596,7 +24101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rotv.romediavalencia.com:3839/live/rotvlive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:00.056Z"
         }
       ],
       "language": "ron"
@@ -22611,7 +24117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_012/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:00.078Z"
         }
       ],
       "language": "eng"
@@ -22626,7 +24133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumbai-edge.smartplaytv.in/RTIndia/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:00.410Z"
         }
       ],
       "language": "eng"
@@ -22641,7 +24149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://651c69fa2ff4e.streamlock.net/3707/live1/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:01.932Z"
         }
       ],
       "language": "eng+ron"
@@ -22656,7 +24165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv2-stream.rtnb.bi/hls/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:01.984Z"
         }
       ],
       "language": "eng"
@@ -22671,7 +24181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv1-stream.rtnb.bi/hls/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:02.008Z"
         }
       ],
       "language": "eng"
@@ -22686,7 +24197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.smotrim.ru/hls/planeta_rtr_usa/playlist.m3u8?entity=channel&id=513&sign=3ac5d8e2db71ef7fc3d4becbff7512d8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:02.036Z"
         }
       ],
       "language": "eng"
@@ -22701,7 +24213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rvtv-on-freecast.b-cdn.net/RVTV-on-Freecast/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:03.500Z"
         }
       ],
       "language": "eng"
@@ -22716,7 +24229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/roguevalleycmttv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:03.821Z"
         }
       ],
       "language": "eng"
@@ -22731,7 +24245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/roguevalleycmttv4/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:04.648Z"
         }
       ],
       "language": "eng"
@@ -22746,7 +24261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/roguevalleycmttv1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:04.793Z"
         }
       ],
       "language": "eng"
@@ -22761,7 +24277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/roguevalleycmttv3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:04.851Z"
         }
       ],
       "language": "eng"
@@ -22776,7 +24293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ryanandfriends-samsungau.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:05.172Z"
         }
       ],
       "language": "eng"
@@ -22791,7 +24309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sabctretalh.cdn.mangomolo.com/lehae/smil:lehae.stream.smil/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:06.336Z"
         }
       ],
       "language": "eng"
@@ -22806,7 +24325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sabconetanw.cdn.mangomolo.com/news/smil:news.stream.smil/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:06.342Z"
         }
       ],
       "language": "eng"
@@ -22821,7 +24341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/1/YStGZlJRdktzZkdK/VXROZWNW/hls/live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:09.135Z"
         }
       ],
       "language": "eng"
@@ -22836,7 +24357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ktismaservers.in:3902/live/salvationtvlive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:10.062Z"
         }
       ],
       "language": "eng"
@@ -22851,7 +24373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumt06.tangotv.in/qYyB8fXVSANGATTV/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:10.367Z"
         }
       ],
       "language": "eng"
@@ -22866,7 +24389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.sangeorztv.ro:8443/live/index.m3u8?cookieCheck=1",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:10.423Z"
         }
       ],
       "language": "ron"
@@ -22881,7 +24405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://158.69.124.9:1935/sardaritv/sardaritv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:11.199Z"
         }
       ],
       "language": "eng"
@@ -22896,7 +24421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://watch.sardius.media/channels/Ea867F3e1F56B06/site_8D363D13Eb/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:12.136Z"
         }
       ],
       "language": "eng"
@@ -22911,7 +24437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://92.114.85.87:8003/play/a007/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:13.367Z"
         }
       ],
       "language": "eng"
@@ -22926,7 +24453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://webtvstream.bhtelecom.ba/sci-fi.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:13.464Z"
         }
       ],
       "language": "eng"
@@ -22941,7 +24469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream6.scientology.org/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:13.513Z"
         }
       ],
       "language": "eng"
@@ -22956,7 +24485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-tampa.scientology.org/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:13.951Z"
         }
       ],
       "language": "eng"
@@ -22971,7 +24501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://w6oy7x7jlxrg-hls-live.5centscdn.com/MandETV/955ad3298db330b5ee880c2c9e6f23a0.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:14.005Z"
         }
       ],
       "language": "eng"
@@ -22986,7 +24517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a1c9c2847a090007f248da.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:14.503Z"
         }
       ],
       "language": "eng"
@@ -23001,7 +24533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a1caefc8d285000799e8af.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:14.622Z"
         }
       ],
       "language": "eng"
@@ -23016,7 +24549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63a1c959d9dd51000825d659.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:14.638Z"
         }
       ],
       "language": "eng"
@@ -23031,7 +24565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/RXJNMFI3VlVkOEFP/scottsdale/G0040_007/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:15.076Z"
         }
       ],
       "language": "eng"
@@ -23046,7 +24581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/7e1c26b7-7975-4240-9a4f-480eaa8f3ea4/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:15.441Z"
         }
       ],
       "language": "eng"
@@ -23061,7 +24597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-scvtv.cablecast.tv/live-2/live/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:15.518Z"
         }
       ],
       "language": "eng"
@@ -23076,7 +24613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_SEC_NETWORK/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:16.253Z"
         }
       ],
       "language": "eng"
@@ -23091,7 +24629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.senstv.ro/live/senstv_1080p/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:16.282Z"
         }
       ],
       "language": "ron"
@@ -23106,7 +24645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e9ed47c26ebb000074af566.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:16.523Z"
         }
       ],
       "language": "eng"
@@ -23121,7 +24661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/234/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:16.852Z"
         }
       ],
       "language": "eng"
@@ -23136,7 +24677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/235/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:17.169Z"
         }
       ],
       "language": "eng"
@@ -23151,7 +24693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/ZFdxUW9BQWt2UWRL/sanfrancisco/G0051_048/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:17.585Z"
         }
       ],
       "language": "eng"
@@ -23166,7 +24709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/ZFdxUW9BQWt2UWRL/sanfrancisco/G0051_050/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:17.557Z"
         }
       ],
       "language": "eng"
@@ -23181,7 +24725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-stgn/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:17.690Z"
         }
       ],
       "language": "eng"
@@ -23196,7 +24741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://broadcaster-1.cclouds.in/srt-2/channel2_abr/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:18.252Z"
         }
       ],
       "language": "eng"
@@ -23211,7 +24757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://broadcaster-1.cclouds.in/srt/channel1_abr/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:18.702Z"
         }
       ],
       "language": "eng"
@@ -23226,7 +24773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://broadcaster-1.cclouds.in/srt-4/channel4_abr/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:18.829Z"
         }
       ],
       "language": "eng"
@@ -23241,7 +24789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:19.382Z"
         }
       ],
       "language": "eng"
@@ -23256,7 +24805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vs2131.vcdn.biz/07f4d8c8729f786dd1bb07d0512b71eb_megogo/live/hls/b/700_2490_4000/u_sid/0/o/183161731/rsid/f5e3c4b1-6357-466d-bf95-eb6bc5453333/u_uid/2260062697/u_vod/0/u_device/cms_html5/u_devicekey/_site/lip/81.196.174.160*asn/u_srvc/109126/u_did/web_c02d0d195494991ada83b5ae2a2f87d6041c11b1b8f79fc86ae5b7b557894fa0/type.live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:19.753Z"
         }
       ],
       "language": "ron"
@@ -23271,7 +24821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_SHOWTIME_FAMILY/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:20.138Z"
         }
       ],
       "language": "eng"
@@ -23286,7 +24837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hlspackager.akamaized.net/live/DB/SILKWAY/SILKWAY/SILKWAY.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:20.147Z"
         }
       ],
       "language": "eng"
@@ -23301,7 +24853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-633354b63df9700007f6a1b7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:22.044Z"
         }
       ],
       "language": "eng"
@@ -23316,7 +24869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-67882c1c7b11714b795c2008.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:22.314Z"
         }
       ],
       "language": "eng"
@@ -23331,7 +24885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-643810f2e8a4aa0008ccf575.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:22.521Z"
         }
       ],
       "language": "eng"
@@ -23346,7 +24901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-643808dce0789d00084797f6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:22.869Z"
         }
       ],
       "language": "eng"
@@ -23361,7 +24917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c19d329b8260000744331b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:24.248Z"
         }
       ],
       "language": "eng"
@@ -23376,7 +24933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=71",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:24.654Z"
         }
       ],
       "language": "eng"
@@ -23391,7 +24949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash4.antik.sk/live/test_skynews/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:25.392Z"
         }
       ],
       "language": "eng"
@@ -23406,7 +24965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://skynewsau-live.akamaized.net/hls/live/2002689/skynewsau-extra1/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:25.465Z"
         }
       ],
       "language": "eng"
@@ -23421,7 +24981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://skynewsau-live.akamaized.net/hls/live/2002690/skynewsau-extra2/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:26.028Z"
         }
       ],
       "language": "eng"
@@ -23436,7 +24997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://skynewsau-live.akamaized.net/hls/live/2002691/skynewsau-extra3/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:27.676Z"
         }
       ],
       "language": "eng"
@@ -23451,7 +25013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:28.209Z"
         }
       ],
       "language": "eng"
@@ -23466,7 +25029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://636ffd31f0e12.streamlock.net/RacingStream1/RacingStream1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:28.452Z"
         }
       ],
       "language": "eng"
@@ -23481,7 +25045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://agp-nimble.streamguys1.com/SLOC/SLOC/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:29.490Z"
         }
       ],
       "language": "eng"
@@ -23496,7 +25061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2241",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:29.563Z"
         }
       ],
       "language": "eng"
@@ -23511,7 +25077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://brightstar-sls-pull-secure.akamaized.net/brightstarsls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:29.568Z"
         }
       ],
       "language": "eng"
@@ -23526,7 +25093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamw.m.ro/Regie/radio.stream/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:29.840Z"
         }
       ],
       "language": "eng+ron"
@@ -23541,7 +25109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/santamariactv1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:30.128Z"
         }
       ],
       "language": "eng"
@@ -23556,7 +25125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/santamariactv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:30.225Z"
         }
       ],
       "language": "eng"
@@ -23571,7 +25141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/santamariactv3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:30.873Z"
         }
       ],
       "language": "eng"
@@ -23586,7 +25157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61fb9907b1b78d000717ed9f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:31.028Z"
         }
       ],
       "language": "eng"
@@ -23601,7 +25173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61fb988e032c0100077d5252.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:31.107Z"
         }
       ],
       "language": "eng"
@@ -23616,7 +25189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f21ea08007a49000762d349.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:31.519Z"
         }
       ],
       "language": "eng"
@@ -23631,7 +25205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=4065",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:31.633Z"
         }
       ],
       "language": "eng"
@@ -23646,7 +25221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d4whmvwm0rdvi.cloudfront.net/10007/99993017/hls/master.m3u8?ads.xumo_channelId=99993017",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:31.802Z"
         }
       ],
       "language": "eng"
@@ -23661,7 +25237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://all3media-soreal-1-gb.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:31.983Z"
         }
       ],
       "language": "eng"
@@ -23676,7 +25253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2260",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:32.865Z"
         }
       ],
       "language": "eng"
@@ -23691,7 +25269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live1/smc_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:33.441Z"
         }
       ],
       "language": "eng"
@@ -23706,7 +25285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/test_sorozat_hungary_1200_atk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:34.871Z"
         }
       ],
       "language": "eng"
@@ -23721,7 +25301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/soundviewcmt2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:34.877Z"
         }
       ],
       "language": "eng"
@@ -23736,7 +25317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64edf6eaa7ec0d000812f58c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:35.227Z"
         }
       ],
       "language": "eng"
@@ -23751,7 +25333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0b627e3ed94000793c18a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:35.592Z"
         }
       ],
       "language": "eng"
@@ -23766,7 +25349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c098df897b9d00070375c8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:35.605Z"
         }
       ],
       "language": "eng"
@@ -23781,7 +25365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1e88cd168ea0007068133.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:35.831Z"
         }
       ],
       "language": "eng"
@@ -23796,7 +25381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdb1c5e25122000798ac79.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:35.918Z"
         }
       ],
       "language": "eng"
@@ -23811,7 +25397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660bff7dc8311c0008b4bdb4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:36.133Z"
         }
       ],
       "language": "eng"
@@ -23826,7 +25413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660bff28516d260008479e23.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:36.250Z"
         }
       ],
       "language": "eng"
@@ -23841,7 +25429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-660bff5724e1d000085b7c07.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:36.362Z"
         }
       ],
       "language": "eng"
@@ -23856,7 +25445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdb919d36cbd0007e6ab8a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:36.392Z"
         }
       ],
       "language": "eng"
@@ -23871,7 +25461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664f13aff9992200084a3532.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:36.703Z"
         }
       ],
       "language": "eng"
@@ -23886,7 +25477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664f132c8ea5560008ce4d86.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:37.098Z"
         }
       ],
       "language": "eng"
@@ -23901,7 +25493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664f1370f78a8500092df452.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:37.297Z"
         }
       ],
       "language": "eng"
@@ -23916,7 +25509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d881d566eec8000887f6bb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:37.663Z"
         }
       ],
       "language": "eng"
@@ -23931,7 +25525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d87a66ec9fda0008a5ac11.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:38.053Z"
         }
       ],
       "language": "eng"
@@ -23946,7 +25541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d87fcb66eec8000887f4aa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:38.500Z"
         }
       ],
       "language": "eng"
@@ -23961,7 +25557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d881b1332fec000833a122.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:38.535Z"
         }
       ],
       "language": "eng"
@@ -23976,7 +25573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d87fa0f7f0af0008b2358b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:39.941Z"
         }
       ],
       "language": "eng"
@@ -23991,7 +25589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65df4934f7f0af0008c32545.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:40.722Z"
         }
       ],
       "language": "eng"
@@ -24006,7 +25605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664f0eea0120f40008bf97d6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:41.261Z"
         }
       ],
       "language": "eng"
@@ -24021,7 +25621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664f0eaa8ce31100088036bd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:42.101Z"
         }
       ],
       "language": "eng"
@@ -24036,7 +25637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664f0ecc41af640008e37b43.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:42.503Z"
         }
       ],
       "language": "eng"
@@ -24051,7 +25653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d880cea25d5e0008315b0a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:42.721Z"
         }
       ],
       "language": "eng"
@@ -24066,7 +25669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d879bd0d4561000805d190.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:44.604Z"
         }
       ],
       "language": "eng"
@@ -24081,7 +25685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d87f53ec9fda0008a5b810.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:46.435Z"
         }
       ],
       "language": "eng"
@@ -24096,7 +25701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65df47f428730900089f83ac.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:46.745Z"
         }
       ],
       "language": "eng"
@@ -24111,7 +25717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d882394e01740008a36768.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:46.765Z"
         }
       ],
       "language": "eng"
@@ -24126,7 +25733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d87a908145cb0008265c6d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:47.101Z"
         }
       ],
       "language": "eng"
@@ -24141,7 +25749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d88004ec9fda0008a5b8b3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:47.292Z"
         }
       ],
       "language": "eng"
@@ -24156,7 +25765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65df49b30d45610008172c5b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:47.897Z"
         }
       ],
       "language": "eng"
@@ -24171,7 +25781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d881914e01740008a36603.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:48.983Z"
         }
       ],
       "language": "eng"
@@ -24186,7 +25797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d879e266eec8000887e91b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:49.407Z"
         }
       ],
       "language": "eng"
@@ -24201,7 +25813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65d87f7a28730900088e7fbf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:49.599Z"
         }
       ],
       "language": "eng"
@@ -24216,7 +25829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65df48ba28730900089f8480.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:49.779Z"
         }
       ],
       "language": "eng"
@@ -24231,7 +25845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-663115d923e24f000843b49c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:50.540Z"
         }
       ],
       "language": "eng"
@@ -24246,7 +25861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.freevisiontv.co.za/sttv/smil:soweto.stream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:50.562Z"
         }
       ],
       "language": "eng"
@@ -24261,7 +25877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-1224.frequency.stream/dist/lg-uk/1224/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:50.824Z"
         }
       ],
       "language": "eng"
@@ -24276,7 +25893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://candlelightmedia-sparklightlove-4-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:50.870Z"
         }
       ],
       "language": "eng"
@@ -24291,7 +25909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cloudvideo.servers10.com:8081/8026/tracks-v1a1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:51.282Z"
         }
       ],
       "language": "eng"
@@ -24306,7 +25925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jstre.am/live/jsl:2gNjpghXRLE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:51.731Z"
         }
       ],
       "language": "ron"
@@ -24321,7 +25941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5c393cad2de254456f7ef8c2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:51.828Z"
         }
       ],
       "language": "eng"
@@ -24336,7 +25957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5812bcc8237a6ff45d16c407.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:52.019Z"
         }
       ],
       "language": "eng"
@@ -24351,7 +25973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdnlive.myspirit.tv/LS-ATL-43240-2/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:52.244Z"
         }
       ],
       "language": "eng"
@@ -24366,7 +25989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63f87d057533d80008ab9549.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:52.771Z"
         }
       ],
       "language": "eng"
@@ -24381,7 +26005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/461/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:54.109Z"
         }
       ],
       "language": "eng"
@@ -24396,7 +26021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://stream.mcquack.net/212/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:54.203Z"
         }
       ],
       "language": "eng"
@@ -24411,7 +26037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://92.180.26.103/stream/93/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:54.977Z"
         }
       ],
       "language": "ron"
@@ -24426,7 +26053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livesptfm.com/SPTFM/Live/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:55.101Z"
         }
       ],
       "language": "ron"
@@ -24441,7 +26069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sportsgrid-tribal.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:55.108Z"
         }
       ],
       "language": "eng"
@@ -24456,7 +26085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/RXJNMFI3VlVkOEFP/stpete/G0187_003/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:55.113Z"
         }
       ],
       "language": "eng"
@@ -24471,7 +26101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-stlucie-ps-fl.cablecast.tv/live-1/live/stream-1/WIFI-1896k-720p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:55.511Z"
         }
       ],
       "language": "eng"
@@ -24486,7 +26117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wurl120sports.global.transmit.live/hls/679a907dce42a042c23ace37/v1/stadium_gracenote/samsung_us/latest/main/hls/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:55.719Z"
         }
       ],
       "language": "eng"
@@ -24501,7 +26133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live2.tensila.com/knut-v-1.choice/hls/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:55.726Z"
         }
       ],
       "language": "eng"
@@ -24516,7 +26149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6400c2a6cb41a40008dbe5bc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:56.980Z"
         }
       ],
       "language": "eng"
@@ -24531,7 +26165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6400c281dff38e00083f59da.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:57.402Z"
         }
       ],
       "language": "eng"
@@ -24546,7 +26181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6400c228498393000878a9b7.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:57.408Z"
         }
       ],
       "language": "eng"
@@ -24561,7 +26197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65c69bbfd77d450008c7ffee.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:57.721Z"
         }
       ],
       "language": "eng"
@@ -24576,7 +26213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-695c32e61ca20bb8ca802eb9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:57.811Z"
         }
       ],
       "language": "eng"
@@ -24591,7 +26229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693ade4d569386f93f235bb6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:57.924Z"
         }
       ],
       "language": "eng"
@@ -24606,7 +26245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693add137e308621c051e733.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:58.036Z"
         }
       ],
       "language": "eng"
@@ -24621,7 +26261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693addd62bf6cf7414c4b2fc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:58.135Z"
         }
       ],
       "language": "eng"
@@ -24636,7 +26277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-634dacf51d90320007fcd5fa.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:58.356Z"
         }
       ],
       "language": "eng"
@@ -24651,7 +26293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://da86m1sqpm3o0.cloudfront.net/28072023/smil:starvijayuk.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:58.499Z"
         }
       ],
       "language": "eng"
@@ -24666,7 +26309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_STARZ_COMEDY/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:59.457Z"
         }
       ],
       "language": "eng"
@@ -24681,7 +26325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_STARZ_FAMILY/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:59.553Z"
         }
       ],
       "language": "eng"
@@ -24696,7 +26341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_STARZ_WEST/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:59.130Z"
         }
       ],
       "language": "eng"
@@ -24711,7 +26357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aka-live1050.delivery.roku.com/7572d640-7373-4137-8b14-a3afff395349/t2-origin/out/v1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:59.623Z"
         }
       ],
       "language": "eng"
@@ -24726,7 +26373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-101ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:43:59.807Z"
         }
       ],
       "language": "eng"
@@ -24741,7 +26389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/classica-cla008-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:00.567Z"
         }
       ],
       "language": "eng"
@@ -24756,7 +26405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aka-live1050.delivery.roku.com/372c813e-1fb9-41d4-a4d0-5fbd803659c5/t2-origin/out/v1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:01.447Z"
         }
       ],
       "language": "eng"
@@ -24771,7 +26421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/djazz-djaads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:01.691Z"
         }
       ],
       "language": "eng"
@@ -24786,7 +26437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-137ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:01.759Z"
         }
       ],
       "language": "eng"
@@ -24801,7 +26453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-128ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:01.824Z"
         }
       ],
       "language": "eng"
@@ -24816,7 +26469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-115ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:01.857Z"
         }
       ],
       "language": "eng"
@@ -24831,7 +26485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/54947915-6504-4548-aaef-eabd451f8607/1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:02.098Z"
         }
       ],
       "language": "eng"
@@ -24846,7 +26501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-107ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:02.557Z"
         }
       ],
       "language": "eng"
@@ -24861,7 +26517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-155ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:02.927Z"
         }
       ],
       "language": "eng"
@@ -24876,7 +26533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d10cyxntpn0bwm.cloudfront.net/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:03.398Z"
         }
       ],
       "language": "eng"
@@ -24891,7 +26549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-108ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:04.280Z"
         }
       ],
       "language": "eng"
@@ -24906,7 +26565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash4.antik.sk/live/test_stingray_iconcerts_hd_hevc50/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:04.378Z"
         }
       ],
       "language": "eng"
@@ -24921,7 +26581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-021ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:04.522Z"
         }
       ],
       "language": "eng"
@@ -24936,7 +26597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/karaoke-kar000-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:04.760Z"
         }
       ],
       "language": "eng"
@@ -24951,7 +26613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/naturescape-a003-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:04.844Z"
         }
       ],
       "language": "eng"
@@ -24966,7 +26629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-142ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:04.962Z"
         }
       ],
       "language": "eng"
@@ -24981,7 +26645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-104ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:05.166Z"
         }
       ],
       "language": "eng"
@@ -24996,7 +26661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/68cc5f97-cf6c-4ff7-9125-f56f272dbcb6/1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:05.295Z"
         }
       ],
       "language": "eng"
@@ -25011,7 +26677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-102ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:05.697Z"
         }
       ],
       "language": "eng"
@@ -25026,7 +26693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-202ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:05.913Z"
         }
       ],
       "language": "eng"
@@ -25041,7 +26709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-140ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:05.963Z"
         }
       ],
       "language": "eng"
@@ -25056,7 +26725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-134ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:06.055Z"
         }
       ],
       "language": "eng"
@@ -25071,7 +26741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-122ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:06.266Z"
         }
       ],
       "language": "eng"
@@ -25086,7 +26757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3f4oii5n0oeqi.cloudfront.net/11701/88814594/hls/master.m3u8?ads.xumo_channelId=88814594",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:06.947Z"
         }
       ],
       "language": "eng"
@@ -25101,7 +26773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-317ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:07.224Z"
         }
       ],
       "language": "eng"
@@ -25116,7 +26789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/ose-190ads-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:07.233Z"
         }
       ],
       "language": "eng"
@@ -25131,7 +26805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amc-amcpresents-1-us.xumo.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:07.913Z"
         }
       ],
       "language": "eng"
@@ -25146,7 +26821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/206858-4412976-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.010Z"
         }
       ],
       "language": "eng"
@@ -25161,7 +26837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/206858-4412976-1/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.090Z"
         }
       ],
       "language": "eng"
@@ -25176,7 +26853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://136044159.r.cdnsun.net/storychannel.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.233Z"
         }
       ],
       "language": "eng"
@@ -25191,7 +26869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rightsboosterltd-scl-1-us.xumo.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.408Z"
         }
       ],
       "language": "eng"
@@ -25206,7 +26885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rightsboosterltd-scl-1-eu.rakuten.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.328Z"
         }
       ],
       "language": "eng"
@@ -25221,7 +26901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fffffff110156200.tvustream.com:8298/ryfy.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.535Z"
         }
       ],
       "language": "eng"
@@ -25236,7 +26917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c18ec6ac860c0007684981.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:08.948Z"
         }
       ],
       "language": "eng"
@@ -25251,7 +26933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://bozztv.com/uni10rtmp/ssstv1-cdn/smil:ssstv1web.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.050Z"
         }
       ],
       "language": "eng"
@@ -25266,7 +26949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_015/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.057Z"
         }
       ],
       "language": "eng"
@@ -25281,7 +26965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janson-supersimplesongs-1-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.095Z"
         }
       ],
       "language": "eng"
@@ -25296,7 +26981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://iptv.supertv.ro:8000/play/a001/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.428Z"
         }
       ],
       "language": "ron"
@@ -25311,7 +26997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f24662bebe0f0000767de32.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.460Z"
         }
       ],
       "language": "eng"
@@ -25326,7 +27013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sy.wns.live/hls/stream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.985Z"
         }
       ],
       "language": "eng"
@@ -25341,7 +27029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lbs-us1.suprememastertv.com/720p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:09.991Z"
         }
       ],
       "language": "eng"
@@ -25356,7 +27045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c09ac98a80a4000703f992.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:10.299Z"
         }
       ],
       "language": "eng"
@@ -25371,7 +27061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1921610d254000727eebd.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:10.664Z"
         }
       ],
       "language": "eng"
@@ -25386,7 +27077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61f128f68a1dfc00086470af.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:10.679Z"
         }
       ],
       "language": "eng"
@@ -25401,7 +27093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-645cc855e1979c000875ee47.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:10.866Z"
         }
       ],
       "language": "eng"
@@ -25416,7 +27109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swamiji.tv/YogaIPTV/smil:YogaStreamUS.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:11.131Z"
         }
       ],
       "language": "eng"
@@ -25431,7 +27125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swamiji.tv/YogaIPTV/smil:YogaStreamAU.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:11.361Z"
         }
       ],
       "language": "eng"
@@ -25446,7 +27141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swamiji.tv/YogaIPTV/smil:YogaStream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:11.484Z"
         }
       ],
       "language": "eng"
@@ -25461,7 +27157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-253.frequency.stream/mt/roku/253/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:11.629Z"
         }
       ],
       "language": "eng"
@@ -25476,7 +27173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live3/swervewomenssports_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:11.917Z"
         }
       ],
       "language": "eng"
@@ -25491,7 +27189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_038/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:12.787Z"
         }
       ],
       "language": "eng"
@@ -25506,7 +27205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-1.streamhoster.com/pl_122/206338-3120682-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:13.479Z"
         }
       ],
       "language": "eng"
@@ -25521,7 +27221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://af7a8b4e.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfdGFsa1NQT1JUX0hMUw/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:14.109Z"
         }
       ],
       "language": "eng"
@@ -25536,7 +27237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://488f4ce4.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfVGFsa19ITFM/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:14.168Z"
         }
       ],
       "language": "eng"
@@ -25551,7 +27253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/lompoccmttv1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:14.657Z"
         }
       ],
       "language": "eng"
@@ -25566,7 +27269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/lompoccmttv2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:14.781Z"
         }
       ],
       "language": "eng"
@@ -25581,7 +27285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/lompoccmttv3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:14.802Z"
         }
       ],
       "language": "eng"
@@ -25596,7 +27301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/taraf-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:14.871Z"
         }
       ],
       "language": "ron"
@@ -25611,7 +27317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rakutenaa-tm-intl-aus-rakuten-eu-n1gtg.amagi.tv/playlist/rakutenAA-tm-intl-aus-rakuten-eu/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:15.172Z"
         }
       ],
       "language": "eng"
@@ -25626,7 +27333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tastemade-tdint-rakuten.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:15.321Z"
         }
       ],
       "language": "eng"
@@ -25641,7 +27349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://164475.gvideo.io/mpegts/164475_650646/master_mpegts.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:16.234Z"
         }
       ],
       "language": "eng"
@@ -25656,7 +27365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://broadcast.tbnpacific.org.au:4430/stream/TBNPacificTV/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:16.353Z"
         }
       ],
       "language": "eng"
@@ -25671,7 +27381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5d23269b3ec0c.streamlock.net/WEB_Ukraine24/ngrp:Ukraine24.stream-adaptive/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:16.962Z"
         }
       ],
       "language": "eng"
@@ -25686,7 +27397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.jwplayer.com/live/broadcast/frRD2nUK.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:17.445Z"
         }
       ],
       "language": "eng"
@@ -25701,7 +27413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62d550d81054990007db7798.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:18.927Z"
         }
       ],
       "language": "eng"
@@ -25716,7 +27429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6127e12ed140e900077e7b6f.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:19.123Z"
         }
       ],
       "language": "eng"
@@ -25731,7 +27445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://s6.hopslan.com/tele5X/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:19.897Z"
         }
       ],
       "language": "eng"
@@ -25746,7 +27461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://ingest2-video.streaming-pro.com/tele7_ABR/stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:20.383Z"
         }
       ],
       "language": "eng"
@@ -25761,7 +27477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv2.fastcast4u.com:3238/live/radiotelebostonlive.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:20.901Z"
         }
       ],
       "language": "eng"
@@ -25776,7 +27493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams.playtv.com.ng/Tele-Regency_TRTV/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:21.144Z"
         }
       ],
       "language": "eng"
@@ -25791,7 +27509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.tele7abc.ro/hls/stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:20.492Z"
         }
       ],
       "language": "ron"
@@ -25806,7 +27525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.tele7music.ro/hls/stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:20.501Z"
         }
       ],
       "language": "ron"
@@ -25821,7 +27541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://89.137.197.15:8080/testing/pl5/playlist/ram/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:21.615Z"
         }
       ],
       "language": "ron"
@@ -25836,7 +27557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vdo.ssl-stream.com:3247/stream/play.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:21.649Z"
         }
       ],
       "language": "ron"
@@ -25851,7 +27573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streamer1.nexgen.bz/TELEMUNDO/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:22.153Z"
         }
       ],
       "language": "eng"
@@ -25866,7 +27589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://nbculocallive.akamaized.net/hls/live/2037098/sandiego/stream1/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:22.399Z"
         }
       ],
       "language": "eng"
@@ -25881,7 +27605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5cf96cc422df39f1a338d165.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:22.506Z"
         }
       ],
       "language": "eng"
@@ -25896,7 +27621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d368vp0qqzvkid.cloudfront.net/11603/88889705/hls/master.m3u8?ads.xumo_channelId=88889705a&ads.xumo_ifaType=&ads.xumo_providerId=3819&ads.xumo_providerName=NBCNPHI",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:22.421Z"
         }
       ],
       "language": "eng"
@@ -25911,7 +27637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://45.5.117.57:8900/play/a058/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:22.426Z"
         }
       ],
       "language": "eng"
@@ -25926,7 +27653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://zkpywrbgdbeg-hls-live.mariatvcdn.it/teleradiopace2/254c9b5c52a73a94ef0f6169cbd05dc2.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:22.608Z"
         }
       ],
       "language": "eng"
@@ -25941,7 +27669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://j78dpr7nyq5r-hls-live.mariatvcdn.it/teleradiopace4/13d74f2cfe921bfbc262697203d47d8f.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:23.043Z"
         }
       ],
       "language": "eng"
@@ -25956,7 +27685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dvb.tennet.ro/mobile_tv/telestar.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:23.122Z"
         }
       ],
       "language": "ron"
@@ -25971,7 +27701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mblenmain01.telesur.ultrabase.net/mblivev3/480p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:23.270Z"
         }
       ],
       "language": "eng"
@@ -25986,7 +27717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mblenmain01.telesur.ultrabase.net/mblivev3/hd/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:23.428Z"
         }
       ],
       "language": "eng"
@@ -26001,7 +27733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dv8lsrd8fecw9.cloudfront.net/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:23.723Z"
         }
       ],
       "language": "eng"
@@ -26016,7 +27749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.kingdom-tv.com:3545/stream/play.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:23.811Z"
         }
       ],
       "language": "eng"
@@ -26031,7 +27765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-temecula.cablecast.tv/live-2/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:24.065Z"
         }
       ],
       "language": "eng"
@@ -26046,7 +27781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/cFh0V0QwUVc4SDl2/tempe/G0355_003/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:24.521Z"
         }
       ],
       "language": "eng"
@@ -26061,7 +27797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01444-tennischannelth-tennischannelnl-samsungnl/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:24.970Z"
         }
       ],
       "language": "eng"
@@ -26076,7 +27813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-681109b688b9d85d0938c6ba.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:25.086Z"
         }
       ],
       "language": "eng"
@@ -26091,7 +27829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumbai-edge.smartplaytv.in/Tennis2/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:24.692Z"
         }
       ],
       "language": "eng"
@@ -26106,7 +27845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.tequilamusic.net/hls/tequila_tv.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:25.358Z"
         }
       ],
       "language": "ron"
@@ -26121,7 +27861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tezaurtv.md/stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:25.791Z"
         }
       ],
       "language": "ron"
@@ -26136,7 +27877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3i6upqaqzosi1.cloudfront.net/tg/jr_us/tg_jr_us.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:27.224Z"
         }
       ],
       "language": "eng"
@@ -26151,7 +27893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastly.live.brightcove.com/6384196213112/eu-west-1/1555966122001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoieDl2YzlnLmVncmVzcy55ODN1ZWIiLCJhY2NvdW50X2lkIjoiMTU1NTk2NjEyMjAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyIxNTU1OTY2MTIyMDAxIl0sImp0aSI6IjYzODQxOTYyMTMxMTIifQ.Co2xR3kmJBoxTaFTpwU0b37lJ05vNt-y32-SwfM26EA/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:26.785Z"
         }
       ],
       "language": "eng"
@@ -26166,7 +27909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69ef53e12f4d2b4f9c582e76.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:27.278Z"
         }
       ],
       "language": "eng"
@@ -26181,7 +27925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69ef54f3c700cf0140272def.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:27.567Z"
         }
       ],
       "language": "eng"
@@ -26196,7 +27941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d81607ab737153ea3c1c80e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:27.691Z"
         }
       ],
       "language": "eng"
@@ -26211,7 +27957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f21e8a6e2f12b000755afdb.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:28.094Z"
         }
       ],
       "language": "eng"
@@ -26226,7 +27973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60f75178e7f8aa0007e9c259.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:28.314Z"
         }
       ],
       "language": "eng"
@@ -26241,7 +27989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e9145ec07f2a00070e68dc.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:28.605Z"
         }
       ],
       "language": "eng"
@@ -26256,7 +28005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-1080.frequency.stream/dist/cineverse/1080/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:28.884Z"
         }
       ],
       "language": "eng"
@@ -26271,7 +28021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6565fefdc917a50008485cc6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:29.415Z"
         }
       ],
       "language": "eng"
@@ -26286,7 +28037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d48685da7e9f476aa8a1888.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:30.398Z"
         }
       ],
       "language": "eng"
@@ -26301,7 +28053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64f8a22a3efb510008245df0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:30.440Z"
         }
       ],
       "language": "eng"
@@ -26316,7 +28069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00426-littledotstudio-thechatshow-samsungnz-uqmtt.amagi.tv/playlist/amg00426-littledotstudio-thechatshow-samsungnz/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:31.103Z"
         }
       ],
       "language": "eng"
@@ -26331,7 +28085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66e2a94d167a8b000813485d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:31.273Z"
         }
       ],
       "language": "eng"
@@ -26346,7 +28101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg17292-amg17292c1-distrotv-us-4170.playouts.now.amagi.tv/playlist/amg17292-tetonridgellc-tetonridgefast-distrotvus/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:31.297Z"
         }
       ],
       "language": "eng"
@@ -26361,7 +28117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65c0978360eb870008bc9d5b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:31.628Z"
         }
       ],
       "language": "eng"
@@ -26376,7 +28133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65c096d23ba51e0008305a75.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:31.757Z"
         }
       ],
       "language": "eng"
@@ -26391,7 +28149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65c0973311ced7000808d255.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:32.110Z"
         }
       ],
       "language": "eng"
@@ -26406,7 +28165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00441-amg00441c1-rakuten-us-6050.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:32.288Z"
         }
       ],
       "language": "eng"
@@ -26421,7 +28181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://thefirst-oando.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:32.396Z"
         }
       ],
       "language": "eng"
@@ -26436,7 +28197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/test_fishing_hunting/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:32.520Z"
         }
       ],
       "language": "ron"
@@ -26451,7 +28213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/fishing_hun/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:32.673Z"
         }
       ],
       "language": "ron"
@@ -26466,7 +28229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00654-itv-amg00654c35-rakuten-gb-7598.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:32.942Z"
         }
       ],
       "language": "eng"
@@ -26481,7 +28245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://restreamer.indonusa.id:8443/d5f4ad43-1b5a-4b0f-8bef-5b37224ed221.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:33.051Z"
         }
       ],
       "language": "eng"
@@ -26496,7 +28261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video1.getstreamhosting.com:1936/8322/8322/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:33.409Z"
         }
       ],
       "language": "eng"
@@ -26511,7 +28277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3i68hpvh19xjd.cloudfront.net/JamieOliver_GB.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:33.415Z"
         }
       ],
       "language": "eng"
@@ -26526,7 +28293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6283d51144ad8f0007fa382d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:33.941Z"
         }
       ],
       "language": "eng"
@@ -26541,7 +28309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e92e536f28870007fa9b3a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:34.091Z"
         }
       ],
       "language": "eng"
@@ -26556,7 +28325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693ae4ee25e9a6646b198fb0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:34.161Z"
         }
       ],
       "language": "eng"
@@ -26571,7 +28341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693ae48864476d678e9b6235.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:34.799Z"
         }
       ],
       "language": "eng"
@@ -26586,7 +28357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-693ae4b616c2bba998852c21.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:34.866Z"
         }
       ],
       "language": "eng"
@@ -26601,7 +28373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/watc57/watc57-theloop/watc57-theloop/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:35.093Z"
         }
       ],
       "language": "eng"
@@ -26616,7 +28389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5f7794a788d29000079d2f07.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:35.099Z"
         }
       ],
       "language": "eng"
@@ -26631,7 +28405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69afef4b0306b277744de1e4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:35.446Z"
         }
       ],
       "language": "eng"
@@ -26646,7 +28421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69afeefa0a7f2095e768401c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:36.299Z"
         }
       ],
       "language": "eng"
@@ -26661,7 +28437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69afef233bd16a4ed07108e9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:36.347Z"
         }
       ],
       "language": "eng"
@@ -26676,7 +28453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6391cef9edb23c0008598cee.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:37.620Z"
         }
       ],
       "language": "eng"
@@ -26691,7 +28469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fast-channels.sinclairstoryline.com/THENEST/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:37.627Z"
         }
       ],
       "language": "eng"
@@ -26706,7 +28485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e393d5c696b3b0009775c8b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:37.856Z"
         }
       ],
       "language": "eng"
@@ -26721,7 +28501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-618147d2a814250007b42916.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:40.470Z"
         }
       ],
       "language": "eng"
@@ -26736,7 +28517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6181511c1e13690007b143c2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:41.504Z"
         }
       ],
       "language": "eng"
@@ -26751,7 +28533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5aea40b35126c2157123aa64.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:41.511Z"
         }
       ],
       "language": "eng"
@@ -26766,7 +28549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bdabbc5611f2000761ca30.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:41.548Z"
         }
       ],
       "language": "eng"
@@ -26781,7 +28565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mediaprod1.nowcast.cc:5443/LiveApp/streams/anZPy7eaVWLyDMZB1697488814699.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:41.837Z"
         }
       ],
       "language": "eng"
@@ -26796,7 +28581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://the-pet-collective-international-dk.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:42.380Z"
         }
       ],
       "language": "eng"
@@ -26811,7 +28597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://the-pet-collective-international-au.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:42.460Z"
         }
       ],
       "language": "eng"
@@ -26826,7 +28613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://the-pet-collective-international-in.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:42.517Z"
         }
       ],
       "language": "eng"
@@ -26841,7 +28629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://the-pet-collective-international-mx.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:42.540Z"
         }
       ],
       "language": "eng"
@@ -26856,7 +28645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://6ec8627d.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X1RoZVBldENvbGxlY3RpdmVfSExT/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:42.646Z"
         }
       ],
       "language": "eng"
@@ -26871,7 +28661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://the-pet-collective-international-se.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:43.249Z"
         }
       ],
       "language": "eng"
@@ -26886,7 +28677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://the-pet-collective-international-gb.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:43.822Z"
         }
       ],
       "language": "eng"
@@ -26901,7 +28693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn.bozztv.com/watc57/watc57-2/watc57-2/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:43.880Z"
         }
       ],
       "language": "eng"
@@ -26916,7 +28709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-643f035d5a0cd50008361534.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:43.964Z"
         }
       ],
       "language": "eng"
@@ -26931,7 +28725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64c2214c2a7f2200089a0c4b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:43.994Z"
         }
       ],
       "language": "eng"
@@ -26946,7 +28741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64c220e15dc1660008a79c96.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:44.072Z"
         }
       ],
       "language": "eng"
@@ -26961,7 +28757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e825550e758c700077b0aef.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:44.204Z"
         }
       ],
       "language": "eng"
@@ -26976,7 +28773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6512d6c92ce8e40008bd5c81.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:44.210Z"
         }
       ],
       "language": "eng"
@@ -26991,7 +28789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6512d3a0bdcb19000799cc82.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:45.235Z"
         }
       ],
       "language": "eng"
@@ -27006,7 +28805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wggstv16.ddns.net:9953/hls/walk1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:45.310Z"
         }
       ],
       "language": "eng"
@@ -27021,7 +28821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amc-twdfanexperience-1-us.xumo.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:45.456Z"
         }
       ],
       "language": "eng"
@@ -27036,7 +28837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://twcprod-live.twc-tv.com/v1/manifest/b4d4d63a49309cc5140171fb2e92485c31be1e9e/DSP_6228e4760505741a116f1ba2_twcprod-live/6bf09ce5-366b-463c-b67e-c4b799f73c3f/4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:45.791Z"
         }
       ],
       "language": "eng"
@@ -27051,7 +28853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-63da370e2e477400081cf8b6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:46.298Z"
         }
       ],
       "language": "eng"
@@ -27066,7 +28869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964bcf9ae33e24d911d7e1c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:46.408Z"
         }
       ],
       "language": "eng"
@@ -27081,7 +28885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964bc3806d76f50db3e315e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:46.774Z"
         }
       ],
       "language": "eng"
@@ -27096,7 +28901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6964bca2a6c400fd418854a2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:46.935Z"
         }
       ],
       "language": "eng"
@@ -27111,7 +28917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-664e640a0120f40008be4582.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:47.398Z"
         }
       ],
       "language": "eng"
@@ -27126,7 +28933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://clouditize.piksel.tech/hls/live/2043070/ClouditizeStream1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:48.438Z"
         }
       ],
       "language": "eng"
@@ -27141,7 +28949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tyt-samsungus.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:48.561Z"
         }
       ],
       "language": "eng"
@@ -27156,7 +28965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://thedovetv.bozztv.com/thedovetv/thedovetv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:48.607Z"
         }
       ],
       "language": "eng"
@@ -27171,7 +28981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://a-cdn.klowdtv.com/live2/thegrio_720p/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:49.386Z"
         }
       ],
       "language": "eng"
@@ -27186,7 +28997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://thisoldhouse-2-us.roku.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:49.484Z"
         }
       ],
       "language": "eng"
@@ -27201,7 +29013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5ef3977e5d773400077de284.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:50.388Z"
         }
       ],
       "language": "eng"
@@ -27216,7 +29029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-64ca723a2bc49300081a8966.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:51.173Z"
         }
       ],
       "language": "eng"
@@ -27231,7 +29045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live-hls-7agy.livepush.io/live_abr_cdn/nsitWAl1pTZtwca/emnmZbKZcO8RfwJR/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:51.436Z"
         }
       ],
       "language": "eng"
@@ -27246,7 +29061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-69256bd7db5cc2f81d8a1a08.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:51.582Z"
         }
       ],
       "language": "eng"
@@ -27261,7 +29077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1a05ef30f5d0007e562f3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:52.279Z"
         }
       ],
       "language": "eng"
@@ -27276,7 +29093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://timelesstv1.b-cdn.net/hls/TimelessTV.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:52.726Z"
         }
       ],
       "language": "eng"
@@ -27291,7 +29109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-6540ff4f7312a40008297b59.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:53.133Z"
         }
       ],
       "language": "eng"
@@ -27306,7 +29125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls-1zdhtxpm-livepush.akamaized.net/live_cdn/nsM12Xw0C1xXdJ/em0Wx71z-ec6EWJb/rewind-3600.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:54.745Z"
         }
       ],
       "language": "eng"
@@ -27321,7 +29141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/tlc_hungary/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:54.754Z"
         }
       ],
       "language": "eng"
@@ -27336,7 +29157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://103.253.74.210:7070/stream/108/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:55.249Z"
         }
       ],
       "language": "eng"
@@ -27351,7 +29173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://uni01rtmp.tulix.tv/kqsltv/kqsltv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:55.515Z"
         }
       ],
       "language": "eng"
@@ -27366,7 +29189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fuel-streaming-prod01.fuelmedia.io/v1/sem/cb165faa-41c9-42ad-83ee-ad5ca9fb927c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:55.787Z"
         }
       ],
       "language": "eng"
@@ -27381,7 +29205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fuel-streaming-prod01.fuelmedia.io/v1/sem/b29d27bb-88af-42d1-937a-5bdf76b71c17.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:55.942Z"
         }
       ],
       "language": "eng"
@@ -27396,7 +29221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/57c1fa3c-566b-4998-b6de-d6de67031d99/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:55.986Z"
         }
       ],
       "language": "eng"
@@ -27411,7 +29237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883039",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:56.137Z"
         }
       ],
       "language": "eng"
@@ -27426,7 +29253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d37kx062o4ii0p.cloudfront.net/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:57.040Z"
         }
       ],
       "language": "eng"
@@ -27441,7 +29269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.rtl.lu/data/live/tele/rtltodayradio/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:57.060Z"
         }
       ],
       "language": "eng"
@@ -27456,7 +29285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.sli.ke/live/npnhm84gz9/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:57.770Z"
         }
       ],
       "language": "eng"
@@ -27471,7 +29301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://api.toonamiaftermath.com:3000/est/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:57.873Z"
         }
       ],
       "language": "eng"
@@ -27486,7 +29317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://api.toonamiaftermath.com:3000/pst/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:58.092Z"
         }
       ],
       "language": "eng"
@@ -27501,7 +29333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://45.184.109.10/live/69393EAE6ADBC65A68F942022362A202/69.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:58.208Z"
         }
       ],
       "language": "eng"
@@ -27516,7 +29349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01329-otterainc-toongoggles-samsungau-ad-4c.amagi.tv/playlist/amg01329-otterainc-toongoggles-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:59.042Z"
         }
       ],
       "language": "eng"
@@ -27531,7 +29365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg17560-fcb-amg17560c1-rakuten-uk-4891.playouts.now.amagi.tv/playlist/amg17560-fcbarcelona-topbarcaenglish-rakutenuk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:59.157Z"
         }
       ],
       "language": "eng"
@@ -27546,7 +29381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-636adc255bcf470007d6e0e2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:44:59.951Z"
         }
       ],
       "language": "eng"
@@ -27561,7 +29397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://content.uplynk.com/channel/33c48f602cfd4474b957eb4ad999caf8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:00.004Z"
         }
       ],
       "language": "eng"
@@ -27576,7 +29413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://cdn3.toronto360.tv:8081/toronto360/hd/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:00.223Z"
         }
       ],
       "language": "eng"
@@ -27591,7 +29429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e9566e27ce19000732ec85.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:00.542Z"
         }
       ],
       "language": "eng"
@@ -27606,7 +29445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e97856ec9fda0008cb453c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:00.550Z"
         }
       ],
       "language": "eng"
@@ -27621,7 +29461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e977042873090008b48be9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:00.858Z"
         }
       ],
       "language": "eng"
@@ -27636,7 +29477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65e977c48b24c8000805b9ef.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:00.892Z"
         }
       ],
       "language": "eng"
@@ -27651,7 +29493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5dae084727c8af0009fe40a4.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:01.098Z"
         }
       ],
       "language": "eng"
@@ -27666,7 +29509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/b062c287-a170-47df-99e4-f5dcd441ee59/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:01.194Z"
         }
       ],
       "language": "eng"
@@ -27681,7 +29525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-656ef4af4261ca00083c8f37.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:01.493Z"
         }
       ],
       "language": "eng"
@@ -27696,7 +29541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c0bbd95df1da0007bed5a0.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:01.900Z"
         }
       ],
       "language": "eng"
@@ -27711,7 +29557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d0c16d686454ead733d08f8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:02.255Z"
         }
       ],
       "language": "eng"
@@ -27726,7 +29573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62e95265c9fd030007268fb9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:03.329Z"
         }
       ],
       "language": "eng"
@@ -27741,7 +29589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-65c69bf23ef47d0008583967.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:03.629Z"
         }
       ],
       "language": "eng"
@@ -27756,7 +29605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/AFRICA_FR_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:03.718Z"
         }
       ],
       "language": "eng"
@@ -27771,7 +29621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/GOSPEL_ROA_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:03.966Z"
         }
       ],
       "language": "eng"
@@ -27786,7 +29637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/JAMA_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.302Z"
         }
       ],
       "language": "eng"
@@ -27801,7 +29653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/MZIKI_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.316Z"
         }
       ],
       "language": "eng"
@@ -27816,7 +29669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/NAIJA_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.347Z"
         }
       ],
       "language": "eng"
@@ -27831,7 +29685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/AFRICA_EN_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.648Z"
         }
       ],
       "language": "eng"
@@ -27846,7 +29701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lightning-tracesport-samsungau.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.733Z"
         }
       ],
       "language": "eng"
@@ -27861,7 +29717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/TRACE_SPORT_STARS_sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.760Z"
         }
       ],
       "language": "eng"
@@ -27876,7 +29733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/UK_FAST_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.792Z"
         }
       ],
       "language": "eng"
@@ -27891,7 +29749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lightning-traceurban-samsungau.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:04.974Z"
         }
       ],
       "language": "eng"
@@ -27906,7 +29765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/URBAN_FR_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:05.124Z"
         }
       ],
       "language": "eng"
@@ -27921,7 +29781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://channels.trace.plus/Traceprod/URBAN_INTER_hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:05.182Z"
         }
       ],
       "language": "eng"
@@ -27936,7 +29797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01821-lovetvchannels-lovemagazineuk-samsungse-p1sf1.amagi.tv/playlist/amg01821-lovetvchannels-lovemagazineuk-samsungse/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:05.384Z"
         }
       ],
       "language": "eng"
@@ -27951,7 +29813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/tralala-desene-animate-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:05.431Z"
         }
       ],
       "language": "ron"
@@ -27966,7 +29829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/tralala-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:05.464Z"
         }
       ],
       "language": "ron"
@@ -27981,7 +29845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls02ns.antenaplay.ro/hls/travel-mix-hd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:05.767Z"
         }
       ],
       "language": "ron"
@@ -27996,7 +29861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/trinitas-tv-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:06.538Z"
         }
       ],
       "language": "ron"
@@ -28011,7 +29877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.suricloud.com/hls/tbntv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:06.611Z"
         }
       ],
       "language": "eng"
@@ -28026,7 +29893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://mumbai-edge.smartplaytv.in/TRTWorld/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:06.875Z"
         }
       ],
       "language": "eng"
@@ -28041,7 +29909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash2.antik.sk/live/test_trt_world_atktv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:07.111Z"
         }
       ],
       "language": "eng"
@@ -28056,7 +29925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://b6cca454.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9UcnVlQ3JpbWVVS2Zyb21DQlNSZWFsaXR5X0hMUw/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:07.240Z"
         }
       ],
       "language": "eng"
@@ -28071,7 +29941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-645cb7857cb4b1000859c57c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:07.432Z"
         }
       ],
       "language": "eng"
@@ -28086,7 +29957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/c2e3094d-ad56-4c5f-9655-cd80df71fbab/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:08.304Z"
         }
       ],
       "language": "eng"
@@ -28101,7 +29973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://linear-188.frequency.stream/dist/glewedtv/188/hls/master/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:08.598Z"
         }
       ],
       "language": "eng"
@@ -28116,7 +29989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_TRUTV/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:08.701Z"
         }
       ],
       "language": "eng"
@@ -28131,7 +30005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tscamd.akamaized.net/hls/live/503340/TSCLive/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:09.057Z"
         }
       ],
       "language": "eng"
@@ -28146,7 +30021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.freevisiontv.co.za/sttv/smil:tshwane.stream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:10.833Z"
         }
       ],
       "language": "eng"
@@ -28161,7 +30037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3pnbvng3bx2nj.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rds8g35qfqrnv/TSN_The_Ocho.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:11.075Z"
         }
       ],
       "language": "eng"
@@ -28176,7 +30053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflector.watchtstv.com/hls/livestream.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:11.685Z"
         }
       ],
       "language": "eng"
@@ -28191,7 +30069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://alpha.tv.online.tm/hls/ch007.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:13.081Z"
         }
       ],
       "language": "eng"
@@ -28206,7 +30085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/templeuni1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:13.488Z"
         }
       ],
       "language": "eng"
@@ -28221,7 +30101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.djemba.ro/memfs/1b01c281-126d-4787-9d51-9e06c96bb9f9.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:15.547Z"
         }
       ],
       "language": "ron"
@@ -28236,7 +30117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls01ns.antenaplay.ro/hls/tv-as-sd/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.019Z"
         }
       ],
       "language": "ron"
@@ -28251,7 +30133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.freevisiontv.co.za/sttv/smil:brics.stream.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.203Z"
         }
       ],
       "language": "eng"
@@ -28266,7 +30149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://engbrics.mediacdn.ru/cdn/brics/english/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.233Z"
         }
       ],
       "language": "eng"
@@ -28281,7 +30165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdnapi.kaltura.com/p/2158211/sp/327418300/playManifest/entryId/1_24gfa7qq/protocol/https/format/applehttp/a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.322Z"
         }
       ],
       "language": "eng"
@@ -28296,7 +30181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d40bebc5e3d2750a2239d7e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.326Z"
         }
       ],
       "language": "eng"
@@ -28311,7 +30197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5c2d64ffbdf11b71587184b8.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.372Z"
         }
       ],
       "language": "eng"
@@ -28326,7 +30213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://w1.manasat.com/tvmana-english/smil:tvmana-english.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:16.638Z"
         }
       ],
       "language": "eng"
@@ -28341,7 +30229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream2.live-stream.ro/WebRTCApp/streams/118334672595255049029831.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:17.710Z"
         }
       ],
       "language": "ron"
@@ -28356,7 +30245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvtoday.rpmc.com.np/hls/bipashatech/1_2/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:18.095Z"
         }
       ],
       "language": "eng"
@@ -28371,7 +30261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.tv1.rw/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:13.707Z"
         }
       ],
       "language": "eng"
@@ -28386,7 +30277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://5c46fa289c89f.streamlock.net/pub1live/mystream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:15.456Z"
         }
       ],
       "language": "eng"
@@ -28401,7 +30293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://185.9.2.18/chid_347/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:14.705Z"
         }
       ],
       "language": "eng"
@@ -28416,7 +30309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d25tgymtnqzu8s.cloudfront.net/smil:tv2/playlist.m3u8?id=2",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:14.808Z"
         }
       ],
       "language": "eng"
@@ -28431,7 +30325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/bullheadcity/G0860_002/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:15.283Z"
         }
       ],
       "language": "eng"
@@ -28446,7 +30341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rtvelivestream-rtveplayplus.rtve.es/rtvesec/int/tvei_eu_main_1080.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:19.709Z"
         }
       ],
       "language": "eng"
@@ -28461,7 +30357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vod2live.univtec.com/manifest/a99a1804-dc83-411f-8c1c-b62f08cdfa59.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:19.719Z"
         }
       ],
       "language": "eng"
@@ -28476,7 +30373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://fastly.live.brightcove.com/6369851620112/us-east-1/15364602001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoicGZncmlmLmVncmVzcy50N2M3emwiLCJhY2NvdW50X2lkIjoiMTUzNjQ2MDIwMDEiLCJlaG4iOiJmYXN0bHkubGl2ZS5icmlnaHRjb3ZlLmNvbSIsImlzcyI6ImJsaXZlLXBsYXliYWNrLXNvdXJjZS1hcGkiLCJzdWIiOiJwYXRobWFwdG9rZW4iLCJhdWQiOlsiMTUzNjQ2MDIwMDEiXSwianRpIjoiNjM2OTg1MTYyMDExMiJ9.zRE6fD9JwdbNLUIK5zgvlTAvXCQ3HeeE5p0yH0Pd3-Q/playlist-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:19.882Z"
         }
       ],
       "language": "eng"
@@ -28491,7 +30389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dash2.antik.sk/live/test_tvp_world/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:19.939Z"
         }
       ],
       "language": "eng"
@@ -28506,7 +30405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://85.186.22.140/testing/pl5/playlist/ram/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:19.986Z"
         }
       ],
       "language": "ron"
@@ -28521,7 +30421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-1.lg.mncdn.com/tvr1/smil:tvr1.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:20.006Z"
         }
       ],
       "language": "ron"
@@ -28536,7 +30437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-2.lg.mncdn.com/tvr2/smil:tvr2.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:20.452Z"
         }
       ],
       "language": "ron"
@@ -28551,7 +30453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-3.lg.mncdn.com/tvr3/smil:tvr3.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.051Z"
         }
       ],
       "language": "ron"
@@ -28566,7 +30469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-cluj.lg.mncdn.com/tvrcluj/smil:tvrcluj.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.124Z"
         }
       ],
       "language": "ron"
@@ -28581,7 +30485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-craiova.lg.mncdn.com/tvrcraiova/smil:tvrcraiova.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.131Z"
         }
       ],
       "language": "ron"
@@ -28596,7 +30501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-cultural.lg.mncdn.com/tvrcultural/smil:tvrcultural.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.192Z"
         }
       ],
       "language": "ron"
@@ -28611,7 +30517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-folclor.lg.mncdn.com/tvrfolclor/smil:tvrfolclor.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.470Z"
         }
       ],
       "language": "ron"
@@ -28626,7 +30533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-iasi.lg.mncdn.com/tvriasi/smil:tvriasi.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.768Z"
         }
       ],
       "language": "ron"
@@ -28641,7 +30549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-info.lg.mncdn.com/tvrinfo/smil:tvrinfo.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:21.793Z"
         }
       ],
       "language": "ron"
@@ -28656,7 +30565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-international.lg.mncdn.com/tvrinternational/smil:tvrinternational.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:22.111Z"
         }
       ],
       "language": "ron"
@@ -28671,7 +30581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-moldova.lg.mncdn.com/tvrmoldova/smil:tvrmoldova.smil/chunklist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:22.586Z"
         }
       ],
       "language": "ron"
@@ -28686,7 +30597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-sport.lg.mncdn.com/tvrsport/smil:tvrsport.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:22.706Z"
         }
       ],
       "language": "ron"
@@ -28701,7 +30613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-tgmures.lg.mncdn.com/tvrtgmures/smil:tvrtgmures.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:23.433Z"
         }
       ],
       "language": "ron"
@@ -28716,7 +30629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvr-timisoara.lg.mncdn.com/tvrtimisoara/smil:tvrtimisoara.smil/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:23.867Z"
         }
       ],
       "language": "ron"
@@ -28731,7 +30645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsbowling/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:24.024Z"
         }
       ],
       "language": "eng"
@@ -28746,7 +30661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsboxing/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:25.120Z"
         }
       ],
       "language": "eng"
@@ -28761,7 +30677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsmystery/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:25.340Z"
         }
       ],
       "language": "eng"
@@ -28776,7 +30693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsclassicmovies/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:25.346Z"
         }
       ],
       "language": "eng"
@@ -28791,7 +30709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvs/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:25.586Z"
         }
       ],
       "language": "eng"
@@ -28806,7 +30725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvscomedy/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:25.694Z"
         }
       ],
       "language": "eng"
@@ -28821,7 +30741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-ConsumerDirect/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:26.468Z"
         }
       ],
       "language": "eng"
@@ -28836,7 +30757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsdriveinmovie/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:26.509Z"
         }
       ],
       "language": "eng"
@@ -28851,7 +30773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-TVSFamilyChannel/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:26.768Z"
         }
       ],
       "language": "eng"
@@ -28866,7 +30789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-TVSFlashback/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:26.999Z"
         }
       ],
       "language": "eng"
@@ -28881,7 +30805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-hitops/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.294Z"
         }
       ],
       "language": "eng"
@@ -28896,7 +30821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvshollywoohistory/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.350Z"
         }
       ],
       "language": "eng"
@@ -28911,7 +30837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsmainst/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.488Z"
         }
       ],
       "language": "eng"
@@ -28926,7 +30853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsmusic/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.675Z"
         }
       ],
       "language": "eng"
@@ -28941,7 +30869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-nostalgia/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.819Z"
         }
       ],
       "language": "eng"
@@ -28956,7 +30885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsNostalgiaMovies/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.825Z"
         }
       ],
       "language": "eng"
@@ -28971,7 +30901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-petparadenetwork/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:27.903Z"
         }
       ],
       "language": "eng"
@@ -28986,7 +30917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsgameshow/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.020Z"
         }
       ],
       "language": "eng"
@@ -29001,7 +30933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsselect/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.094Z"
         }
       ],
       "language": "eng"
@@ -29016,7 +30949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvssports/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.386Z"
         }
       ],
       "language": "eng"
@@ -29031,7 +30965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvssportsbureau/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.408Z"
         }
       ],
       "language": "eng"
@@ -29046,7 +30981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-TVStalk/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.445Z"
         }
       ],
       "language": "eng"
@@ -29061,7 +30997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvstallyho/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.482Z"
         }
       ],
       "language": "eng"
@@ -29076,7 +31013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tavern/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.490Z"
         }
       ],
       "language": "eng"
@@ -29091,7 +31029,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvstn/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.731Z"
         }
       ],
       "language": "eng"
@@ -29106,7 +31045,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvstravel/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.852Z"
         }
       ],
       "language": "eng"
@@ -29121,7 +31061,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsturbo/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:28.873Z"
         }
       ],
       "language": "eng"
@@ -29136,7 +31077,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvsvintage/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.003Z"
         }
       ],
       "language": "eng"
@@ -29151,7 +31093,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvswesternmovies/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.275Z"
         }
       ],
       "language": "eng"
@@ -29166,7 +31109,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/gusa/gusa-tvswsn/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.311Z"
         }
       ],
       "language": "eng"
@@ -29181,7 +31125,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/sanantoniotx/live-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.395Z"
         }
       ],
       "language": "eng"
@@ -29196,7 +31141,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://edge-f.swagit.com/live/sanantoniotx/live-2-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.474Z"
         }
       ],
       "language": "eng"
@@ -29211,7 +31157,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tvsnhlslivetest.akamaized.net/hls/live/2034711/TVSN-MSL4/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.495Z"
         }
       ],
       "language": "eng"
@@ -29226,7 +31173,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://59e8e1c60a2b2.streamlock.net/509/509.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.887Z"
         }
       ],
       "language": "eng"
@@ -29241,7 +31189,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdnapi.kaltura.com/p/2503451/sp/250345100/playManifest/entryId/1_gb6tjmle/protocol/https/format/applehttp/a.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.927Z"
         }
       ],
       "language": "eng"
@@ -29256,7 +31205,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1t5afz6qed3xk.cloudfront.net/Unbeaten.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:29.955Z"
         }
       ],
       "language": "eng"
@@ -29271,7 +31221,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://all3media-international-undercoverboss-1-au.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:30.007Z"
         }
       ],
       "language": "eng"
@@ -29286,7 +31237,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1900995f417000731a002.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:30.027Z"
         }
       ],
       "language": "eng"
@@ -29301,7 +31253,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-61c1e1c445b45d0007aad03e.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:30.182Z"
         }
       ],
       "language": "eng"
@@ -29316,7 +31269,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d3ify425qsio2d.cloudfront.net/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:30.194Z"
         }
       ],
       "language": "eng"
@@ -29331,7 +31285,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d31z96rdrmwfsp.cloudfront.net/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:31.148Z"
         }
       ],
       "language": "eng"
@@ -29346,7 +31301,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5bd05b4694d45d266bc951f2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:31.337Z"
         }
       ],
       "language": "eng"
@@ -29361,7 +31317,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00731-gannettcoinc-usatodaynews-plex/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:31.444Z"
         }
       ],
       "language": "eng"
@@ -29376,7 +31333,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vip-acasatv.online:25463/lrZuGxAuP3/6782859900/714.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:32.093Z"
         }
       ],
       "language": "ron"
@@ -29391,7 +31349,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream8.cinerama.uz/1015/tracks-v1a1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:32.605Z"
         }
       ],
       "language": "eng"
@@ -29406,7 +31365,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://sincerecloud.stream/loadbalancer/public/J9EmQQGf.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:32.678Z"
         }
       ],
       "language": "eng"
@@ -29421,7 +31381,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.vantagetv.co.uk/vmusicuk_stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:33.201Z"
         }
       ],
       "language": "eng"
@@ -29436,7 +31397,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://hls.vantagetv.ee/vrock_stream/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:33.650Z"
         }
       ],
       "language": "eng"
@@ -29451,7 +31413,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00056-amg00056c13-rakuten-es-3246.playouts.now.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:35.708Z"
         }
       ],
       "language": "eng"
@@ -29466,7 +31429,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_VH1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:37.267Z"
         }
       ],
       "language": "eng"
@@ -29481,7 +31445,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-66abefe5d2d50d00082c7d12.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:39.298Z"
         }
       ],
       "language": "eng"
@@ -29496,7 +31461,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62f64ec9eb1045000728cad6.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:39.678Z"
         }
       ],
       "language": "eng"
@@ -29511,7 +31477,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62bebc3459624e00078209c3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:39.700Z"
         }
       ],
       "language": "eng"
@@ -29526,7 +31493,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62beb44e3afd120007915d1b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:39.844Z"
         }
       ],
       "language": "eng"
@@ -29541,7 +31509,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/viasat3/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:40.559Z"
         }
       ],
       "language": "eng"
@@ -29556,7 +31525,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/viasat6/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:40.622Z"
         }
       ],
       "language": "eng"
@@ -29571,7 +31541,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://777905.live.tvstitch.com/playlist.m3u8?master=249&source=aHR0cDovLzE3Ni4xMjIuMTAzLjI0MTo3MDAwL2NoNDQvdHJhY2tzLXYxYTEvbW9uby5tM3U4P2xpdmU9MSZpcD0xNzguMTM2LjQyLjIyMCZpZD05NDg4NjUmc2VjcmV0PW4xdTd1aTA2JnNzbD0xJjIxeW89MCZlPTE3OTA1OTk4Mzcmc3Q9UzRPS1VZemNocmREQWhnSTJkTDJ5QQ==",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:41.180Z"
         }
       ],
       "language": "eng"
@@ -29586,7 +31557,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://88.212.7.14/live/viasat2/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:40.480Z"
         }
       ],
       "language": "eng"
@@ -29601,7 +31573,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_118/206436-3189488-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:41.705Z"
         }
       ],
       "language": "eng"
@@ -29616,7 +31589,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://voa-ingest.akamaized.net/hls/live/2033874/tvmc06/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:42.463Z"
         }
       ],
       "language": "eng"
@@ -29631,7 +31605,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.voceabasarabiei.md/vocea/bitrate_1080p.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:42.517Z"
         }
       ],
       "language": "ron"
@@ -29646,7 +31621,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://vsin-sgrewind.streamguys1.com/scte/live-2k/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:43.716Z"
         }
       ],
       "language": "eng"
@@ -29661,7 +31637,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_118/amlst:204972-1949480/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:43.878Z"
         }
       ],
       "language": "eng"
@@ -29676,7 +31653,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_118/204972-1954106-1/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:44.073Z"
         }
       ],
       "language": "eng"
@@ -29691,7 +31669,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://aegis-cloudfront-1.tubi.video/d5171dc7-f8c6-469c-81eb-e1ffaaed5721/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:44.957Z"
         }
       ],
       "language": "eng"
@@ -29706,7 +31685,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn4.skygo.mn/live/disk1/Warner/HLSv3-FTA/Warner.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.042Z"
         }
       ],
       "language": "eng"
@@ -29721,7 +31701,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tgn2.bozztv.com/watc57/watc57-1/watc57-1/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.064Z"
         }
       ],
       "language": "eng"
@@ -29736,7 +31717,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://uni01rtmp.tulix.tv/watc57-2/watc57-2/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.099Z"
         }
       ],
       "language": "eng"
@@ -29751,7 +31733,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2245",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.383Z"
         }
       ],
       "language": "eng"
@@ -29766,7 +31749,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2246",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.524Z"
         }
       ],
       "language": "eng"
@@ -29781,7 +31765,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01415-waterbearnetwor-waterbear-samsunguk-1h0y8.amagi.tv/playlist/amg01415-waterbearnetwor-waterbear-samsunguk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.548Z"
         }
       ],
       "language": "eng"
@@ -29796,7 +31781,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://waypoint-waypointtv-firetv.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:45.588Z"
         }
       ],
       "language": "eng"
@@ -29811,7 +31797,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d2ugl2g2gz1giy.cloudfront.net/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:47.293Z"
         }
       ],
       "language": "eng"
@@ -29826,7 +31813,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_WE_TV/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:47.562Z"
         }
       ],
       "language": "eng"
@@ -29841,7 +31829,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d2ferbiwcx1539.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-8zd06wicndthf-ssai-prd/WNNationalSamsung/WNNationalSamsung.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:48.183Z"
         }
       ],
       "language": "eng"
@@ -29856,7 +31845,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jukin-weatherspy-2-au.samsung.wurl.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:48.632Z"
         }
       ],
       "language": "eng"
@@ -29871,7 +31861,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d12gab6t5iutxf.cloudfront.net/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:48.721Z"
         }
       ],
       "language": "eng"
@@ -29886,7 +31877,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00735-videosolutionsa-wedobigdocs-ono-0urlz.amagi.tv/playlist/amg00735-videosolutionsa-wedobigdocs-ono/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:48.959Z"
         }
       ],
       "language": "eng"
@@ -29901,7 +31893,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00735-videosolutions-amg00735c15-wedotv-eu-1915.playouts.now.amagi.tv/playlist/amg00735-videosolutionsagfast-wedoamor-wedotveu/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:49.180Z"
         }
       ],
       "language": "eng"
@@ -29916,7 +31909,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-688a44cf5d73ec0a3f49718b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:49.210Z"
         }
       ],
       "language": "eng"
@@ -29931,7 +31925,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/weho/G0161_004/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:49.848Z"
         }
       ],
       "language": "eng"
@@ -29946,7 +31941,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5e8df4bc16e34700077e77d3.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:49.947Z"
         }
       ],
       "language": "eng"
@@ -29961,7 +31957,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://181.224.255.210:8001/play/a0rq/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:50.916Z"
         }
       ],
       "language": "eng"
@@ -29976,7 +31973,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wggstv16.ddns.net:9953/hls/WGGS1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:51.378Z"
         }
       ],
       "language": "eng"
@@ -29991,7 +31989,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.whiplash.cc/whiplash/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:51.916Z"
         }
       ],
       "language": "eng"
@@ -30006,7 +32005,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.whiplash.cc/whiplash-cinema/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:52.344Z"
         }
       ],
       "language": "eng"
@@ -30021,7 +32021,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.whiplash.cc/whiplash-2/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:52.510Z"
         }
       ],
       "language": "eng"
@@ -30036,7 +32037,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swagit.com/live-edge/whiteplainsny/smil:std-4x3-1-b/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:52.600Z"
         }
       ],
       "language": "eng"
@@ -30051,7 +32053,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream.swagit.com/live-edge/hastingsonhudsonny/smil:std-4x3-1-a/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:52.740Z"
         }
       ],
       "language": "eng"
@@ -30066,7 +32069,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-5d48678d34ceb37d3c458a55.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:52.954Z"
         }
       ],
       "language": "eng"
@@ -30081,7 +32085,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-60817936fd2d70000763d2b2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.146Z"
         }
       ],
       "language": "eng"
@@ -30096,7 +32101,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.386Z"
         }
       ],
       "language": "eng"
@@ -30111,7 +32117,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dqga3jatxofgx.cloudfront.net/WildEarth.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.490Z"
         }
       ],
       "language": "eng"
@@ -30126,7 +32133,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62beb0de371e6c000775930c.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.612Z"
         }
       ],
       "language": "eng"
@@ -30141,7 +32149,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62b9b63d3bbe9000073c0a2d.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.696Z"
         }
       ],
       "language": "eng"
@@ -30156,7 +32165,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-62beb7d7fbf54600076abc7b.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.883Z"
         }
       ],
       "language": "eng"
@@ -30171,7 +32181,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-greater-clackamas-county-tv.cablecast.tv/live-7/live/stream-4/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:53.931Z"
         }
       ],
       "language": "eng"
@@ -30186,7 +32197,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn.whiplash.cc/whiplash-windowtv/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:54.582Z"
         }
       ],
       "language": "eng"
@@ -30201,7 +32213,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://www-on-freecast.b-cdn.net/WWW-on-Freecast/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:54.677Z"
         }
       ],
       "language": "eng"
@@ -30216,7 +32229,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://vg-zeefta.akamaized.net/ptnr-yupptv/title-wion/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/20c3c0d9-0256-43fe-bca6-70fdd490b957/main.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:54.834Z"
         }
       ],
       "language": "eng"
@@ -30231,7 +32245,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00627-banijaygroup-wipeoutxtraau-samsungau-ashbl.amagi.tv/playlist/amg00627-banijaygroup-wipeoutxtraau-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:55.063Z"
         }
       ],
       "language": "eng"
@@ -30246,7 +32261,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://rpn.bozztv.com/wlmb/wlmb/wlmb/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:55.276Z"
         }
       ],
       "language": "eng"
@@ -30261,7 +32277,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39accvx65hq9o.cloudfront.net/Womens_Sports_Network.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:55.428Z"
         }
       ],
       "language": "eng"
@@ -30276,7 +32293,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lds-wonder-rakuten.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:55.488Z"
         }
       ],
       "language": "eng"
@@ -30291,7 +32309,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://9a81dd4ee3884d0dbcacafaf0d81327a.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_BilliardsTV/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:56.602Z"
         }
       ],
       "language": "eng"
@@ -30306,7 +32325,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://world.lls.pbs.org/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:57.086Z"
         }
       ],
       "language": "eng"
@@ -30321,7 +32341,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://wgtvdt3.lls.pbs.org/wgtvdt3-cmaf-hls.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:57.373Z"
         }
       ],
       "language": "eng"
@@ -30336,7 +32357,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://597865f6e4114.streamlock.net/live/leseaorigin.stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:57.519Z"
         }
       ],
       "language": "eng"
@@ -30351,7 +32373,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/playlist.m3u8?ads.xumo_channelId=88883102",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:58.206Z"
         }
       ],
       "language": "eng"
@@ -30366,7 +32389,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg00477-samsungelectron-worldpokertour-samsunguk-81igb.amagi.tv/playlist/amg00477-samsungelectron-worldpokertour-samsunguk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:58.347Z"
         }
       ],
       "language": "eng"
@@ -30381,7 +32405,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dbrb49pjoymg4.cloudfront.net/10001/99991745/hls/master.m3u8?ads.xumo_channelId=99991745",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:59.082Z"
         }
       ],
       "language": "eng"
@@ -30396,7 +32421,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://video1.getstreamhosting.com:1936/8152/8152/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:59.097Z"
         }
       ],
       "language": "eng"
@@ -30411,7 +32437,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://2-fss-2.streamhoster.com/pl_138/amlst:207282-6094500/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:59.596Z"
         }
       ],
       "language": "eng"
@@ -30426,7 +32453,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://tv2.fastcast4u.com:3943/stream/play.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:59.644Z"
         }
       ],
       "language": "eng"
@@ -30441,7 +32469,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live2.tensila.com/onair-v-1.xfm1027/hls/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:59.877Z"
         }
       ],
       "language": "eng"
@@ -30456,7 +32485,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=2247",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:45:59.931Z"
         }
       ],
       "language": "eng"
@@ -30471,7 +32501,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d284aawtm5vi48.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-fjdfi2br1jtq7/XITE_90s_Throwback.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:00.151Z"
         }
       ],
       "language": "eng"
@@ -30486,7 +32517,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-623b92a2ccefed0007b1db48.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:00.879Z"
         }
       ],
       "language": "eng"
@@ -30501,7 +32533,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d726x48n2pd5h.cloudfront.net/XITE_Hits.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:00.993Z"
         }
       ],
       "language": "eng"
@@ -30516,7 +32549,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d726x48n2pd5h.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-skxr1pazhltvp/XITE_Hits.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:01.034Z"
         }
       ],
       "language": "eng"
@@ -30531,7 +32565,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01243-xitenetworksint-hitsuk-samsunguk-mvovq.amagi.tv/playlist/amg01243-xitenetworksint-hitsuk-samsunguk/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:01.148Z"
         }
       ],
       "language": "eng"
@@ -30546,7 +32581,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://dvnftgdlbnemm.cloudfront.net/XITE_Just_Chill.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:01.467Z"
         }
       ],
       "language": "eng"
@@ -30561,7 +32597,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d198ro05q94rc4.cloudfront.net/XITE_Rock_On.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:01.904Z"
         }
       ],
       "language": "eng"
@@ -30576,7 +32613,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00111-hearstmediaprod-xploreintlnl-samsungnl/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:03.012Z"
         }
       ],
       "language": "eng"
@@ -30591,7 +32629,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janus.xpbroadcasting.com:8443/hls/xptvUS.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:03.582Z"
         }
       ],
       "language": "eng"
@@ -30606,7 +32645,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janus.xpbroadcasting.com:8443/hls/xptv1.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:03.262Z"
         }
       ],
       "language": "eng"
@@ -30621,7 +32661,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://janus.xpbroadcasting.com:8443/hls/xptv2.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:03.552Z"
         }
       ],
       "language": "eng"
@@ -30636,7 +32677,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://streams2.sofast.tv/vglive-sk-461164/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.093Z"
         }
       ],
       "language": "eng"
@@ -30651,7 +32693,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_018/Stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.183Z"
         }
       ],
       "language": "eng"
@@ -30666,7 +32709,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://d1ewctnvcwvvvu.cloudfront.net/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.282Z"
         }
       ],
       "language": "eng"
@@ -30681,7 +32725,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "http://23.237.104.106:8080/USA_YES_NETWORK/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.515Z"
         }
       ],
       "language": "eng"
@@ -30696,7 +32741,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://jmp2.uk/plu-654102ed770cf1000866c307.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.670Z"
         }
       ],
       "language": "eng"
@@ -30711,7 +32757,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://reflect-communitytv.cablecast.tv/live-3/live/stream-1/live.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.807Z"
         }
       ],
       "language": "eng"
@@ -30726,7 +32773,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://younghollywood-rakuten-samsung.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.882Z"
         }
       ],
       "language": "eng"
@@ -30741,7 +32789,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://goliveafrica.media:9998/live/6257fbe7383d6/index.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:04.929Z"
         }
       ],
       "language": "eng"
@@ -30756,7 +32805,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=16767",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:05.023Z"
         }
       ],
       "language": "eng"
@@ -30771,7 +32821,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01796-amg01796c19-rakuten-gb-7486.playouts.now.amagi.tv/playlist/amg01796-fastmediafast-yugioh2en-rakutengb/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:05.394Z"
         }
       ],
       "language": "eng"
@@ -30786,7 +32837,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg01796-amg01796c18-rakuten-es-7491.playouts.now.amagi.tv/playlist/amg01796-fastmediafast-yugiohees-rakutenes/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:05.462Z"
         }
       ],
       "language": "eng"
@@ -30801,7 +32853,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/yumaaz1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:06.534Z"
         }
       ],
       "language": "eng"
@@ -30816,7 +32869,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://livestream.telvue.com/yumaaz2/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:07.586Z"
         }
       ],
       "language": "eng"
@@ -30831,7 +32885,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://securestream10.champds.com/LIVE/YumaCoAZLIVE/YumaCoAZLIVE.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:05.894Z"
         }
       ],
       "language": "eng"
@@ -30846,7 +32901,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://zainabia.livebox.co.in/ZainabiaChannelhls/channel.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:07.732Z"
         }
       ],
       "language": "eng"
@@ -30861,7 +32917,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://amg17931-zee-amg17931c6-samsung-au-8872.playouts.now.amagi.tv/playlist/amg17931-asiatvusaltdfast-zeeworld-samsungau/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:08.330Z"
         }
       ],
       "language": "eng"
@@ -30876,7 +32933,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/sg/YuppTV/ZeeTVHDAPAC.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:08.956Z"
         }
       ],
       "language": "eng"
@@ -30891,7 +32949,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://live.azenagroup.com/zenith/index.ll.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:09.018Z"
         }
       ],
       "language": "eng"
@@ -30906,7 +32965,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://lotus.stingray.com/manifest/zenlife-zen001-montreal/samsungtvplus/master.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:09.193Z"
         }
       ],
       "language": "eng"
@@ -30921,7 +32981,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://media.slactech.com:1936/ZIZDirect/ZIZDirect/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:09.204Z"
         }
       ],
       "language": "eng"
@@ -30936,7 +32997,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://zns-edge1.streamcomedia.cloud/znstv13/zns1080p_stream/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:09.231Z"
         }
       ],
       "language": "eng"
@@ -30951,7 +33013,8 @@ export default {
           "id": "s1",
           "name": "Stream 1",
           "url": "https://zoomoo-samsungau.amagi.tv/playlist.m3u8",
-          "supported": true
+          "supported": true,
+          "checkedAt": "2026-11-10T17:46:09.700Z"
         }
       ],
       "language": "eng"
