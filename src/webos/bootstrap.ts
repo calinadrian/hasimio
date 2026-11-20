@@ -48,6 +48,48 @@ registerDialogs(document);
 new MutationObserver(entries=>entries.forEach(entry=>entry.addedNodes.forEach(node=>{if(node instanceof HTMLElement){if(node.tagName==='DIALOG')dialogPolyfill.registerDialog(node as HTMLDialogElement);registerDialogs(node);}}))).observe(document.documentElement,{childList:true,subtree:true});
 
 document.documentElement.classList.add('hasimio-tv');
+// Chromium 79 (webOS 6) ignores `gap` on flex containers. The TV build emits
+// margin fallbacks scoped to this class; newer TVs keep native flex gap.
+(function detectFlexGap(){
+  const probe=document.createElement('div');
+  probe.style.cssText='display:flex;flex-direction:column;gap:1px;position:absolute;visibility:hidden';
+  probe.appendChild(document.createElement('div'));probe.appendChild(document.createElement('div'));
+  document.documentElement.appendChild(probe);
+  if(probe.scrollHeight!==1)document.documentElement.classList.add('no-flex-gap');
+  probe.remove();
+})();
+// CSS cannot see bare text, so the flex-gap fallback cannot space label text
+// from a neighbouring icon or badge ("(i) Details", "Top 100 [82]"). Mark
+// elements that sit directly before or after label text; data attributes
+// survive React re-rendering className.
+if(document.documentElement.classList.contains('no-flex-gap')){
+  const filled=(node:Node|null)=>!!node&&node.nodeType===3&&!!node.textContent?.trim();
+  const meaningful=(node:Node|null,step:'previousSibling'|'nextSibling')=>{while(node&&node.nodeType===3&&!node.textContent?.trim())node=node[step];return node;};
+  const markChildren=(parent:Element|null)=>{
+    if(!parent||parent.closest('svg'))return;
+    for(const child of Array.from(parent.children)){
+      child.toggleAttribute('data-after-text',filled(meaningful(child.previousSibling,'previousSibling')));
+      child.toggleAttribute('data-before-text',filled(meaningful(child.nextSibling,'nextSibling')));
+    }
+  };
+  const textParents=(root:Node)=>{
+    const parents=new Set<Element>();
+    if(root.nodeType===3){if(root.parentElement)parents.add(root.parentElement);return parents;}
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    for(let node=walker.nextNode();node;node=walker.nextNode())if(node.textContent?.trim()&&node.parentElement)parents.add(node.parentElement);
+    return parents;
+  };
+  textParents(document.body).forEach(markChildren);
+  new MutationObserver(entries=>{
+    const parents=new Set<Element>();
+    entries.forEach(entry=>{
+      if(entry.type==='characterData'){if(entry.target.parentElement)parents.add(entry.target.parentElement);return;}
+      if(entry.target instanceof Element)parents.add(entry.target);
+      entry.addedNodes.forEach(node=>textParents(node).forEach(parent=>parents.add(parent)));
+    });
+    parents.forEach(markChildren);
+  }).observe(document.body,{childList:true,subtree:true,characterData:true});
+}
 // Native lazy loading keeps decoded artwork only around visible shelves.
 // Explicit pagination prevents a long session accumulating an unlimited DOM.
 const focusable='button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),summary,[tabindex="0"]';
@@ -108,13 +150,26 @@ document.addEventListener('keydown',event=>{
     // At the root, let webOS handle Back and exit normally.
     return;
   }
+  // OK on the remote sends Enter, which does not toggle checkboxes in Chromium.
+  if(event.key==='Enter'&&document.activeElement instanceof HTMLInputElement&&['checkbox','radio'].includes(document.activeElement.type)){
+    event.preventDefault();event.stopImmediatePropagation();document.activeElement.click();return;
+  }
   if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key))return;
   const active=document.activeElement as HTMLElement;
-  if(active?.matches('input,textarea,select')&&!editorInput)return;
+  // Sliders keep Left/Right for their value; Up/Down always move focus, so a
+  // slider can never trap the remote. Checkboxes and closed selects would
+  // otherwise swallow every arrow (or silently change value) as well.
+  if(active?.matches('input[type="range"]')&&(event.key==='ArrowLeft'||event.key==='ArrowRight'))return;
+  if(active?.matches('textarea')&&!editorInput)return;
   const list=candidates();
   if(!list.length)return;
   event.preventDefault();event.stopImmediatePropagation();
-  if(!active||!list.includes(active)){list[0].focus();return;}
+  if(!active||!list.includes(active)){
+    // In the player, the first press lands on Play/Pause rather than the Back
+    // arrow in the corner.
+    const play=document.querySelector<HTMLElement>('.cinema-player .cinema-play');
+    (play&&list.includes(play)?play:list[0]).focus();return;
+  }
   const origin=active.getBoundingClientRect(),x=origin.left+origin.width/2,y=origin.top+origin.height/2;
   const horizontal=event.key==='ArrowLeft'||event.key==='ArrowRight',positive=event.key==='ArrowRight'||event.key==='ArrowDown';
   let target:HTMLElement|undefined,best=Infinity;
@@ -127,6 +182,12 @@ document.addEventListener('keydown',event=>{
     if(score<best){best=score;target=element;}
   }
   if(!target&&editorInput){leaveEditor(editorInput);return;}
+  // Entering the collapsed rail lands on the current page, not on whichever
+  // icon happens to be level with the previous control.
+  if(target&&target.closest('.sidebar')&&!active.closest('.sidebar')){
+    const current=document.querySelector<HTMLElement>('.sidebar .nav-item.active');
+    if(current&&list.includes(current))target=current;
+  }
   target?.focus();target?.scrollIntoView({block:'nearest',inline:'nearest'});
 },true);
 const stop=()=>{void nativeFetch('/api/webos/stop',{method:'POST',keepalive:true});};

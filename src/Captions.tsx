@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
-import {Check,Globe,LoaderCircle,RotateCcw} from 'lucide-react';
+import {Check,Globe,LoaderCircle,RefreshCw,RotateCcw} from 'lucide-react';
+import {DRIFT_CHOICES,FINE_STEP,NO_TIMING,TIMING_STEP,describeDelay,nudgeTiming,type SubtitleTiming} from './subtitle-timing';
 import {captionColors,captionEdges,captionFonts,captionPresets,defaultSettings,type CaptionEdge,type CaptionFont,type CaptionStyle,type PlayerSettings} from './preferences';
 import {captionLines,languageName,parseVtt,sameLanguage,srtToVtt} from './playback-tracks';
 import type {SubtitleFile} from './subtitle-selection';
@@ -51,9 +52,29 @@ export function CaptionStyleControls({settings,onChange}:{settings:CaptionSettin
       <label className="cinema-field caption-range">Background<span className="caption-range-row"><input type="range" min={0} max={100} step={5} value={settings.captionBackground} onChange={event=>onChange({captionBackground:Number(event.target.value)})}/><output>{settings.captionBackground?`${settings.captionBackground}%`:'Off'}</output></span></label>
       <label className="caption-toggle"><input type="checkbox" checked={settings.captionBold} onChange={event=>onChange({captionBold:event.target.checked})}/>Bold text</label>
     </details>
-    <label className="cinema-field">Subtitle delay (seconds)<input type="number" min={-30} max={30} step={0.1} value={settings.captionDelay} onChange={event=>onChange({captionDelay:Math.max(-30,Math.min(30,Math.round((Number(event.target.value)||0)*10)/10))})}/></label>
-    <p className="cinema-help">Negative shows subtitles earlier; positive shows them later.</p>
     <button type="button" className="cinema-text-action caption-reset" onClick={()=>onChange({captionSize:defaultSettings.captionSize,captionPosition:defaultSettings.captionPosition,captionDelay:0,...captionPresets[0].style})}><RotateCcw size={14}/> Reset subtitle style</button>
+  </div>;
+}
+
+/** Per-version timing: coarse and fine steps, a frame-rate drift fix and a one-press switch to the next version. */
+export function SubtitleTimingControls({timing,onChange,onNextVersion,nextBusy,remote}:{timing:SubtitleTiming;onChange:(next:SubtitleTiming)=>void;onNextVersion?:()=>void;nextBusy?:boolean;remote?:boolean}){
+  const step=(seconds:number)=>onChange(nudgeTiming(timing,seconds));
+  const drift=DRIFT_CHOICES.find(choice=>Math.abs(choice.speed-timing.speed)<1e-6);
+  return <div className="caption-timing">
+    <p className="caption-timing-value" role="status" aria-live="polite">{describeDelay(timing.delay)}{timing.speed!==1?' · drift fix on':''}</p>
+    <div className="caption-timing-steps" role="group" aria-label="Move subtitles">
+      <button type="button" className="caption-step" onClick={()=>step(-TIMING_STEP)}><strong>−{TIMING_STEP} s</strong><small>Earlier</small></button>
+      <button type="button" className="caption-step" onClick={()=>step(-FINE_STEP)}><strong>−{FINE_STEP} s</strong><small>Earlier</small></button>
+      <button type="button" className="caption-step" onClick={()=>step(FINE_STEP)}><strong>+{FINE_STEP} s</strong><small>Later</small></button>
+      <button type="button" className="caption-step" onClick={()=>step(TIMING_STEP)}><strong>+{TIMING_STEP} s</strong><small>Later</small></button>
+    </div>
+    <p className="cinema-help">Text appears before the speech? Choose <strong>Later</strong>. After the speech? Choose <strong>Earlier</strong>. {remote?'While watching, CH ▲ / CH ▼ (or the green / red buttons) move subtitles by 0.25 s.':'While watching, ] and [ move subtitles by 0.25 s.'} Timing is saved for this video and version only.</p>
+    {onNextVersion&&<button type="button" className="cinema-action caption-next-version" disabled={nextBusy} onClick={onNextVersion}>{nextBusy?<LoaderCircle size={17} className="spin"/>:<RefreshCw size={17}/>} Try the next version</button>}
+    <div className="cinema-menu-divider"/>
+    <h4>Drift fix</h4>
+    <div className="caption-drift" role="radiogroup" aria-label="Frame-rate drift fix">{DRIFT_CHOICES.map(choice=><button key={choice.label} type="button" role="radio" aria-checked={drift===choice} className={`caption-choice ${drift===choice?'selected':''}`} onClick={()=>onChange({...timing,speed:choice.speed})}>{drift===choice&&<Check size={15}/>}{choice.label}</button>)}</div>
+    <p className="cinema-help">Use this when subtitles start in sync but slowly fall behind or run ahead as the video plays.</p>
+    <button type="button" className="cinema-text-action" disabled={timing.delay===0&&timing.speed===1} onClick={()=>onChange(NO_TIMING)}><RotateCcw size={14}/> Reset timing</button>
   </div>;
 }
 
@@ -87,12 +108,56 @@ export async function loadOnlineSubtitle(item:OnlineResult){
   return subtitleFile(await response.text(),`${item.provider||'OpenSubtitles'} · ${languageName(item.language)}`,item.language);
 }
 
-export function OnlineSubtitles({search,retry,language,active,auto,onAuto,onLanguage,onLoad,onOff}:{search:OnlineSearch;retry:()=>void;language:string;active?:SubtitleFile&{online?:string};auto:boolean;onAuto:(auto:boolean)=>void;onLanguage:(language:string)=>void;onLoad:(file:SubtitleFile&{online:string})=>void;onOff:()=>void}){
+// Romanian and English get one-press buttons on the TV; other languages stay in a list.
+export const QUICK_SUBTITLE_LANGUAGES=[{code:'rum',label:'Română'},{code:'eng',label:'English'}] as const;
+/** `ranked` is false when the video's file name is unknown, so no version could be compared. */
+export function matchDescription(match:number,index:number,ranked=true){
+  if(!ranked)return 'Release unknown · check timing';
+  return index===0&&match>=0.5?'Best match for this video':match>=0.5?'Good match':match>=0.25?'Similar release':'Different release · may need timing';
+}
+export function OnlineSubtitles({search,retry,language,active,auto,onAuto,onLanguage,onLoad,onOff,remote}:{search:OnlineSearch;retry:()=>void;language:string;active?:SubtitleFile&{online?:string};auto:boolean;onAuto:(auto:boolean)=>void;onLanguage:(language:string)=>void;onLoad:(file:SubtitleFile&{online:string})=>void;onOff:()=>void;remote?:boolean}){
   const languages=[...new Set([language,...search.results.map(item=>item.language)])].map(code=>({code,name:languageName(code),count:search.results.filter(item=>sameLanguage(item.language,code)).length})).sort((a,b)=>a.code===language?-1:b.code===language?1:a.name.localeCompare(b.name));
   const options=search.results.filter(item=>sameLanguage(item.language,language)).slice(0,40);
   const [choice,setChoice]=useState<string>(),[loading,setLoading]=useState(false),[error,setError]=useState('');
+  const [shown,setShown]=useState(6),[loadingId,setLoadingId]=useState<string>();
   const selected=options.find(item=>item.id===(choice??active?.online))??options[0];
   async function load(){if(!selected)return;setLoading(true);setError('');try{onLoad({...await loadOnlineSubtitle(selected),online:selected.id});}catch(e){setError(e instanceof Error?e.message:'This subtitle could not be downloaded.');}finally{setLoading(false);}}
+  if(remote){
+    // TV remote: every choice is one press on a large button. No dropdown
+    // round-trips and no disabled buttons that would drop remote focus.
+    async function pick(item:OnlineResult){
+      if(loadingId||active?.online===item.id)return;
+      setLoadingId(item.id);setError('');
+      try{onLoad({...await loadOnlineSubtitle(item),online:item.id});}catch(e){setError(e instanceof Error?e.message:'This subtitle could not be downloaded.');}finally{setLoadingId(undefined);}
+    }
+    const quick=QUICK_SUBTITLE_LANGUAGES.some(item=>sameLanguage(item.code,language));
+    const others=languages.filter(item=>!QUICK_SUBTITLE_LANGUAGES.some(quickItem=>sameLanguage(quickItem.code,item.code))&&item.count>0);
+    const ranked=search.results.some(item=>item.match>0);
+    return <div className="caption-online caption-remote">
+      <div className="caption-section-heading"><h4>Language</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
+      <div className="caption-languages" role="radiogroup" aria-label="Subtitle language">
+        {QUICK_SUBTITLE_LANGUAGES.map(item=>{const on=sameLanguage(item.code,language),count=search.results.filter(result=>sameLanguage(result.language,item.code)).length;
+          return <button key={item.code} type="button" role="radio" aria-checked={on} className={`caption-choice ${on?'selected':''}`} onClick={()=>{if(!on){onLanguage(item.code);setShown(6);}}}>{on&&<Check size={16}/>}{item.label}{search.state==='ready'&&(on||count>0)&&<small>{count}</small>}</button>;})}
+      </div>
+      {active?.online&&<button type="button" className="cinema-text-action caption-turn-off" onClick={onOff}>Turn subtitles off</button>}
+      {search.state==='unsupported'?<p className="cinema-help">Online subtitles are available for movies and series with an IMDb listing.</p>
+      :search.state==='loading'||search.state==='idle'?<p className="cinema-help caption-online-status"><LoaderCircle size={15} className="spin"/> Searching for subtitles…</p>
+      :search.state==='error'?<div className="caption-online-status" role="alert"><p className="cinema-help">{search.error}</p><button type="button" className="cinema-text-action" onClick={retry}>Search again</button></div>
+      :<>
+        <h4 className="caption-versions-heading">{languageName(language)} versions</h4>
+        {options.length?<div className="caption-versions">{options.slice(0,shown).map((item,index)=>{const current=active?.online===item.id;
+          return <button key={item.id} type="button" className={`caption-version ${current?'selected':''} ${ranked&&item.match<0.25?'weak':''}`} aria-current={current||undefined} onClick={()=>void pick(item)}>
+            <span className="caption-version-text"><span className="caption-version-name">{item.release}</span><span className="caption-version-meta">{item.provider||'OpenSubtitles'} · {matchDescription(item.match,index,ranked)}</span></span>
+            {current?<Check size={18}/>:loadingId===item.id?<LoaderCircle size={18} className="spin"/>:null}
+          </button>;})}
+          {options.length>shown&&<button type="button" className="cinema-text-action" onClick={()=>setShown(count=>count+6)}>Show {Math.min(6,options.length-shown)} more versions</button>}
+        </div>:<p className="cinema-help">No {languageName(language)} subtitles were found for this video.</p>}
+        {others.length>0&&<label className="cinema-field caption-other-language">Other language<select value={quick?'':language} onChange={event=>{if(event.target.value){onLanguage(event.target.value);setShown(6);}}}><option value="">Choose a language…</option>{others.map(item=><option key={item.code} value={item.code}>{item.name} ({item.count})</option>)}</select></label>}
+        {search.warnings?.map(warning=><p key={warning} className="cinema-help" role="status">{warning}</p>)}{error&&<p className="cinema-help" role="alert">{error}</p>}
+        <button type="button" className={`caption-choice caption-auto ${auto?'selected':''}`} aria-pressed={auto} onClick={()=>onAuto(!auto)}>{auto&&<Check size={16}/>}Load {languageName(language)} automatically</button>
+      </>}
+    </div>;
+  }
   return <div className="caption-online">
     <div className="caption-section-heading"><h4><Globe size={15}/> Online subtitles</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
     {active?.online&&<div className="caption-online-current"><span>{active.label}</span><button type="button" className="cinema-text-action" onClick={onOff}>Turn off</button></div>}

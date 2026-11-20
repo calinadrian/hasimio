@@ -15,6 +15,17 @@ describe('online subtitles',()=>{
     expect(results[0]).toMatchObject({language:'eng',release:'Movie.2010.1080p.BluRay.x264-GROUP.srt',match:1});
     expect(releaseMatch('anything','')).toBe(0);
   });
+  it('ranks the same release group and source above title-only matches',()=>{
+    const video='The.Movie.2023.1080p.WEB-DL.DDP5.1.H.264-FLUX.mkv';
+    const sameGroup=releaseMatch('The Movie 2023 1080p WEB-DL FLUX',video);
+    const sameSource=releaseMatch('The.Movie.2023.720p.WEBRip.x264-OTHER',video);
+    const otherSource=releaseMatch('The.Movie.2023.1080p.BluRay.x264-SPARKS',video);
+    const titleOnly=releaseMatch('The Movie (2023)',video);
+    expect(sameGroup).toBeGreaterThan(0.8);
+    expect(sameGroup).toBeGreaterThan(sameSource);
+    expect(otherSource).toBeLessThan(titleOnly+0.1);
+    expect(releaseMatch('Film.2020.Web.DL.srt','Film.2020.WEBDL.mkv')).toBe(1);
+  });
   it('asks the movie or series route for IMDb ids and rejects others',async()=>{
     const fetchImpl=vi.fn(async()=>new Response(JSON.stringify({subtitles:[]})));
     await searchOnlineSubtitles('tt0903747:1:2','',fetchImpl);

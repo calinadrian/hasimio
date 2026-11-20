@@ -4,12 +4,46 @@ const addon='https://opensubtitles-v3.strem.io';
 const download=/^https:\/\/subs\d*\.strem\.io\/[a-z-]+\/download\/subencoding-stremio-utf8\/src-api\/file\/(\d+)$/;
 export const MAX_SUBTITLE_BYTES=5*1024*1024;
 
-const words=text=>new Set(String(text||'').toLowerCase().replace(/\.[a-z\d]{2,4}$/,'').split(/[^a-z\d]+/).filter(word=>word.length>1));
-// Subtitles cut for the same release line up best, so rank by shared release-name words.
+const plain=text=>String(text||'').toLowerCase().replace(/\.(mkv|mp4|avi|m4v|ts|srt|sub|vtt|ass|ssa|zip|rar)$/,'')
+  // Spellings of the same source must compare equal.
+  .replace(/\bweb[\s._-]?dl\b/g,'webdl').replace(/\bweb[\s._-]?rip\b/g,'webrip').replace(/\bblu[\s._-]?ray\b/g,'bluray').replace(/\bbr[\s._-]?rip\b/g,'brrip').replace(/\bbd[\s._-]?rip\b/g,'bdrip').replace(/\bdvd[\s._-]?rip\b/g,'dvdrip').replace(/\bhd[\s._-]?rip\b/g,'hdrip');
+const words=text=>new Set(plain(text).split(/[^a-z\d]+/).filter(word=>word.length>1));
+// Where a subtitle was cut decides its timing: Blu-ray, streaming and TV
+// captures often differ in intros, cuts and frame rate.
+// Sources in one family usually share timing (a WEBRip and a WEB-DL of the
+// same stream); different families rarely do.
+const FAMILIES={
+  web:['webdl','webrip','web','amzn','nf','dsnp','hmax','atvp','hulu','pcok','max'],
+  bluray:['bluray','bdrip','brrip','bdremux','remux'],
+  dvd:['dvdrip','dvd'],
+  tv:['hdtv','pdtv'],
+  cam:['cam','hdcam','ts','telesync'],
+  hdrip:['hdrip'],
+};
+const FAMILY=new Map(Object.entries(FAMILIES).flatMap(([family,names])=>names.map(name=>[name,family])));
+const RESOLUTION=/^(2160p|1080p|720p|576p|480p|4k|uhd)$/;
+const releaseGroup=text=>/-([a-z\d]{2,})(?:\[[^\]]*\])?$/.exec(plain(text).trim())?.[1];
+/**
+ * 0..1 likelihood that a subtitle was cut for this exact video file. The
+ * release group and source weigh most. A source from the same family earns
+ * half credit; a different family halves the score, since its timing rarely
+ * lines up.
+ */
 export function releaseMatch(name,filename){
   const wanted=words(filename);if(!wanted.size)return 0;
-  let shared=0;for(const word of words(name))if(wanted.has(word))shared++;
-  return shared/wanted.size;
+  const have=words(name),group=releaseGroup(filename);
+  const haveFamilies=new Set([...have].map(word=>FAMILY.get(word)).filter(Boolean));
+  let total=0,shared=0;
+  for(const word of wanted){
+    const family=FAMILY.get(word);
+    const weight=word===group?4:family?3:RESOLUTION.test(word)?1.5:1;
+    total+=weight;
+    if(have.has(word))shared+=weight;else if(family&&haveFamilies.has(family))shared+=weight/2;
+  }
+  let score=shared/total;
+  const wantedFamilies=new Set([...wanted].map(word=>FAMILY.get(word)).filter(Boolean));
+  if(wantedFamilies.size&&haveFamilies.size&&![...haveFamilies].some(family=>wantedFamilies.has(family)))score*=0.5;
+  return Math.min(1,score);
 }
 export function onlineSubtitleResults(payload,filename){
   if(!Array.isArray(payload?.subtitles))throw new Error('OpenSubtitles returned an invalid response.');

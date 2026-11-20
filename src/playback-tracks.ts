@@ -34,7 +34,14 @@ export function preferredTrack<T extends {language?:string;default?:boolean}>(tr
   }
   return best;
 }
-export function languageName(code:string){try{return new Intl.DisplayNames(['en'],{type:'language'}).of(normalizedLanguage(code))||code;}catch{return code;}}
+// Intl.DisplayNames arrived in Chrome 81; webOS 6 (Chrome 79) would otherwise
+// show raw codes such as "rum" in the subtitle menus.
+const fallbackNames:Record<string,string>={en:'English',ro:'Romanian',fr:'French',es:'Spanish',de:'German',it:'Italian',pt:'Portuguese','pt-br':'Portuguese (Brazil)',hu:'Hungarian',ru:'Russian',uk:'Ukrainian',bg:'Bulgarian',sr:'Serbian',hr:'Croatian',bs:'Bosnian',sl:'Slovenian',sk:'Slovak',cs:'Czech',pl:'Polish',el:'Greek',tr:'Turkish',nl:'Dutch',sv:'Swedish',da:'Danish',fi:'Finnish',no:'Norwegian',ar:'Arabic',he:'Hebrew',hi:'Hindi',ja:'Japanese',ko:'Korean',zh:'Chinese','zh-hant':'Chinese (Traditional)',vi:'Vietnamese',th:'Thai',id:'Indonesian',ms:'Malay',fa:'Persian',lv:'Latvian',lt:'Lithuanian',et:'Estonian',is:'Icelandic',sq:'Albanian',mk:'Macedonian',ca:'Catalan',eu:'Basque',gl:'Galician',bn:'Bengali',ta:'Tamil',te:'Telugu',ml:'Malayalam',ur:'Urdu',ku:'Kurdish',ka:'Georgian',hy:'Armenian'};
+export function languageName(code:string){
+  const normalized=normalizedLanguage(code);
+  try{const name=new Intl.DisplayNames(['en'],{type:'language'}).of(normalized);if(name&&name.toLowerCase()!==normalized)return name;}catch{/* Older engines fall back below. */}
+  return fallbackNames[normalized]||fallbackNames[normalized.split('-')[0]]||code;
+}
 export function trackLabel(track:MediaTrack,kind='Audio'){
   let language=`${kind} track ${track.index+1}`;
   if(track.language!=='und')language=languageName(track.language);

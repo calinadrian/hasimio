@@ -197,3 +197,35 @@
 .hasimio-pip .cinema-menu{top:8px;bottom:8px;max-height:calc(100dvh - 16px)}
 
 .cinema-pip-drag{position:absolute;top:0;left:56px;right:8px;height:28px;z-index:5;-webkit-app-region:drag;user-select:none}
+
+/* Subtitle timing and remote-friendly subtitle choices (Captions.tsx).
+   Buttons use flex, not grid: Chromium 79 (webOS 6) cannot make a button a grid container. */
+.caption-timing-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin-bottom:18px;padding:12px 14px;border-radius:6px;background:#2b2b2b;font-size:14px;color:var(--player-muted)}
+.caption-timing-summary strong{color:var(--player-ink);margin-right:6px}
+.cinema-menu .caption-timing-summary .cinema-action{width:auto;min-height:40px;padding:8px 14px;font-size:14px}
+.cinema-menu .caption-timing-value{margin:0 0 14px;font-size:16px;font-weight:600;color:var(--player-ink)}
+.caption-timing-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.caption-step{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:58px;padding:8px 4px;border:0;border-radius:6px;background:#383838;color:var(--player-ink);cursor:pointer;font:inherit}
+.caption-step strong{font-size:16px;font-variant-numeric:tabular-nums}
+.caption-step small{font-size:12px;color:var(--player-muted)}
+.caption-step:hover{background:#444}
+.cinema-menu .caption-next-version{margin-top:16px}
+.caption-drift,.caption-languages{display:grid;gap:8px;margin-bottom:6px}
+.caption-languages{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));margin-bottom:16px}
+.caption-choice{display:flex;align-items:center;gap:8px;min-height:46px;padding:10px 14px;border:1px solid #4a4a4a;border-radius:6px;background:#2e2e2e;color:var(--player-ink);text-align:left;font:inherit;font-size:15px;cursor:pointer}
+.caption-choice small{margin-left:auto;padding:1px 7px;border-radius:4px;background:#ffffff14;font-size:12px;color:var(--player-muted)}
+.caption-choice.selected{border-color:var(--player-accent);background:#3a3a3a;font-weight:600}
+.caption-auto{width:100%;margin-top:16px}
+.cinema-menu .caption-versions-heading{margin:4px 0 10px}
+.caption-versions{display:grid;gap:6px}
+.caption-version{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:9px 12px;border:1px solid transparent;border-radius:6px;background:#2b2b2b;color:var(--player-ink);text-align:left;font:inherit;cursor:pointer}
+.caption-version.selected{border-color:var(--player-accent);background:#353535}
+.caption-version-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.caption-version>svg{flex:none}
+.caption-version-name{font-size:14px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.caption-version-meta{font-size:12px;color:var(--player-muted)}
+.caption-version.weak .caption-version-meta{color:#d7b98a}
+.caption-other-language{margin-top:14px}
+.caption-style-folder>summary{min-height:46px;display:flex;align-items:center;font-weight:600;cursor:pointer}
+.caption-style-folder[open]>summary{margin-bottom:14px}
+.caption-remote .caption-turn-off{display:block;margin:-6px 0 12px}

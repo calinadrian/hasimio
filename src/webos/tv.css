@@ -1,66 +1,151 @@
-.hasimio-tv{scroll-behavior:auto}
-/* Keep remote focus inside the control, so adjacent controls and clipped
-   shelves cannot overlap or cut off the selection indicator. */
-.hasimio-tv :focus{outline:5px solid #38bdf8!important;outline-offset:-5px!important;box-shadow:inset 0 0 0 7px #082f49!important}
-.hasimio-tv button:focus:not(.poster-card),.hasimio-tv a.button:focus{background:#38bdf8!important;color:#082032!important;outline:3px solid #082f49!important;outline-offset:-3px!important;box-shadow:none!important}
-.hasimio-tv .search input:focus{outline:none!important;box-shadow:none!important}
-.hasimio-tv .search:focus-within{outline:5px solid #38bdf8!important;outline-offset:-5px!important;box-shadow:inset 0 0 0 7px #082f49!important}
-.hasimio-tv .hero-actions>*+*{margin-left:12px}
+/* LG TV layout. Installed apps draw the interface on a 1280x720 surface; the
+   native video pipeline can still play 4K independently of it.
+   Flex-gap fallbacks, :is()/:focus-visible lowering and effect removal are
+   generated at build time by scripts/tv-legacy-css.mjs, so this file only
+   holds TV layout and remote-focus decisions. Keep it neutral (DESIGN.md):
+   white marks focus, no blue or cyan chrome. */
+
+/* html.hasimio-tv outranks :root in shell.css, which loads after this file. */
+html.hasimio-tv{--rail:76px;--rail-open:240px;--gutter:40px;--topbar:64px;scroll-behavior:auto}
+
+/* ---------- Remote focus ---------- */
+/* Inset rings: shelves and dialogs clip overflow, so outer rings get cut off. */
+.hasimio-tv :focus{outline:3px solid #fff!important;outline-offset:-3px!important;box-shadow:none!important}
+.hasimio-tv button:focus:not(.poster-card):not(.profile-card),.hasimio-tv a.button:focus{background:#f2f2f2!important;color:#141414!important;outline:none!important}
+/* Primary buttons are already light, so focus adds a ring around the fill. */
+.hasimio-tv .button.primary:focus{box-shadow:0 0 0 3px #141414,0 0 0 6px #fff!important}
+.hasimio-tv .search input:focus{outline:none!important}
+.hasimio-tv .search:focus-within{outline:3px solid #fff;outline-offset:-3px;border-color:transparent}
 .hasimio-tv button,.hasimio-tv select,.hasimio-tv input{min-height:44px}
-.hasimio-tv .hero{min-height:380px}
-.hasimio-tv .poster-image{width:100%;height:228px;flex:none}
+
+/* ---------- Dropdowns ---------- */
+/* Chromium 79 ignores the app's customizable-select styling and draws its own
+   arrow against the edge. Draw one arrow everywhere, inset like the padding. */
+html.hasimio-tv select:not([multiple]){-webkit-appearance:none!important;appearance:none!important;padding-right:44px!important;text-overflow:ellipsis;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23d4d4d4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 16px center!important;background-size:12px 8px!important}
+html.hasimio-tv select:not([multiple]):focus{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23141414' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
+
+/* ---------- Type scale ---------- */
+/* One size per context, so neighbouring controls never mix 14, 16 and 18px:
+   page controls 15px, player menu controls 16px, help text 14px. */
+html.hasimio-tv .page-content button,html.hasimio-tv .page-content select,html.hasimio-tv .page-content .button,html.hasimio-tv .page-content summary,html.hasimio-tv .detail-dialog button,html.hasimio-tv .detail-dialog select{font-size:15px}
+html.hasimio-tv .cinema-menu{font-size:16px}
+html.hasimio-tv .cinema-menu button,html.hasimio-tv .cinema-menu select,html.hasimio-tv .cinema-menu summary,html.hasimio-tv .cinema-menu .cinema-action,html.hasimio-tv .cinema-menu .cinema-text-action,html.hasimio-tv .cinema-menu .cinema-field,html.hasimio-tv .cinema-menu p{font-size:16px}
+html.hasimio-tv .cinema-menu .cinema-help,html.hasimio-tv .cinema-menu .caption-section-heading>span{font-size:14px}
+html.hasimio-tv .cinema-menu h4{font-size:16px}
+html.hasimio-tv .caption-version-name{font-size:15px}
+html.hasimio-tv .caption-version-meta{font-size:13px}
+
+/* Posters: a white frame painted above the artwork, no scaling or shadows. */
+.hasimio-tv .poster-card:focus{transform:none;outline:none!important}
+.hasimio-tv .poster-card .poster-image{transform:none}
+.hasimio-tv .poster-card:focus .poster-image::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border:4px solid #fff;box-shadow:inset 0 0 0 1px #000;border-radius:inherit;box-sizing:border-box;z-index:10;pointer-events:none}
+.hasimio-tv .poster-card:focus>strong{color:#fff;font-weight:700}
+
+.hasimio-tv .profile-card:focus{background:#2e2e2e!important;color:#fff!important;outline:none!important}
+.hasimio-tv .profile-card:focus .profile-avatar{box-shadow:0 0 0 4px #fff!important}
+
+/* ---------- Shell: collapsed icon rail ---------- */
+/* The rail stays 76px wide so content gets the screen. It widens over the
+   content only while the remote is inside it. */
+.hasimio-tv .sidebar{top:0;bottom:0;left:0;width:var(--rail);padding:18px 12px 16px;overflow:hidden}
+.hasimio-tv .sidebar:focus-within{width:var(--rail-open);box-shadow:16px 0 40px #000c;z-index:12}
+.hasimio-tv .brand{font-size:0;padding-left:8px;min-height:36px}
+.hasimio-tv .brand-symbol{margin-right:0}
+.hasimio-tv .sidebar:focus-within .brand{font-size:26px}
+.hasimio-tv .sidebar:focus-within .brand-symbol{margin-right:9px}
+.hasimio-tv nav{margin-top:28px}
+.hasimio-tv .nav-item{min-height:48px;padding:12px 14px;white-space:nowrap}
+.hasimio-tv .nav-item>svg{flex:none}
+.hasimio-tv .sidebar:not(:focus-within) .nav-item>span,.hasimio-tv .sidebar:not(:focus-within) .nav-item>small{display:none}
+.hasimio-tv .sidebar .sync-status,.hasimio-tv .sidebar .version{display:none}
+.hasimio-tv .sidebar-bottom{border-top:0;padding-top:0}
+.hasimio-tv .profile-switch{padding:8px 10px;white-space:nowrap;overflow:hidden}
+.hasimio-tv .sidebar:not(:focus-within) .profile-switch-label{display:none}
+
+/* ---------- Top bar and page ---------- */
+.hasimio-tv .topbar{height:var(--topbar)}
+.hasimio-tv .search{max-width:440px;min-height:44px;padding:6px 14px}
+.hasimio-tv .search kbd,.hasimio-tv .shelf-controls{display:none}
+.hasimio-tv .page-content{padding:20px var(--gutter) 40px}
+.hasimio-tv .section-intro{margin-bottom:18px}
+.hasimio-tv .section-intro h1{font-size:30px}
+
+/* ---------- Spotlight: short enough that a shelf shows on the first screen ---------- */
+.hasimio-tv .hero,.hasimio-tv .hero-placeholder{min-height:250px}
+.hasimio-tv .hero{margin-bottom:20px}
+.hasimio-tv .hero-content{padding:26px 34px 28px}
+.hasimio-tv .hero h1,.hasimio-tv .hero h1.long{font-size:44px;letter-spacing:-.5px;line-height:1.1;margin:8px 0 12px;max-width:720px}
+.hasimio-tv .hero p{font-size:15px;line-height:1.6;max-width:600px;margin:12px 0 18px}
+.hasimio-tv .hero-backdrop,.hasimio-tv .hero-shade{top:0;right:0;bottom:0;left:0}
+.hasimio-tv .filter-bar{margin-bottom:8px}
+
+/* ---------- Poster shelves: about seven posters per row ---------- */
+.hasimio-tv .poster-row{grid-auto-columns:140px;grid-template-columns:none;align-items:start;gap:16px}
+.hasimio-tv .poster-row.wrap{grid-template-columns:repeat(auto-fill,140px);grid-auto-columns:140px;justify-content:start}
+.hasimio-tv .poster-card{width:140px;height:auto;align-items:stretch;align-self:start}
+.hasimio-tv .poster-image{width:100%;height:210px;flex:none}
 .hasimio-tv .poster-image img{width:100%;height:100%;object-fit:cover}
 .hasimio-tv .tv-poster-frame{display:block;width:100%;height:100%}
-.hasimio-tv .poster-row{grid-auto-columns:152px;grid-template-columns:none;align-items:start;gap:18px}
-.hasimio-tv .poster-row.wrap{grid-template-columns:repeat(auto-fill,152px);grid-auto-columns:152px;justify-content:start}
-.hasimio-tv .poster-card{width:152px;height:auto;align-items:stretch;align-self:start}
-.hasimio-tv .cinema-toolbar>*,.hasimio-tv .cinema-transport>*,.hasimio-tv .cinema-tools>*{margin-right:12px}
-.hasimio-tv .cinema-menu{font-size:18px}
+.hasimio-tv .poster-card>strong{font-size:15px;margin:8px 0 2px}
+/* The year/type dot sits between bare text nodes, out of reach of the flex
+   gap fallback. */
+.no-flex-gap.hasimio-tv .poster-card>span>i{margin:0 6px}
+.hasimio-tv .media-shelf{margin-bottom:22px}
+
+/* ---------- Details dialog ---------- */
+.hasimio-tv .poster-open{top:0;right:0;bottom:0;left:0}
+.hasimio-tv .detail-dialog{max-height:90vh}
+/* Blur is stripped on the TV, so overlays need solid fills to stay legible. */
+.hasimio-tv .detail-dialog::backdrop{background:#0a0a0ae6}
+.hasimio-tv .detail-dialog.scrolled .dialog-bar{background:#1c1c1c;z-index:20}
+.hasimio-tv .detail-poster{height:225px}
+.hasimio-tv .detail-actions{grid-column:2;align-items:center}
+.hasimio-tv .detail-heading.no-poster .detail-actions{grid-column:1}
+.hasimio-tv .source-play{align-self:center;flex-shrink:0}
+.hasimio-tv .stream-picker-heading,.hasimio-tv .quality-source,.hasimio-tv .source-toolbar{align-items:center}
+.hasimio-tv .button,.hasimio-tv .cinema-big-play,.hasimio-tv .cinema-icon,.hasimio-tv .icon-button{display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.hasimio-tv .cinema-big-play{padding:0}
+.hasimio-tv .episode-toggle::before{top:8px;right:8px;bottom:8px;left:8px}
+.hasimio-tv .poster-playback-track{right:12px;bottom:12px;left:12px}
+
+/* ---------- Player ---------- */
+.hasimio-tv .detail-dialog.playback-dialog{position:fixed;top:0;right:0;bottom:0;left:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;border-radius:0}
+.hasimio-tv .cinema-player{height:100vh;min-height:0;max-height:none;border-radius:0}
+.hasimio-tv .cinema-video{top:0;right:0;bottom:0;left:0;object-fit:contain}
+.hasimio-tv .cinema-menu{width:460px;right:24px}
+/* Centre "10" inside the skip arrows' circle at any button height. The label
+   is absolutely positioned, so the flex-gap fallback must not push the icon. */
+.hasimio-tv .cinema-skip span{top:50%;margin-top:-5px;line-height:10px;font-size:8.5px}
+html.no-flex-gap.hasimio-tv .cinema-player .cinema-skip>svg{margin-right:0}
+/* Two language buttons per row leave room for the label, check and count. */
+.hasimio-tv .caption-languages{grid-template-columns:1fr 1fr}
+/* Focused controls turn white; their secondary text must stay readable. */
+.hasimio-tv .caption-version:focus .caption-version-meta,.hasimio-tv .caption-step:focus small,.hasimio-tv .caption-choice:focus small{color:#3a3a3a!important}
+.hasimio-tv .caption-choice:focus small{background:#0000001a}
+.hasimio-tv .caption-style-folder>summary:focus{background:#f2f2f2;color:#141414;outline:none!important;border-radius:6px;padding:0 10px}
 .hasimio-tv .cinema-connection{font-size:14px}
-.hasimio-tv .cinema-video{object-fit:contain}
+.hasimio-tv .cinema-wait{top:35%;right:20%;bottom:30%;left:20%}
+.hasimio-tv .cinema-state{top:100px;right:10%;bottom:120px;left:10%}
+.hasimio-tv .cinema-up-next-art{height:50px}
+
+/* ---------- Live TV ---------- */
+.hasimio-tv .live-tv-video,.hasimio-tv .live-tv-idle{top:0;right:0;bottom:0;left:0}
+.hasimio-tv .live-tv-stage{height:440px}
+.hasimio-tv .live-tv-stage:fullscreen{height:100vh}
+.hasimio-tv .live-tv-loading{top:16px;left:16px}
+/* Collections become pills like the Movies/Series filter: an underline tab
+   reads poorly once remote focus fills the whole button. */
+.hasimio-tv .live-tv-collections{border-bottom:0;margin-bottom:18px}
+html.hasimio-tv .live-tv-collections button{min-height:44px;padding:0 16px;border-radius:8px;font-size:15px}
+.hasimio-tv .live-tv-collections button[aria-pressed=true]{background:#383838}
+.hasimio-tv .live-tv-collections button[aria-pressed=true]::after{display:none}
+.hasimio-tv .live-tv-collections button span{font-size:13px}
+html.hasimio-tv .live-tv-search input{font-size:15px}
+html.hasimio-tv .live-tv-filters label{font-size:14px}
+
+/* ---------- TV storage panel ---------- */
 .hasimio-tv .tv-storage{display:block;margin-bottom:28px}
 .hasimio-tv .tv-storage>*{margin-bottom:16px}
 .hasimio-tv .tv-storage label{display:block}
 .hasimio-tv .tv-storage select{margin-left:20px;background:#303030;color:#fff;font:inherit;padding:8px 12px}
 .hasimio-tv .tv-storage small{display:block;color:#bbb}
-.hasimio-tv .poster-card:focus{transform:none;outline:none!important;box-shadow:none!important}
-.hasimio-tv .poster-card .poster-image{transform:none}
-/* Paint above the artwork, rather than behind children on the card button. */
-.hasimio-tv .poster-card:focus .poster-image::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;border:5px solid #38bdf8;box-shadow:inset 0 0 0 2px #082f49;border-radius:inherit;box-sizing:border-box;z-index:10;pointer-events:none}
-.hasimio-tv .poster-card:focus>strong{color:#7dd3fc}
-.hasimio-tv .shelf-controls{display:none}
-/* Explicit bounds also work on the TV browser, which predates CSS inset,
-   dynamic viewport units and aspect-ratio. */
-.hasimio-tv .sidebar{top:0;bottom:0;left:0}
-.hasimio-tv .hero-backdrop,.hasimio-tv .hero-shade,.hasimio-tv .poster-open,.hasimio-tv .cinema-video,.hasimio-tv .live-tv-video,.hasimio-tv .live-tv-idle{top:0;right:0;bottom:0;left:0}
-.hasimio-tv .detail-dialog{max-height:90vh}
-.hasimio-tv .detail-poster{height:225px}
-.hasimio-tv .detail-dialog.playback-dialog{position:fixed;top:0;right:0;bottom:0;left:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;border-radius:0}
-.hasimio-tv .cinema-player{height:100vh;min-height:0;max-height:none;border-radius:0}
-.hasimio-tv .cinema-wait{top:35%;right:20%;bottom:30%;left:20%}
-.hasimio-tv .cinema-state{top:100px;right:10%;bottom:120px;left:10%}
-.hasimio-tv .cinema-up-next-art{height:50px}
-.hasimio-tv .live-tv-stage{height:440px}
-.hasimio-tv .live-tv-stage:fullscreen{height:100vh}
-.hasimio-tv .live-tv-loading{top:16px;left:16px}
-.hasimio-tv .poster-playback-track{right:12px;bottom:12px;left:12px}
-.hasimio-tv .episode-toggle::before{top:8px;right:8px;bottom:8px;left:8px}
-.hasimio-tv .search kbd{display:none}
-.hasimio-tv .nav-item>*+*,.hasimio-tv .search>*+*{margin-left:10px}
-.hasimio-tv nav>*+*{margin-top:7px}
-.hasimio-tv{--rail:216px;--gutter:28px}
-.hasimio-tv .hero{min-height:300px}
-.hasimio-tv .hero h1{font-size:52px;line-height:1.1}
-.hasimio-tv .button,.hasimio-tv .cinema-big-play,.hasimio-tv .cinema-icon,.hasimio-tv .icon-button{display:inline-flex;align-items:center;justify-content:center;text-align:center}
-.hasimio-tv .button svg{margin:0 8px 0 0}
-.hasimio-tv .cinema-big-play{padding:0}
-.hasimio-tv .cinema-big-play svg{margin:0}
-.hasimio-tv .detail-actions{grid-column:2;align-items:center}
-.hasimio-tv .detail-actions .button{margin:0 10px 10px 0}
-.hasimio-tv .detail-heading.no-poster .detail-actions{grid-column:1}
-.hasimio-tv .source-play{align-self:center;flex-shrink:0}
-.hasimio-tv .segmented>*+*,.hasimio-tv .filters>*+*,.hasimio-tv .source-facts>*+*,.hasimio-tv .source-title>*+*{margin-left:10px}
-.hasimio-tv .dialog-bar>*+*{margin-left:12px}
-.hasimio-tv .stream-picker-heading,.hasimio-tv .quality-source,.hasimio-tv .source-toolbar{align-items:center}
-/* Installed apps use a 720p graphics surface; the native video pipeline can
-   still play supported 4K sources independently of the interface resolution. */
