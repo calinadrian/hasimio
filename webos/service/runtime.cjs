@@ -1,4 +1,20 @@
 'use strict';
+// Node 8 (webOS 6) lacks module.createRequire (Node 12.2+). Bundled ESM
+// dependencies such as fflate call it while loading, which crashed the whole
+// service before it could listen. This must run before any other require.
+const Module = require('module');
+if (typeof Module.createRequire !== 'function') {
+  Module.createRequire = function (filename) {
+    // URL is not a global on Node 8 until later in this file.
+    filename = String(filename instanceof require('url').URL ? filename.pathname : filename);
+    const owner = new Module(filename, null);
+    owner.filename = filename;
+    owner.paths = Module._nodeModulePaths(require('path').dirname(filename));
+    const scopedRequire = function (id) { return owner.require(id); };
+    scopedRequire.resolve = function (id) { return Module._resolveFilename(id, owner); };
+    return scopedRequire;
+  };
+}
 const NodeFetch = require('node-fetch');
 const {AbortController, AbortSignal} = require('abort-controller');
 const {URL, URLSearchParams} = require('url');
