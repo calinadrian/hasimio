@@ -104,10 +104,35 @@ let keyboardVisible=false;
 document.addEventListener('keyboardStateChange',event=>{
   keyboardVisible=Boolean((event as CustomEvent<{visibility:boolean}>).detail?.visibility);
 });
+let lastFocus:{x:number;y:number}|undefined;
 document.addEventListener('focusin',event=>{
   const element=event.target;
+  if(element instanceof HTMLElement){const r=element.getBoundingClientRect();lastFocus={x:r.left+r.width/2,y:r.top+r.height/2};}
   if(element instanceof HTMLElement&&!element.matches(editing))previousControl=element;
+  // webOS opens its keyboard whenever a text field gains focus. Arriving on a
+  // field with the remote only highlights it: it stays read-only (no
+  // keyboard) until OK is pressed.
+  if(element instanceof HTMLInputElement&&element.matches(editing)&&!element.readOnly&&element.dataset.tvTyping!=='1'){
+    element.readOnly=true;element.dataset.tvLocked='1';
+  }
 });
+let reopening:HTMLInputElement|undefined;
+document.addEventListener('focusout',event=>{
+  const element=event.target;
+  // Leaving a field locks it again for the next remote visit; the blur that
+  // reopens the keyboard is not a real exit.
+  if(element instanceof HTMLInputElement&&element.dataset.tvTyping==='1'&&element!==reopening)delete element.dataset.tvTyping;
+});
+// OK (or a Magic Remote click) on a highlighted field unlocks it and opens the keyboard.
+function startTyping(input:HTMLInputElement){
+  if(input.dataset.tvLocked==='1'){input.readOnly=false;delete input.dataset.tvLocked;}
+  input.dataset.tvTyping='1';reopening=input;
+  input.blur();setTimeout(()=>{input.focus();reopening=undefined;},0);
+}
+document.addEventListener('click',event=>{
+  const input=event.target;
+  if(input instanceof HTMLInputElement&&input.dataset.tvLocked==='1')startTyping(input);
+},true);
 function leaveEditor(element:HTMLElement){
   // Blurring dismisses the LG keyboard. Return to a real control so the next
   // remote arrow moves through results instead of editing the search text.
@@ -124,7 +149,7 @@ document.addEventListener('keydown',event=>{
   const editorInput=document.activeElement instanceof HTMLInputElement&&document.activeElement.matches(editing)?document.activeElement:undefined;
   if(editorInput&&event.key==='Enter'){
     event.preventDefault();event.stopImmediatePropagation();
-    editorInput.blur();setTimeout(()=>editorInput.focus(),0);return;
+    startTyping(editorInput);return;
   }
   const back=event.key==='Escape'||event.key==='GoBack'||event.keyCode===461;
   if(back){
@@ -169,10 +194,33 @@ document.addEventListener('keydown',event=>{
     // In the player, the first press lands on Play/Pause rather than the Back
     // arrow in the corner.
     const play=document.querySelector<HTMLElement>('.cinema-player .cinema-play');
-    (play&&list.includes(play)?play:list[0]).focus();return;
+    if(play&&list.includes(play)){play.focus();return;}
+    // Focus was lost (the focused control was removed, e.g. a shelf page
+    // swap): resume at the control nearest to where it was, not the top-left.
+    const last=lastFocus;
+    const resume=last?list.reduce<{element?:HTMLElement;distance:number}>((best,element)=>{const r=element.getBoundingClientRect(),d=Math.hypot(r.left+r.width/2-last.x,r.top+r.height/2-last.y);return d<best.distance?{element,distance:d}:best;},{distance:Infinity}).element:undefined;
+    (resume??list[0]).focus();return;
   }
-  let target=pickTarget(active.getBoundingClientRect(),event.key as Direction,list.filter(element=>element!==active).map(element=>({item:element,box:element.getBoundingClientRect(),slider:element.matches('input[type="range"]')})),!!active.closest('.sidebar'));
+  const pick=(controls:HTMLElement[])=>pickTarget(active.getBoundingClientRect(),event.key as Direction,controls.filter(element=>element!==active).map(element=>({item:element,box:element.getBoundingClientRect(),slider:element.matches('input[type="range"]')})),!!active.closest('.sidebar'));
+  // The sticky search bar and the fixed sidebar stay on screen while rows
+  // scroll away, so Up/Down would jump into them from anywhere. Up and Down
+  // stay in the page: the sidebar is reached only with Left, and the search
+  // bar only with Up once nothing in the page is above. At the end of the
+  // page Down simply stays put.
+  const vertical=event.key==='ArrowUp'||event.key==='ArrowDown';
+  const fixed='.topbar,.sidebar';
+  // From a poster, Up/Down go straight to the poster row above or below
+  // rather than stopping on each shelf heading in between.
+  const inPage=list.filter(element=>!element.closest(fixed));
+  let target=vertical&&active.closest('.sidebar')?pick(list.filter(element=>element.closest('.sidebar')))
+    :vertical&&!active.closest(fixed)
+    ?(active.matches('.poster-card')?pick(inPage.filter(element=>element.matches('.poster-card'))):undefined)
+      ??pick(inPage)??(event.key==='ArrowUp'?pick(list.filter(element=>element.closest('.topbar'))):undefined)
+    :pick(list);
   if(!target&&editorInput){leaveEditor(editorInput);return;}
+  // Nothing further that way: let the control's container react (a shelf
+  // loads its next page when Right is pressed on its last poster).
+  if(!target)active.dispatchEvent(new CustomEvent('hasimio:edge',{bubbles:true,detail:event.key}));
   // Entering the collapsed rail lands on the current page, not on whichever
   // icon happens to be level with the previous control.
   if(target&&target.closest('.sidebar')&&!active.closest('.sidebar')){

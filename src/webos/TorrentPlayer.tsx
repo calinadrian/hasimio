@@ -9,7 +9,15 @@ import {saveTrackSummary,verifiedTracks,type MediaTrack} from '../playback-track
 
 type Session={audioTracks?:MediaTrack[];subtitleTracks?:MediaTrack[];id:string;state:string;error?:string;files:{index:number;name:string;length:number}[];selected?:number;mediaUrl?:string;numPeers:number;downloadSpeed:number;cacheBytes:number;cacheLimit:number};
 export default function TVTorrentPlayer({startup,stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,previous,next}:ComponentProps<typeof DesktopTorrentPlayer>){
-  const [session,setSession]=useState<Session>(),[error,setError]=useState(''),[attempt,setAttempt]=useState(0);
+  const [session,setSession]=useState<Session>(),[error,showError]=useState(''),[attempt,setAttempt]=useState(0);
+  // Peers and trackers are flaky while a torrent warms up. Retry the same
+  // source quietly twice before reporting a failure (which may switch source).
+  const quietRetries=useRef(0);
+  useEffect(()=>{quietRetries.current=0;},[stream.infoHash,stream.fileIdx]);
+  function setError(message:string){
+    if(message&&quietRetries.current<2){quietRetries.current++;setTimeout(()=>setAttempt(value=>value+1),2000);return;}
+    showError(message);
+  }
   const id=useRef<string|undefined>(undefined);
   const chosenFile=useRef(false);
   async function request(route:string,options?:RequestInit):Promise<Session>{const response=await fetch(engineUrl(route),options);const value=await response.json();if(!response.ok)throw Error(value.error||'The device service could not respond.');return value;}

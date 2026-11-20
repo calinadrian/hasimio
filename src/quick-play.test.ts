@@ -25,8 +25,18 @@ describe('automatic source recovery',()=>{
     const alias={...first,infoHash:first.infoHash.toUpperCase(),name:'Different provider'};
     const unavailable={infoHash:'b'.repeat(40),seeders:0};
     const replacement=recoverPlayback(attempt,[alias,first,unavailable,backup,{url:'https://media.example/third.mp4'}]);
-    expect(replacement).toEqual({stream:backup,kind:'fallback'});
+    expect(replacement).toMatchObject({stream:backup,kind:'fallback'});
     expect(recoverPlayback(replacement,[first])).toBe(replacement);
+  });
+  it('keeps trying further sources, skipping ones that failed, up to the limit',()=>{
+    const a={infoHash:'a'.repeat(40),fileIdx:0},b={infoHash:'b'.repeat(40),fileIdx:0},c={infoHash:'c'.repeat(40),fileIdx:0},d={infoHash:'d'.repeat(40),fileIdx:0};
+    const ranked=[a,b,c,d].map(stream=>({...stream,name:'x',title:'👤 9'}));
+    const second=recoverPlayback({stream:ranked[0],kind:'automatic'},ranked);
+    expect(second.stream).toBe(ranked[1]);
+    const third=recoverPlayback(second,ranked);
+    expect(third.stream).toBe(ranked[2]);
+    // Three sources tried: the error is shown instead of a fourth attempt.
+    expect(recoverPlayback(third,ranked)).toBe(third);
   });
   it('can switch between different files from the same torrent',()=>{
     const alternative={...first,fileIdx:4};

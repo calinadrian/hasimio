@@ -14,6 +14,12 @@ html.hasimio-tv{--rail:76px;--rail-open:240px;--gutter:40px;--topbar:64px;scroll
 .hasimio-tv button:focus:not(.poster-card):not(.profile-card),.hasimio-tv a.button:focus{background:#f2f2f2!important;color:#141414!important;outline:none!important}
 /* Primary buttons are already light, so focus adds a ring around the fill. */
 .hasimio-tv .button.primary:focus{box-shadow:0 0 0 3px #141414,0 0 0 6px #fff!important}
+/* Labels inside a focused (white) button keep their own light colours
+   otherwise: source rows read white on white. Inner chips get a soft fill. */
+.hasimio-tv button:focus:not(.poster-card):not(.profile-card) *{color:inherit!important}
+.hasimio-tv button:focus:not(.poster-card):not(.profile-card) span[class]{background-color:#00000012!important;border-color:#00000026!important}
+/* The phone bottom tab bar is never used on the TV. */
+.hasimio-tv .android-tabs,.hasimio-tv .android-more{display:none!important}
 .hasimio-tv .search input:focus{outline:none!important}
 .hasimio-tv .search:focus-within{outline:3px solid #fff;outline-offset:-3px;border-color:transparent}
 .hasimio-tv button,.hasimio-tv select,.hasimio-tv input{min-height:44px}
@@ -23,6 +29,11 @@ html.hasimio-tv{--rail:76px;--rail-open:240px;--gutter:40px;--topbar:64px;scroll
    arrow against the edge. Draw one arrow everywhere, inset like the padding. */
 html.hasimio-tv select:not([multiple]){-webkit-appearance:none!important;appearance:none!important;padding-right:44px!important;text-overflow:ellipsis;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23d4d4d4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 16px center!important;background-size:12px 8px!important}
 html.hasimio-tv select:not([multiple]):focus{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23141414' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
+
+/* Source pickers draw their own chevron icon; do not add a second arrow. */
+html.hasimio-tv .source-select select:not([multiple]){background-image:none!important;padding-right:14px!important}
+/* Chromium 79 adds its own disclosure triangle next to the app's markers. */
+.hasimio-tv summary::-webkit-details-marker{display:none}
 
 /* ---------- Type scale ---------- */
 /* One size per context, so neighbouring controls never mix 14, 16 and 18px:
