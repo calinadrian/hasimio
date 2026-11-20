@@ -57,11 +57,12 @@ export function CaptionStyleControls({settings,onChange}:{settings:CaptionSettin
 }
 
 /** Per-version timing: coarse and fine steps, a frame-rate drift fix and a one-press switch to the next version. */
-export function SubtitleTimingControls({timing,onChange,onNextVersion,nextBusy,remote}:{timing:SubtitleTiming;onChange:(next:SubtitleTiming)=>void;onNextVersion?:()=>void;nextBusy?:boolean;remote?:boolean}){
+export function SubtitleTimingControls({timing,onChange,onNextVersion,nextBusy,remote,status}:{timing:SubtitleTiming;onChange:(next:SubtitleTiming)=>void;onNextVersion?:()=>void;nextBusy?:boolean;remote?:boolean;status?:string}){
   const step=(seconds:number)=>onChange(nudgeTiming(timing,seconds));
   const drift=DRIFT_CHOICES.find(choice=>Math.abs(choice.speed-timing.speed)<1e-6);
   return <div className="caption-timing">
-    <p className="caption-timing-value" role="status" aria-live="polite">{describeDelay(timing.delay)}{timing.speed!==1?' · drift fix on':''}</p>
+    {status&&<p className="cinema-help caption-sync-status">{status}</p>}
+    <p className="caption-timing-value" role="status" aria-live="polite">{describeDelay(timing.delay)}{timing.speed!==1?' · speed corrected':''}</p>
     <div className="caption-timing-steps" role="group" aria-label="Move subtitles">
       <button type="button" className="caption-step" onClick={()=>step(-TIMING_STEP)}><strong>−{TIMING_STEP} s</strong><small>Earlier</small></button>
       <button type="button" className="caption-step" onClick={()=>step(-FINE_STEP)}><strong>−{FINE_STEP} s</strong><small>Earlier</small></button>

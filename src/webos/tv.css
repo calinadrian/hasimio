@@ -113,6 +113,14 @@ html.hasimio-tv .caption-version-meta{font-size:13px}
 .hasimio-tv .cinema-player{height:100vh;min-height:0;max-height:none;border-radius:0}
 .hasimio-tv .cinema-video{top:0;right:0;bottom:0;left:0;object-fit:contain}
 .hasimio-tv .cinema-menu{width:460px;right:24px}
+/* The timeline is only entered with Up (see spatial.ts). Make it obvious when
+   it has focus, since Left/Right then seek by 10 s. */
+/* Chromium 79 drops back to its native grip-line thumb once any focus-state
+   rule targets ::-webkit-slider-thumb, so the thumb is restated here and
+   never restyled on focus; the track and a hint show focus instead. */
+html.hasimio-tv .cinema-seek input::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-4.5px;border:0;border-radius:50%;background:#e0e0e0}
+.hasimio-tv .cinema-seek:focus-within::before{height:9px;border-radius:5px}
+.hasimio-tv .cinema-seek:focus-within::after{content:'◀ ▶  10 s';position:absolute;right:0;top:-26px;padding:2px 8px;border-radius:4px;background:#000000b3;color:#fff;font-size:13px;font-weight:600;pointer-events:none}
 /* Centre "10" inside the skip arrows' circle at any button height. The label
    is absolutely positioned, so the flex-gap fallback must not push the icon. */
 .hasimio-tv .cinema-skip span{top:50%;margin-top:-5px;line-height:10px;font-size:8.5px}

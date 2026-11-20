@@ -7,6 +7,7 @@ import 'dialog-polyfill/dist/dialog-polyfill.css';
 import {bridge} from './platform';
 import {startTelemetry} from './telemetry';
 import {logicalStorageKey} from '../profile-storage';
+import {pickTarget,type Direction} from './spatial';
 import './tv.css';
 
 // Vite handles syntax for Chromium 79. These newer web APIs need runtime
@@ -170,17 +171,7 @@ document.addEventListener('keydown',event=>{
     const play=document.querySelector<HTMLElement>('.cinema-player .cinema-play');
     (play&&list.includes(play)?play:list[0]).focus();return;
   }
-  const origin=active.getBoundingClientRect(),x=origin.left+origin.width/2,y=origin.top+origin.height/2;
-  const horizontal=event.key==='ArrowLeft'||event.key==='ArrowRight',positive=event.key==='ArrowRight'||event.key==='ArrowDown';
-  let target:HTMLElement|undefined,best=Infinity;
-  for(const element of list){
-    if(element===active)continue;
-    const rect=element.getBoundingClientRect(),dx=rect.left+rect.width/2-x,dy=rect.top+rect.height/2-y;
-    const forward=(horizontal?dx:dy)*(positive?1:-1),side=Math.abs(horizontal?dy:dx);
-    if(forward<=4)continue;
-    const score=forward+side*3;
-    if(score<best){best=score;target=element;}
-  }
+  let target=pickTarget(active.getBoundingClientRect(),event.key as Direction,list.filter(element=>element!==active).map(element=>({item:element,box:element.getBoundingClientRect(),slider:element.matches('input[type="range"]')})),!!active.closest('.sidebar'));
   if(!target&&editorInput){leaveEditor(editorInput);return;}
   // Entering the collapsed rail lands on the current page, not on whichever
   // icon happens to be level with the previous control.
