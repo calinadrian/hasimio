@@ -6,7 +6,19 @@ const {headerLimit, matroskaTracks} = require('./matroska-tracks.cjs');
 const createBoundedStore = require('./bounded-store.cjs');
 
 const MiB = 1024 * 1024;
-const trackers = ['udp://tracker.opentrackr.org:1337/announce', 'udp://open.stealth.si:80/announce', 'udp://tracker.torrent.eu.org:451/announce'];
+// The TV client is TCP-only and finds peers through trackers far faster than
+// through DHT on Node 8. Three trackers left popular torrents with few or no
+// peers; ask a broader set of long-running public trackers, including an HTTP
+// one for networks that filter UDP.
+const trackers = [
+  'udp://tracker.opentrackr.org:1337/announce', 'udp://open.demonii.com:1337/announce', 'udp://open.stealth.si:80/announce',
+  'udp://tracker.torrent.eu.org:451/announce', 'udp://exodus.desync.com:6969/announce', 'udp://explodie.org:6969/announce',
+  'udp://tracker.openbittorrent.com:6969/announce', 'udp://open.tracker.cl:1337/announce', 'udp://tracker.dler.org:6969/announce',
+  'udp://tracker.theoks.net:6969/announce', 'http://tracker.opentrackr.org:1337/announce',
+];
+// Playback needs enough connections to find peers that hold the next pieces;
+// track checks stay small.
+const PLAYBACK_CONNECTIONS = 20, INSPECTION_CONNECTIONS = 2, MAX_READERS = 6;
 const videoType = name => /\.mkv$/i.test(name) ? 'video/x-matroska' : /\.webm$/i.test(name) ? 'video/webm' : /\.ts$/i.test(name) ? 'video/mp2t' : 'video/mp4';
 
 module.exports = function createTorrents(options) {
@@ -69,7 +81,7 @@ module.exports = function createTorrents(options) {
     if (options.onStart) options.onStart();
     record('info','playback-start','A fresh torrent session started with an empty video buffer.');
     // TCP/UDP/DHT only. No WebRTC native addons and no filesystem store.
-    client = new WebTorrent({maxConns:options.inspection ? 2 : 8, lsd:false, tracker:{wrtc:false}, dht:{maxTables:16,maxValues:32,maxPeers:128}});
+    client = new WebTorrent({maxConns:options.inspection ? INSPECTION_CONNECTIONS : PLAYBACK_CONNECTIONS, lsd:false, tracker:{wrtc:false}, dht:{maxTables:16,maxValues:32,maxPeers:128}});
     client.on('error', () => { session.error = 'The TV torrent service could not connect. Choose another source.'; record('error','torrent-client',session.error); });
     const Store = createBoundedStore(limit(), index => {
       const torrent = session.torrent;
@@ -83,8 +95,11 @@ module.exports = function createTorrents(options) {
     let torrent;
     try{torrent=session.torrent=client.add('magnet:?xt=urn:btih:' + input.infoHash.toLowerCase(), {store:Store, announce:trackers, strategy:'sequential'});}
     catch(error){await stop();throw error;}
-    torrent.on('download', bytes => { session.receivedBytes += bytes; });
+    torrent.on('download', bytes => { session.receivedBytes += bytes; session.downloadedAt = Date.now(); });
     torrent.on('error', error => { session.error = error.message; record('error','torrent-error',session.error); });
+    // Corrupt peers: visible in the TV monitor (see the ban patch in package-webos.mjs).
+    torrent.on('warning', warning => { if (/failed verification/.test(warning && warning.message)) { session.failedPieces = (session.failedPieces || 0) + 1; record('warning','piece-failed','A downloaded piece failed its hash check and was discarded.'); } });
+    torrent.on('peerBanned', () => { session.bannedPeers = (session.bannedPeers || 0) + 1; record('warning','peer-banned','A peer that sent corrupt data was disconnected and blocked.'); });
     torrent.once('metadata', () => {
       // Bound metadata bookkeeping as well as completed piece data.
       if (torrent.pieces.length > 32768 || torrent.files.length > 1000) {
@@ -163,7 +178,10 @@ module.exports = function createTorrents(options) {
   }
   function serve(session, index, req, res) {
     if (!session.ready || index !== session.selected) fail('Select a video before playing it.');
-    if (session.readers.size >= 3) { res.writeHead(429); res.end(); return; }
+    // The TV player opens a new range request before closing the old one when
+    // it seeks or probes the end of a file. Refusing it (429) made the player
+    // give up; close the oldest reader instead.
+    if (session.readers.size >= MAX_READERS) { const oldest = session.readers.values().next().value; if (oldest) oldest.cancel(); }
     const torrent = session.torrent, file = torrent.files[index], size = file.length;
     const match = req.headers.range && /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
     let start = 0, end = size - 1;
@@ -190,7 +208,12 @@ module.exports = function createTorrents(options) {
       session.readers.delete(reader);
       if (destroy && !res.finished) res.destroy();
     }
-    function timedOut() { session.readTimeouts++; record('warning','reader-timeout','A video reader made no progress for 45 seconds.'); finish(true); }
+    function timedOut() {
+      // Waiting for a large piece is not a stall while the torrent is still
+      // receiving data; give up only when nothing has arrived for 45 seconds.
+      if (session.downloadedAt && Date.now() - session.downloadedAt < 45000) { timeout = setTimeout(timedOut, 15000); return; }
+      session.readTimeouts++; record('warning','reader-timeout','A video reader made no progress for 45 seconds.'); finish(true);
+    }
     function pump() {
       if (cancelled || torrent.destroyed || active !== session) return finish(true);
       session.touched = Date.now();
@@ -198,7 +221,9 @@ module.exports = function createTorrents(options) {
       const absolute = file.offset + position, piece = Math.floor(absolute / torrent.pieceLength);
       if (!selection || piece !== selection[0]) {
         unselect();
-        const ahead = Math.max(1, Math.floor(4 * MiB / torrent.pieceLength));
+        // Read ahead ~40% of the RAM buffer (at most 16 MB): 4 MB was only a
+        // few seconds of Blu-ray video, so any slow piece stalled the picture.
+        const ahead = Math.max(2, Math.floor(Math.min(limit() * 0.4, 16 * MiB) / torrent.pieceLength));
         selection = [piece, Math.min(torrent.pieces.length - 1, Math.floor((file.offset + end) / torrent.pieceLength), piece + ahead), 10];
         torrent.select(selection[0], selection[1], selection[2]);
       }
@@ -236,6 +261,7 @@ module.exports = function createTorrents(options) {
     downloadSpeed:active && active.torrent ? active.torrent.downloadSpeed : 0,
     receivedBytes:active ? active.receivedBytes : 0, servedBytes:active ? active.servedBytes : 0,
     readers:active ? active.readers.size : 0, readTimeouts:active ? active.readTimeouts : 0,
+    failedPieces:active ? active.failedPieces || 0 : 0, bannedPeers:active ? active.bannedPeers || 0 : 0,
     store:active && active.store ? {...active.store.monitor, pieces:active.store.entries.size} : undefined, lastCleanup
   }), close:async() => { clearInterval(reap); await stop(); }};
 };

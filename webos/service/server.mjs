@@ -28,11 +28,14 @@ let cacheMiB=process.env.HASIMIO_MOBILE_DATA&&process.arch==='arm'?32:64;
 try {const config=JSON.parse(fs.readFileSync(configPath,'utf8'));if([32,64].includes(config.cacheMiB))cacheMiB=config.cacheMiB;}catch{/* New installation. */}
 const onlineSubtitles=createOnlineSubtitleService({romanian:createRomanianSubtitles()});
 const torrents=createTorrents({cacheMiB:()=>cacheMiB,
-  record:(...event)=>monitor.record(...event), onStart:()=>monitor.counters.downloads++, onCleanup:()=>monitor.counters.cleanups++});
+  // A film starting cancels any track check: a second torrent client competing
+  // for the old TV's CPU and connections stalled playback start-up.
+  record:(...event)=>monitor.record(...event), onStart:()=>{monitor.counters.downloads++;probeController?.abort();}, onCleanup:()=>monitor.counters.cleanups++});
 // One temporary probe at a time on televisions. Never replace the playback torrent.
 let probeController;
 async function inspectSource(req,res){
   if(probeController){json(res,429,{error:'Another track check is in progress.'});return;}
+  if(torrents.stats().active){json(res,409,{error:'Track checks pause while a video is playing.'});return;}
   const controller=new AbortController();
   probeController=controller;
   const cancel=()=>controller.abort();

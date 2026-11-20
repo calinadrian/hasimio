@@ -87,6 +87,32 @@ const result=await buildService({
           const needle='this.store = new ImmediateChunkStore(';
           if(!contents.includes(needle))throw Error('WebTorrent changed: review the TV metadata guard before packaging.');
           contents=contents.replace(needle,'if(!Number.isSafeInteger(this.pieceLength)||this.pieceLength<1||this.pieceLength>4*1024*1024||this.pieces.length>32768||this.files.length>1000){this._destroy(new Error("This torrent exceeds the TV metadata budget. Choose another source."));return;}\n'+needle);
+          // WebTorrent 0.105 throws away a piece that fails its hash check but
+          // keeps the peer that sent the bad data. One corrupt peer then makes
+          // every piece fail again, so a TV downloaded >1 GB while the player
+          // starved. Keep each piece's sources, disconnect and ban peers behind
+          // failed pieces, and refuse their reconnects for this torrent.
+          const patches=[
+            ['      const buf = piece.flush()\n','      const sources = piece.sources ? piece.sources.slice() : []\n      const buf = piece.flush()\n'],
+            ["          self.emit('warning', new Error(`Piece ${index} failed verification`))\n",
+             "          self.emit('warning', new Error(`Piece ${index} failed verification`))\n"+
+             "          if (!self._bannedHosts) self._bannedHosts = new Set()\n"+
+             "          sources.forEach(source => {\n"+
+             "            if (!source || typeof source.destroy !== 'function' || source.type === 'webSeed') return\n"+
+             "            source.__badPieces = (source.__badPieces || 0) + 1\n"+
+             "            if (sources.length === 1 || source.__badPieces >= 2) {\n"+
+             "              if (source.remoteAddress) self._bannedHosts.add(source.remoteAddress)\n"+
+             "              self.emit('peerBanned', source.remoteAddress)\n"+
+             "              source.destroy()\n"+
+             "            }\n"+
+             "          })\n"],
+            ['    const id = (peer && peer.id) || peer\n    if (this._peers[id]) {',
+             "    if (typeof peer === 'string' && this._bannedHosts && this._bannedHosts.has(peer.slice(0, peer.lastIndexOf(':')).replace(/^\\[|\\]$/g, ''))) return null\n    const id = (peer && peer.id) || peer\n    if (this._peers[id]) {"],
+          ];
+          for(const [from,to] of patches){
+            if(contents.split(from).length!==2)throw Error('WebTorrent changed: review the TV bad-peer ban before packaging.');
+            contents=contents.replace(from,()=>to);
+          }
         }
         if(args.path.replaceAll('\\','/').endsWith('/server/eztv.mjs')){
           contents=contents.replace('if(pages>100)','if(pages>10)').replace('Math.min(3,Math.max(0,pages-1))','Math.min(1,Math.max(0,pages-1))');
