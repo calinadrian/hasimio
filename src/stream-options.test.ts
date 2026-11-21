@@ -14,6 +14,9 @@ describe('quality-first stream selection',()=>{
   it('uses structured metadata and supports older add-on text responses',()=>{
     expect(describeStream({quality:'4K',seeders:50,sizeBytes:100,provider:'An extension',title:'Film.1080p'})).toMatchObject({quality:'4K',seeders:50,sizeBytes:100,provider:'An extension'});
     expect(describeStream({name:'The Pirate Bay · 1080p',title:'Film.WEBRip.x264\n3,132 seeders · 2.0 GB'})).toMatchObject({quality:'1080p',seeders:3132,sizeBytes:2*1024**3,codec:'H.264',release:'WEBRip'});
+    // A size inside the release name once read as ".1400 MB" = 0 MB.
+    expect(describeStream({name:'Torrentio\n1080p',title:'Deadpool.and.Wolverine.2024.1080p.AMZN.WEBRip.1400MB.DD5.1.x264-GalaxyRG\n👤 931 💾 1.4 GB ⚙️ 1337x'}).sizeBytes).toBeCloseTo(1.4*1024**3);
+    expect(describeStream({name:'Source',title:'Film.WEBRip.1400MB.x264'}).sizeBytes).toBe(1400*1024**2);
   });
   it('sorts by real source data with missing sizes last',()=>{const sources=[describeStream({seeders:2,sizeBytes:900}),describeStream({seeders:8,sizeBytes:300}),describeStream({})];expect(sortSources(sources,'seeders')[0].seeders).toBe(8);expect(sortSources(sources,'size').at(-1)?.sizeBytes).toBeUndefined();});
   it('retains lower-seeded quality tiers instead of truncating them behind all 1080p sources',()=>{

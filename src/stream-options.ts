@@ -8,7 +8,11 @@ export function describeStream(stream:Stream):StreamOption {
   const originalDetail=stream.title || stream.name || 'No further details supplied.';
   const detail=stream.filename&&!originalDetail.includes(stream.filename)?`${stream.filename}\n${originalDetail}`:originalDetail;
   const parsedSeeders=text.match(/([\d,]+)\s+seeders\b/i)?.[1];
-  const parsedSize=text.match(/([\d.]+)\s*(GB|MB|TB)\b/i);
+  // The size the source states ("💾 1.4 GB") comes after the release name in the title, so it wins over a size
+  // inside the name ("WEBRip.1400MB"). A number must start with a digit: ".1400MB" once read as 0.14 MB.
+  const sizePattern=/(?<!\d)(?<!\d\.)(\d+(?:\.\d+)?)\s*(GB|MB|TB)\b/i;
+  const statLines=(stream.title ?? '').split('\n').slice(1).join('\n');
+  const parsedSize=statLines.match(sizePattern) ?? text.match(sizePattern);
   const sizeUnits:Record<string,number>={MB:2,GB:3,TB:4};
   const sizeBytes=stream.sizeBytes ?? (parsedSize ? Number(parsedSize[1])*1024**(sizeUnits[parsedSize[2].toUpperCase()] ?? 0) : undefined);
   return {stream,quality:QUALITY_ORDER.includes(stream.quality as Quality)?stream.quality as Quality:detectQuality(text),provider:stream.provider || stream.name?.replace(/\s*[·|]\s*(720p|1080p|2k|4k|torrent)\s*$/i,'') || 'Video source',release:detectRelease(text),codec:stream.codec || detectCodec(text),seeders:stream.seeders ?? (parsedSeeders ? Number(parsedSeeders.replaceAll(',','')) : undefined),sizeBytes,filename:stream.filename || stream.title?.split('\n')[0] || stream.name || 'Source details',detail};
