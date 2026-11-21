@@ -17,6 +17,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5176 --strictPort",
     "build": "tsc -b && vite build",
+    "dev:tv": "node scripts/dev-tv.mjs",
     "build:webos": "node scripts/package-webos.mjs --prepare-only",
     "package:webos": "node scripts/package-webos.mjs",
     "release:webos": "node scripts/release-webos.mjs",

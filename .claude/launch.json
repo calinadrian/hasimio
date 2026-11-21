@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite", "--port", "5177", "--strictPort"],
       "port": 5177
+    },
+    {
+      "name": "hasimio-tv",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/dev-tv.mjs"],
+      "port": 5178
     }
   ]
 }
