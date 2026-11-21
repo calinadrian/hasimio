@@ -26,6 +26,16 @@ describe('remote spatial navigation',()=>{
     expect(pickTarget(grid[5].box,'ArrowUp',grid)).toBe('a3');
   });
 
+  it('moves Down to the next row when cards on this row differ in height',()=>{
+    // Continue watching: a card whose time left wraps to a second line is 24px taller.
+    const tall:Candidate<string>={item:'tall',box:{left:116,top:370,width:140,height:328}};
+    const short:Candidate<string>={item:'short',box:{left:272,top:370,width:140,height:304}};
+    const below:Candidate<string>={item:'below',box:{left:272,top:811,width:140,height:304}};
+    expect(pickTarget(short.box,'ArrowDown',[tall,short,below])).toBe('below');
+    expect(pickTarget(below.box,'ArrowUp',[tall,short,below])).toBe('short');
+    expect(pickTarget(tall.box,'ArrowUp',[tall,short])).toBeUndefined();
+  });
+
   it('never enters a slider sideways, even with nothing else on the row',()=>{
     expect(pickTarget(row('settings',1212).box,'ArrowRight',player)).toBeUndefined();
     expect(pickTarget({left:0,top:617,width:10,height:36},'ArrowRight',[seek])).toBeUndefined();

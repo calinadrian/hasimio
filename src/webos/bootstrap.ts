@@ -41,7 +41,10 @@ window.fetch=(input,options)=>{
   if(options?.mode!=='cors'&&url.origin!==location.origin&&['http:','https:'].includes(url.protocol)&&!new Headers(options?.headers??(input instanceof Request?input.headers:undefined)).has('Authorization')&&(options?.method??(input instanceof Request?input.method:'GET')).toUpperCase()==='GET'){
     return nativeFetch('/api/webos/fetch?url='+encodeURIComponent(url.href),{signal:options?.signal,cache:'no-store'});
   }
-  return nativeFetch(input,options);
+  // webOS 6 rejects every keepalive request outright ("Failed to fetch"), so
+  // the player's stop request never reached the service and a closed torrent
+  // kept downloading in the background. Send these as ordinary requests.
+  return nativeFetch(input,options?.keepalive?{...options,keepalive:false}:options);
 };
 
 function registerDialogs(node:ParentNode){node.querySelectorAll('dialog').forEach(dialog=>dialogPolyfill.registerDialog(dialog));}
@@ -140,7 +143,7 @@ function leaveEditor(element:HTMLElement){
   const list=candidates().filter(control=>!control.matches(editing)&&!control.closest('.search'));
   const target=previousControl&&list.includes(previousControl)?previousControl:list.find(control=>control.matches('.poster-card'))??list[0];
   target?.focus();
-  target?.scrollIntoView({block:'nearest',inline:'nearest'});
+  if(target)reveal(target);
 }
 
 document.addEventListener('keydown',event=>{
@@ -232,9 +235,23 @@ document.addEventListener('keydown',event=>{
     const current=document.querySelector<HTMLElement>('.sidebar .nav-item.active');
     if(current&&list.includes(current))target=current;
   }
-  target?.focus();target?.scrollIntoView({block:'nearest',inline:'nearest'});
+  target?.focus();if(target)reveal(target);
 },true);
-const stop=()=>{void nativeFetch('/api/webos/stop',{method:'POST',keepalive:true});};
+// Brings a remote-focused control into view. On the Discover home the
+// spotlight (Hero.tsx) stays pinned at the top: a focused poster's shelf sits
+// right beneath it, as on Netflix, and its buttons return the page to the top.
+function reveal(target:HTMLElement){
+  target.scrollIntoView({block:'nearest',inline:'nearest'});
+  const spotlight=document.querySelector<HTMLElement>('.hero.tv-spotlight');
+  if(!spotlight||target.closest('dialog'))return;
+  if(spotlight.contains(target)){window.scrollTo(0,0);return;}
+  if(target.closest('.topbar,.sidebar'))return;
+  const shelf=target.closest<HTMLElement>('.media-shelf')??target;
+  window.scrollBy(0,shelf.getBoundingClientRect().top-spotlight.offsetHeight-8);
+}
+// keepalive fetches fail on this browser. Send a beacon, which can still leave
+// while the app closes, and an ordinary request too; stopping twice is harmless.
+const stop=()=>{try{navigator.sendBeacon?.('/api/webos/stop');}catch{/* Beacons unavailable. */}void nativeFetch('/api/webos/stop',{method:'POST'}).catch(()=>{});};
 window.addEventListener('pagehide',()=>{stop();keepAlive?.cancel?.();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){document.querySelector<HTMLButtonElement>('.cinema-back')?.click();stop();}});
 

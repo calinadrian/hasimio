@@ -27,7 +27,13 @@ export function pickTarget<T>(origin:Box,direction:Direction,candidates:readonly
       ?Math.max(0,-overlap(box.top,box.top+box.height,origin.top,origin.top+origin.height))
       :Math.max(0,-overlap(box.left,box.left+box.width,origin.left,origin.left+origin.width));
     const forward=(horizontal?dx:dy)*(positive?1:-1);
-    if(forward<=4)continue;
+    // Both of its edges must also lie further that way than the origin's.
+    // Cards of unequal height on one row ("42:27 left" wrapping to a second
+    // line) have centres a few pixels apart, which made Up/Down step sideways
+    // to a neighbour instead of reaching the next row.
+    const edges=horizontal?[box.left-origin.left,box.left+box.width-origin.left-origin.width]:[box.top-origin.top,box.top+box.height-origin.top-origin.height];
+    const beyond=positive?Math.min(edges[0],edges[1]):-Math.max(edges[0],edges[1]);
+    if(forward<=4||beyond<=4)continue;
     if(horizontal&&candidate.slider)continue;
     const score=forward+side*3;
     if(!best||score<best.score)best={item:candidate.item,score};

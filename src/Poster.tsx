@@ -1,6 +1,7 @@
 import {Check,Film,Play} from 'lucide-react';
 import {type Meta} from './media';
 import PosterImage from './PosterImage';
+import {posterTitles} from './poster-registry';
 import {type CardProgress} from './playback-progress';
 import {playbackTime} from './player-utils';
 
@@ -8,7 +9,7 @@ export default function Poster({meta,onClick,saved,progress}:{meta:Meta;onClick:
   const label=meta.category==='anime'||meta.type==='anime'?'Anime':meta.type==='series'?'Series':'Movie';
   const status=progress?.status??(progress?.completed?'Watched':progress?.episode??'Continue');
   const accessibleLabel=[meta.name,meta.releaseInfo||'Year unavailable',label,saved?'In your library':'',progress?status:''].filter(Boolean).join(', ');
-  return <button className="poster-card" aria-label={accessibleLabel} onClick={onClick}>
+  return <button ref={element=>{if(element)posterTitles.set(element,meta);}} className="poster-card" aria-label={accessibleLabel} onClick={onClick}>
     <div className="poster-image">
       <PosterImage meta={meta}/>
       <Film className="poster-placeholder" aria-hidden="true"/>{saved&&<span className="saved-mark" title="In your library" aria-hidden="true"><Check size={14}/></span>}

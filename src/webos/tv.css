@@ -90,6 +90,24 @@ html.hasimio-tv .caption-version-meta{font-size:13px}
 .hasimio-tv .hero-backdrop,.hasimio-tv .hero-shade{top:0;right:0;bottom:0;left:0}
 .hasimio-tv .filter-bar{margin-bottom:8px}
 
+/* Discover home (Hero.tsx): the spotlight holds the top of the screen and
+   describes the focused poster, while the shelves scroll beneath it. The
+   search bar scrolls away with the page instead of stacking above it. */
+html.tv-spotlight .topbar{position:relative}
+html.tv-spotlight .page-content{padding-bottom:260px}
+.hasimio-tv .hero.tv-spotlight{position:sticky;top:0;z-index:6;height:300px;min-height:0;margin:-20px calc(var(--gutter)*-1) 18px;border-radius:0;background:#141414}
+.hasimio-tv .tv-spotlight .hero-backdrop{left:auto;width:76%;object-position:50% 22%}
+.hasimio-tv .tv-spotlight .hero-keyart{position:absolute;top:0;right:0;height:100%;width:auto;max-width:76%;object-fit:cover;object-position:50% 20%;z-index:-3}
+.hasimio-tv .tv-spotlight .hero-shade{background:linear-gradient(90deg,#141414 24%,#141414d9 40%,#14141400 74%),linear-gradient(0deg,#141414 0%,#14141400 46%)}
+.hasimio-tv .tv-spotlight .hero-content{position:absolute;left:var(--gutter);bottom:20px;width:620px;padding:0}
+.hasimio-tv .tv-spotlight .hero-kicker{margin-top:0}
+.hasimio-tv .tv-spotlight h1,.hasimio-tv .tv-spotlight h1.long{font-size:40px;margin:6px 0 10px;max-width:620px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hasimio-tv .tv-spotlight p{margin:10px 0 16px}
+.hasimio-tv .tv-spotlight.previewing p{-webkit-line-clamp:3;margin-bottom:0}
+/* Previewing a poster: the buttons belong to the featured title, so they step
+   aside (still reachable with Up, which brings the featured title back). */
+.hasimio-tv .tv-spotlight.previewing .hero-actions{position:absolute;left:0;bottom:0;opacity:0;pointer-events:none}
+
 /* ---------- Poster shelves: about seven posters per row ---------- */
 .hasimio-tv .poster-row{grid-auto-columns:140px;grid-template-columns:none;align-items:start;gap:16px}
 .hasimio-tv .poster-row.wrap{grid-template-columns:repeat(auto-fill,140px);grid-auto-columns:140px;justify-content:start}
