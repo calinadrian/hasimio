@@ -1,0 +1,160 @@
+/* Discover home: billboard, top bar, wide and ranked rows, hover cards, and
+   OLED care. Pure black behind everything; static chrome stays dim grey so no
+   bright shape sits in one place for hours. Neutral: no brand colour.
+   The TV's layout of these pieces lives in webos/tv.css. */
+
+/* ---------- Computers: a top bar instead of the rail (TopNavigation.tsx) ---------- */
+.top-nav-layout{--rail:0px;--gutter:clamp(24px,3.6vw,64px);--topbar:68px}
+.top-nav-layout main{margin-left:0}
+.top-nav-layout .topbar{gap:clamp(16px,2vw,32px);border-bottom:0;background:#000;transition:background-color .3s}
+.top-nav-layout .topbar-brand{display:flex;align-items:center;gap:9px;flex:none;color:#a6a6a6;text-decoration:none;font:700 clamp(20px,1.3vw,24px)/1 Manrope,sans-serif;letter-spacing:-.02em}
+.top-nav-layout .topbar-brand .brand-symbol{width:28px;height:28px;margin:0;border-radius:7px;background:#a6a6a6;color:#000}
+.top-nav-layout .topbar-brand .brand-symbol svg{width:15px;height:15px;margin-left:2px}
+.top-nav{display:flex;flex-direction:row;align-items:center;gap:clamp(2px,.7vw,12px);margin:0;flex:0 1 auto;min-width:0}
+:root .top-nav .nav-item{min-height:40px;padding:8px;border-radius:8px;background:none;color:#9a9a9a;font-size:clamp(14px,.9vw,16px);font-weight:500;white-space:nowrap}
+:root .top-nav .nav-item:hover{background:none;color:#dcdcdc}
+:root .top-nav .nav-item.active{background:none;color:#e6e6e6;font-weight:650}
+.top-nav-layout .search{margin-left:auto;flex:0 1 340px;min-width:150px;min-height:40px;padding:7px 13px;background:#0e0e0e;border-color:#2c2c2c;color:#8a8a8a}
+.top-nav-layout .search input::placeholder{color:#8a8a8a}
+.top-nav-layout .search kbd{border-color:#333;color:#777}
+
+/* Profile menu: pages visited now and then, sync, profiles and the version. */
+.profile-menu{position:relative;flex:none}
+:root .profile-menu-button{display:flex;align-items:center;gap:6px;min-height:40px;padding:4px 2px;border-radius:8px;color:#9a9a9a;background:none}
+:root .profile-menu-button:hover,.profile-menu.open .profile-menu-button{color:#e0e0e0}
+.profile-menu-button .profile-avatar{width:32px;height:32px;margin:0;border-radius:7px;font-size:15px;opacity:.8}
+.profile-menu-button:hover .profile-avatar,.profile-menu.open .profile-avatar{opacity:1}
+.profile-menu.current .profile-avatar{box-shadow:0 0 0 2px #8a8a8a}
+.profile-menu-button>svg{transition:transform .2s}
+.profile-menu.open .profile-menu-button>svg{transform:rotate(180deg)}
+.profile-menu-list{position:absolute;right:0;top:calc(100% + 10px);z-index:30;width:250px;padding:8px;display:grid;gap:2px;background:#080808f7;border:1px solid #262626;border-radius:10px;box-shadow:0 18px 50px #000c}
+:root .profile-menu-list>button{display:flex;align-items:center;gap:12px;width:100%;min-height:40px;padding:9px 10px;border-radius:6px;background:none;color:#bdbdbd;font-size:14px;font-weight:500;text-align:left}
+:root .profile-menu-list>button:hover,:root .profile-menu-list>button[aria-current=page]{background:#1c1c1c;color:#fff}
+.profile-menu-list>button>svg{flex:none;color:#8a8a8a}
+.profile-menu-list>button>small{margin-left:auto;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#6f6f6f;font-size:12px}
+.profile-menu-list>.sync-status{font-size:13px;color:#a8a8a8}
+.profile-menu-list>.sync-status>i{margin:0 5px}
+.profile-menu-list hr{width:auto;margin:6px 4px;border:0;border-top:1px solid #222}
+.profile-menu-version{display:block;padding:6px 10px 2px;color:#5f5f5f;font-size:12px}
+
+/* ---------- Billboard (Hero.tsx) ---------- */
+/* The top bar lies over the artwork, clear until the page scrolls. */
+.has-billboard .topbar{margin-bottom:calc(var(--topbar)*-1)}
+.has-billboard .topbar.over-art{background:linear-gradient(180deg,#000000bf,#00000000)}
+.has-billboard .topbar.over-art .search{background:#00000059;border-color:#ffffff24}
+.hero.billboard{position:relative;isolation:isolate;height:56.25vw;max-height:82vh;min-height:520px;margin:0;border-radius:0;overflow:hidden;background:#000}
+.billboard .hero-backdrop{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;z-index:-3;opacity:0;transition:opacity .7s}
+.billboard .hero-backdrop.loaded{opacity:1}
+.billboard .hero-shade{position:absolute;top:0;right:0;bottom:0;left:0;z-index:-2;background:linear-gradient(77deg,#000000e6 0%,#0000008c 34%,#00000000 64%),linear-gradient(0deg,#000 0%,#00000099 12%,#00000000 32%)}
+.billboard .hero-content{position:absolute;left:var(--gutter);bottom:33%;width:38vw;min-width:340px;max-width:640px;padding:0}
+.billboard .hero-kicker{display:block;margin:0 0 14px;color:#8f8f8f;font-size:12px;font-weight:700;letter-spacing:.24em}
+.hero.billboard h1,.hero.billboard h1.long{max-width:none;margin:0 0 16px;font:800 clamp(34px,4vw,64px)/1.05 Manrope,sans-serif;letter-spacing:-.03em;color:#e6e6e6}
+.billboard .hero-logo{max-height:clamp(70px,min(9vw,17vh),150px);margin-bottom:20px}
+.billboard .hero-meta{gap:6px 14px;margin-bottom:12px;color:#b3b3b3;font-size:clamp(14px,1.05vw,17px)}
+.hero.billboard p{max-width:none;margin:0 0 24px;color:#c9c9c9;font-size:clamp(15px,1.12vw,19px);line-height:1.45;-webkit-line-clamp:3;text-shadow:0 1px 3px #00000080}
+.billboard .hero-actions{gap:12px}
+:root .billboard .hero-actions .button{height:clamp(42px,3vw,52px);min-height:0;padding:0 clamp(18px,1.9vw,30px);gap:10px;border-radius:6px;font-size:clamp(15px,1.12vw,19px)}
+:root .billboard .hero-actions .button.primary{background:#f0f0f0;color:#000}
+:root .billboard .hero-actions .button.primary:hover{background:#d4d4d4}
+:root .billboard .hero-actions .button.secondary{background:#6d6d6e8c;color:#ededed}
+:root .billboard .hero-actions .button.secondary:hover{background:#6d6d6e61}
+:root .billboard .hero-actions .hero-save{width:clamp(42px,3vw,52px);padding:0;border-radius:50%;background:#14141499;box-shadow:inset 0 0 0 2px #8a8a8a}
+:root .billboard .hero-actions .hero-save:hover{background:#14141499;box-shadow:inset 0 0 0 2px #e6e6e6}
+.hero-placeholder.billboard{animation:none;background:#000}
+/* 720p and 768-line screens (laptops, Android TV): keep the text clear of the top bar. */
+@media(min-width:761px) and (max-height:800px){
+  .billboard .hero-content{bottom:24%}
+  .billboard .hero-kicker{margin-bottom:10px}
+  .billboard .hero-logo{margin-bottom:14px}
+  .hero.billboard p{margin-bottom:18px;-webkit-line-clamp:2}
+}
+/* A logo stands in for the name; the name stays for screen readers. */
+.hero-title{position:relative}
+.hero-title.title-pending h1{visibility:hidden}
+.hero-title.has-logo h1{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hero-logo{display:block;width:auto;height:auto;max-width:100%;filter:brightness(.9)}
+
+/* Rows start over the bottom of the artwork. */
+.page-content.after-billboard{position:relative;z-index:2;margin-top:calc(clamp(48px,7vw,140px)*-1);padding-top:0}
+.after-billboard>.filter-bar{border-bottom:0;padding-bottom:0;margin-bottom:0}
+.after-billboard .media-section{margin-top:28px}
+.after-billboard .media-section:first-of-type{margin-top:18px}
+.top-nav-layout .page-content{max-width:none}
+.top-nav-layout .row-heading h3{color:#d9d9d9}
+
+/* ---------- Rows: Continue watching (wide) and Top 10 (ranked) ---------- */
+.poster-row.wide-row{grid-auto-columns:calc((100% - 72px)/3.35)}
+.wide-card .poster-image{aspect-ratio:16/9;border-radius:8px}
+.wide-card .poster-image img{object-position:50% 22%}
+.wide-card.is-watching .poster-image::before{height:40%}
+.poster-row.ranked-row{grid-auto-columns:calc((100% - 96px)/5*1.32)}
+.poster-card.ranked{position:relative;isolation:isolate;padding-left:25%;container-type:inline-size}
+.poster-card.ranked>strong,.poster-card.ranked>.poster-meta{display:none}
+.poster-card.ranked .poster-image{z-index:1}
+/* Outlined, not filled: a large white number would be the brightest thing on screen. */
+.poster-card.ranked>.rank-number{position:absolute;left:0;bottom:-.06em;z-index:0;display:block;min-height:0;font:800 clamp(110px,10vw,220px)/.8 Manrope,sans-serif;font-size:130cqw;letter-spacing:-.08em;color:#000;-webkit-text-stroke:3px #555;pointer-events:none;user-select:none}
+.poster-card.ranked:hover>.rank-number{-webkit-text-stroke-color:#777}
+@media(min-width:1600px){
+  .poster-row.wide-row{grid-auto-columns:calc((100% - 96px)/4.35)}
+  .poster-row.ranked-row{grid-auto-columns:calc((100% - 120px)/6*1.32)}
+}
+@media(max-width:1150px){
+  .poster-row.wide-row{grid-auto-columns:calc((100% - 48px)/2.4)}
+  .poster-row.ranked-row{grid-auto-columns:calc((100% - 72px)/4*1.32)}
+}
+
+/* ---------- Hover cards (HoverPreview.tsx) ---------- */
+.hover-card{position:fixed;z-index:40;overflow:hidden;background:#141414;border-radius:8px;box-shadow:0 18px 50px #000000d9;transform-origin:50% 35%;animation:hover-card-in .2s ease-out}
+@keyframes hover-card-in{from{opacity:0;transform:scale(.72)}}
+:root .hover-card-art{position:relative;display:block;width:100%;padding:0;overflow:hidden;border-radius:0;background:#1c1c1c;text-align:left}
+.hover-card-art img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.hover-card-art::after{content:'';position:absolute;right:0;bottom:0;left:0;height:55%;background:linear-gradient(0deg,#000000c7,#00000000)}
+.hover-card-art>strong{position:absolute;z-index:1;right:14px;bottom:12px;left:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:800 19px/1.15 Manrope,sans-serif;color:#e8e8e8;text-shadow:0 2px 8px #000c}
+.hover-card-track{position:absolute;z-index:2;right:0;bottom:0;left:0;height:4px;background:#ffffff29}
+.hover-card-track>span{display:block;height:100%;background:#cdcdcd}
+.hover-card-body{padding:14px 16px 16px}
+.hover-card-actions{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+:root .hover-card .round{width:38px;min-width:38px;height:38px;min-height:0;padding:0;display:inline-flex;align-items:center;justify-content:center;border:2px solid #666;border-radius:50%;background:#14141499;color:#e6e6e6;transition:border-color .15s,background-color .15s}
+:root .hover-card .round:hover{border-color:#e6e6e6}
+:root .hover-card .round.primary{border-color:#f0f0f0;background:#f0f0f0;color:#000}
+:root .hover-card .round.primary:hover{border-color:#d4d4d4;background:#d4d4d4}
+.hover-card .round.primary svg{margin-left:2px}
+.hover-card .round.push{margin-left:auto}
+.hover-card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:13px;color:#a6a6a6}
+.hover-card-meta .badge{padding:0 6px;border:1px solid #555;border-radius:3px;font-size:11px;color:#bdbdbd}
+.hover-card-progress{display:flex;gap:8px;margin-top:6px;font-size:13px;color:#bdbdbd}
+.hover-card-progress b{color:#e6e6e6}
+.hover-card-genres{margin-top:8px;font-size:13px;color:#cfcfcf}
+.hover-card-genres span+span::before{content:'•';margin:0 7px;color:#555}
+
+/* ---------- OLED care: the idle home (home-idle.ts) ---------- */
+/* Menus, rows and text go; the artwork dims, then goes black. A small mark
+   keeps moving so the screen is plainly still on. Stepped, not animated. */
+.home-idle-layer{position:fixed;top:0;right:0;bottom:0;left:0;z-index:50;pointer-events:none}
+.home-idle-mark{position:absolute;display:flex;align-items:center;gap:8px;white-space:nowrap;font:600 18px Manrope,sans-serif;color:#5a5a5a}
+html.home-idle .sidebar,html.home-idle .topbar,html.home-idle .hero-content,html.home-idle .hero-progress,html.home-idle .page-content>:not(.hero),html.home-idle .android-tabs{visibility:hidden}
+html.home-idle .hero-backdrop,html.home-idle .hero-keyart,html.home-idle .billboard .hero-backdrop.loaded{opacity:.35}
+html.home-idle-off .hero-backdrop,html.home-idle-off .hero-keyart{visibility:hidden}
+
+/* ---------- Phones ---------- */
+@media(max-width:760px){
+  .top-nav,.profile-menu,.brand-name{display:none}
+  .top-nav-layout .search{margin-left:0;flex:1}
+  /* Artwork on top at its own shape, details below, centred. */
+  .hero.billboard{height:auto;min-height:0;max-height:none;display:flex;flex-direction:column;border-radius:0;background:#000}
+  .billboard .hero-backdrop{position:relative;top:auto;left:auto;width:100%;height:auto;aspect-ratio:16/9}
+  .billboard .hero-shade{bottom:auto;height:auto;aspect-ratio:16/9;background:linear-gradient(0deg,#000 0%,#00000000 45%),linear-gradient(180deg,#000000a6 0%,#00000000 32%)}
+  .billboard .hero-content{position:relative;left:auto;bottom:auto;width:auto;min-width:0;max-width:none;margin-top:-34px;padding:0 var(--gutter) 6px;text-align:center}
+  .billboard .hero-kicker{margin-bottom:8px}
+  .billboard .hero-logo{max-width:72%;max-height:76px;margin:0 auto 14px}
+  .hero.billboard h1,.hero.billboard h1.long{font-size:28px;margin-bottom:10px}
+  .billboard .hero-meta{justify-content:center;font-size:13px}
+  .hero.billboard p{margin-bottom:16px;font-size:14px}
+  .billboard .hero-actions{justify-content:center}
+  :root .billboard .hero-actions .button{flex:1;height:46px;padding:0 12px;font-size:15px}
+  :root .billboard .hero-actions .hero-save{flex:none;width:46px}
+  .page-content.after-billboard{margin-top:0;padding-top:8px}
+  .poster-row.wide-row{grid-auto-columns:78%}
+  .poster-row.ranked-row{grid-auto-columns:calc(42% * 1.32)}
+}
+@media(prefers-reduced-motion:reduce){.hover-card{animation:none}.billboard .hero-backdrop{transition:none}}

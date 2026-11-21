@@ -6,7 +6,7 @@ import {isAndroidArm32,isAndroidTV} from './android/platform';
 
 const pagedCatalog=isWebOS||isAndroidArm32;
 
-export default function MediaShelf({title,source,children,wrap=false,hasMore=false,onMore,onBrowse,onBack,expanded=false}:{title:string;source?:string;children:ReactNode;wrap?:boolean;hasMore?:boolean;onMore?:()=>Promise<boolean>;onBrowse?:()=>void;onBack?:()=>void;expanded?:boolean}){
+export default function MediaShelf({title,source,children,wrap=false,hasMore=false,onMore,onBrowse,onBack,expanded=false,variant}:{title:string;source?:string;children:ReactNode;wrap?:boolean;hasMore?:boolean;onMore?:()=>Promise<boolean>;onBrowse?:()=>void;onBack?:()=>void;expanded?:boolean;variant?:'wide'|'ranked'}){
   const row=useRef<HTMLDivElement>(null),busy=useRef(false),loader=useRef(onMore);
   loader.current=onMore;
   const [loading,setLoading]=useState(false),[failed,setFailed]=useState(false),[edges,setEdges]=useState({left:false,right:false});
@@ -54,7 +54,7 @@ export default function MediaShelf({title,source,children,wrap=false,hasMore=fal
     <div className="row-heading"><>{expanded?<h1>{title}</h1>:<h3>{onBrowse?<button className="shelf-heading-button" onClick={onBrowse} aria-label={`Browse all ${title}`}>{title}<ChevronRight size={18}/></button>:title}</h3>}</>{source&&<span>{source}</span>}<span className="shelf-status" role="status">{loading&&<><LoaderCircle className="spin" size={15}/>Loading titles…</>}</span>{failed&&<button className="shelf-retry" onClick={()=>void load()}><RefreshCw size={14}/>Retry loading titles</button>}{!wrap&&(edges.left||edges.right)&&<div className="shelf-controls"><button className="shelf-arrow" disabled={!edges.left} aria-label={`Scroll ${title} left`} onClick={()=>scroll(-1)}><ChevronLeft size={20}/></button><button className="shelf-arrow" disabled={!edges.right} aria-label={`Scroll ${title} right`} onClick={()=>scroll(1)}><ChevronRight size={20}/></button></div>}</div>
     <div className="shelf-stage">
       
-      <div className={`poster-row${wrap?' wrap':''}`} ref={row} aria-label={`${title} titles`} onKeyDown={event=>{
+      <div className={`poster-row${wrap?' wrap':''}${variant&&!wrap?' '+variant+'-row':''}`} ref={row} aria-label={`${title} titles`} onKeyDown={event=>{
         if(wrap||!['ArrowLeft','ArrowRight'].includes(event.key)||event.altKey||event.ctrlKey||event.metaKey)return;
         const cards=Array.from(row.current?.querySelectorAll<HTMLButtonElement>('.poster-card')??[]);
         const index=cards.indexOf(event.target as HTMLButtonElement);if(index<0)return;

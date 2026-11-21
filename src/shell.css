@@ -1,7 +1,7 @@
 /* App shell: tokens, buttons, navigation, header, spotlight and title details.
    Every rule for these components lives here, once, with its breakpoints alongside. */
 :root{
-  --bg:#141414;--sidebar:#1c1c1c;--header:#181818;--panel:#242424;--surface:#2b2b2b;--surface-hover:#343434;
+  --bg:#000;--sidebar:#000;--header:#000;--panel:#181818;--surface:#2b2b2b;--surface-hover:#343434;
   --field:#2e2e2e;--field-border:#5e5e5e;--line:#3e3e3e;--line-strong:#4f4f4f;
   --text:#ededed;--text-strong:#f4f4f4;--muted:#bcbcbc;--accent:#e0e0e0;--accent-hover:#f2f2f2;--on-accent:#161616;
   --radius-control:12px;--radius-poster:7px;--radius-dialog:9px;
@@ -12,15 +12,15 @@
 .button{min-height:46px;display:inline-flex;gap:8px;align-items:center;justify-content:center;border-radius:var(--radius-control);padding:11px 19px;font-size:15px;font-weight:600;white-space:nowrap;transition:background .15s,color .15s}
 
 /* Navigation rail */
-.sidebar{width:var(--rail);position:fixed;inset:0 auto 0 0;background:var(--sidebar);border-right:1px solid #393939;padding:28px 20px 22px;display:flex;flex-direction:column;z-index:10}
-.brand{font-family:Manrope,sans-serif;font-size:30px;font-weight:800;display:flex;align-items:center;letter-spacing:-1px;padding-left:7px}
-.brand-symbol{height:33px;width:33px;background:var(--accent);color:#212121;display:grid;place-items:center;border-radius:7px;margin-right:9px;flex:none}
+.sidebar{width:var(--rail);position:fixed;inset:0 auto 0 0;background:var(--sidebar);border-right:1px solid #1c1c1c;padding:28px 20px 22px;display:flex;flex-direction:column;z-index:10}
+.brand{font-family:Manrope,sans-serif;font-size:30px;font-weight:800;color:#bdbdbd;display:flex;align-items:center;letter-spacing:-1px;padding-left:7px}
+.brand-symbol{height:33px;width:33px;background:#a6a6a6;color:#000;display:grid;place-items:center;border-radius:7px;margin-right:9px;flex:none}
 .brand-symbol svg{margin-left:2px}
-.brand-dot{color:var(--accent)}
+.brand-dot{color:#a6a6a6}
 nav{display:flex;flex-direction:column;gap:7px;margin-top:40px}
-.nav-item{display:flex;align-items:center;gap:13px;min-height:52px;padding:12px 16px;border-radius:var(--radius-control);color:#c5c5c5;text-align:left;font-size:17px;font-weight:500}
-.nav-item:hover{background:#313131;color:#f2f2f2}
-.nav-item.active{background:#383838;color:#f2f2f2}
+.nav-item{display:flex;align-items:center;gap:13px;min-height:52px;padding:12px 16px;border-radius:var(--radius-control);color:#a8a8a8;text-align:left;font-size:17px;font-weight:500}
+.nav-item:hover{background:#1f1f1f;color:#f2f2f2}
+.nav-item.active{background:#242424;color:#e6e6e6}
 .nav-item small{margin-left:auto;font-size:13px;color:#cdcdcd;background:#ffffff0b;border-radius:4px;padding:2px 6px}
 .sidebar-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
 .sync-status{display:flex;align-items:center;gap:10px;width:100%;padding:8px 6px;border-radius:var(--radius-control);text-align:left;font-size:13px;color:#cfcfcf}
@@ -33,7 +33,7 @@ nav{display:flex;flex-direction:column;gap:7px;margin-top:40px}
 
 /* Header: search is the only control, so it gets the space. */
 main{margin-left:var(--rail)}
-.topbar{position:sticky;top:0;z-index:11;height:var(--topbar);display:flex;align-items:center;gap:16px;background:var(--header);border-bottom:1px solid #393939;padding:0 var(--gutter)}
+.topbar{position:sticky;top:0;z-index:11;height:var(--topbar);display:flex;align-items:center;gap:16px;background:var(--header);border-bottom:1px solid #1c1c1c;padding:0 var(--gutter)}
 .topbar-brand{display:none}
 .search{display:flex;align-items:center;gap:10px;flex:1;max-width:560px;min-height:46px;background:#191919;border:1px solid #434343;border-radius:var(--radius-control);padding:9px 15px;color:#9c9c9c}
 .search:focus-within{border-color:transparent;outline:1px solid var(--accent);outline-offset:0}
@@ -60,7 +60,7 @@ main{margin-left:var(--rail)}
 /* Spotlight */
 .hero{position:relative;min-height:400px;isolation:isolate;border-radius:var(--radius-dialog);overflow:hidden;background:#262626;margin-bottom:28px}
 .hero-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%;z-index:-3}
-.hero-shade{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,#121212f2 0%,#151515cc 40%,#21212108 85%),linear-gradient(0deg,#141414e8 0%,transparent 50%)}
+.hero-shade{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,#000000f0 0%,#000000c0 40%,#00000008 85%),linear-gradient(0deg,#000000e8 0%,transparent 50%)}
 .hero-content{padding:34px 40px 48px}
 .hero-kicker{display:inline-block;margin-top:6px;color:#d6d6d6;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
 .hero h1{font-family:Manrope,sans-serif;font-size:74px;font-weight:600;letter-spacing:12px;line-height:1.25;margin:8px 0 16px}
@@ -174,11 +174,11 @@ main{margin-left:var(--rail)}
 
 /* Window controls are hidden entirely in the floating player. */
 .desktop-chrome-host{display:contents}
-.desktop-titlebar{position:fixed;inset:0 0 auto;height:32px;z-index:2147483647;display:flex;align-items:center;justify-content:space-between;background:#202020;color:#ccc;font:12px/1 system-ui,sans-serif;user-select:none;-webkit-app-region:drag}
+.desktop-titlebar{position:fixed;inset:0 0 auto;height:32px;z-index:2147483647;display:flex;align-items:center;justify-content:space-between;background:#000;color:#8a8a8a;font:12px/1 system-ui,sans-serif;user-select:none;-webkit-app-region:drag}
 .desktop-titlebar-name{display:flex;align-items:center;gap:7px;padding-left:12px}
 .desktop-window-buttons{display:flex;height:32px;-webkit-app-region:no-drag}
-.desktop-window-buttons button{width:46px;height:32px;padding:0;display:grid;place-items:center;color:#ccc;-webkit-app-region:no-drag;border-radius:0}
-.desktop-window-buttons button:hover{background:#414141;color:#fff}
+.desktop-window-buttons button{width:46px;height:32px;padding:0;display:grid;place-items:center;color:#8a8a8a;-webkit-app-region:no-drag;border-radius:0}
+.desktop-window-buttons button:hover{background:#2a2a2a;color:#fff}
 .desktop-window-buttons .desktop-window-close:hover{background:#c42b1c}
 .hasimio-desktop-chrome{padding-top:32px}
 .hasimio-desktop-chrome .app-shell{min-height:calc(100vh - 32px)}

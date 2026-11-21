@@ -19,15 +19,16 @@ import {isWebOS,tvVideoBufferBytes} from './webos/platform';
 import {androidHlsLimits,isAndroidArm32} from './android/platform';
 import {useNativeTracks,type HlsTracks,type HeaderTracks} from './webos/NativeTracks';
 import {usePictureInPicture} from './use-picture-in-picture';
+import {DRIFT_EVERY,driftSpot,nextPauseStageIn,pauseStage,type PauseStage} from './pause-stages';
 
 type Panel='audio'|'subtitles'|'timing'|'download'|'cast'|'settings';
-type Props={headerTracks?:HeaderTracks;startup?:PlaybackStartup;episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};subtitleSelection?:SubtitleSelection;embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode;backdrop?:string;onSources?:()=>void;onNearEnd?:()=>void;previous?:EpisodeAction;next?:EpisodeAction};
+type Props={headerTracks?:HeaderTracks;startup?:PlaybackStartup;episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};subtitleSelection?:SubtitleSelection;embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode;backdrop?:string;description?:string;onSources?:()=>void;onNearEnd?:()=>void;previous?:EpisodeAction;next?:EpisodeAction};
 const captionSettings=():CaptionSettings=>{const {volume:_v,muted:_m,rate:_r,autoPlayNext:_a,preferredQuality:_q,audioLanguage:_audio,...captions}=playerSettings();return captions;};
 type DesktopPointer={onPlayerPointer?:(listener:(point?:{x:number;y:number})=>void)=>()=>void};
 const desktopPointer=(globalThis as {hasimioDesktop?:DesktopPointer}).hasimioDesktop;
 const panelNames:Record<Panel,string>={audio:'Audio & dubs',subtitles:'Subtitles',timing:'Subtitle timing',download:'Download',cast:'Cast to TV',settings:'Playback settings'};
 
-export default function Player({headerTracks,startup,episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,subtitleSelection,embeddedSubtitleLanguages,download,status,loading,backdrop,onSources,onNearEnd,previous,next}:Props){
+export default function Player({headerTracks,startup,episodeLabel,progressKey,titleKey,videoId,durationHint,preparedStream=false,timeOffset=0,onSeek,stream,title,onClose,onRecoverAudio,panels,subtitleSelection,embeddedSubtitleLanguages,download,status,loading,backdrop,description,onSources,onNearEnd,previous,next}:Props){
   // The start screen stays up until the first frame plays, instead of a black
   // player with a spinner and connection details.
   const [started,setStarted]=useState(false);
@@ -132,6 +133,8 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
     openPanel('cast',button);void cast.refreshDevices();
   }
   function keyDown(event:KeyboardEvent<HTMLDivElement>){
+    // While paused long enough to rest the screen, a key only brings the controls back (Escape too).
+    if(restingNow.current){event.preventDefault();event.stopPropagation();reveal();return;}
     if(event.key==='Tab'){setFocused(true);reveal();}
     if(event.key==='Escape'&&panel){event.preventDefault();event.stopPropagation();setPanel(undefined);return;}
     const target=event.target as HTMLElement;
@@ -153,6 +156,19 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   // leaving them must not restart the countdown: torrent streams buffer often, and each restart would keep
   // the controls up long after the cursor stopped.
   useEffect(()=>{if(panel||(focused&&!isWebOS)||!playing){setVisible(true);hideAt.current=Infinity;return;}if(buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),hideAt.current===Infinity?2500:Math.max(0,hideAt.current-performance.now()));return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
+  // OLED care while paused (pause-stages.ts). Counted from the last key, click or pointer movement; never
+  // while a menu is open, the video is loading or failed, or it plays elsewhere (cast, picture-in-picture).
+  const restable=!playing&&started&&!!url&&!panel&&!loading&&!error&&!buffering&&!cast.active&&!pip.active&&scrubPosition===undefined;
+  const [rest,setRest]=useState<PauseStage>('none'),[drift,setDrift]=useState(0);
+  const restingNow=useRef(false);restingNow.current=rest!=='none';
+  useEffect(()=>{
+    setRest('none');if(!restable)return;
+    const since=performance.now();let timer:ReturnType<typeof setTimeout>|undefined;
+    const step=()=>{const idle=performance.now()-since;setRest(pauseStage(idle));const wait=nextPauseStageIn(idle);if(wait!==undefined)timer=setTimeout(step,wait+50);};
+    step();return()=>clearTimeout(timer);
+  },[restable,activity]);
+  useEffect(()=>{if(rest!=='dim'&&rest!=='off')return;const timer=setInterval(()=>setDrift(value=>value+1),DRIFT_EVERY[rest]);return()=>clearInterval(timer);},[rest]);
+  const [driftX,driftY]=driftSpot(drift);
   // Subtitles follow the visible picture (object-fit: contain), not the letterboxed player.
   function measure(){const box=root.current,video=videoRef.current;if(!box||!video)return;const width=box.clientWidth,height=box.clientHeight,ratio=video.videoWidth&&video.videoHeight?video.videoWidth/video.videoHeight:16/9,w=Math.min(width,height*ratio),h=w/ratio,rect=box.getBoundingClientRect();
     setFrame(previous=>previous&&Math.abs(previous.width-w)<0.5&&Math.abs(previous.height-h)<0.5&&Math.abs(previous.top-(height-h)/2)<0.5?previous:{left:(width-w)/2,top:(height-h)/2,width:w,height:h});
@@ -264,6 +280,8 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
     const wake=(event:globalThis.KeyboardEvent)=>{
       if(!root.current?.isConnected||document.querySelector('.tv-select'))return;
       const floating=document.activeElement?.closest('.cinema-skip-intro,.cinema-up-next');
+      // A resting (paused, dimmed) screen: any key, Back included, only wakes the controls.
+      if(restingNow.current){event.preventDefault();event.stopImmediatePropagation();revealNow.current();return;}
       if(!visibleNow.current&&!floating&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();}
       revealNow.current();
     };
@@ -279,13 +297,17 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   const showNext=!!next&&!nextDismissed&&!panel&&!loading&&!error&&!cast.active&&duration>0&&position>=upNextStart(skipSegments,duration);
   const displayPosition=scrubPosition??position;
   const progress=duration?Math.min(100,displayPosition/duration*100):0,buffer=duration?Math.min(100,bufferEnd/duration*100):0;
-  return <div ref={root} className={`cinema-player ${visible?'controls-visible':''}`} role="region" aria-label={`${name} video player`} tabIndex={0} onKeyDown={keyDown} onPointerDown={event=>{setFocused(false);reveal();if(panel&&!menuRef.current?.contains(event.target as Node)&&!(event.target as HTMLElement).closest('[data-player-menu]'))setPanel(undefined);}} onFocusCapture={event=>{const target=event.target as HTMLElement;setFocused(target!==event.currentTarget&&(isWebOS||target.matches(':focus-visible')));reveal();}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setFocused(false);}}>
+  return <div ref={root} className={`cinema-player ${visible?'controls-visible':''}${rest!=='none'?' resting rest-'+rest:''}`} role="region" aria-label={`${name} video player`} tabIndex={0} onKeyDown={keyDown} onPointerDown={event=>{setFocused(false);reveal();if(panel&&!menuRef.current?.contains(event.target as Node)&&!(event.target as HTMLElement).closest('[data-player-menu]'))setPanel(undefined);}} onFocusCapture={event=>{const target=event.target as HTMLElement;setFocused(target!==event.currentTarget&&(isWebOS||target.matches(':focus-visible')));reveal();}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setFocused(false);}}>
     {pip.active&&<div className="cinema-pip-drag" aria-hidden="true"/>}
     <video ref={videoRef} className="cinema-video" autoPlay playsInline aria-label={name} onClick={togglePlay} onDoubleClick={()=>void toggleFullscreen()} onTimeUpdate={sync} onDurationChange={sync} onProgress={sync} onLoadedMetadata={()=>{restore();measure();}} onResize={measure} onSeeked={()=>{restoring.current=false;sync();persist(true);}} onLoadedData={()=>{sync();setBuffering(false);}} onCanPlay={()=>{setBuffering(false);if(!isWebOS)setTimeout(()=>{if(videoRef.current?.paused&&!videoRef.current.seeking)setStarted(true);},1200);}} onWaiting={()=>setBuffering(true)} onPlaying={()=>{hasPlayed.current=true;if(Date.now()-quietRetry.current.at>20000)quietRetry.current.count=0;startup?.started();setStarted(true);setPlaying(true);setBuffering(false);}} onPlay={()=>setPlaying(true)} onPause={()=>{setPlaying(false);sync();persist(true);}} onEnded={()=>{setPlaying(false);sync();persist(true);if(next&&autoPlayNext&&!nextDismissed&&!autoAdvanced.current){autoAdvanced.current=true;playNext();}}} onVolumeChange={()=>{if(videoRef.current){setVolume(videoRef.current.volume);setMuted(videoRef.current.muted);}}} onError={()=>{if(!videoRef.current?.currentSrc)return;if(recoverQuietly())return;setBuffering(false);if(onRecoverAudio)onRecoverAudio();else setError('This browser could not decode the video. Retry playback or choose another source.');}}/>
     {(subtitle||panel==='subtitles')&&<CaptionOverlay cues={subtitle?cues:[]} settings={captions} frame={frame} preview={panel==='subtitles'} lift={visible&&frame?{top:Math.max(0,chrome.header-frame.top),bottom:Math.max(0,frame.top+frame.height-chrome.controls)}:{top:0,bottom:0}}/>}
     <div ref={topRef} className="cinema-top cinema-chrome"><button className="cinema-icon cinema-back" onClick={onClose} title={isWebOS?'Back':'Back to sources'} aria-label={isWebOS?'Back':'Back to sources'}><ArrowLeft size={24}/></button><div className="cinema-title"><h2>{name}</h2>{(stream.name&&stream.name!==name?stream.name:episodeLabel)&&<p>{stream.name&&stream.name!==name?stream.name:episodeLabel}</p>}</div>{status&&<div className="cinema-connection">{status}</div>}{isWebOS&&onSources&&<button type="button" className="cinema-text-action cinema-sources" onClick={onSources}><ListVideo size={18}/> Sources</button>}</div>
     {loading?<div className="cinema-state">{loading}</div>:error?<div className="cinema-state cinema-error"><h3>Playback interrupted</h3><p role="alert">{error}</p><button className="cinema-action" onClick={()=>setRetry(value=>value+1)}><RotateCcw size={18}/> Retry playback</button><button className="cinema-text-action" onClick={onSources??onClose}>Choose another source</button></div>:buffering?<div className="cinema-wait" role="status"><LoaderCircle className="spin" size={36}/><span>Buffering video…</span></div>:!playing&&url&&!panel?<button className="cinema-big-play" onClick={togglePlay} aria-label={position>=duration&&duration>0?'Replay video':'Play video'}><Play size={34} fill="currentColor"/></button>:null}
     {!started&&!error&&!loading&&!cast.active&&<PlaybackLoading overlay progressKey={videoId??stream.url??name} title={name} detail={episodeLabel} backdrop={backdrop} cap={95} message="Starting…" onChoose={onSources} onCancel={onClose}/>}
+    {rest!=='none'&&<div className="cinema-rest" aria-hidden="true" onPointerDown={reveal}>
+      {rest!=='off'?<div className="cinema-rest-info" style={rest==='dim'?{transform:`translate(${Math.round(driftX*48)}px,${Math.round(driftY*36)}px)`}:undefined}><small>You’re watching</small><h2>{name}</h2>{episodeLabel&&<p className="cinema-rest-episode">{episodeLabel}</p>}{description&&<p className="cinema-rest-description">{description}</p>}<span className="cinema-rest-paused">Paused</span></div>
+        :<div className="cinema-rest-mark" style={{left:`${6+driftX*64}%`,top:`${8+driftY*78}%`}}><Pause size={15}/>{name} · Paused</div>}
+    </div>}
     {(notice||subtitleError)&&<div className="cinema-notice" role="status"><span>{subtitleError||notice}</span><button className="cinema-icon" aria-label="Dismiss player message" onClick={()=>{setNotice('');setSubtitleError('');}}><X size={18}/></button></div>}
     {showSkipIntro&&<button className="cinema-skip-intro" onClick={()=>{if(introEnd!==undefined)seek(introEnd);}}>Skip intro</button>}
     {showNext&&next&&<div className="cinema-up-next" role="region" aria-label="Up next">{nextArt&&<img className="cinema-up-next-art" src={nextArt} alt="" onError={event=>{event.currentTarget.style.visibility='hidden';}}/>}<div className="cinema-up-next-text"><span>Up next</span><strong>{next.label}</strong>{next.title&&<p>{next.title}</p>}</div><button className="cinema-action" onClick={playNext}><Play size={16} fill="currentColor"/> Play now</button><button className="cinema-icon" aria-label="Dismiss up next" onClick={()=>setNextDismissed(true)}><X size={18}/></button></div>}

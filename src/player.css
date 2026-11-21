@@ -227,3 +227,25 @@
 .caption-style-folder[open]>summary{margin-bottom:14px}
 .caption-remote .caption-turn-off{display:block;margin:-6px 0 12px}
 .cinema-menu .caption-sync-status{margin:0 0 10px;padding:8px 10px;border-radius:6px;background:#2b2b2b;color:var(--player-ink)}
+
+/* Paused long enough to rest the screen (pause-stages.ts): controls give way to "You're watching", then the
+   picture dims under a black layer (filters do not reach the TV's video plane) and the text steps between
+   spots, then only a small moving mark remains on black. */
+.cinema-player.resting .cinema-chrome,.cinema-player.resting .cinema-big-play,.cinema-player.resting .cinema-skip-intro,.cinema-player.resting .cinema-up-next{opacity:0!important;pointer-events:none!important}
+.cinema-player.resting{cursor:none}
+.cinema-rest{position:absolute;top:0;right:0;bottom:0;left:0;z-index:6;overflow:hidden;background:#000;background:linear-gradient(90deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.45) 55%,rgba(0,0,0,.18) 100%);transition:background-color 1.2s ease}
+.rest-dim .cinema-rest{background:rgba(0,0,0,.8)}
+.rest-off .cinema-rest{background:#000}
+.cinema-rest-info{position:absolute;left:7%;top:24%;width:46%;max-width:640px;color:#dedede}
+.cinema-rest-info small{display:block;font-size:15px;color:#999;margin-bottom:10px}
+.cinema-rest-info h2{font:800 clamp(30px,3.4vw,52px)/1.08 Manrope,'DM Sans',sans-serif;letter-spacing:-.02em;margin:0 0 10px;color:#dedede;overflow-wrap:anywhere}
+.cinema-rest-episode{font:600 18px/1.35 Manrope,'DM Sans',sans-serif;color:#cfcfcf;margin:0 0 10px}
+.cinema-rest-description{font-size:16px;line-height:1.5;color:#b8b8b8;margin:0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.cinema-rest-paused{display:inline-block;margin-top:18px;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#858585}
+.rest-dim .cinema-rest-info h2{color:#8f8f8f}
+.rest-dim .cinema-rest-info small,.rest-dim .cinema-rest-paused,.rest-dim .cinema-rest-episode{color:#6f6f6f}
+.rest-dim .cinema-rest-description{color:#666}
+.cinema-rest-mark{position:absolute;display:flex;align-items:center;gap:10px;font-size:15px;color:#4e4e4e;white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
+.cinema-rest-mark svg{flex:none}
+@media(max-width:720px){.cinema-rest-info{left:6%;right:6%;width:auto;top:18%}.cinema-rest-description{-webkit-line-clamp:3}}
+@media(prefers-reduced-motion:reduce){.cinema-rest{transition:none}}

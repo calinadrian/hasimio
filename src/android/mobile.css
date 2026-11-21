@@ -22,7 +22,7 @@
   body{overscroll-behavior-y:none}
   .sidebar{display:none}
   .app-shell>main{padding-bottom:calc(var(--tabbar) + env(safe-area-inset-bottom) + 12px)}
-  .topbar{position:sticky;top:0;z-index:11;gap:10px;background:#181818f5}
+  .topbar{position:sticky;top:0;z-index:11;gap:10px;background:#000000f2}
   .topbar-brand .brand-symbol{width:32px;height:32px;border-radius:10px}
   .search{min-width:0;min-height:46px;border-radius:14px;padding:5px 12px;background:#242424;border-color:#414141;gap:8px}
   .search input{font-size:16px;min-height:34px}
@@ -33,9 +33,9 @@
   .section-intro{flex-wrap:wrap;gap:12px}
   .section-intro h1{font-size:27px;line-height:1.25}
 
-  .android-tabs{position:fixed;inset:auto 0 0;z-index:20;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));min-height:calc(var(--tabbar) + env(safe-area-inset-bottom));background:#1c1c1cf5;border-top:1px solid #3a3a3a}
+  .android-tabs{position:fixed;inset:auto 0 0;z-index:20;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));min-height:calc(var(--tabbar) + env(safe-area-inset-bottom));background:#000000f5;border-top:1px solid #1c1c1c}
   .android-tabs>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:58px;border-radius:14px;font-size:11px;font-weight:600;color:#aaa}
-  .android-tabs>button[aria-current=page],.android-tabs>button.is-current{background:#343434;color:#fff}
+  .android-tabs>button[aria-current=page],.android-tabs>button.is-current{background:#222;color:#e6e6e6}
   .android-more{position:fixed;inset:auto 0 0;width:100%;max-width:none;max-height:85dvh;margin:0;overflow:auto;overscroll-behavior:contain}
 
   .hero{border-radius:18px;overflow:hidden}

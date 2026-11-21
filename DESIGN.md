@@ -3,10 +3,10 @@ name: Hasimio
 description: Neutral grey and black media browsing with quality-first playback.
 colors:
   accent: "#e0e0e0"
-  background: "#141414"
-  sidebar: "#1c1c1c"
-  header: "#181818"
-  panel: "#242424"
+  background: "#000000"
+  sidebar: "#000000"
+  header: "#000000"
+  panel: "#181818"
   source: "#2b2b2b"
   source-hover: "#343434"
   primary: "#424242"

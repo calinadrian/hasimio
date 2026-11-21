@@ -9,7 +9,7 @@ import {POLL_FAILURE_LIMIT,torrentPollDelay} from '../player-utils';
 import {saveTrackSummary,verifiedTracks,type MediaTrack} from '../playback-tracks';
 
 type Session={audioTracks?:MediaTrack[];subtitleTracks?:MediaTrack[];id:string;state:string;error?:string;files:{index:number;name:string;length:number}[];selected?:number;mediaUrl?:string;numPeers:number;downloadSpeed:number;cacheBytes:number;cacheLimit:number};
-export default function TVTorrentPlayer({startup,stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,previous,next,backdrop,onSources,onNearEnd}:ComponentProps<typeof DesktopTorrentPlayer>){
+export default function TVTorrentPlayer({startup,stream,videoId,onClose,title,progressKey,titleKey,episodeLabel,previous,next,backdrop,description,onSources,onNearEnd}:ComponentProps<typeof DesktopTorrentPlayer>){
   const [session,setSession]=useState<Session>(),[error,showError]=useState(''),[attempt,setAttempt]=useState(0);
   // An automatic start moves on to the next source by itself; only show the
   // failure if this player is still on screen a moment later.
@@ -59,7 +59,7 @@ export default function TVTorrentPlayer({startup,stream,videoId,onClose,title,pr
   const headerTracks=cached?.fileIndex===session?.selected?cached:undefined;
   // The torrent's own file name lets subtitle search rank versions cut for this release.
   const filename=stream.filename||session?.files.find(file=>file.index===session.selected)?.name;
-  if(session?.mediaUrl&&!error)return <Player headerTracks={headerTracks} startup={startup} backdrop={backdrop} onSources={onSources} onNearEnd={onNearEnd} stream={{...stream,url:engineUrl(session.mediaUrl),filename}} title={title} progressKey={progressKey} titleKey={titleKey} videoId={videoId} episodeLabel={episodeLabel} previous={previous} next={next} onClose={onClose} status={<span>{session.numPeers} peers · {(session.downloadSpeed/1048576).toFixed(1)} MB/s · buffer {(session.cacheBytes/1048576).toFixed(0)} / {session.cacheLimit/1048576} MB</span>}/>;
+  if(session?.mediaUrl&&!error)return <Player headerTracks={headerTracks} startup={startup} backdrop={backdrop} description={description} onSources={onSources} onNearEnd={onNearEnd} stream={{...stream,url:engineUrl(session.mediaUrl),filename}} title={title} progressKey={progressKey} titleKey={titleKey} videoId={videoId} episodeLabel={episodeLabel} previous={previous} next={next} onClose={onClose} status={<span>{session.numPeers} peers · {(session.downloadSpeed/1048576).toFixed(1)} MB/s · buffer {(session.cacheBytes/1048576).toFixed(0)} / {session.cacheLimit/1048576} MB</span>}/>;
   async function choose(index:number){if(!session)return;try{const selected=await request('/api/torrents/'+session.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileIndex:index})});chosenFile.current=true;setSession(selected);}catch(problem){setError(problem instanceof Error?problem.message:'Could not open this video.');}}
   if(!error&&session?.state==='ready'&&session.selected==null)return <section className="torrent-buffering"><div className="player-bar"><strong>{title||stream.name||'Torrent playback'}</strong><button className="button secondary cinema-back" onClick={onClose}>Back</button></div><div className="buffering-body"><h2>Choose a video</h2><div className="torrent-files">{session.files.map(file=><button className="button secondary" key={file.index} onClick={()=>void choose(file.index)}>{file.name}</button>)}</div></div></section>;
   // Peers, speeds and source switches stay behind the start screen.

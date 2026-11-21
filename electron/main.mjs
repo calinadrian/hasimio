@@ -69,7 +69,7 @@ function showWindow() {
 
 function createWindow() {
   win=new BrowserWindow({
-    width:1280,height:820,minWidth:900,minHeight:600,show:false,frame:process.platform!=='win32',title:'Hasimio',backgroundColor:'#141414',icon,autoHideMenuBar:true,
+    width:1280,height:820,minWidth:900,minHeight:600,show:false,frame:process.platform!=='win32',title:'Hasimio',backgroundColor:'#000000',icon,autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true},
   });
   const publishWindowState=()=>{if(!win.isDestroyed())win.webContents.send('hasimio:window-state',{maximized:win.isMaximized(),fullscreen:win.isFullScreen()});};

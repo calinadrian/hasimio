@@ -95,10 +95,10 @@ html.hasimio-tv .caption-version-meta{font-size:13px}
    search bar scrolls away with the page instead of stacking above it. */
 html.tv-spotlight .topbar{position:relative}
 html.tv-spotlight .page-content{padding-bottom:260px}
-.hasimio-tv .hero.tv-spotlight{position:sticky;top:0;z-index:6;height:300px;min-height:0;margin:-20px calc(var(--gutter)*-1) 18px;border-radius:0;background:#141414}
+.hasimio-tv .hero.tv-spotlight{position:sticky;top:0;z-index:6;height:300px;min-height:0;margin:-20px calc(var(--gutter)*-1) 18px;border-radius:0;background:#000}
 .hasimio-tv .tv-spotlight .hero-backdrop{left:auto;width:76%;object-position:50% 22%}
 .hasimio-tv .tv-spotlight .hero-keyart{position:absolute;top:0;right:0;height:100%;width:auto;max-width:76%;object-fit:cover;object-position:50% 20%;z-index:-3}
-.hasimio-tv .tv-spotlight .hero-shade{background:linear-gradient(90deg,#141414 24%,#141414d9 40%,#14141400 74%),linear-gradient(0deg,#141414 0%,#14141400 46%)}
+.hasimio-tv .tv-spotlight .hero-shade{background:linear-gradient(90deg,#000 24%,#000000d9 40%,#00000000 74%),linear-gradient(0deg,#000 0%,#00000000 46%)}
 .hasimio-tv .tv-spotlight .hero-content{position:absolute;left:var(--gutter);bottom:20px;width:620px;padding:0}
 .hasimio-tv .tv-spotlight .hero-kicker{margin-top:0}
 .hasimio-tv .tv-spotlight h1,.hasimio-tv .tv-spotlight h1.long{font-size:40px;margin:6px 0 10px;max-width:620px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -107,6 +107,28 @@ html.tv-spotlight .page-content{padding-bottom:260px}
 /* Previewing a poster: the buttons belong to the featured title, so they step
    aside (still reachable with Up, which brings the featured title back). */
 .hasimio-tv .tv-spotlight.previewing .hero-actions{position:absolute;left:0;bottom:0;opacity:0;pointer-events:none}
+/* The title's logo replaces its name, dimmed a little like everything static. */
+.hasimio-tv .tv-spotlight .hero-kicker{color:#8f8f8f;font-size:12px;font-weight:700;letter-spacing:3px}
+.hasimio-tv .tv-spotlight .hero-logo{max-width:380px;max-height:80px;margin:8px 0 10px}
+.hasimio-tv .tv-spotlight .hero-meta{color:#aaa}
+.hasimio-tv .tv-spotlight p{color:#bdbdbd;-webkit-line-clamp:2}
+.hasimio-tv .tv-spotlight .hero-save{width:46px;min-width:46px;padding:0}
+
+/* ---------- Continue watching (wide frames) and Top 10 (ranked) ---------- */
+.hasimio-tv .poster-row.wide-row{grid-auto-columns:280px}
+.hasimio-tv .poster-card.wide-card{width:280px}
+.hasimio-tv .wide-card .poster-image{height:158px}
+.hasimio-tv .poster-row.ranked-row{grid-auto-columns:214px}
+.hasimio-tv .poster-card.ranked{width:214px;padding-left:74px}
+.hasimio-tv .poster-card.ranked .poster-image{width:140px}
+.hasimio-tv .poster-card.ranked>.rank-number{font-size:190px;-webkit-text-stroke:3px #4a4a4a}
+.hasimio-tv .poster-card.ranked:focus>.rank-number{-webkit-text-stroke-color:#9a9a9a}
+
+/* The rail stays dim while the remote is elsewhere. */
+.hasimio-tv .sidebar:not(:focus-within) .nav-item{color:#6a6a6a}
+.hasimio-tv .sidebar:not(:focus-within) .nav-item.active{background:#161616;color:#b3b3b3}
+.hasimio-tv .sidebar:not(:focus-within) .brand-symbol{background:#7a7a7a}
+.hasimio-tv .sidebar:not(:focus-within) .profile-avatar{opacity:.7}
 
 /* ---------- Poster shelves: about seven posters per row ---------- */
 .hasimio-tv .poster-row{grid-auto-columns:140px;grid-template-columns:none;align-items:start;gap:16px}
