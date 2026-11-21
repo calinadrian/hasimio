@@ -1,13 +1,14 @@
-'use strict';
 // Live seeder counts from public UDP trackers (BEP 15 scrape).
 //
 // Torrent indexes report stale seeder counts: a source listed with 617
 // seeders had 1 live seeder, while one listed with 109 had 97. Asking the
-// trackers before choosing a source lets the TV start on a live swarm instead
+// trackers before choosing a source lets playback start on a live swarm instead
 // of waiting on dead ones. Only counts are requested; nothing is downloaded.
-const dgram = require('dgram');
-const dns = require('dns');
-const crypto = require('crypto');
+// Shared by the TV service (bundled for Node 8: no 'node:' prefixes) and the
+// PC engine (server/service.mjs).
+import dgram from 'dgram';
+import dns from 'dns';
+import crypto from 'crypto';
 
 const TRACKERS = [['tracker.opentrackr.org', 1337], ['open.tracker.cl', 1337]];
 const PER_PACKET = 70, TIMEOUT = 5000, TTL = 10 * 60 * 1000;
@@ -45,7 +46,7 @@ function scrapeTracker(host, port, hashes) {
 }
 
 /** Live seeders per info hash (lowercase hex). Missing hashes could not be checked. */
-async function liveSeeders(input) {
+export async function liveSeeders(input) {
   const hashes = Array.from(new Set((input || []).map(hash => String(hash).toLowerCase()).filter(hash => /^[a-f\d]{40}$/.test(hash)))).slice(0, 140);
   const now = Date.now(), result = {}, missing = [];
   for (const hash of hashes) { const hit = cache.get(hash); if (hit && now - hit.at < TTL) result[hash] = hit.seeders; else missing.push(hash); }
@@ -75,4 +76,3 @@ async function liveSeeders(input) {
   return result;
 }
 
-module.exports = {liveSeeders};

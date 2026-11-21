@@ -16,6 +16,7 @@ import {torrentDownloadsManifest,searchTorrentDownloads} from './torrentdownload
 import {createTitleIndex,titleIndexManifest} from './title-index.mjs';
 import {byteRange,corsHeaders,localRequest,parseOrigins,preflightHeaders,selectVideo,VIDEO_EXTENSIONS,CONTAINER_HEADER,videoContainer,lanOrigins} from './torrent-utils.mjs';
 import {cacheDir} from './paths.mjs';
+import {liveSeeders} from '../shared/live-seeders.mjs';
 import {ENGINE_API_VERSION} from '../shared/engine-api.mjs';
 
 const engineVersion=(()=>{try {return JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;}catch {return 'unknown';}})();
@@ -228,6 +229,8 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
         try{const operation=scheduleInspection(input.infoHash.toLowerCase(),()=>inspect(input,req.socket.localPort,controller),controller.signal);const result=await operation;if(!res.destroyed)return json(res,200,result);}finally{res.removeListener('close',cancel);}
         return;
       }
+      // Live seeder counts from the trackers, so Play ranks sources by swarms that can deliver (shared/live-seeders.mjs).
+      if(req.method==='POST'&&url.pathname==='/api/torrents/swarm'){if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});const input=await body(req);return json(res,200,{seeders:await liveSeeders(input?.hashes)});}
       if(req.method==='POST'&&url.pathname==='/api/torrents'){if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Send JSON.'});return json(res,202,await start(await body(req)));}
       const tracksRoute=/^\/api\/torrents\/([a-f\d]{36})\/audio-tracks$/.exec(url.pathname);
       if(tracksRoute&&req.method==='GET'){

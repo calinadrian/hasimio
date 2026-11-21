@@ -7,6 +7,8 @@ import type {Addon,Meta} from './media';
 // The copy stays on this device: device sync only reads its own keys.
 const cacheKey='hasimio:home-rows:v1';
 const DESCRIPTION_LIMIT=320;
+// PC catalogs return up to 100 titles a page; the first screenfuls are enough to start on.
+const ITEM_LIMIT=40;
 type SavedRow=Pick<CatalogRow,'key'|'title'|'source'|'items'|'skip'|'hasMore'>;
 
 const rowKey=(addon:Addon,catalog:CatalogRow['catalog'])=>`${addon.manifest.id}:${catalog.type}:${catalog.id}`;
@@ -32,7 +34,7 @@ export function cachedHomeRows(addons:Addon[],storage:Pick<Storage,'getItem'>=pr
 }
 
 export function storeHomeRows(rows:CatalogRow[],storage:Pick<Storage,'setItem'>=profileStorage){
-  const saved:SavedRow[]=rows.map(({key,title,source,items,skip,hasMore})=>({key,title,source,items:items.map(compact),skip,hasMore}));
+  const saved:SavedRow[]=rows.map(({key,title,source,items,skip,hasMore})=>({key,title,source,items:items.slice(0,ITEM_LIMIT).map(compact),skip,hasMore}));
   try{storage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),rows:saved}));}catch{/* Storage is full or blocked: home simply loads as before. */}
 }
 

@@ -1,6 +1,7 @@
 import {useEffect,useRef,type ReactNode} from 'react';
 import {ArrowLeft} from 'lucide-react';
 import './playback-loading.css';
+import {isWebOS} from './webos/platform';
 
 // A start passes through three screens (finding a source, connecting to the
 // torrent, the first video frames). One bar value carries across them, so
@@ -17,7 +18,7 @@ export function creep(value:number,cap:number){
  * The start screen: the title's artwork, its name and a thin progress bar.
  * Sources, peers and retries stay behind it; Back cancels.
  */
-export default function PlaybackLoading({progressKey,title,detail,backdrop,message,cap,onCancel,failure}:{progressKey:string;title:string;detail?:string;backdrop?:string;message:string;cap:number;onCancel:()=>void;failure?:ReactNode}){
+export default function PlaybackLoading({progressKey,title,detail,backdrop,message,cap,onCancel,failure,overlay=false}:{progressKey:string;title:string;detail?:string;backdrop?:string;message:string;cap:number;onCancel:()=>void;failure?:ReactNode;overlay?:boolean}){
   const bar=useRef<HTMLSpanElement>(null),failed=!!failure;
   useEffect(()=>{
     if(failed)return;
@@ -28,12 +29,13 @@ export default function PlaybackLoading({progressKey,title,detail,backdrop,messa
     const timer=setInterval(()=>{carried.value=creep(carried.value,cap);draw();},200);
     return()=>clearInterval(timer);
   },[progressKey,cap,failed]);
-  return <section className="playback-loading" role="status" aria-label={failure?`${title} could not start`:`Starting ${title}`}>
+  return <section className={'playback-loading'+(overlay?' overlay':'')} role="status" aria-label={failure?`${title} could not start`:`Starting ${title}`}>
     {backdrop&&<img className="playback-loading-art" src={backdrop} alt="" onError={event=>{event.currentTarget.style.display='none';}}/>}
     <div className="playback-loading-shade"/>
     {/* Pointer only: the remote's Back key cancels (bootstrap.ts clicks .cinema-back),
         and a focusable arrow would let a stray OK cancel the start. */}
-    <div role="button" className="cinema-back playback-loading-back" onClick={onCancel} aria-label="Back"><ArrowLeft size={24}/></div>
+    {isWebOS?<div role="button" className="cinema-back playback-loading-back" onClick={onCancel} aria-label="Back"><ArrowLeft size={24}/></div>
+      :<button type="button" className="cinema-back playback-loading-back" onClick={onCancel} aria-label="Back" title="Back"><ArrowLeft size={24}/></button>}
     <div className="playback-loading-body">
       <h2>{title}</h2>
       {detail&&<p className="playback-loading-detail">{detail}</p>}
