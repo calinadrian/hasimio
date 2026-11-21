@@ -62,7 +62,7 @@ function PeopleList({people,onSelect,heading}:{people:Person[];onSelect:(person:
   const scroll=(direction:number)=>row.current?.scrollBy({left:direction*row.current.clientWidth*.9,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   // Like the poster rows: a hidden scrollbar and arrows beside the heading (the TV remote scrolls by focus instead).
   return <>{heading&&<div className="people-heading"><h3>{heading}</h3>{!isWebOS&&(edges.left||edges.right)&&<div className="people-arrows"><button type="button" className="shelf-arrow" aria-label={`Previous ${heading.toLowerCase()}`} disabled={!edges.left} onClick={()=>scroll(-1)}><ChevronLeft size={20}/></button><button type="button" className="shelf-arrow" aria-label={`More ${heading.toLowerCase()}`} disabled={!edges.right} onClick={()=>scroll(1)}><ChevronRight size={20}/></button></div>}</div>}
-    <div className="people-list" ref={row}>{people.map(person=><PersonButton key={person.id} person={person} onSelect={onSelect} photo={photos[person.id]}/>)}</div></>;
+    <div className={heading?'people-list people-list-arrows':'people-list'} ref={row}>{people.map(person=><PersonButton key={person.id} person={person} onSelect={onSelect} photo={photos[person.id]}/>)}</div></>;
 }
 export function ActorSearch({query,onSelect}:{query:string;onSelect:(person:Person)=>void}){
   const {data,error,loading}=usePeople('search?q='+encodeURIComponent(query));

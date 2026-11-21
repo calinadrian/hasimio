@@ -1,7 +1,9 @@
 .people-section{margin:28px 0}
 .people-section>h2,.people-section>h3{font-size:20px;margin-bottom:14px}
-.people-list{display:flex;gap:10px;overflow:auto;padding:3px 0 8px;overscroll-behavior-x:contain;scrollbar-width:none}
-.people-list::-webkit-scrollbar{display:none}
+.people-list{display:flex;gap:10px;overflow:auto;padding:3px 0 8px;overscroll-behavior-x:contain;scrollbar-width:thin}
+/* Rows with arrows (the cast) hide the scrollbar; touch screens swipe and the TV scrolls by focus. */
+.people-list-arrows{scrollbar-width:none}
+.people-list-arrows::-webkit-scrollbar{display:none}
 .people-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:40px;margin-bottom:14px}
 .people-heading>h3{font-size:20px;margin:0}
 .people-arrows{display:flex;gap:6px}

@@ -14,6 +14,9 @@ describe('Torrentio and Comet sources',()=>{
   // Deadpool & Wolverine on Torrentio showed "0 MB": ".1400MB" in the name was read as 0.14 MB.
   const named={streams:[{infoHash:hash,name:'Torrentio\n1080p',title:'Deadpool.and.Wolverine.2024.1080p.AMZN.WEBRip.1400MB.DD5.1.x264-GalaxyRG\n👤 931 💾 1.4 GB ⚙️ 1337x',behaviorHints:{filename:'Deadpool.and.Wolverine.2024.1080p.AMZN.WEBRip.1400MB.DD5.1.x264-GalaxyRG.mkv'}}]};
   expect(stremioResults(named,'Torrentio').streams[0].sizeBytes).toBeCloseTo(1.4*1024**3);
+  // Season packs: a file-name line sits between the release name and the stats.
+  const pack={streams:[{infoHash:hash,name:'Torrentio\n1080p',title:'Show.S01.1080p.WEB-DL\nShow.S01E01.1400MB.mkv\n👤 89 💾 9.53 GB ⚙️ ThePirateBay'}]};
+  expect(stremioResults(pack,'Torrentio').streams[0].sizeBytes).toBeCloseTo(9.53*1024**3);
   const nameOnly={streams:[{infoHash:hash,name:'Source',title:'Film.WEBRip.1400MB.x264'}]};
   expect(stremioResults(nameOnly,'Source').streams[0].sizeBytes).toBe(1400*1024**2);
   expect(stremioResults({streams:[{infoHash:hash,name:'Source',title:'Film.x264'}]},'Source').streams[0].sizeBytes).toBeUndefined();
