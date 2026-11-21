@@ -15,7 +15,8 @@ export default function TVTorrentPlayer({startup,stream,videoId,onClose,title,pr
   const quietRetries=useRef(0);
   useEffect(()=>{quietRetries.current=0;},[stream.infoHash,stream.fileIdx]);
   function setError(message:string){
-    if(message&&quietRetries.current<2){quietRetries.current++;setTimeout(()=>setAttempt(value=>value+1),2000);return;}
+    // Retrying cannot help a dead or unsuitable torrent; only network hiccups.
+    if(message&&quietRetries.current<2&&!/metadata|exceeds|too large|no supported|sharing|too slow/i.test(message)){quietRetries.current++;setTimeout(()=>setAttempt(value=>value+1),2000);return;}
     showError(message);
   }
   const id=useRef<string|undefined>(undefined);
@@ -25,7 +26,16 @@ export default function TVTorrentPlayer({startup,stream,videoId,onClose,title,pr
     let live=true,timer:ReturnType<typeof setTimeout>,failures=0;const started=Date.now();
     setSession(undefined);setError('');chosenFile.current=false;
     // Check often until the video can start, then relax; one missed check must not stop a playing video.
-    async function poll(key:string){try{const value=await request('/api/torrents/'+key);if(!live)return;failures=0;setSession(value);if(value.error)setError(value.error);else timer=setTimeout(()=>void poll(key),torrentPollDelay(!value.mediaUrl,Date.now()-started,700,2000));}catch(problem){if(!live)return;if(++failures<POLL_FAILURE_LIMIT){timer=setTimeout(()=>void poll(key),2000);return;}setError(problem instanceof Error?problem.message:'Playback stopped.');}}
+    async function poll(key:string){try{const value=await request('/api/torrents/'+key);if(!live)return;failures=0;setSession(value);
+      // Torrent indexes report stale seeder counts: a source can list hundreds of
+      // seeders while its swarm is dead. Give up quickly so Play moves on to the
+      // next source instead of showing "0 peers" for minutes.
+      const waited=Date.now()-started;
+      if(!value.error&&!value.mediaUrl&&!value.files.length){
+        if(value.numPeers===0&&waited>25000){showError('No one is sharing this source right now. Try another source.');return;}
+        if(waited>60000){showError('This source is too slow to start. Try another source.');return;}
+      }
+      if(value.error)setError(value.error);else timer=setTimeout(()=>void poll(key),torrentPollDelay(!value.mediaUrl,Date.now()-started,700,2000));}catch(problem){if(!live)return;if(++failures<POLL_FAILURE_LIMIT){timer=setTimeout(()=>void poll(key),2000);return;}setError(problem instanceof Error?problem.message:'Playback stopped.');}}
     void request('/api/torrents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId})}).then(value=>{if(!live){void fetch(engineUrl('/api/torrents/'+value.id),{method:'DELETE'});return;}id.current=value.id;setSession(value);void poll(value.id);}).catch(problem=>{if(live)setError(problem instanceof Error?problem.message:'Playback could not start.');});
     return()=>{live=false;clearTimeout(timer);if(id.current){void fetch(engineUrl('/api/torrents/'+id.current),{method:'DELETE',keepalive:true});id.current=undefined;}};
   },[stream.infoHash,stream.fileIdx,videoId,attempt]);

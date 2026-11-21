@@ -86,7 +86,7 @@ const result=await buildService({
         if(args.path.replaceAll('\\','/').endsWith('/webtorrent/lib/torrent.js')){
           const needle='this.store = new ImmediateChunkStore(';
           if(!contents.includes(needle))throw Error('WebTorrent changed: review the TV metadata guard before packaging.');
-          contents=contents.replace(needle,'if(!Number.isSafeInteger(this.pieceLength)||this.pieceLength<1||this.pieceLength>4*1024*1024||this.pieces.length>32768||this.files.length>1000){this._destroy(new Error("This torrent exceeds the TV metadata budget. Choose another source."));return;}\n'+needle);
+          contents=contents.replace(needle,'if(!Number.isSafeInteger(this.pieceLength)||this.pieceLength<1||this.pieceLength>16*1024*1024||this.pieces.length>32768||this.files.length>1000){this._destroy(new Error("This torrent exceeds the TV metadata budget. Choose another source."));return;}\n'+needle);
           // WebTorrent 0.105 throws away a piece that fails its hash check but
           // keeps the peer that sent the bad data. One corrupt peer then makes
           // every piece fail again, so a TV downloaded >1 GB while the player

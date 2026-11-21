@@ -6,11 +6,13 @@
 module.exports = function createBoundedStore(limit, onEvict, onCreate) {
   return class BoundedStore {
     constructor(chunkLength) {
-      if (!Number.isSafeInteger(chunkLength) || chunkLength < 1 || chunkLength > 4 * 1024 * 1024) {
+      // Season packs use 8-16 MB pieces. Accept up to 16 MB and keep room for
+      // four pieces, so the buffer grows to at most 64 MB for them.
+      if (!Number.isSafeInteger(chunkLength) || chunkLength < 1 || chunkLength > 16 * 1024 * 1024) {
         throw new Error('This torrent uses oversized pieces. Choose another source.');
       }
       this.chunkLength = chunkLength;
-      this.limit = limit;
+      this.limit = Math.max(limit, chunkLength * 4);
       this.bytes = 0;
       this.entries = new Map();
       this.closed = false;

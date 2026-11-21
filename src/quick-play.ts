@@ -3,7 +3,7 @@ import {usableSource} from './stream-options';
 
 export type PlaybackAttempt={stream:Stream;kind:'automatic'|'fallback'|'manual'|'started';tried?:string[]};
 /** Sources an automatic start may try before showing the error. */
-export const MAX_AUTOMATIC_SOURCES=3;
+export const MAX_AUTOMATIC_SOURCES=5;
 export type PlaybackStartup={started:()=>void;failed:()=>void};
 
 export function playbackSourceKey(stream:Stream){

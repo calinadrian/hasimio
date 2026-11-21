@@ -20,6 +20,19 @@ export function rememberedTrack(tracks:Track[],choice:{index:number;label:string
   return named.find(track=>sameLanguage(track.language,choice.language));
 }
 
+/**
+ * With "Source default" audio, multi-language releases often start on a dub
+ * (Italian, Spanish, Hindi…) because the file marks it default. Keep the
+ * default only when it is English or Romanian (or untagged, so unknown);
+ * otherwise switch to English, then Romanian, if the file has them.
+ */
+export function automaticAudio<T extends {language?:string;default?:boolean}>(tracks:readonly T[],audioLanguage:string):T|undefined{
+  if(audioLanguage)return preferredTrack(tracks,audioLanguage);
+  const current=tracks.find(track=>track.default)??tracks[0];
+  if(!current||!tagged(current.language||'')||sameLanguage(current.language||'','eng')||sameLanguage(current.language||'','rum'))return current;
+  return preferredTrack(tracks,'eng')??preferredTrack(tracks,'rum')??current;
+}
+
 // Device track lists can omit language tags. Match named tracks first and use
 // file order only when every available identifier agrees with that ordering.
 export function nativeLanguages(tracks:Track[],header?:MediaTrack[]){
@@ -95,7 +108,7 @@ export function useNativeTracks(reference:RefObject<HTMLVideoElement|null>,{
   },[reference,url,backend]);
 
   const manual=manualAudio.current?.url===url?manualAudio.current?.track:undefined;
-  const audio=manual?rememberedTrack(tracks.audio,manual):preferredTrack(tracks.audio,audioLanguage);
+  const audio=manual?rememberedTrack(tracks.audio,manual):automaticAudio(tracks.audio,audioLanguage);
   const choice=selection.choice;
   const original=choice?.kind==='embedded'&&choice.source==='native'?choice:undefined;
   const subtitle=original?rememberedTrack(tracks.subtitles,{...original,label:original.title??''})

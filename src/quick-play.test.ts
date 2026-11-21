@@ -35,8 +35,10 @@ describe('automatic source recovery',()=>{
     expect(second.stream).toBe(ranked[1]);
     const third=recoverPlayback(second,ranked);
     expect(third.stream).toBe(ranked[2]);
-    // Three sources tried: the error is shown instead of a fourth attempt.
-    expect(recoverPlayback(third,ranked)).toBe(third);
+    const fourth=recoverPlayback(third,ranked);
+    expect(fourth.stream).toBe(ranked[3]);
+    // Every remaining source was tried: the error is shown.
+    expect(recoverPlayback(fourth,ranked)).toBe(fourth);
   });
   it('can switch between different files from the same torrent',()=>{
     const alternative={...first,fileIdx:4};

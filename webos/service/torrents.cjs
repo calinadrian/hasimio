@@ -32,7 +32,7 @@ module.exports = function createTorrents(options) {
     files:session.files || [], selected:session.selected, numPeers:session.torrent ? session.torrent.numPeers : 0,
     downloadSpeed:session.torrent ? session.torrent.downloadSpeed : 0,
     downloaded:session.torrent ? session.torrent.downloaded : 0, progress:session.torrent ? session.torrent.progress : 0,
-    cacheBytes:session.store ? session.store.bytes : 0, cacheLimit:limit(), nativePlayback:true,
+    cacheBytes:session.store ? session.store.bytes : 0, cacheLimit:session.store ? session.store.limit : limit(), nativePlayback:true,
     mediaUrl:session.ready && session.selected != null ? '/api/torrents/' + session.id + '/files/' + session.selected : undefined,
     ...(session.tracks || {})
   });
@@ -255,7 +255,7 @@ module.exports = function createTorrents(options) {
   const reap = setInterval(() => { if (active && Date.now() - active.touched > 90000) void stop(); }, 15000);
   reap.unref();
   return {start, stop, get, choose, snapshot, serve, inspect, stats:() => ({
-    bytes:active && active.store ? active.store.bytes : 0, limit:limit(), active:Boolean(active), stopping:Boolean(stopping), stoppingSince,
+    bytes:active && active.store ? active.store.bytes : 0, limit:active && active.store ? active.store.limit : limit(), active:Boolean(active), stopping:Boolean(stopping), stoppingSince,
     id:active && active.id, generation, startedAt:active && active.startedAt, state:active ? active.error?'error':active.ready?'ready':'connecting':'idle',
     error:active && active.error, peers:active && active.torrent ? active.torrent.numPeers : 0,
     downloadSpeed:active && active.torrent ? active.torrent.downloadSpeed : 0,

@@ -102,6 +102,9 @@ html.hasimio-tv .caption-version-meta{font-size:13px}
    gap fallback. */
 .no-flex-gap.hasimio-tv .poster-card>span>i{margin:0 6px}
 .hasimio-tv .media-shelf{margin-bottom:22px}
+/* Shelf headings ("Popular movies ›"): padded and rounded when focused, with
+   the text still lined up with the posters below when not. */
+.hasimio-tv .shelf-heading-button{min-height:44px;padding:0 14px;margin-left:-14px;border-radius:8px}
 
 /* ---------- Details dialog ---------- */
 .hasimio-tv .poster-open{top:0;right:0;bottom:0;left:0}

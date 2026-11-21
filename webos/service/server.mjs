@@ -18,6 +18,7 @@ import {romanianCatalog} from '../../shared/romanian-series.mjs';
 import createTorrents from './torrents.cjs';
 import createUpdater from './updater.cjs';
 import createMonitor from './monitor.cjs';
+import swarm from './swarm.cjs';
 
 const PORT=11476, ORIGIN='http://127.0.0.1:'+PORT;
 const MiB=1024*1024, metadataLimit=4*MiB;
@@ -144,6 +145,8 @@ async function route(req,res){
   }
   if(pathname==='/api/cast'){json(res,200,{available:false});return;}
   if(pathname==='/api/torrent-inspections'&&req.method==='POST'){await inspectSource(req,res);return;}
+  // Live seeder counts so Play starts on a live swarm (swarm.cjs).
+  if(pathname==='/api/torrents/swarm'&&req.method==='POST'){const input=await readBody(req);json(res,200,{seeders:await swarm.liveSeeders(input&&input.hashes)});return;}
   if(pathname==='/api/torrents'&&req.method==='POST'){if(probeController)probeController.abort();json(res,200,await torrents.start(await readBody(req)));return;}
   const torrentRoute=/^\/api\/torrents\/([a-f\d]{36})(?:\/files\/(\d+)|\/(audio-tracks|audio|subtitles(?:\/\d+)?))?$/.exec(pathname);
   if(torrentRoute){

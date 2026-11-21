@@ -212,7 +212,12 @@ document.addEventListener('keydown',event=>{
   // From a poster, Up/Down go straight to the poster row above or below
   // rather than stopping on each shelf heading in between.
   const inPage=list.filter(element=>!element.closest(fixed));
-  let target=vertical&&active.closest('.sidebar')?pick(list.filter(element=>element.closest('.sidebar')))
+  // Leaving the menu (Right) or the search bar (Down) goes into the page:
+  // the menu's top item sits level with the search bar, so plain geometry
+  // bounced between the two.
+  const leaving=(event.key==='ArrowRight'&&active.closest('.sidebar'))||(event.key==='ArrowDown'&&active.closest('.topbar'));
+  let target=leaving?pick(list.filter(element=>!element.closest(fixed)))??pick(list.filter(element=>!element.closest(active.closest('.sidebar')?'.topbar':'.sidebar')))
+    :vertical&&active.closest('.sidebar')?pick(list.filter(element=>element.closest('.sidebar')))
     :vertical&&!active.closest(fixed)
     ?(active.matches('.poster-card')?pick(inPage.filter(element=>element.matches('.poster-card'))):undefined)
       ??pick(inPage)??(event.key==='ArrowUp'?pick(list.filter(element=>element.closest('.topbar'))):undefined)

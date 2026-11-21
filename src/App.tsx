@@ -43,6 +43,7 @@ import {deviceSync,useDeviceSync} from './device-sync';
 import {isWebOS} from './webos/platform';
 import {isAndroidArm32} from './android/platform';
 import TVStoragePanel from './webos/StoragePanel';
+import {useLiveSeeders,withLiveSeeders} from './webos/live-seeders';
 import MobileNavigation from './android/MobileNavigation';
 import './android/mobile.css';
 export {Player};
@@ -144,7 +145,9 @@ export default function App() {
   const videoId=episode||selected?.id||'';
   const automatic=!!selected&&!playing&&(quickPlay===videoId||!!queuedEpisode&&queuedEpisode===episode);
   const trackCacheRevision=useSyncExternalStore(subscribeTrackChanges,trackRevision);
-  const rankedSources=useMemo(()=>rankSources(streams,preferences,videoId),[streams,preferences,videoId,trackCacheRevision]);
+  // TV: rank by live tracker counts, not the indexes' stale ones (webos/live-seeders.ts).
+  const liveSwarm=useLiveSeeders(streams,isWebOS&&!!selected);
+  const rankedSources=useMemo(()=>rankSources(isWebOS?withLiveSeeders(streams,liveSwarm.counts):streams,preferences,videoId),[streams,preferences,videoId,trackCacheRevision,liveSwarm.counts]);
   const quickSource=rankedSources[0];
   // Capture the attempt in each callback. Late media events from a closed player
   // or a previous episode cannot start another source.
@@ -170,6 +173,8 @@ export default function App() {
     if((usable||quickPlay)&&queuedSince.current?.id!==videoId)queuedSince.current={id:videoId,at:Date.now()};
     const waitedMs=queuedSince.current?Date.now()-queuedSince.current.at:0;
     const remaining=QUICK_PLAY_GRACE_MS-waitedMs;
+    // Wait briefly for live seeder counts so Play does not start on a dead swarm.
+    if(liveSwarm.pending&&waitedMs<6000){const timer=setTimeout(()=>setQueueTick(value=>value+1),300);return()=>clearTimeout(timer);}
     const decision=quickPlayDecision({loading:streamLoading&&!(quickPlay&&remaining<=0),found:!!quickSource,usable,waitedMs});
     const retryInMs=remaining>0&&inspecting?remaining:decision.action==='wait'?(decision.retryInMs??(quickPlay&&remaining>0?remaining:undefined)):undefined;
     if(retryInMs!==undefined){const timer=setTimeout(()=>setQueueTick(value=>value+1),retryInMs);return()=>clearTimeout(timer);}
@@ -177,7 +182,7 @@ export default function App() {
     setQueuedEpisode(undefined);setQuickPlay(undefined);queuedSince.current=undefined;
     if(decision.action==='play'&&quickSource)setPlayback({stream:quickSource,kind:'automatic'});
     else setNotice({text:'No playable source was found. Choose another source.'});
-  },[automatic,videoId,quickPlay,quickSource,streamLoading,inspecting,queueTick]);
+  },[automatic,videoId,quickPlay,quickSource,streamLoading,inspecting,queueTick,liveSwarm.pending]);
 
   async function open(meta: Meta,videoId?:string) {
     const request=++detailRequest.current;

@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {nativeLanguages,rememberedTrack} from './NativeTracks';
+import {automaticAudio,nativeLanguages,rememberedTrack} from './NativeTracks';
 const header=['eng','ron'].map((language,index)=>({index,language,title:['Original','Dub'][index],default:false,codec:'aac'}));
 it('fills missing native language tags and respects conflicting device ordering',()=>{
   const tracks=[{index:0,label:'',language:''},{index:1,label:'',language:'und'}];
@@ -16,4 +16,17 @@ it('keeps a manual selection when delayed track headers supply its language',()=
   expect(rememberedTrack([other,selected],choice)).toBe(selected);
   expect(rememberedTrack([other,selected],{...choice,language:'en'})).toBeUndefined();
   expect(rememberedTrack([selected],{...choice,index:4,language:'ro'})).toBe(selected);
+});
+
+it('switches a dubbed default audio track to English, then Romanian, unless a language is chosen',()=>{
+  const track=(language:string,isDefault=false)=>({language,default:isDefault});
+  expect(automaticAudio([track('ita',true),track('eng')],'')!.language).toBe('eng');
+  expect(automaticAudio([track('spa',true),track('rum')],'')!.language).toBe('rum');
+  expect(automaticAudio([track('ron',true),track('eng')],'')!.language).toBe('ron');
+  expect(automaticAudio([track('eng',true),track('ita')],'')!.language).toBe('eng');
+  // Unknown default and no English/Romanian alternative: leave the file's choice.
+  expect(automaticAudio([track('',true),track('eng')],'')!.language).toBe('');
+  expect(automaticAudio([track('hin',true),track('tam')],'')!.language).toBe('hin');
+  // An explicit preference still wins.
+  expect(automaticAudio([track('eng',true),track('ita')],'ita')!.language).toBe('ita');
 });
