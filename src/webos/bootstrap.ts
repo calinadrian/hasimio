@@ -97,7 +97,7 @@ if(document.documentElement.classList.contains('no-flex-gap')){
 // Native lazy loading keeps decoded artwork only around visible shelves.
 // Explicit pagination prevents a long session accumulating an unlimited DOM.
 const focusable='button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),summary,[tabindex="0"]';
-function scope(){return document.querySelector<HTMLElement>('.cinema-menu')??document.querySelector<HTMLElement>('.cinema-player')??document.querySelector<HTMLDialogElement>('dialog[open]')??document;}
+function scope(){return document.querySelector<HTMLElement>('.tv-select')??document.querySelector<HTMLElement>('.cinema-menu')??document.querySelector<HTMLElement>('.cinema-player')??document.querySelector<HTMLDialogElement>('dialog[open]')??document;}
 function candidates(){return Array.from(scope().querySelectorAll<HTMLElement>(focusable)).filter(element=>element.getClientRects().length&&getComputedStyle(element).visibility!=='hidden'&&!element.closest('[hidden],[aria-hidden="true"]'));}
 const editing='input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]),textarea,select';
 let previousControl:HTMLElement|undefined;
@@ -152,9 +152,52 @@ function leaveEditor(element:HTMLElement){
   if(target)reveal(target);
 }
 
+// Dropdowns: the webOS popup opens below the control and runs off the bottom
+// of the screen for anything low on the page, where the remote cannot reach
+// its options. OK (or a pointer click) opens this centred list instead; the
+// choice is written back to the <select> and announced with a change event.
+function openSelect(select:HTMLSelectElement){
+  closeSelect();
+  const layer=document.createElement('div');layer.className='tv-select';layer.setAttribute('role','dialog');
+  const panel=document.createElement('div');panel.className='tv-select-panel';
+  const label=(select.getAttribute('aria-label')||select.closest('label')?.firstChild?.textContent||'').trim();
+  if(label){const heading=document.createElement('h3');heading.textContent=label;panel.appendChild(heading);}
+  const list=document.createElement('div');list.className='tv-select-list';list.setAttribute('role','listbox');
+  for(const option of Array.from(select.options)){
+    if(option.hidden)continue;
+    const choice=document.createElement('button');choice.type='button';choice.className='tv-select-option'+(option.selected?' selected':'');
+    choice.textContent=option.textContent;choice.disabled=option.disabled;choice.setAttribute('role','option');choice.setAttribute('aria-selected',String(option.selected));
+    choice.addEventListener('click',()=>{
+      closeSelect();
+      if(select.value!==option.value){select.value=option.value;select.dispatchEvent(new Event('change',{bubbles:true}));}
+    });
+    list.appendChild(choice);
+  }
+  panel.appendChild(list);layer.appendChild(panel);
+  layer.addEventListener('click',event=>{if(event.target===layer)closeSelect();});
+  openedSelect=select;
+  // Inside an open dialog the list must join it in the top layer to show above it.
+  (select.closest('dialog')??document.body).appendChild(layer);
+  const current=list.querySelector<HTMLElement>('.selected:not(:disabled)')??list.querySelector<HTMLElement>('button:not(:disabled)');
+  current?.focus();current?.scrollIntoView({block:'center'});
+}
+let openedSelect:HTMLSelectElement|undefined;
+function closeSelect(){
+  const layer=document.querySelector('.tv-select');if(!layer)return;
+  layer.remove();const select=openedSelect;openedSelect=undefined;
+  if(select?.isConnected)select.focus({preventScroll:true});
+}
+document.addEventListener('mousedown',event=>{
+  const select=event.target instanceof HTMLSelectElement?event.target:undefined;
+  if(select&&!select.multiple&&!select.disabled){event.preventDefault();select.focus({preventScroll:true});openSelect(select);}
+},true);
+
 document.addEventListener('keydown',event=>{
   // Leave native keyboard navigation to webOS while it is actually visible.
   if(keyboardVisible)return;
+  if(event.key==='Enter'&&document.activeElement instanceof HTMLSelectElement&&!document.activeElement.multiple){
+    event.preventDefault();event.stopImmediatePropagation();openSelect(document.activeElement);return;
+  }
   const editorInput=document.activeElement instanceof HTMLInputElement&&document.activeElement.matches(editing)?document.activeElement:undefined;
   if(editorInput&&event.key==='Enter'){
     event.preventDefault();event.stopImmediatePropagation();
@@ -163,6 +206,7 @@ document.addEventListener('keydown',event=>{
   }
   const back=event.key==='Escape'||event.key==='GoBack'||event.keyCode===461;
   if(back){
+    if(document.querySelector('.tv-select')){event.preventDefault();event.stopImmediatePropagation();closeSelect();return;}
     const active=document.activeElement;
     if(active instanceof HTMLElement&&active.matches(editing)){
       event.preventDefault();event.stopImmediatePropagation();leaveEditor(active);return;
@@ -257,12 +301,20 @@ document.addEventListener('keydown',event=>{
     :vertical&&active.closest('.sidebar')?pick(list.filter(element=>element.closest('.sidebar')))
     :vertical&&!active.closest(fixed)
     ?(active.matches('.poster-card')?pick(inPage.filter(element=>element.matches('.poster-card'))):undefined)
+      // The Discover spotlight stays pinned on screen while the rows above
+      // scroll beneath it, so its buttons always look nearest: Up from a
+      // heading jumped straight to Resume, skipping rows. They are reached
+      // only once nothing else in the page lies that way.
+      ??pick(inPage.filter(element=>!element.closest('.hero.tv-spotlight')))
       ??pick(inPage)??(event.key==='ArrowUp'?pick(list.filter(element=>element.closest('.topbar'))):undefined)
     :pick(list);
-  if(!target&&editorInput){leaveEditor(editorInput);return;}
+  // Up from the search bar with nothing above stays put (it used to drop back
+  // into the page, so Up bounced between the bar and the spotlight).
+  if(!target&&editorInput){if(event.key!=='ArrowUp')leaveEditor(editorInput);return;}
   // Nothing further that way: let the control's container react (a shelf
   // loads its next page when Right is pressed on its last poster).
   if(!target)active.dispatchEvent(new CustomEvent('hasimio:edge',{bubbles:true,detail:event.key}));
+  if(!target&&event.key==='ArrowDown'&&scope()===document)window.scrollBy(0,Math.round(window.innerHeight*.4));
   // Entering the collapsed rail lands on the current page, not on whichever
   // icon happens to be level with the previous control.
   if(target&&target.closest('.sidebar')&&!active.closest('.sidebar')){

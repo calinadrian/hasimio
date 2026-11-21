@@ -140,7 +140,6 @@ html.tv-spotlight .page-content{padding-bottom:260px}
 .hasimio-tv .button,.hasimio-tv .cinema-big-play,.hasimio-tv .cinema-icon,.hasimio-tv .icon-button{display:inline-flex;align-items:center;justify-content:center;text-align:center}
 .hasimio-tv .cinema-big-play{padding:0}
 .hasimio-tv .episode-toggle::before{top:8px;right:8px;bottom:8px;left:8px}
-.hasimio-tv .poster-playback-track{right:12px;bottom:12px;left:12px}
 
 /* ---------- Player ---------- */
 .hasimio-tv .detail-dialog.playback-dialog{position:fixed;top:0;right:0;bottom:0;left:0;width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border:0;border-radius:0}
@@ -203,3 +202,32 @@ html.hasimio-tv .live-tv-filters label{font-size:14px}
 html.hasimio-tv .tv-keyboard .tv-key{display:flex;align-items:center;justify-content:center;width:58px;height:46px;min-height:0;margin:0 8px 0 0;padding:0;border:0;border-radius:8px;background:#2b2b2b;color:#ececec;font-size:20px;font-weight:600;line-height:1}
 html.hasimio-tv .tv-keyboard .tv-key:last-child{margin-right:0}
 html.hasimio-tv .tv-keyboard .tv-key.label{font-size:14px}
+
+/* ---------- Dropdowns (bootstrap.ts openSelect) ---------- */
+/* A centred list instead of the webOS popup, which ran off the screen. */
+.hasimio-tv .tv-select{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:#000000b8}
+.hasimio-tv .tv-select-panel{display:flex;flex-direction:column;width:480px;max-height:80vh;padding:20px 16px 16px;border:1px solid #333;border-radius:16px;background:#1f1f1f}
+.hasimio-tv .tv-select-panel h3{margin:0 8px 12px;font-size:18px;font-weight:600;color:#f2f2f2}
+.hasimio-tv .tv-select-list{flex:1;min-height:0;overflow-y:auto}
+html.hasimio-tv .tv-select .tv-select-option{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:46px;margin:0 0 4px;padding:0 16px;border:0;border-radius:8px;background:transparent;color:#e6e6e6;font-size:17px;text-align:left}
+html.hasimio-tv .tv-select .tv-select-option.selected::after{content:'\2713';margin-left:12px}
+html.hasimio-tv .tv-select .tv-select-option:disabled{opacity:.45}
+
+/* ---------- Extension switches ---------- */
+/* A real pill: the 44px TV control height squashed them into white blobs,
+   and the white focus fill hid the knob. Focus shows as a ring instead. */
+html.hasimio-tv .switch{flex:none;width:56px;height:32px;min-height:0;padding:4px;border-radius:16px;background:#4a4a4a}
+html.hasimio-tv .switch span{width:24px;height:24px}
+html.hasimio-tv .switch.on{background:#e0e0e0}
+html.hasimio-tv .switch.on span{background:#191919;transform:translateX(24px)}
+html.hasimio-tv .switch:focus{background:#4a4a4a!important;outline:none!important;box-shadow:0 0 0 3px #141414,0 0 0 6px #fff!important}
+html.hasimio-tv .switch.on:focus{background:#e0e0e0!important}
+html.hasimio-tv .switch:focus span{background:#e7e7e7!important}
+html.hasimio-tv .switch.on:focus span{background:#191919!important}
+
+/* Player: choose another source (Player.tsx). */
+html.hasimio-tv .cinema-top .cinema-sources{display:flex;align-items:center;margin-left:auto;padding:0 18px;min-height:44px;border:0;border-radius:8px;background:#ffffff1f;color:#fff;font-size:16px}
+
+/* Checkboxes: a square box, not stretched by the 44px TV control height; focus is a ring. */
+html.hasimio-tv input[type="checkbox"]{flex:none;width:22px;height:22px;min-height:0;margin-top:0;margin-bottom:0}
+html.hasimio-tv input[type="checkbox"]:focus{outline:3px solid #fff!important;outline-offset:3px!important}

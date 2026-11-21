@@ -4,7 +4,7 @@ export type Meta = { id: string; type: string; name: string; originalName?: stri
 export type Resource = string | { name: string; types?: string[]; idPrefixes?: string[] };
 export type Manifest = { id: string; name: string; version: string; description: string; logo?: string; resources: Resource[]; types: string[]; idPrefixes?: string[]; catalogs: { id: string; type: string; name?: string; extra?: { name: string; isRequired?: boolean }[] }[] };
 export type Addon = { url: string; manifest: Manifest; enabled: boolean; builtin?: boolean };
-export type Stream = { fileIdx?:number; subtitleTrack?: {url:string;label:string;language:string}; name?: string; title?: string; url?: string; externalUrl?: string; infoHash?: string; ytId?: string; provider?: string;quality?:string;seeders?:number;sizeBytes?:number;codec?:string;filename?:string };
+export type Stream = { fileIdx?:number; subtitleTrack?: {url:string;label:string;language:string}; name?: string; title?: string; url?: string; externalUrl?: string; infoHash?: string; ytId?: string; provider?: string;quality?:string;seeders?:number;sizeBytes?:number;codec?:string;filename?:string;debrid?:'cached'|'uncached' };
 export const cinemetaUrl = 'https://v3-cinemeta.strem.io/manifest.json';
 export const kitsuUrl = 'https://kitsu.io/api/edge';
 export const titlesUrl = '/api/extensions/titles/manifest.json';
@@ -32,9 +32,9 @@ export function resourceUrl(base: string, resource: string, type: string, id: st
   // Relative add-on URLs are served by Hasimio Engine (the built-in title index and Pirate Bay source).
   const url = new URL(base,engineBase()); url.pathname = url.pathname.replace(/\/manifest.json$/, '') + `/${resource}/${encodeURIComponent(type)}/${encodeURIComponent(id)}` + (extras && Object.keys(extras).length ? '/' + new URLSearchParams(extras).toString().replace(/\+/g,'%20') : '') + '.json'; return url.toString();
 }
-export async function getJson<T>(url: string, signal?: AbortSignal, timeoutMs = 15000): Promise<T> {
+export async function getJson<T>(url: string, signal?: AbortSignal, timeoutMs = 15000, headers?: Record<string,string>): Promise<T> {
   const timeout = AbortSignal.timeout(timeoutMs);
-  const response = await fetch(url, { signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
+  const response = await fetch(url, { signal: signal ? AbortSignal.any([signal, timeout]) : timeout, ...(headers ? {headers} : {}) });
   if (!response.ok) {
     // Hasimio Engine explains its own failures, such as a title index that is still being built.
     const detail = response.headers.get('content-type')?.includes('application/json') ? await response.json().then(body => typeof body?.error === 'string' ? body.error : '', () => '') : '';

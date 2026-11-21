@@ -18,7 +18,7 @@ export function creep(value:number,cap:number){
  * The start screen: the title's artwork, its name and a thin progress bar.
  * Sources, peers and retries stay behind it; Back cancels.
  */
-export default function PlaybackLoading({progressKey,title,detail,backdrop,message,cap,onCancel,failure,overlay=false}:{progressKey:string;title:string;detail?:string;backdrop?:string;message:string;cap:number;onCancel:()=>void;failure?:ReactNode;overlay?:boolean}){
+export default function PlaybackLoading({progressKey,title,detail,backdrop,message,cap,onCancel,failure,overlay=false,onChoose}:{progressKey:string;title:string;detail?:string;backdrop?:string;message:string;cap:number;onCancel:()=>void;failure?:ReactNode;overlay?:boolean;onChoose?:()=>void}){
   const bar=useRef<HTMLSpanElement>(null),failed=!!failure;
   useEffect(()=>{
     if(failed)return;
@@ -42,6 +42,8 @@ export default function PlaybackLoading({progressKey,title,detail,backdrop,messa
       {failure?<div className="playback-loading-failure">{failure}</div>:<>
         <div className="playback-loading-bar" aria-hidden="true"><span ref={bar}/></div>
         <p className="playback-loading-message">{message}</p>
+        {/* Skip the automatic pick and choose a source yourself. */}
+        {onChoose&&<button type="button" className="button secondary playback-loading-choose" onClick={onChoose}>Choose source</button>}
       </>}
     </div>
   </section>;

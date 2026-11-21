@@ -7,7 +7,7 @@ import {eztvManifest,createEztvSearch} from '../../server/eztv.mjs';
 import {torrentDownloadsManifest,searchTorrentDownloads} from '../../server/torrentdownloads.mjs';
 import {torrentClawManifest,searchTorrentClaw,catalogTorrentClaw,metadataTorrentClaw} from '../../server/torrentclaw.mjs';
 import {stremioManifests} from '../../shared/stremio-sources.mjs';
-import {searchStremioSource} from '../../server/stremio-sources.mjs';
+import {searchStremioSource,parseDebrid,debridTag} from '../../server/stremio-sources.mjs';
 import {extManifest,searchExt} from '../../server/ext.mjs';
 import {createLiveTv} from '../../server/live-tv.mjs';
 import {createSkipSegmentLookup} from '../../server/segments.mjs';
@@ -174,8 +174,10 @@ async function route(req,res){
       json(res,200,result);return;
     }
     if(file==='manifest.json'&&manifests[key]){json(res,200,manifests[key]);return;}
-    const sources={piratebay:()=>searchPirateBay(type,id,fetch,lookupTitle),yts:()=>searchYts(type,id),eztv:()=>eztv(type,id),torrentdownloads:()=>searchTorrentDownloads(type,id,fetch,lookupTitle),torrentclaw:()=>resource==='catalog'?catalogTorrentClaw(type,id,Object.fromEntries(new URLSearchParams(extras||''))):resource==='meta'?metadataTorrentClaw(type,id):searchTorrentClaw(type,id),torrentio:()=>searchStremioSource('torrentio',type,id),comet:()=>searchStremioSource('comet',type,id),ext:()=>searchExt(type,id,fetch,lookupTitle)};
-    if(sources[key]){json(res,200,await cached(pathname,sources[key]));return;}
+    // A configured debrid service (Settings) comes with each Torrentio request.
+    const debrid=key==='torrentio'?parseDebrid(req.headers['x-hasimio-debrid']):undefined;
+    const sources={piratebay:()=>searchPirateBay(type,id,fetch,lookupTitle),yts:()=>searchYts(type,id),eztv:()=>eztv(type,id),torrentdownloads:()=>searchTorrentDownloads(type,id,fetch,lookupTitle),torrentclaw:()=>resource==='catalog'?catalogTorrentClaw(type,id,Object.fromEntries(new URLSearchParams(extras||''))):resource==='meta'?metadataTorrentClaw(type,id):searchTorrentClaw(type,id),torrentio:()=>searchStremioSource('torrentio',type,id,fetch,debrid),comet:()=>searchStremioSource('comet',type,id),ext:()=>searchExt(type,id,fetch,lookupTitle)};
+    if(sources[key]){json(res,200,await cached(pathname+(key==='torrentio'?debridTag(debrid):''),sources[key]));return;}
   }
   if(pathname==='/api/live-tv/iptv-org/channels'&&req.method==='GET'){json(res,200,{channels:await live.channels(),checkedAt:live.checkedAt});return;}
   const channel=/^\/api\/live-tv\/([a-z0-9-]+)\/(main|alternative|s[1-9][0-9]*)\/(index\.m3u8|asset\/[a-f\d]{32})$/.exec(pathname);

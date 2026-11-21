@@ -1,6 +1,6 @@
 import type {PlaybackStartup} from './quick-play';
 import {useEffect,useMemo,useRef,useState,type CSSProperties,type KeyboardEvent,type ReactNode} from 'react';
-import {ArrowLeft,AudioLines,Captions,Cast,Download,ExternalLink,LoaderCircle,Maximize,Minimize,Pause,PictureInPicture2,Play,RotateCcw,RotateCw,Settings2,SkipBack,SkipForward,Timer,Volume2,VolumeX,X} from 'lucide-react';
+import {ListVideo,ArrowLeft,AudioLines,Captions,Cast,Download,ExternalLink,LoaderCircle,Maximize,Minimize,Pause,PictureInPicture2,Play,RotateCcw,RotateCw,Settings2,SkipBack,SkipForward,Timer,Volume2,VolumeX,X} from 'lucide-react';
 import {alignSubtitles,negligible,syncReferences,type TimedCue} from './subtitle-sync';
 import {NO_TIMING,REMOTE_STEP,detectFrameRateDrift,describeDelay,nudgeTiming,saveTiming,savedTiming,subtitleTimingKey,timedCue,type SubtitleTiming} from './subtitle-timing';
 import {type Stream,safeHttp} from './media';
@@ -103,7 +103,7 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   useEffect(()=>{autoOnline.current='';setAutomaticSubtitle(undefined);},[autoSubtitleKey]);
   const videoFilename=download?.filename||stream.filename;
   const online=useOnlineSubtitles(videoId,videoFilename,panel==='subtitles'||panel==='timing'||!!localSubtitle?.online||(needsOnline&&autoOnline.current!==autoSubtitleKey),captions.subtitleLanguage);
-  function reveal(){const now=performance.now();hideAt.current=now+2500;if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
+  function reveal(){const now=performance.now();hideAt.current=now+(isWebOS?4000:2500);if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
   function openPanel(next:Panel,button:HTMLButtonElement){trigger.current=button;setPanel(previous=>previous===next?undefined:next);reveal();}
   function persist(force=false,leaving=false){if(!progressKey||!latestProgress.current||(!force&&Date.now()-lastSave.current<PROGRESS_SAVE_INTERVAL))return;const p=latestProgress.current;if(leaving&&episodeLabel&&p.duration>0&&p.position>=upNextStart(latestSkipSegments.current,p.duration))completionRequested.current=true;saveProgress(progressKey,p.position,p.duration,{completed:p.completed||completionRequested.current,titleKey,videoId,episodeLabel,live:!force});lastSave.current=Date.now();}
   function switchEpisode(target?:EpisodeAction,completed=false){
@@ -152,7 +152,7 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   // Controls hide 2.5s after the last reveal. Buffering, focus or an open panel can postpone hiding, but
   // leaving them must not restart the countdown: torrent streams buffer often, and each restart would keep
   // the controls up long after the cursor stopped.
-  useEffect(()=>{if(panel||focused||!playing){setVisible(true);hideAt.current=Infinity;return;}if(buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),hideAt.current===Infinity?2500:Math.max(0,hideAt.current-performance.now()));return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
+  useEffect(()=>{if(panel||(focused&&!isWebOS)||!playing){setVisible(true);hideAt.current=Infinity;return;}if(buffering||error||loading||scrubPosition!==undefined)return;const timer=setTimeout(()=>setVisible(false),hideAt.current===Infinity?2500:Math.max(0,hideAt.current-performance.now()));return()=>clearTimeout(timer);},[playing,panel,focused,buffering,error,loading,activity,scrubPosition]);
   // Subtitles follow the visible picture (object-fit: contain), not the letterboxed player.
   function measure(){const box=root.current,video=videoRef.current;if(!box||!video)return;const width=box.clientWidth,height=box.clientHeight,ratio=video.videoWidth&&video.videoHeight?video.videoWidth/video.videoHeight:16/9,w=Math.min(width,height*ratio),h=w/ratio,rect=box.getBoundingClientRect();
     setFrame(previous=>previous&&Math.abs(previous.width-w)<0.5&&Math.abs(previous.height-h)<0.5&&Math.abs(previous.top-(height-h)/2)<0.5?previous:{left:(width-w)/2,top:(height-h)/2,width:w,height:h});
@@ -254,6 +254,21 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   const nextArt=safeHttp(next?.thumbnail);
   // A couple of minutes before Up next, the app looks up the next episode's
   // sources, so it can start in seconds (App.tsx prefetchEpisode).
+  // TV remote: any key brings the controls back. While they are hidden, the
+  // first arrow or OK only shows them (as on Netflix), so it cannot pause or
+  // seek by surprise; Skip intro and Up next stay usable when shown alone.
+  const visibleNow=useRef(visible);visibleNow.current=visible;
+  const revealNow=useRef(reveal);revealNow.current=reveal;
+  useEffect(()=>{
+    if(!isWebOS)return;
+    const wake=(event:globalThis.KeyboardEvent)=>{
+      if(!root.current?.isConnected||document.querySelector('.tv-select'))return;
+      const floating=document.activeElement?.closest('.cinema-skip-intro,.cinema-up-next');
+      if(!visibleNow.current&&!floating&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){event.preventDefault();event.stopImmediatePropagation();}
+      revealNow.current();
+    };
+    window.addEventListener('keydown',wake,true);return()=>window.removeEventListener('keydown',wake,true);
+  },[]);
   const nearEndSent=useRef(false);
   useEffect(()=>{
     if(!onNearEnd||!next||nearEndSent.current||duration<=0)return;
@@ -268,9 +283,9 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
     {pip.active&&<div className="cinema-pip-drag" aria-hidden="true"/>}
     <video ref={videoRef} className="cinema-video" autoPlay playsInline aria-label={name} onClick={togglePlay} onDoubleClick={()=>void toggleFullscreen()} onTimeUpdate={sync} onDurationChange={sync} onProgress={sync} onLoadedMetadata={()=>{restore();measure();}} onResize={measure} onSeeked={()=>{restoring.current=false;sync();persist(true);}} onLoadedData={()=>{sync();setBuffering(false);}} onCanPlay={()=>{setBuffering(false);if(!isWebOS)setTimeout(()=>{if(videoRef.current?.paused&&!videoRef.current.seeking)setStarted(true);},1200);}} onWaiting={()=>setBuffering(true)} onPlaying={()=>{hasPlayed.current=true;if(Date.now()-quietRetry.current.at>20000)quietRetry.current.count=0;startup?.started();setStarted(true);setPlaying(true);setBuffering(false);}} onPlay={()=>setPlaying(true)} onPause={()=>{setPlaying(false);sync();persist(true);}} onEnded={()=>{setPlaying(false);sync();persist(true);if(next&&autoPlayNext&&!nextDismissed&&!autoAdvanced.current){autoAdvanced.current=true;playNext();}}} onVolumeChange={()=>{if(videoRef.current){setVolume(videoRef.current.volume);setMuted(videoRef.current.muted);}}} onError={()=>{if(!videoRef.current?.currentSrc)return;if(recoverQuietly())return;setBuffering(false);if(onRecoverAudio)onRecoverAudio();else setError('This browser could not decode the video. Retry playback or choose another source.');}}/>
     {(subtitle||panel==='subtitles')&&<CaptionOverlay cues={subtitle?cues:[]} settings={captions} frame={frame} preview={panel==='subtitles'} lift={visible&&frame?{top:Math.max(0,chrome.header-frame.top),bottom:Math.max(0,frame.top+frame.height-chrome.controls)}:{top:0,bottom:0}}/>}
-    <div ref={topRef} className="cinema-top cinema-chrome"><button className="cinema-icon cinema-back" onClick={onClose} title={isWebOS?'Back':'Back to sources'} aria-label={isWebOS?'Back':'Back to sources'}><ArrowLeft size={24}/></button><div className="cinema-title"><h2>{name}</h2><p>{stream.name&&stream.name!==name?stream.name:'Your cinema, your way.'}</p></div>{status&&<div className="cinema-connection">{status}</div>}</div>
+    <div ref={topRef} className="cinema-top cinema-chrome"><button className="cinema-icon cinema-back" onClick={onClose} title={isWebOS?'Back':'Back to sources'} aria-label={isWebOS?'Back':'Back to sources'}><ArrowLeft size={24}/></button><div className="cinema-title"><h2>{name}</h2><p>{stream.name&&stream.name!==name?stream.name:'Your cinema, your way.'}</p></div>{status&&<div className="cinema-connection">{status}</div>}{isWebOS&&onSources&&<button type="button" className="cinema-text-action cinema-sources" onClick={onSources}><ListVideo size={18}/> Sources</button>}</div>
     {loading?<div className="cinema-state">{loading}</div>:error?<div className="cinema-state cinema-error"><h3>Playback interrupted</h3><p role="alert">{error}</p><button className="cinema-action" onClick={()=>setRetry(value=>value+1)}><RotateCcw size={18}/> Retry playback</button><button className="cinema-text-action" onClick={onSources??onClose}>Choose another source</button></div>:buffering?<div className="cinema-wait" role="status"><LoaderCircle className="spin" size={36}/><span>Buffering video…</span></div>:!playing&&url&&!panel?<button className="cinema-big-play" onClick={togglePlay} aria-label={position>=duration&&duration>0?'Replay video':'Play video'}><Play size={34} fill="currentColor"/></button>:null}
-    {!started&&!error&&!loading&&!cast.active&&<PlaybackLoading overlay progressKey={videoId??stream.url??name} title={name} detail={episodeLabel} backdrop={backdrop} cap={95} message="Starting…" onCancel={onClose}/>}
+    {!started&&!error&&!loading&&!cast.active&&<PlaybackLoading overlay progressKey={videoId??stream.url??name} title={name} detail={episodeLabel} backdrop={backdrop} cap={95} message="Starting…" onChoose={onSources} onCancel={onClose}/>}
     {(notice||subtitleError)&&<div className="cinema-notice" role="status"><span>{subtitleError||notice}</span><button className="cinema-icon" aria-label="Dismiss player message" onClick={()=>{setNotice('');setSubtitleError('');}}><X size={18}/></button></div>}
     {showSkipIntro&&<button className="cinema-skip-intro" onClick={()=>{if(introEnd!==undefined)seek(introEnd);}}>Skip intro</button>}
     {showNext&&next&&<div className="cinema-up-next" role="region" aria-label="Up next">{nextArt&&<img className="cinema-up-next-art" src={nextArt} alt="" onError={event=>{event.currentTarget.style.visibility='hidden';}}/>}<div className="cinema-up-next-text"><span>Up next</span><strong>{next.label}</strong>{next.title&&<p>{next.title}</p>}</div><button className="cinema-action" onClick={playNext}><Play size={16} fill="currentColor"/> Play now</button><button className="cinema-icon" aria-label="Dismiss up next" onClick={()=>setNextDismissed(true)}><X size={18}/></button></div>}

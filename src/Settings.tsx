@@ -5,7 +5,35 @@ import {currentProfile,requestProfilePicker} from './profile-storage';
 import {deviceSync} from './device-sync';
 import {EnginePanel,useEngine} from './EngineStatus';
 import {version as appVersion} from '../package.json';
+import {useState} from 'react';
 import {Users} from 'lucide-react';
+import {debridProviders,saveDebrid,savedDebrid,validDebridKey} from './debrid';
+import {isWebOS} from './webos/platform';
+
+// Debrid, as in Stremio: Torrentio sources come through the service, and files
+// it already holds play at once. The key is kept on this device only.
+function DebridSettings(){
+  const [saved,setSaved]=useState(savedDebrid);
+  const [provider,setProvider]=useState(saved?.provider??debridProviders[0].id);
+  const [key,setKey]=useState('');
+  const [message,setMessage]=useState('');
+  const chosen=debridProviders.find(item=>item.id===provider)??debridProviders[0];
+  const current=debridProviders.find(item=>item.id===saved?.provider);
+  function save(){
+    if(!validDebridKey(key)){setMessage('Paste the API key from '+chosen.keyPage+'.');return;}
+    const next={provider,key:key.trim()};saveDebrid(next);setSaved(next);setKey('');
+    setMessage('Saved. Torrentio sources now come through '+chosen.name+'.');
+  }
+  function remove(){saveDebrid(undefined);setSaved(undefined);setMessage('Removed. Torrentio sources play as torrents again.');}
+  return <div className="settings-card">
+    <h2>Debrid</h2>
+    <p>{current?<>Connected to <strong>{current.name}</strong> (key ending {saved!.key.slice(-4)}). Sources marked with a plus, such as [RD+], play at once without peers.</>:'Optional. With a debrid account, Torrentio sources come from the service instead of peers, and files it already holds start straight away.'}</p>
+    <label className="settings-field">Service<select value={provider} onChange={event=>setProvider(event.target.value)}>{debridProviders.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+    <label className="settings-field">API key<input type="password" autoComplete="off" spellCheck={false} placeholder={'From '+chosen.keyPage} value={key} onChange={event=>{setKey(event.target.value);setMessage('');}}/></label>
+    <div className="settings-actions"><button className="button primary" onClick={save}>Save</button>{saved&&<button className="button secondary" onClick={remove}>Remove</button>}</div>
+    {message&&<p className="settings-saved" role="status">{message}</p>}
+  </div>;
+}
 
 export default function Settings(){
   const settings=usePlayerSettings();
@@ -32,6 +60,7 @@ export default function Settings(){
       <label className="settings-field">Preferred quality<select value={settings.preferredQuality} onChange={event=>update({preferredQuality:event.target.value as PreferredQuality})}>{preferredQualities.map(quality=><option key={quality} value={quality}>{quality==='Auto'?'Auto (1080p preferred)':quality==='2K'?'2K · 1440p':quality==='4K'?'4K · 2160p':quality}</option>)}</select></label>
       <p>Automatic playback prefers known matches for your audio and subtitle languages, then uses your quality preference. You can choose a different source for each video.</p>
     </div>
+    <DebridSettings/>
     <div className="settings-card">
       <h2>Subtitles</h2>
       <label className="settings-field">Preferred subtitle language<select value={settings.subtitleLanguage} onChange={event=>update({subtitleLanguage:event.target.value,autoSubtitles:true})}>{languages.map(code=><option key={code} value={code}>{languageName(code)}</option>)}</select></label>
@@ -43,7 +72,7 @@ export default function Settings(){
       <h2>Streaming service</h2>
       <EnginePanel engine={engine}/>
     </div>
-    <div className="settings-card">
+    {isWebOS?<p className="settings-saved">Hasimio v{appVersion}</p>:<div className="settings-card">
       <h2>Keyboard shortcuts</h2>
       <dl className="settings-shortcuts">
         <div><dt><kbd>/</kbd></dt><dd>Focus search</dd></div>
@@ -54,6 +83,6 @@ export default function Settings(){
         <div><dt><kbd>Esc</kbd></dt><dd>Close dialogs or menus</dd></div>
       </dl>
       <p className="settings-saved">Hasimio v{appVersion}</p>
-    </div>
+    </div>}
   </section>;
 }

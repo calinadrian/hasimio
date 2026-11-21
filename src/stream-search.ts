@@ -1,4 +1,5 @@
 import {getJson,resourceUrl,type Addon,type Stream} from './media';
+import {debridHeaders} from './debrid';
 
 export const SOURCE_TIMEOUT_MS=20000;
 export type StreamSearchState={streams:Stream[];pending:number;failed:string[]};
@@ -10,7 +11,7 @@ export async function searchStreams(sources:Addon[],type:string,id:string,signal
   publish();
   await Promise.all(sources.map(async(source,index)=>{
     try{
-      const payload=await getJson<{streams:Stream[]}>(resourceUrl(source.url,'stream',type,id),signal,SOURCE_TIMEOUT_MS);
+      const payload=await getJson<{streams:Stream[]}>(resourceUrl(source.url,'stream',type,id),signal,SOURCE_TIMEOUT_MS,debridHeaders(source.url));
       if(!Array.isArray(payload.streams))throw new Error('Invalid stream response.');
       results[index]=payload.streams;
     }catch{failed.push(source.manifest.name);}

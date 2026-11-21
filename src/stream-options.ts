@@ -34,6 +34,8 @@ export function sourceLanguageMatches(stream:Stream,videoId:string,preferences:S
   return {audio:audio?languageMatch(audio.language,preferences.audioLanguage):0,subtitles:subtitles?languageMatch(subtitles.language,preferences.subtitleLanguage):0};
 }
 export function usableSource(stream:Stream){
+  // A debrid file the service does not hold yet would first have to download there.
+  if(stream.debrid==='uncached')return false;
   return stream.infoHash?(describeStream(stream).seeders??1)>0:!!safeHttp(stream.url);
 }
 function qualityOrder(options:StreamOption[],preferred:PreferredQuality){
@@ -49,7 +51,8 @@ export function rankSources(streams:Stream[],preferences:SourcePreferences,video
   const options=streams.filter(stream=>stream.infoHash||safeHttp(stream.url)).map(describeStream);
   const quality=qualityOrder(options,preferences.preferredQuality);
   return options.map(option=>({option,usable:usableSource(option.stream),matches:sourceLanguageMatches(option.stream,videoId,preferences)}))
-    .sort((a,b)=>Number(b.usable)-Number(a.usable)||b.matches.audio-a.matches.audio||b.matches.subtitles-a.matches.subtitles||
+    // Files a debrid service already holds start at once, with no peers to find.
+    .sort((a,b)=>Number(b.usable)-Number(a.usable)||Number(b.option.stream.debrid==='cached')-Number(a.option.stream.debrid==='cached')||b.matches.audio-a.matches.audio||b.matches.subtitles-a.matches.subtitles||
       quality.indexOf(a.option.quality)-quality.indexOf(b.option.quality)||(b.option.seeders??-1)-(a.option.seeders??-1))
     .map(({option})=>option.stream);
 }

@@ -18,3 +18,4 @@ html.hasimio-tv .playback-loading{position:fixed;top:0;right:0;bottom:0;left:0;z
 .playback-loading-actions{display:flex;align-items:center;margin-top:24px}
 .playback-loading-actions .button+.button{margin-left:12px}
 @media(max-width:720px){.playback-loading:not(.overlay){aspect-ratio:auto;height:85vh}.playback-loading-body{left:24px;right:24px;bottom:48px}.playback-loading h2{font-size:32px}.playback-loading-back{top:16px;left:16px}}
+.playback-loading-choose{margin-top:22px}

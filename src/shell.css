@@ -163,7 +163,8 @@ main{margin-left:var(--rail)}
 .settings-card{padding:26px;border:1px solid #484848;border-radius:10px;background:#222;display:grid;gap:20px}
 .settings-card h2{font-size:22px}
 .settings-field{display:grid;gap:9px;font-size:15px;font-weight:600}
-.settings-field select{width:100%;max-width:400px;min-height:46px;padding:10px 12px;border:1px solid #666;border-radius:6px;background:#303030;color:#fff}
+.settings-field select,.settings-field input{width:100%;max-width:400px;min-height:46px;padding:10px 12px;border:1px solid #666;border-radius:6px;background:#303030;color:#fff;font:inherit;font-weight:400}
+.settings-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
 .settings-toggle{display:flex;align-items:center;gap:12px;font-size:15px;cursor:pointer}
 .settings-toggle input{width:20px;height:20px;accent-color:#eee;flex:none}
 .settings-card p{font-size:14px;line-height:1.65;color:#ccc;max-width:65ch}

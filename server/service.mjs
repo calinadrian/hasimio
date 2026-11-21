@@ -3,7 +3,7 @@ import {createLiveTv} from './live-tv.mjs';
 import {createPeopleIndex} from './people.mjs';
 import {createActorPhotos} from './people-photos.mjs';
 import {stremioManifests} from '../shared/stremio-sources.mjs';
-import {searchStremioSource} from './stremio-sources.mjs';
+import {searchStremioSource,parseDebrid,debridTag} from './stremio-sources.mjs';
 import {randomBytes} from 'node:crypto';
 import {mkdir,stat,readFile,rm} from 'node:fs/promises';
 import {createReadStream,readFileSync} from 'node:fs';
@@ -190,9 +190,10 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
       }
       const source=/^\/api\/extensions\/(piratebay|yts|eztv|ext|torrentdownloads|torrentclaw|torrentio|comet)\/stream\/(movie|series|anime)\/([^/]+)\.json$/.exec(url.pathname);
       if(req.method==='GET'&&source){
-        const [,provider,type,encoded]=source,id=decodeURIComponent(encoded),key=`${provider}:${type}:${id}`;let item=searches.get(key);
+        // A configured debrid service (Settings) comes with each Torrentio request; searches stay separate per account.
+        const [,provider,type,encoded]=source,id=decodeURIComponent(encoded),debrid=provider==='torrentio'?parseDebrid(req.headers['x-hasimio-debrid']):undefined,key=`${provider}:${type}:${id}${debridTag(debrid)}`;let item=searches.get(key);
         if(!item||item.expires<Date.now()){
-          const promise=provider==='ext'?searchExt(type,id,fetchImpl,lookupTitle):['torrentio','comet'].includes(provider)?searchStremioSource(provider,type,id,fetchImpl):provider==='torrentclaw'?searchTorrentClaw(type,id,fetchImpl):provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,lookupTitle):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,lookupTitle);
+          const promise=provider==='ext'?searchExt(type,id,fetchImpl,lookupTitle):['torrentio','comet'].includes(provider)?searchStremioSource(provider,type,id,fetchImpl,debrid):provider==='torrentclaw'?searchTorrentClaw(type,id,fetchImpl):provider==='torrentdownloads'?searchTorrentDownloads(type,id,fetchImpl,lookupTitle):provider==='eztv'?searchEztv(type,id):provider==='yts'?searchYts(type,id,fetchImpl):searchPirateBay(type,id,fetchImpl,lookupTitle);
           item={expires:Date.now()+5*60*1000,promise};searches.set(key,item);item.promise.catch(()=>searches.delete(key));
         }
         try{return json(res,200,await item.promise);}catch(error){return json(res,502,{error:error.message});}

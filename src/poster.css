@@ -1,0 +1,18 @@
+/* Poster cards (Poster.tsx): poster, one title line, one info line, so every
+   card in a row has the same height and the rows line up. */
+.poster-card>strong{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.poster-card>.poster-meta{display:flex;align-items:center;min-width:0;height:1.5em;overflow:hidden;white-space:nowrap;line-height:1.5;color:#a8a8a8;font-variant-numeric:tabular-nums}
+.poster-card>.poster-meta>i{flex:none;width:3px;height:3px;margin:0 7px;border-radius:50%;background:currentColor;opacity:.7}
+.poster-card>.poster-meta.is-progress{color:#cfcfcf}
+.poster-card>.poster-meta>b{flex:none;font-weight:700;color:#f2f2f2}
+
+/* Progress: a bar flush along the poster's bottom edge, readable on light and
+   dark artwork, with a soft shade behind it. */
+.poster-card .poster-image .poster-playback-track{position:absolute;top:auto;right:0;bottom:0;left:0;z-index:2;height:4px;border-radius:0;background:#ffffff47;box-shadow:none;overflow:hidden}
+.poster-card .poster-image .poster-playback-track>span{display:block;height:100%;border-radius:0;background:#f2f2f2}
+.poster-card.is-watching .poster-image::before{content:'';position:absolute;right:0;bottom:0;left:0;z-index:1;height:28%;background:linear-gradient(0deg,#000000a6,#00000000);pointer-events:none}
+
+/* Tags on the artwork: a small pill top-left (finished), a check top-right (in your library). */
+.poster-card .poster-tag{position:absolute;top:8px;left:8px;z-index:2;display:flex;align-items:center;max-width:calc(100% - 44px);height:22px;padding:0 8px;border-radius:11px;background:#141414d9;color:#f2f2f2;font-size:11px;font-weight:700;line-height:22px;white-space:nowrap;overflow:hidden}
+.poster-card .poster-tag>svg{flex:none;margin-right:4px}
+.poster-card .saved-mark{top:8px;right:8px;z-index:2;width:22px;height:22px;box-shadow:0 1px 4px #0008}
