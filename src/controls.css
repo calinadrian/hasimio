@@ -57,6 +57,11 @@
   :root select option:is(:hover,:focus){background:#494949;color:#fff;outline:none}
   :root select option:disabled{color:#888;background:transparent;cursor:default}
   :root select option::checkmark{order:1;margin-left:auto;color:#fff;font-size:13px}
+  /* Source dropdowns sit inside their own bordered box: the select's own arrow replaces the chevron icon,
+     and the select takes no second fill inside the box. */
+  .source-select>.lucide-chevron-down{display:none}
+  :root .source-select select:not([multiple]),:root .source-select select:not([multiple]):hover:not(:disabled){background:none;padding:10px 0;border-radius:0}
+  .source-select:has(select:hover:not(:disabled)){background:#343434}
 }
 @media(pointer:coarse){:root select option{min-height:44px}}
 @media(max-width:760px){:root select:not([multiple]){font-size:16px}}

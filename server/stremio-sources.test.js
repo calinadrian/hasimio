@@ -10,7 +10,14 @@ describe('Torrentio and Comet sources',()=>{
     expect(stremioResults(payload,'Torrentio').streams[0]).toMatchObject({provider:'Torrentio',infoHash:hash,fileIdx:2,quality:'1080p',codec:'HEVC',seeders:19,sizeBytes:1.5*1024**3,filename:'Film.mkv'});
     expect(stremioResults({streams:[null,{externalUrl:'https://example.com/setup'},{url:'javascript:alert(1)'},{infoHash:'bad'},{url:'https://example.com/video.mp4'}]},'Comet').streams).toEqual([expect.objectContaining({url:'https://example.com/video.mp4',provider:'Comet'})]);
   });
-  it('uses exact movie and episode paths and maps anime to series',async()=>{
+  it('reads the stated size, not a size inside the release name',()=>{
+  // Deadpool & Wolverine on Torrentio showed "0 MB": ".1400MB" in the name was read as 0.14 MB.
+  const named={streams:[{infoHash:hash,name:'Torrentio\n1080p',title:'Deadpool.and.Wolverine.2024.1080p.AMZN.WEBRip.1400MB.DD5.1.x264-GalaxyRG\n👤 931 💾 1.4 GB ⚙️ 1337x',behaviorHints:{filename:'Deadpool.and.Wolverine.2024.1080p.AMZN.WEBRip.1400MB.DD5.1.x264-GalaxyRG.mkv'}}]};
+  expect(stremioResults(named,'Torrentio').streams[0].sizeBytes).toBeCloseTo(1.4*1024**3);
+  const nameOnly={streams:[{infoHash:hash,name:'Source',title:'Film.WEBRip.1400MB.x264'}]};
+  expect(stremioResults(nameOnly,'Source').streams[0].sizeBytes).toBe(1400*1024**2);
+  expect(stremioResults({streams:[{infoHash:hash,name:'Source',title:'Film.x264'}]},'Source').streams[0].sizeBytes).toBeUndefined();
+});it('uses exact movie and episode paths and maps anime to series',async()=>{
     const fetch=vi.fn(async()=>new Response(JSON.stringify(payload)));
     await searchStremioSource('torrentio','movie','tt1254207',fetch);
     expect(fetch.mock.calls[0][0].href).toBe('https://torrentio.strem.fun/stream/movie/tt1254207.json');

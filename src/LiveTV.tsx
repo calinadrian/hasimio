@@ -53,7 +53,7 @@ export default function LiveTV(){
   useEffect(()=>setChannelPage(0),[collection,source,group,query]);
   function chooseCollection(value:typeof collection){setCollection(value);setSource('all');setGroup('');setQuery('');setChannelPage(0);}
   return <section className="live-tv-page">
-    <div className="live-tv-intro"><div><h1>Live TV</h1><p>Find your channel. Settle in.</p></div><span className="live-tv-total"><Tv size={15}/>{channels.length.toLocaleString()} channels</span></div>
+    <div className="live-tv-intro"><div><h1>Live TV</h1></div><span className="live-tv-total"><Tv size={15}/>{channels.length.toLocaleString()} channels</span></div>
     <div className="live-tv-collections" role="group" aria-label="Channel collection">
       <button aria-pressed={collection==='all'} onClick={()=>chooseCollection('all')}>All channels</button>
       <button aria-pressed={collection==='top'} onClick={()=>chooseCollection('top')} title="Curated recommendations">Top 100 <span>{topCount}</span></button>

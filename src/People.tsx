@@ -1,5 +1,6 @@
-import {useEffect,useState} from 'react';
-import {ChevronLeft,LoaderCircle,UserRound} from 'lucide-react';
+import {useEffect,useRef,useState} from 'react';
+import {ChevronLeft,ChevronRight,LoaderCircle,UserRound} from 'lucide-react';
+import {isWebOS} from './webos/platform';
 import {engineUrl} from './engine';
 import {type Meta,safeHttp} from './media';
 import Poster from './Poster';
@@ -50,9 +51,18 @@ function Status({loading,error,onRetry}:{loading:boolean;error:string;onRetry:()
 function PersonButton({person,onSelect,photo}:{person:Person;onSelect:(person:Person)=>void;photo?:ActorPhoto}){
   return <button className="person-button" onClick={()=>onSelect(person)}><Portrait photo={photo}/><span><strong>{person.name}</strong>{person.role?<small>{person.role}</small>:person.titles!==undefined?<small>{person.titles} indexed {person.titles===1?'title':'titles'}</small>:null}</span></button>;
 }
-function PeopleList({people,onSelect}:{people:Person[];onSelect:(person:Person)=>void}){
-  const photos=useActorPhotos(people);
-  return <div className="people-list">{people.map(person=><PersonButton key={person.id} person={person} onSelect={onSelect} photo={photos[person.id]}/>)}</div>;
+function PeopleList({people,onSelect,heading}:{people:Person[];onSelect:(person:Person)=>void;heading?:string}){
+  const photos=useActorPhotos(people),row=useRef<HTMLDivElement>(null),[edges,setEdges]=useState({left:false,right:false});
+  useEffect(()=>{
+    const element=row.current;if(!element||!heading)return;
+    const update=()=>setEdges({left:element.scrollLeft>4,right:element.scrollWidth-element.clientWidth-element.scrollLeft>4});
+    const resize=new ResizeObserver(update);resize.observe(element);element.addEventListener('scroll',update,{passive:true});update();
+    return()=>{resize.disconnect();element.removeEventListener('scroll',update);};
+  },[people,heading]);
+  const scroll=(direction:number)=>row.current?.scrollBy({left:direction*row.current.clientWidth*.9,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  // Like the poster rows: a hidden scrollbar and arrows beside the heading (the TV remote scrolls by focus instead).
+  return <>{heading&&<div className="people-heading"><h3>{heading}</h3>{!isWebOS&&(edges.left||edges.right)&&<div className="people-arrows"><button type="button" className="shelf-arrow" aria-label={`Previous ${heading.toLowerCase()}`} disabled={!edges.left} onClick={()=>scroll(-1)}><ChevronLeft size={20}/></button><button type="button" className="shelf-arrow" aria-label={`More ${heading.toLowerCase()}`} disabled={!edges.right} onClick={()=>scroll(1)}><ChevronRight size={20}/></button></div>}</div>}
+    <div className="people-list" ref={row}>{people.map(person=><PersonButton key={person.id} person={person} onSelect={onSelect} photo={photos[person.id]}/>)}</div></>;
 }
 export function ActorSearch({query,onSelect}:{query:string;onSelect:(person:Person)=>void}){
   const {data,error,loading}=usePeople('search?q='+encodeURIComponent(query));
@@ -64,7 +74,7 @@ export function TitleCast({meta,onSelect}:{meta:Meta;onSelect:(person:Person)=>v
 }
 function Cast({id,onSelect}:{id:string;onSelect:(person:Person)=>void}){
   const {data,error,loading,refresh}=usePeople('title/'+id+'/cast');
-  return <section className="people-section" aria-label="Cast"><h3>Cast</h3><Status loading={loading} error={error} onRetry={()=>void refresh()}/><PeopleList people={data?.cast??[]} onSelect={onSelect}/>{data&&!data.cast?.length&&<p className="people-status">No cast credits are available for this title.</p>}</section>;
+  return <section className="people-section" aria-label="Cast"><PeopleList heading="Cast" people={data?.cast??[]} onSelect={onSelect}/><Status loading={loading} error={error} onRetry={()=>void refresh()}/>{data&&!data.cast?.length&&<p className="people-status">No cast credits are available for this title.</p>}</section>;
 }
 export function ActorTitles({person,onBack,onOpen,saved}:{person:Person;onBack:()=>void;onOpen:(meta:Meta)=>void;saved:(meta:Meta)=>boolean}){
   const [type,setType]=useState(''),[items,setItems]=useState<Meta[]>([]),[hasMore,setHasMore]=useState(false);

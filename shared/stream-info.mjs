@@ -21,3 +21,11 @@ export function detectRelease(value='') {
   if(/\bhdtv\b/i.test(value))return 'HDTV';
   return undefined;
 }
+// A size in a source's text, in bytes. The size the source states after the release name ("💾 1.4 GB" on the
+// title's later lines) wins over one inside the name ("WEBRip.1400MB"). A number must start with a digit and
+// not continue another number ("2,5 GB" stays unknown rather than 5 GB), so ".1400MB" is not read as 0.14 MB. No lookbehind: the TV service runs Node 8.
+const SIZE=/(?:^|[^\d.,])\.?(\d+(?:\.\d+)?)\s*(TB|GB|MB)\b/i,SIZE_POWER={MB:2,GB:3,TB:4};
+export function parseSize(title='',text=''){
+  const found=String(title).split('\n').slice(1).join('\n').match(SIZE)??String(text).match(SIZE);
+  return found?Number(found[1])*1024**SIZE_POWER[found[2].toUpperCase()]:undefined;
+}

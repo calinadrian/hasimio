@@ -133,4 +133,11 @@
 .episode-more{display:block;width:100%;margin-top:6px;padding:10px;border-radius:4px;font-size:14px;font-weight:600;color:#dedede;background:#2a2a2a}
 .episode-more:hover{background:#333}
 .episode-text .episode-countdown{display:inline-flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-size:12px;font-variant-numeric:tabular-nums;padding:1px 7px}
-
+/* The same release found by several sources is one row; the others are named after its tags. */
+.source-title>.source-also{order:1;font-size:13px;color:#a9a9a9;white-space:nowrap}
+/* Long descriptions show three lines first; More opens the rest. */
+.description-block{margin:22px 0 18px;max-width:72ch}
+.description-block>.description{margin:0}
+.description-clamped{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.description-toggle{margin-top:6px;padding:4px 0;min-height:32px;background:none;border:0;color:#ededed;font:inherit;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.description-toggle:hover{color:#fff}

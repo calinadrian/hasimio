@@ -9,11 +9,15 @@ export const deviceTrackChecks=isWebOS||import.meta.env.VITE_ANDROID==='true';
 export const inspectionWorkers=deviceTrackChecks?1:INSPECTION_CONCURRENCY;
 export async function inspectStreamTracks(stream:Stream,videoId:string,signal:AbortSignal){
   if(!stream.infoHash)return;
-  const response=await fetch(engineUrl('/api/torrent-inspections'),{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId}),signal,
-  });
-  const info=await response.json();
+  // A dropped connection surfaces as the browser's bare "Failed to fetch"; say what actually failed.
+  let response:Response;
+  try{
+    response=await fetch(engineUrl('/api/torrent-inspections'),{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId}),signal,
+    });
+  }catch(error){if(signal.aborted)throw error;throw Error('Couldn’t reach Hasimio Engine.');}
+  const info=await response.json().catch(()=>({error:'Hasimio Engine sent an unreadable answer.'}));
   if(!response.ok)throw Error(info.error||'Track inspection failed.');
   if(!Array.isArray(info.audioTracks)||!Array.isArray(info.subtitleTracks)||!Number.isInteger(info.fileIndex))throw Error('Track information was incomplete.');
   if(stream.fileIdx!==undefined&&stream.fileIdx!==info.fileIndex)throw Error('The checked file differs from this source’s advertised file.');

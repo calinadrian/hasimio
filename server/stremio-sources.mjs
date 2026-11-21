@@ -1,5 +1,5 @@
 import {stremioSources} from '../shared/stremio-sources.mjs';
-import {detectQuality,detectCodec} from '../shared/stream-info.mjs';
+import {detectQuality,detectCodec,parseSize} from '../shared/stream-info.mjs';
 
 // Debrid services, as Stremio's Torrentio configuration names them. With one
 // configured, Torrentio answers with direct links: "[RD+]" marks a file the
@@ -35,12 +35,12 @@ export function stremioResults(payload,provider){
     const name=typeof stream.name==='string'?stream.name:provider,title=typeof stream.title==='string'?stream.title:undefined;
     const text=[name,title,filename].filter(Boolean).join('\n');
     const explicitSeeders=text.match(/👤\s*([\d,]+)|([\d,]+)\s+seeders\b/i);
-    const size=text.match(/([\d.]+)\s*(TB|GB|MB)\b/i);
+    const sizeBytes=parseSize(title,text);
     const debrid=url?debridState(text):undefined;
     return [{...(url?{url}:{infoHash:hash}),provider,name,title,filename,quality:detectQuality(text),codec:detectCodec(text),...(debrid?{debrid}:{}),
       ...(hash&&Number.isSafeInteger(stream.fileIdx)&&stream.fileIdx>=0?{fileIdx:stream.fileIdx}:{}),
       ...(explicitSeeders?{seeders:Number((explicitSeeders[1]??explicitSeeders[2]).replaceAll(',',''))}:{}),
-      ...(size?{sizeBytes:Number(size[1])*1024**({MB:2,GB:3,TB:4}[size[2].toUpperCase()])}:{}),
+      ...(sizeBytes!==undefined?{sizeBytes}:{}),
     }];
   })};
 }
