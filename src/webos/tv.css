@@ -110,6 +110,8 @@ html.tv-spotlight .page-content{padding-bottom:260px}
 
 /* ---------- Poster shelves: about seven posters per row ---------- */
 .hasimio-tv .poster-row{grid-auto-columns:140px;grid-template-columns:none;align-items:start;gap:16px}
+/* The remote keeps the focused poster at the row's left edge (bootstrap.ts reveal); snapping must land exactly there. */
+.hasimio-tv .media-shelf .poster-row{scroll-padding-inline:0}
 .hasimio-tv .poster-row.wrap{grid-template-columns:repeat(auto-fill,140px);grid-auto-columns:140px;justify-content:start}
 .hasimio-tv .poster-card{width:140px;height:auto;align-items:stretch;align-self:start}
 .hasimio-tv .poster-image{width:100%;height:210px;flex:none}
@@ -189,3 +191,15 @@ html.hasimio-tv .live-tv-filters label{font-size:14px}
 .hasimio-tv .tv-storage label{display:block}
 .hasimio-tv .tv-storage select{margin-left:20px;background:#303030;color:#fff;font:inherit;padding:8px 12px}
 .hasimio-tv .tv-storage small{display:block;color:#bbb}
+
+/* ---------- Search keyboard (SearchKeyboard.tsx) ---------- */
+/* An even 13-column grid, so Up/Down land on the key straight above or below. */
+.hasimio-tv .tv-keyboard{display:inline-block;margin:0 0 24px;padding:18px 20px 20px;border:1px solid #2e2e2e;border-radius:14px;background:#1b1b1b}
+.hasimio-tv .tv-keyboard-query{min-height:36px;margin:0 2px 14px;font-size:26px;font-weight:600;line-height:36px;color:#f2f2f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:850px}
+.hasimio-tv .tv-keyboard-query span{font-weight:400;color:#8c8c8c}
+.hasimio-tv .tv-keyboard-query i{display:inline-block;width:2px;height:28px;margin-left:3px;vertical-align:-4px;background:#f2f2f2}
+.hasimio-tv .tv-keyboard-row{display:flex}
+.hasimio-tv .tv-keyboard-row+.tv-keyboard-row{margin-top:8px}
+html.hasimio-tv .tv-keyboard .tv-key{display:flex;align-items:center;justify-content:center;width:58px;height:46px;min-height:0;margin:0 8px 0 0;padding:0;border:0;border-radius:8px;background:#2b2b2b;color:#ececec;font-size:20px;font-weight:600;line-height:1}
+html.hasimio-tv .tv-keyboard .tv-key:last-child{margin-right:0}
+html.hasimio-tv .tv-keyboard .tv-key.label{font-size:14px}

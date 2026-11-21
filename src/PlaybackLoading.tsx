@@ -31,7 +31,9 @@ export default function PlaybackLoading({progressKey,title,detail,backdrop,messa
   return <section className="playback-loading" role="status" aria-label={failure?`${title} could not start`:`Starting ${title}`}>
     {backdrop&&<img className="playback-loading-art" src={backdrop} alt="" onError={event=>{event.currentTarget.style.display='none';}}/>}
     <div className="playback-loading-shade"/>
-    <button type="button" className="cinema-back playback-loading-back" onClick={onCancel} aria-label="Back"><ArrowLeft size={24}/></button>
+    {/* Pointer only: the remote's Back key cancels (bootstrap.ts clicks .cinema-back),
+        and a focusable arrow would let a stray OK cancel the start. */}
+    <div role="button" className="cinema-back playback-loading-back" onClick={onCancel} aria-label="Back"><ArrowLeft size={24}/></div>
     <div className="playback-loading-body">
       <h2>{title}</h2>
       {detail&&<p className="playback-loading-detail">{detail}</p>}

@@ -132,9 +132,15 @@ function startTyping(input:HTMLInputElement){
   input.dataset.tvTyping='1';reopening=input;
   input.blur();setTimeout(()=>{input.focus();reopening=undefined;},0);
 }
+// The main search opens Hasimio's own keyboard (SearchKeyboard.tsx) instead of
+// the webOS one; other fields (settings, extension links) keep the webOS keyboard.
+function openSearchKeyboard(){document.dispatchEvent(new CustomEvent('hasimio:search-keyboard'));}
 document.addEventListener('click',event=>{
   const input=event.target;
-  if(input instanceof HTMLInputElement&&input.dataset.tvLocked==='1')startTyping(input);
+  if(input instanceof HTMLInputElement&&input.dataset.tvLocked==='1'){
+    if(input.closest('.search')){event.preventDefault();openSearchKeyboard();return;}
+    startTyping(input);
+  }
 },true);
 function leaveEditor(element:HTMLElement){
   // Blurring dismisses the LG keyboard. Return to a real control so the next
@@ -152,6 +158,7 @@ document.addEventListener('keydown',event=>{
   const editorInput=document.activeElement instanceof HTMLInputElement&&document.activeElement.matches(editing)?document.activeElement:undefined;
   if(editorInput&&event.key==='Enter'){
     event.preventDefault();event.stopImmediatePropagation();
+    if(editorInput.closest('.search')){openSearchKeyboard();return;}
     startTyping(editorInput);return;
   }
   const back=event.key==='Escape'||event.key==='GoBack'||event.keyCode===461;
@@ -164,6 +171,14 @@ document.addEventListener('keydown',event=>{
     if(player){event.preventDefault();event.stopImmediatePropagation();player.click();return;}
     const dialog=document.querySelector<HTMLDialogElement>('dialog[open]');
     if(dialog){event.preventDefault();event.stopImmediatePropagation();dialog.dispatchEvent(new Event('cancel',{cancelable:true}));return;}
+    // The search keyboard: Back from the results returns to it; Back on it closes it.
+    const keyboard=document.querySelector<HTMLElement>('.tv-keyboard');
+    if(keyboard){
+      event.preventDefault();event.stopImmediatePropagation();
+      if(keyboard.contains(document.activeElement)){keyboard.querySelector<HTMLButtonElement>('[data-keyboard-done]')?.click();return;}
+      const key=keyboard.querySelector<HTMLElement>('[data-last]')??keyboard.querySelector<HTMLElement>('.tv-key');
+      key?.focus();if(key)reveal(key);return;
+    }
     const search=document.querySelector<HTMLInputElement>('.search input');
     if(search?.value){
       event.preventDefault();event.stopImmediatePropagation();
@@ -174,6 +189,13 @@ document.addEventListener('keydown',event=>{
     if(shelfBack){event.preventDefault();event.stopImmediatePropagation();shelfBack.click();return;}
     const profileBack=document.querySelector<HTMLButtonElement>('.profile-back');
     if(profileBack){event.preventDefault();event.stopImmediatePropagation();profileBack.click();return;}
+    // Down in Discover's rows, Back first returns to the top, as on Netflix; at the top it exits.
+    if(document.querySelector('nav button.active')?.textContent?.includes('Discover')&&window.scrollY>40){
+      event.preventDefault();event.stopImmediatePropagation();
+      window.scrollTo(0,0);
+      const top=document.querySelector<HTMLElement>('.hero.tv-spotlight .button.primary')??candidates().find(element=>element.matches('.poster-card'));
+      top?.focus({preventScroll:true});return;
+    }
     const home=Array.from(document.querySelectorAll<HTMLButtonElement>('nav button')).find(button=>button.textContent?.includes('Discover'));
     if(home&&!home.classList.contains('active')){event.preventDefault();event.stopImmediatePropagation();home.click();home.focus();return;}
     // At the root, let webOS handle Back and exit normally.
@@ -203,6 +225,18 @@ document.addEventListener('keydown',event=>{
     const last=lastFocus;
     const resume=last?list.reduce<{element?:HTMLElement;distance:number}>((best,element)=>{const r=element.getBoundingClientRect(),d=Math.hypot(r.left+r.width/2-last.x,r.top+r.height/2-last.y);return d<best.distance?{element,distance:d}:best;},{distance:Infinity}).element:undefined;
     (resume??list[0]).focus();return;
+  }
+  // Within a row, Left/Right step to the neighbouring poster even when it has
+  // slid out of view (rows keep focus at their left edge); only the first
+  // poster's Left reaches the menu, and the last one's Right loads the next page.
+  if((event.key==='ArrowLeft'||event.key==='ArrowRight')&&active.matches('.poster-card')){
+    const row=active.closest<HTMLElement>('.poster-row:not(.wrap)');
+    if(row){
+      const cards=Array.from(row.querySelectorAll<HTMLElement>('.poster-card'));
+      const neighbour=cards[cards.indexOf(active)+(event.key==='ArrowRight'?1:-1)];
+      if(neighbour){neighbour.focus();reveal(neighbour);return;}
+      if(event.key==='ArrowRight'){active.dispatchEvent(new CustomEvent('hasimio:edge',{bubbles:true,detail:event.key}));return;}
+    }
   }
   const pick=(controls:HTMLElement[])=>pickTarget(active.getBoundingClientRect(),event.key as Direction,controls.filter(element=>element!==active).map(element=>({item:element,box:element.getBoundingClientRect(),slider:element.matches('input[type="range"]')})),!!active.closest('.sidebar'));
   // The sticky search bar and the fixed sidebar stay on screen while rows
@@ -242,6 +276,11 @@ document.addEventListener('keydown',event=>{
 // right beneath it, as on Netflix, and its buttons return the page to the top.
 function reveal(target:HTMLElement){
   target.scrollIntoView({block:'nearest',inline:'nearest'});
+  // Rows keep the focused poster at their left edge and slide beneath it, as
+  // on Netflix; each row stays where it was left, so Up/Down return to it.
+  const row=target.matches('.poster-card')?target.closest<HTMLElement>('.poster-row:not(.wrap)'):null;
+  const first=row?.querySelector<HTMLElement>('.poster-card');
+  if(row&&first)row.scrollLeft=target.offsetLeft-first.offsetLeft;
   const spotlight=document.querySelector<HTMLElement>('.hero.tv-spotlight');
   if(!spotlight||target.closest('dialog'))return;
   if(spotlight.contains(target)){window.scrollTo(0,0);return;}
