@@ -1,4 +1,6 @@
 import {forgetStreams} from './stream-cache';
+import type {Stream} from './media';
+import {isWebOS} from './webos/platform';
 
 // A debrid account, as in Stremio's Torrentio setup: Torrentio then returns
 // direct links from the service, and files it already holds play at once with
@@ -36,3 +38,16 @@ export function debridHeaders(sourceUrl:string,account?:Debrid|null):Record<stri
   return debrid&&/\/api\/extensions\/torrentio\//.test(sourceUrl)?{'X-Hasimio-Debrid':`${debrid.provider}=${debrid.key}`}:undefined;
 }
 export function debridName(debrid=savedDebrid()){return debridProviders.find(provider=>provider.id===debrid?.provider)?.name;}
+/**
+ * On the PC a debrid file plays through Hasimio Engine, like a torrent, so it
+ * gets compatible audio: most are MKV with DD+, AC3 or DTS sound the desktop
+ * player cannot decode. TV and Android play them directly, as they do torrent
+ * files; other extensions' direct links always play as they are.
+ */
+export function playsThroughEngine(stream:Stream,desktop=!isWebOS&&import.meta.env.VITE_ANDROID!=='true'){
+  return desktop&&!stream.infoHash&&!!stream.debrid&&!!stream.url;
+}
+/** The torrent behind a Torrentio debrid link, which names it after the key. */
+export function debridInfoHash(url?:string){
+  return /\/resolve\/[a-z]+\/[^/]+\/([a-f\d]{40})(?:\/|$)/i.exec(url??'')?.[1]?.toLowerCase();
+}

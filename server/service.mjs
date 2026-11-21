@@ -4,6 +4,7 @@ import {createPeopleIndex} from './people.mjs';
 import {createActorPhotos} from './people-photos.mjs';
 import {stremioManifests} from '../shared/stremio-sources.mjs';
 import {searchStremioSource,parseDebrid,debridTag} from './stremio-sources.mjs';
+import {debridLink,openRemoteFile,remoteTorrent} from './remote-file.mjs';
 import {randomBytes} from 'node:crypto';
 import {mkdir,stat,readFile,rm} from 'node:fs/promises';
 import {createReadStream,readFileSync} from 'node:fs';
@@ -60,11 +61,26 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
   }
   async function clearAudio(session){if(session.audioPending){try{await session.audioPending;}catch{/* Failed startup still needs any completed job cleaned. */}}await stopAudioJob(session.audioJob);session.audioJob=undefined;}
   async function clearSubtitles(session){if(session.subtitleQueue)await session.subtitleQueue.catch(()=>{});await stopAudioJob(session.subtitleJob);session.subtitleJob=undefined;}
-  async function stop(id) {const session=sessions.get(id);if(!session)return; sessions.delete(id);clearTimeout(session.timer);session.probeController?.abort();if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);await clearSubtitles(session);for(const stream of session.readers)stream.destroy();if(session.torrent&&!session.torrent.destroyed)await new Promise(resolve=>session.torrent.destroy({destroyStore:true},resolve));}
+  async function stop(id) {const session=sessions.get(id);if(!session)return; sessions.delete(id);clearTimeout(session.timer);session.opening?.abort();session.probeController?.abort();if(session.audioQueue)await session.audioQueue.catch(()=>{});await clearAudio(session);await clearSubtitles(session);for(const stream of session.readers)stream.destroy();if(session.torrent&&!session.torrent.destroyed)await new Promise(resolve=>session.torrent.destroy({destroyStore:true},resolve));}
   function snapshot(session) {session.touched=Date.now();return {id:session.id,state:session.error?'error':session.ready?'ready':'buffering',error:session.error,files:session.files,selected:session.selected,duration:session.duration,audio:audioStatus(session.audioJob,session.id),audioTracks:session.audioTracks,subtitleTracks:session.subtitleTracks,subtitle:subtitleStatus(session.subtitleJob,session.id),numPeers:session.torrent?.numPeers ?? 0,downloadSpeed:session.torrent?.downloadSpeed ?? 0,downloaded:session.memory?session.torrent?.received ?? 0:session.torrent?.downloaded ?? 0,progress:session.memory?reached(session):session.torrent?.progress ?? 0,mediaUrl:session.ready&&session.selected!=null?`/api/torrents/${session.id}/files/${session.selected}`:undefined};}
   // Pieces in memory come and go, so progress is how far into the selected video any reader has got.
   function reached(session){const length=session.selected==null?0:session.torrent?.files[session.selected]?.length;return length?Math.min(1,(session.reach??0)/length):0;}
+  // A debrid link (Torrentio with a debrid account in Settings) plays as a
+  // one-file session, so the same routes give it compatible audio and subtitles.
+  async function startRemote(input) {
+    const link=debridLink(input.url);if(!link)throw new Error('Only debrid links from Torrentio can play through Hasimio Engine.');
+    for(const [id,active] of [...sessions.entries()])if(!active.inspection)await stop(id);
+    if(shuttingDown)throw new Error('Streaming service is stopping.');
+    const id=randomBytes(18).toString('hex'),opening=new AbortController();
+    const session={id,inspection:false,remote:true,touched:Date.now(),ready:false,files:[],selected:undefined,readers:new Set(),opening};sessions.set(id,session);
+    openRemoteFile(link,{name:input.filename,fetchImpl,signal:AbortSignal.any([opening.signal,AbortSignal.timeout(45000)])}).then(file=>{
+      if(!sessions.has(id))return;
+      session.torrent=remoteTorrent(file);session.files=[{index:0,name:file.name,length:file.length}];session.selected=0;session.ready=true;
+    },error=>{if(sessions.has(id))session.error=opening.signal.aborted?'Playback stopped.':error?.name==='TimeoutError'?'The debrid service took too long to answer. Try again or choose another source.':error?.message||'The debrid link could not be opened.';}).finally(()=>{session.opening=undefined;});
+    return snapshot(session);
+  }
   async function start(input,inspection=false) {
+    if(!inspection&&input?.url!==undefined&&input.infoHash===undefined)return startRemote(input);
     if(!validHash(input.infoHash))throw new Error('A valid torrent info hash is required.');
     const hash=input.infoHash.toLowerCase();
     if(!inspection)for(const [id,active] of [...sessions.entries()])if(!active.inspection)await stop(id);
@@ -92,7 +108,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     session.checks??=new Map();
     if(!session.checks.has(index))session.checks.set(index,(async()=>{
       const file=session.torrent.files[index];const stream=file.createReadStream({start:0,end:Math.min(file.length,CONTAINER_HEADER)-1});session.readers.add(stream);
-      const waiting=setTimeout(()=>stream.destroy(new Error('Peers connected, but no video data arrived. Try a source with more active seeders.')),45000);waiting.unref();
+      const waiting=setTimeout(()=>stream.destroy(new Error(session.remote?'The debrid service sent no video data. Try again or choose another source.':'Peers connected, but no video data arrived. Try a source with more active seeders.')),45000);waiting.unref();
       const chunks=[];
       try{for await(const chunk of stream)chunks.push(chunk);}
       catch(error){session.checks.delete(index);throw error;}
@@ -120,7 +136,8 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
     }finally{await stop(session.id);}
   }
   const cleanup=setInterval(()=>{for(const session of sessions.values())if(Date.now()-session.touched>3*60*1000)stop(session.id).catch(()=>{});for(const [key,item] of searches)if(item.expires<Date.now())searches.delete(key);},60000);cleanup.unref();
-  async function body(req) {let text='';for await(const chunk of req){text+=chunk;if(text.length>2048)throw new Error('Request is too large.');}return JSON.parse(text);}
+  // Debrid links carry the key, the info hash and an encoded file name, so allow more than a torrent request needs.
+  async function body(req) {let text='';for await(const chunk of req){text+=chunk;if(text.length>8192)throw new Error('Request is too large.');}return JSON.parse(text);}
   async function handle(req,res,next=()=>{res.writeHead(404);res.end();}) {
     const url=new URL(req.url ?? '/','http://localhost');if(!url.pathname.startsWith('/api/'))return next();
     if(req.method==='OPTIONS'){const headers=localRequest(req,undefined,allowedOrigins)&&preflightHeaders(req,allowedOrigins);res.writeHead(headers?204:403,headers||{});return res.end();}
@@ -305,7 +322,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
           if(url.searchParams.get('download')==='1')headers['Content-Disposition']="attachment; filename*=UTF-8''"+encodeURIComponent(path.basename(file.name)).replace(/['()*]/g,char=>'%'+char.charCodeAt(0).toString(16).toUpperCase());
           res.writeHead(range.partial?206:200,headers);if(req.method==='HEAD')return res.end();const pin=session.memory&&((first,last)=>{const item={from:file.offset+first,to:file.offset+last};session.memory.pins.add(item);return()=>session.memory.pins.delete(item);});
           const stream=session.inspection?inspectionStream(file,range,undefined,false,pin):session.memory?inspectionStream(file,range,session.memory.window,true,pin):file.createReadStream({start:range.start,end:range.end});session.readers.add(stream);
-          if(session.memory&&!session.inspection&&index===session.selected){let position=range.start;stream.on('data',chunk=>{position+=chunk.length;if(position>(session.reach??0))session.reach=position;});}const waiting=setTimeout(()=>{session.error='Peers connected, but no video data arrived. Try a source with more active seeders.';stream.destroy(new Error(session.error));},45000);waiting.unref();stream.once('data',()=>clearTimeout(waiting));stream.on('error',()=>{clearTimeout(waiting);res.destroy();});res.once('close',()=>{clearTimeout(waiting);session.readers.delete(stream);stream.destroy();});stream.pipe(res);return;
+          if(session.memory&&!session.inspection&&index===session.selected){let position=range.start;stream.on('data',chunk=>{position+=chunk.length;if(position>(session.reach??0))session.reach=position;});}const waiting=setTimeout(()=>{session.error=session.remote?'The debrid service stopped sending video data. Try again or choose another source.':'Peers connected, but no video data arrived. Try a source with more active seeders.';stream.destroy(new Error(session.error));},45000);waiting.unref();stream.once('data',()=>clearTimeout(waiting));stream.on('error',()=>{clearTimeout(waiting);res.destroy();});res.once('close',()=>{clearTimeout(waiting);session.readers.delete(stream);stream.destroy();});stream.pipe(res);return;
         }
       }
       return json(res,404,{error:'Unknown local streaming endpoint.'});

@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import {debridHeaders,savedDebrid,validDebridKey} from './debrid';
+import {debridHeaders,debridInfoHash,playsThroughEngine,savedDebrid,validDebridKey} from './debrid';
 import {rankSources,usableSource} from './stream-options';
 import type {Stream} from './media';
 
@@ -18,6 +18,23 @@ describe('debrid accounts',()=>{
     expect(debridHeaders('/api/extensions/piratebay/manifest.json',debrid)).toBeUndefined();
     expect(debridHeaders('https://torrentio.strem.fun/manifest.json',debrid)).toBeUndefined();
     expect(debridHeaders('/api/extensions/torrentio/manifest.json',null)).toBeUndefined();
+  });
+});
+
+describe('playing a debrid source',()=>{
+  const link='https://torrentio.strem.fun/resolve/realdebrid/SECRETKEY123/'+'C'.repeat(40)+'/null/0/Movie.mkv';
+  it('goes through Hasimio Engine on the PC, for compatible audio',()=>{
+    expect(playsThroughEngine({url:link,debrid:'cached'},true)).toBe(true);
+    expect(playsThroughEngine({url:link,debrid:'uncached'},true)).toBe(true);
+  });
+  it('plays directly on TV and Android, and for other extensions’ links',()=>{
+    expect(playsThroughEngine({url:link,debrid:'cached'},false)).toBe(false);
+    expect(playsThroughEngine({url:'https://example.com/a.mp4'},true)).toBe(false);
+    expect(playsThroughEngine({infoHash:'b'.repeat(40),debrid:'cached'},true)).toBe(false);
+  });
+  it('names the torrent behind the link without the key',()=>{
+    expect(debridInfoHash(link)).toBe('c'.repeat(40));
+    expect(debridInfoHash('https://example.com/a.mp4')).toBeUndefined();
   });
 });
 
