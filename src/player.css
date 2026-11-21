@@ -150,11 +150,6 @@
 .caption-reset{display:inline-flex;align-items:center;gap:6px;margin-top:6px}
 .caption-online-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .cinema-menu .caption-online-status p{margin:0}
-.cinema-menu .caption-online-action{margin-bottom:6px}
-.cinema-menu .caption-online-active{display:flex;align-items:center;gap:7px;margin:0 0 6px;color:var(--player-ink);font-size:14px}
-.caption-online-current{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 4px 4px 12px;margin-bottom:14px;border-radius:5px;background:#2e2e2e;font-size:14px}
-.caption-online-current>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.caption-online-current .cinema-text-action{min-height:36px;padding:4px 8px}
 @media(prefers-reduced-motion:reduce){.cinema-caption-group{transition:none}}
 
 /* Skip intro uses the same quiet floating surface as Up next. */
@@ -217,9 +212,11 @@
 .caption-choice.selected{border-color:var(--player-accent);background:#3a3a3a;font-weight:600}
 .caption-auto{width:100%;margin-top:16px}
 .cinema-menu .caption-versions-heading{margin:4px 0 10px}
-.caption-versions{display:grid;gap:6px}
+.caption-versions{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.cinema-menu-content>.cinema-menu-divider:first-child{display:none}
 .caption-version{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:9px 12px;border:1px solid transparent;border-radius:6px;background:#2b2b2b;color:var(--player-ink);text-align:left;font:inherit;cursor:pointer}
 .caption-version.selected{border-color:var(--player-accent);background:#353535}
+@media (hover:hover){.caption-choice:hover,.caption-version:hover{background:#383838}.caption-choice.selected:hover,.caption-version.selected:hover{background:#404040}}
 .caption-version-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
 .caption-version>svg{flex:none}
 .caption-version-name{font-size:14px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

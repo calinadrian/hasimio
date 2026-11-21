@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
-import {Check,Globe,LoaderCircle,RefreshCw,RotateCcw} from 'lucide-react';
+import {Check,LoaderCircle,RefreshCw,RotateCcw} from 'lucide-react';
 import {DRIFT_CHOICES,FINE_STEP,NO_TIMING,TIMING_STEP,describeDelay,nudgeTiming,type SubtitleTiming} from './subtitle-timing';
 import {captionColors,captionEdges,captionFonts,captionPresets,defaultSettings,type CaptionEdge,type CaptionFont,type CaptionStyle,type PlayerSettings} from './preferences';
 import {captionLines,languageName,parseVtt,sameLanguage,srtToVtt} from './playback-tracks';
@@ -109,70 +109,49 @@ export async function loadOnlineSubtitle(item:OnlineResult){
   return subtitleFile(await response.text(),`${item.provider||'OpenSubtitles'} · ${languageName(item.language)}`,item.language);
 }
 
-// Romanian and English get one-press buttons on the TV; other languages stay in a list.
+// Romanian and English get one-press buttons; other languages stay in a list.
 export const QUICK_SUBTITLE_LANGUAGES=[{code:'rum',label:'Română'},{code:'eng',label:'English'}] as const;
 /** `ranked` is false when the video's file name is unknown, so no version could be compared. */
 export function matchDescription(match:number,index:number,ranked=true){
   if(!ranked)return 'Release unknown · check timing';
   return index===0&&match>=0.5?'Best match for this video':match>=0.5?'Good match':match>=0.25?'Similar release':'Different release · may need timing';
 }
-export function OnlineSubtitles({search,retry,language,active,auto,onAuto,onLanguage,onLoad,onOff,remote}:{search:OnlineSearch;retry:()=>void;language:string;active?:SubtitleFile&{online?:string};auto:boolean;onAuto:(auto:boolean)=>void;onLanguage:(language:string)=>void;onLoad:(file:SubtitleFile&{online:string})=>void;onOff:()=>void;remote?:boolean}){
+export function OnlineSubtitles({search,retry,language,active,auto,onAuto,onLanguage,onLoad,onOff}:{search:OnlineSearch;retry:()=>void;language:string;active?:SubtitleFile&{online?:string};auto:boolean;onAuto:(auto:boolean)=>void;onLanguage:(language:string)=>void;onLoad:(file:SubtitleFile&{online:string})=>void;onOff:()=>void}){
   const languages=[...new Set([language,...search.results.map(item=>item.language)])].map(code=>({code,name:languageName(code),count:search.results.filter(item=>sameLanguage(item.language,code)).length})).sort((a,b)=>a.code===language?-1:b.code===language?1:a.name.localeCompare(b.name));
   const options=search.results.filter(item=>sameLanguage(item.language,language)).slice(0,40);
-  const [choice,setChoice]=useState<string>(),[loading,setLoading]=useState(false),[error,setError]=useState('');
-  const [shown,setShown]=useState(6),[loadingId,setLoadingId]=useState<string>();
-  const selected=options.find(item=>item.id===(choice??active?.online))??options[0];
-  async function load(){if(!selected)return;setLoading(true);setError('');try{onLoad({...await loadOnlineSubtitle(selected),online:selected.id});}catch(e){setError(e instanceof Error?e.message:'This subtitle could not be downloaded.');}finally{setLoading(false);}}
-  if(remote){
-    // TV remote: every choice is one press on a large button. No dropdown
-    // round-trips and no disabled buttons that would drop remote focus.
-    async function pick(item:OnlineResult){
-      if(loadingId||active?.online===item.id)return;
-      setLoadingId(item.id);setError('');
-      try{onLoad({...await loadOnlineSubtitle(item),online:item.id});}catch(e){setError(e instanceof Error?e.message:'This subtitle could not be downloaded.');}finally{setLoadingId(undefined);}
-    }
-    const quick=QUICK_SUBTITLE_LANGUAGES.some(item=>sameLanguage(item.code,language));
-    const others=languages.filter(item=>!QUICK_SUBTITLE_LANGUAGES.some(quickItem=>sameLanguage(quickItem.code,item.code))&&item.count>0);
-    const ranked=search.results.some(item=>item.match>0);
-    return <div className="caption-online caption-remote">
-      <div className="caption-section-heading"><h4>Language</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
-      <div className="caption-languages" role="radiogroup" aria-label="Subtitle language">
-        {QUICK_SUBTITLE_LANGUAGES.map(item=>{const on=sameLanguage(item.code,language),count=search.results.filter(result=>sameLanguage(result.language,item.code)).length;
-          return <button key={item.code} type="button" role="radio" aria-checked={on} className={`caption-choice ${on?'selected':''}`} onClick={()=>{if(!on){onLanguage(item.code);setShown(6);}}}>{on&&<Check size={16}/>}{item.label}{search.state==='ready'&&(on||count>0)&&<small>{count}</small>}</button>;})}
-      </div>
-      {active?.online&&<button type="button" className="cinema-text-action caption-turn-off" onClick={onOff}>Turn subtitles off</button>}
-      {search.state==='unsupported'?<p className="cinema-help">Online subtitles are available for movies and series with an IMDb listing.</p>
-      :search.state==='loading'||search.state==='idle'?<p className="cinema-help caption-online-status"><LoaderCircle size={15} className="spin"/> Searching for subtitles…</p>
-      :search.state==='error'?<div className="caption-online-status" role="alert"><p className="cinema-help">{search.error}</p><button type="button" className="cinema-text-action" onClick={retry}>Search again</button></div>
-      :<>
-        <h4 className="caption-versions-heading">{languageName(language)} versions</h4>
-        {options.length?<div className="caption-versions">{options.slice(0,shown).map((item,index)=>{const current=active?.online===item.id;
-          return <button key={item.id} type="button" className={`caption-version ${current?'selected':''} ${ranked&&item.match<0.25?'weak':''}`} aria-current={current||undefined} onClick={()=>void pick(item)}>
-            <span className="caption-version-text"><span className="caption-version-name">{item.release}</span><span className="caption-version-meta">{item.provider||'OpenSubtitles'} · {matchDescription(item.match,index,ranked)}</span></span>
-            {current?<Check size={18}/>:loadingId===item.id?<LoaderCircle size={18} className="spin"/>:null}
-          </button>;})}
-          {options.length>shown&&<button type="button" className="cinema-text-action" onClick={()=>setShown(count=>count+6)}>Show {Math.min(6,options.length-shown)} more versions</button>}
-        </div>:<p className="cinema-help">No {languageName(language)} subtitles were found for this video.</p>}
-        {others.length>0&&<label className="cinema-field caption-other-language">Other language<select value={quick?'':language} onChange={event=>{if(event.target.value){onLanguage(event.target.value);setShown(6);}}}><option value="">Choose a language…</option>{others.map(item=><option key={item.code} value={item.code}>{item.name} ({item.count})</option>)}</select></label>}
-        {search.warnings?.map(warning=><p key={warning} className="cinema-help" role="status">{warning}</p>)}{error&&<p className="cinema-help" role="alert">{error}</p>}
-        <button type="button" className={`caption-choice caption-auto ${auto?'selected':''}`} aria-pressed={auto} onClick={()=>onAuto(!auto)}>{auto&&<Check size={16}/>}Load {languageName(language)} automatically</button>
-      </>}
-    </div>;
+  const [error,setError]=useState(''),[shown,setShown]=useState(6),[loadingId,setLoadingId]=useState<string>();
+  // Every choice is one press, on every device: the TV remote needs it (no dropdown round-trips, no disabled
+  // buttons that would drop focus), and on the PC it reads more simply than stacked dropdowns.
+  async function pick(item:OnlineResult){
+    if(loadingId||active?.online===item.id)return;
+    setLoadingId(item.id);setError('');
+    try{onLoad({...await loadOnlineSubtitle(item),online:item.id});}catch(e){setError(e instanceof Error?e.message:'This subtitle could not be downloaded.');}finally{setLoadingId(undefined);}
   }
-  return <div className="caption-online">
-    <div className="caption-section-heading"><h4><Globe size={15}/> Online subtitles</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
-    {active?.online&&<div className="caption-online-current"><span>{active.label}</span><button type="button" className="cinema-text-action" onClick={onOff}>Turn off</button></div>}
-    {search.state==='unsupported'?<p className="cinema-help">Online subtitles are available for movies and series with an IMDb listing. Load an SRT / VTT file instead.</p>
+  const quick=QUICK_SUBTITLE_LANGUAGES.some(item=>sameLanguage(item.code,language));
+  const others=languages.filter(item=>!QUICK_SUBTITLE_LANGUAGES.some(quickItem=>sameLanguage(quickItem.code,item.code))&&item.count>0);
+  const ranked=search.results.some(item=>item.match>0);
+  return <div className="caption-online caption-remote">
+    <div className="caption-section-heading"><h4>Language</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
+    <div className="caption-languages" role="radiogroup" aria-label="Subtitle language">
+      {QUICK_SUBTITLE_LANGUAGES.map(item=>{const on=sameLanguage(item.code,language),count=search.results.filter(result=>sameLanguage(result.language,item.code)).length;
+        return <button key={item.code} type="button" role="radio" aria-checked={on} className={`caption-choice ${on?'selected':''}`} onClick={()=>{if(!on){onLanguage(item.code);setShown(6);}}}>{on&&<Check size={16}/>}{item.label}{search.state==='ready'&&(on||count>0)&&<small>{count}</small>}</button>;})}
+    </div>
+    {active?.online&&<button type="button" className="cinema-text-action caption-turn-off" onClick={onOff}>Turn subtitles off</button>}
+    {search.state==='unsupported'?<p className="cinema-help">Online subtitles are available for movies and series with an IMDb listing.</p>
     :search.state==='loading'||search.state==='idle'?<p className="cinema-help caption-online-status"><LoaderCircle size={15} className="spin"/> Searching for subtitles…</p>
     :search.state==='error'?<div className="caption-online-status" role="alert"><p className="cinema-help">{search.error}</p><button type="button" className="cinema-text-action" onClick={retry}>Search again</button></div>
     :<>
-      <label className="cinema-field">Language<select value={language} onChange={event=>{onLanguage(event.target.value);setChoice(undefined);}}>{languages.map(item=><option key={item.code} value={item.code}>{item.name} ({item.count})</option>)}</select></label>
-      {options.length?<><label className="cinema-field">Version<select value={selected?.id} onChange={event=>setChoice(event.target.value)}>{options.map((item,index)=><option key={item.id} value={item.id}>{index===0&&item.match>=0.5?'★ Best match · ':''}{item.provider?item.provider+' · ':''}{item.release}</option>)}</select></label>
-        {active?.online===selected?.id?<p className="caption-online-active"><Check size={15}/> Showing this version</p>:<button type="button" className="cinema-action caption-online-action" disabled={loading} onClick={()=>void load()}>{loading?<LoaderCircle size={17} className="spin"/>:<Check size={17}/>} {loading?'Loading…':active?.online?'Switch to this version':'Use these subtitles'}</button>}
-        {selected&&selected.match<0.5&&<p className="cinema-help">Timing may differ from your video. Adjust the subtitle delay if lines appear early or late.</p>}
-      </>:<p className="cinema-help">No {languageName(language)} subtitles were found. Choose another language.</p>}
+      <h4 className="caption-versions-heading">{languageName(language)} versions</h4>
+      {options.length?<div className="caption-versions">{options.slice(0,shown).map((item,index)=>{const current=active?.online===item.id;
+        return <button key={item.id} type="button" className={`caption-version ${current?'selected':''} ${ranked&&item.match<0.25?'weak':''}`} aria-current={current||undefined} onClick={()=>void pick(item)}>
+          <span className="caption-version-text"><span className="caption-version-name">{item.release}</span><span className="caption-version-meta">{item.provider||'OpenSubtitles'} · {matchDescription(item.match,index,ranked)}</span></span>
+          {current?<Check size={18}/>:loadingId===item.id?<LoaderCircle size={18} className="spin"/>:null}
+        </button>;})}
+        {options.length>shown&&<button type="button" className="cinema-text-action" onClick={()=>setShown(count=>count+6)}>Show {Math.min(6,options.length-shown)} more versions</button>}
+      </div>:<p className="cinema-help">No {languageName(language)} subtitles were found for this video.</p>}
+      {others.length>0&&<label className="cinema-field caption-other-language">Other language<select value={quick?'':language} onChange={event=>{if(event.target.value){onLanguage(event.target.value);setShown(6);}}}><option value="">Choose a language…</option>{others.map(item=><option key={item.code} value={item.code}>{item.name} ({item.count})</option>)}</select></label>}
       {search.warnings?.map(warning=><p key={warning} className="cinema-help" role="status">{warning}</p>)}{error&&<p className="cinema-help" role="alert">{error}</p>}
-      <label className="caption-toggle"><input type="checkbox" checked={auto} onChange={event=>onAuto(event.target.checked)}/>Load automatically when a video has no {languageName(language)} subtitles</label>
+      <button type="button" className={`caption-choice caption-auto ${auto?'selected':''}`} aria-pressed={auto} onClick={()=>onAuto(!auto)}>{auto&&<Check size={16}/>}Load {languageName(language)} automatically</button>
     </>}
   </div>;
 }
