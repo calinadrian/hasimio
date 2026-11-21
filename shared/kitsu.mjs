@@ -7,13 +7,47 @@ function image(value) {
   try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : undefined; } catch { return undefined; }
 }
 function date(value) { return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) ? value : undefined; }
-async function request(path, params, signal, fetchImpl) {
+// The TV service runs this on Node 8: no DOMException, and its AbortSignal polyfill has no reason.
+const abortError = signal => signal?.reason ?? Object.assign(new Error('The request was cancelled.'),{name:'AbortError'});
+const pause = (ms, signal) => new Promise((resolve,reject) => {
+  if (signal?.aborted) { reject(abortError(signal)); return; }
+  const done = () => { signal?.removeEventListener('abort',stop); resolve(); };
+  const timer = setTimeout(done,ms);
+  const stop = () => { clearTimeout(timer); reject(abortError(signal)); };
+  signal?.addEventListener('abort',stop,{once:true});
+});
+// Kitsu drops or delays the odd request. One retry keeps a single bad page from emptying a season;
+// requests the caller cancelled, and answers that will not change (404, 400), are not repeated.
+async function request(path, params, signal, fetchImpl, retries = 1) {
   const url = new URL(`${kitsuApi}/${path}`);
   for (const [key,value] of Object.entries(params)) url.searchParams.set(key,String(value));
-  const timeout = AbortSignal.timeout(15000);
-  const response = await fetchImpl(url, {headers:{Accept:'application/vnd.api+json'},credentials:'omit',redirect:'error',signal:signal ? AbortSignal.any([signal,timeout]) : timeout});
-  if (!response.ok) throw new Error(`Kitsu returned HTTP ${response.status}.`);
-  return response.json();
+  for (let attempt = 0;;attempt++) {
+    const timeout = AbortSignal.timeout(15000);
+    let response;
+    try { response = await fetchImpl(url, {headers:{Accept:'application/vnd.api+json'},credentials:'omit',redirect:'error',signal:signal ? AbortSignal.any([signal,timeout]) : timeout}); }
+    catch (error) { if (signal?.aborted || attempt >= retries) throw error; await pause(300,signal); continue; }
+    if (response.ok) return response.json();
+    if (attempt >= retries || (response.status !== 429 && response.status < 500)) throw new Error(`Kitsu returned HTTP ${response.status}.`);
+    await pause(300,signal);
+  }
+}
+// Episode pages beyond the first are fetched in parallel. The limit is shared by every lookup in this
+// app, since the details page, the Progress refresh and a series' seasons all page episodes at once.
+// Urgent pages (the title page someone just opened) wait ahead of background refreshes.
+const pageLimit = 8;
+let pagesInFlight = 0;
+const pageQueue = [];
+async function withPageSlot(signal, task, urgent = false) {
+  if (pagesInFlight >= pageLimit) await new Promise((resolve,reject) => {
+    const waiter = {urgent,resolve:() => { signal?.removeEventListener('abort',stop); resolve(); }};
+    const stop = () => { const index = pageQueue.indexOf(waiter); if (index >= 0) pageQueue.splice(index,1); reject(abortError(signal)); };
+    const behind = urgent ? pageQueue.findIndex(other => !other.urgent) : -1;
+    if (behind >= 0) pageQueue.splice(behind,0,waiter); else pageQueue.push(waiter);
+    if (signal?.aborted) stop(); else signal?.addEventListener('abort',stop,{once:true});
+  });
+  else pagesInFlight++;
+  try { return await task(); }
+  finally { const next = pageQueue.shift(); if (next) next.resolve(); else pagesInFlight--; }
 }
 // Kitsu lists every season as its own anime. These suffixes separate the series name from the season,
 // peeled from the end so "Season 3 Part 2" yields both. Arc separators must be explicit: an arc name
@@ -105,12 +139,14 @@ export async function kitsuMetadata(id, signal, fetchImpl=fetch, episodeNumber) 
   if (meta.type === 'movie') return meta;
   return {...meta,videos:await episodes(id,number,signal,fetchImpl,episodeNumber)};
 }
-async function episodes(id, number, signal, fetchImpl, episodeNumber) {
+// Kitsu serves at most 20 episodes a page. Only the fields Hasimio reads are requested: a page is a third the size.
+const episodePage = 20, episodeLimit = 10000, episodeFields = 'number,relativeNumber,seasonNumber,canonicalTitle,airdate,thumbnail';
+async function episodes(id, number, signal, fetchImpl, episodeNumber, urgent = false) {
   const videos = new Map();
-  for (let offset=0;offset<10000;offset+=20) {
-    const params = {'page[limit]':20,'page[offset]':offset};
+  const load = async (offset, pageSignal = signal) => {
+    const params = {'page[limit]':episodePage,'page[offset]':offset,'fields[episodes]':episodeFields};
     if (episodeNumber != null) params['filter[number]']=episodeNumber;
-    const page = await request(`anime/${number}/episodes`,params,signal,fetchImpl);
+    const page = await request(`anime/${number}/episodes`,params,pageSignal,fetchImpl);
     if (!Array.isArray(page.data)) throw new Error('Kitsu returned invalid episodes.');
     for (const record of page.data) {
       const a=record?.attributes;
@@ -118,11 +154,32 @@ async function episodes(id, number, signal, fetchImpl, episodeNumber) {
       const video={id:`${id}:${a.number}`,episode:positive(a.relativeNumber) ? a.relativeNumber : a.number,season:positive(a.seasonNumber) ? a.seasonNumber : 1,title:text(a.canonicalTitle),released:date(a.airdate),thumbnail:image(a.thumbnail?.original)};
       videos.set(video.id,video);
     }
-    // Never follow URLs supplied by the provider. Build each page on our fixed origin.
-    if (!page.links?.next) return [...videos.values()].sort((a,b)=>a.episode-b.episode);
-    if (!page.data.length) throw new Error('Kitsu returned inconsistent episode pagination.');
+    return page;
+  };
+  const done = () => [...videos.values()].sort((a,b)=>a.episode-b.episode);
+  let page = await load(0), offset = 0;
+  // The first page says how many episodes there are, so the rest can be requested together
+  // (One Piece has 71 pages). Without a count, pages are followed one at a time.
+  const count = page.meta?.count;
+  if (page.links?.next && positive(count) && count > episodePage) {
+    const offsets = [];
+    for (let next = episodePage;next < Math.min(count,episodeLimit);next += episodePage) offsets.push(next);
+    // One page that fails twice fails the season, so its other pages stop rather than use up the shared slots.
+    const stop = new AbortController(), pageSignal = signal ? AbortSignal.any([signal,stop.signal]) : stop.signal;
+    let pages;
+    try { pages = await Promise.all(offsets.map(next => withPageSlot(pageSignal,() => load(next,pageSignal),urgent))); }
+    catch (error) { stop.abort(); throw error; }
+    page = pages[pages.length-1];
+    offset = offsets[offsets.length-1];
   }
-  throw new Error('Kitsu episode pagination exceeded the safety limit.');
+  for (;;) {
+    // Never follow URLs supplied by the provider. Build each page on our fixed origin.
+    if (!page.links?.next) return done();
+    if (!page.data.length) throw new Error('Kitsu returned inconsistent episode pagination.');
+    offset += episodePage;
+    if (offset >= episodeLimit) throw new Error('Kitsu episode pagination exceeded the safety limit.');
+    page = await load(offset);
+  }
 }
 async function sequelRecords(number, signal, fetchImpl) {
   const page = await request(`anime/${number}/media-relationships`,{'filter[role]':'sequel,prequel',include:'destination','page[limit]':20},signal,fetchImpl);
@@ -136,13 +193,28 @@ const airedOrder = (a,b) => (date(a.attributes.startDate) ?? '9999').localeCompa
 // One title for a whole series. Follows sequel links through movies, since Mugen Train sits between two
 // TV seasons, but stops at records with an unrelated name, so Naruto and Naruto: Shippuden stay apart.
 // Episode IDs still name their own season's record: stream lookups and saved progress keep working.
-export async function kitsuSeries(id, signal, fetchImpl=fetch) {
+// Walking the sequels takes one request per season, so the opened record's own episodes load alongside
+// it and are passed to onPartial as soon as they arrive: sources can be searched before the whole series is known.
+export async function kitsuSeries(id, signal, fetchImpl=fetch, onPartial) {
   const match = /^kitsu:(\d+)$/.exec(id);
   if (!match) throw new Error('Invalid Kitsu anime ID.');
-  const result = await request(`anime/${match[1]}`,{},signal,fetchImpl);
-  const entry = animeMeta(result.data);
-  if (entry.id !== id) throw new Error('Kitsu returned a different anime.');
-  if (entry.type === 'movie') return entry;
+  // The opened record's episodes need only its ID, so they are requested together with the record.
+  // A movie, or a record that fails, cancels them. A caller waiting for onPartial is someone looking at
+  // the title page, so its pages go ahead of background refreshes.
+  const early = new AbortController(), urgent = !!onPartial;
+  const opened = episodes(id,match[1],signal ? AbortSignal.any([signal,early.signal]) : early.signal,fetchImpl,undefined,urgent);
+  opened.catch(() => {});
+  let finished = false;
+  try {
+    const result = await request(`anime/${match[1]}`,{},signal,fetchImpl);
+    const entry = animeMeta(result.data);
+    if (entry.id !== id) throw new Error('Kitsu returned a different anime.');
+    if (entry.type === 'movie') return entry;
+    opened.then(videos => { if (!finished && !signal?.aborted && videos.length) try { onPartial?.({...entry,videos,metadataPartial:true}); } catch {} },() => {});
+    return await mergeSeries(result,entry,opened,signal,fetchImpl,urgent);
+  } finally { finished = true; early.abort(); }
+}
+async function mergeSeries(result, entry, opened, signal, fetchImpl, urgent) {
   const records = new Map([[result.data.id,result.data]]), keys = new Set(entry.seriesKeys);
   let partial = false, frontier = [result.data];
   while (frontier.length && records.size < seriesRecordLimit) {
@@ -173,7 +245,7 @@ export async function kitsuSeries(id, signal, fetchImpl=fetch) {
   await Promise.all(Array.from({length:Math.min(seriesRequestLimit,queue.length)},async()=>{
     while (queue.length) {
       const record = queue.shift();
-      try { loaded.set(record.id,await episodes(`kitsu:${record.id}`,record.id,signal,fetchImpl)); }
+      try { loaded.set(record.id,await (record === result.data ? opened : episodes(`kitsu:${record.id}`,record.id,signal,fetchImpl,undefined,urgent))); }
       catch (error) { if (signal?.aborted) throw error; loaded.set(record.id,error); partial = true; }
     }
   }));

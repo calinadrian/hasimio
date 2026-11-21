@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
-import {ArrowUpRight,ChevronDown,ExternalLink,HardDrive,LoaderCircle,MonitorPlay,Play,Puzzle,RefreshCw,Users} from 'lucide-react';
+import {ArrowUpRight,ChevronDown,ExternalLink,HardDrive,ListVideo,LoaderCircle,MonitorPlay,Play,Puzzle,RefreshCw,Users} from 'lucide-react';
 import {type Stream,safeHttp} from './media';
 import {inspectionWorkers,inspectStreamTracks} from './source-inspection';
 import {EnginePanel,useEngine} from './EngineStatus';
@@ -12,7 +12,10 @@ import {usePlayerSettings} from './use-player-settings';
 const mobileEngine=import.meta.env.VITE_ANDROID==='true';
 
 const qualityLabel=(q:Quality)=>q==='2K'?'2K · 1440p':q==='4K'?'4K · 2160p':q==='Other'?'Original / unspecified':q;
-export default function StreamPicker({streams,loading,error,automatic,onPlay,onRetry,onManage,videoId}:{videoId:string;streams:Stream[];loading:boolean;error:string;automatic?:boolean;onPlay:(stream:Stream)=>void;onRetry:()=>void;onManage:()=>void}) {
+// episodes: a series whose episode list is still loading, failed to load, or lists nothing yet. Sources are
+// searched per episode, so until there is one the panel says why instead of "No sources available yet".
+export type EpisodeWait='loading'|'failed'|'none';
+export default function StreamPicker({streams,loading,error,automatic,onPlay,onRetry,onManage,videoId,episodes}:{videoId:string;streams:Stream[];loading:boolean;error:string;automatic?:boolean;onPlay:(stream:Stream)=>void;onRetry:()=>void;onManage:()=>void;episodes?:EpisodeWait}) {
   const preferences=usePlayerSettings();
   const [checks,setChecks]=useState<Record<string,string>>({});const [checkAttempt,setCheckAttempt]=useState(0);useSyncExternalStore(subscribeTrackChanges,trackRevision);
   const [chosen,setChosen]=useState<Quality>();const [expanded,setExpanded]=useState(false);const [sort,setSort]=useState('seeders');
@@ -37,8 +40,11 @@ export default function StreamPicker({streams,loading,error,automatic,onPlay,onR
     if(engine.state==='ready')void Promise.all(Array.from({length:inspectionWorkers},checkSources));return()=>{live=false;controller.abort();};
   },[sourceHashes,videoId,quality,checkAttempt,engine.state,open,automatic]);
   return <section className="stream-picker" aria-label="Playback sources">
-    <div className="stream-picker-heading"><div><h3>Sources</h3>{open&&!loading&&<p>{(isWebOS||mobileEngine)?'Audio and subtitles are checked one source at a time for MKV and WebM files.':'Pick a quality, then a source. Audio and subtitle tracks are checked automatically.'}</p>}</div><button className="icon-button" aria-label="Refresh stream sources" onClick={onRetry} disabled={loading}><RefreshCw size={18} className={loading?'spin':''}/></button></div>
+    <div className="stream-picker-heading"><div><h3>Sources</h3>{open&&!loading&&!episodes&&<p>{(isWebOS||mobileEngine)?'Audio and subtitles are checked one source at a time for MKV and WebM files.':'Pick a quality, then a source. Audio and subtitle tracks are checked automatically.'}</p>}</div><button className="icon-button" aria-label={episodes?'Reload the episode list':'Refresh stream sources'} onClick={onRetry} disabled={loading||episodes==='loading'}><RefreshCw size={18} className={loading||episodes==='loading'?'spin':''}/></button></div>
     {engine.state!=='ready'&&<EnginePanel engine={engine}/>}
+    {episodes==='loading'?<div className="source-loading" role="status"><LoaderCircle size={22} className="spin"/><div><strong>Loading episodes</strong><p>Sources are searched as soon as the episode list arrives.</p></div></div>
+    :episodes==='failed'?<div className="stream-empty"><ListVideo size={28}/><h4>The episode list could not be loaded</h4><p>Sources are searched per episode. Check your connection, then try again.</p><button className="button secondary" onClick={onRetry}><RefreshCw size={16}/> Try again</button></div>
+    :episodes==='none'?<div className="stream-empty"><ListVideo size={28}/><h4>No episodes are listed yet</h4><p>Sources can be searched once an episode is listed.</p></div>:<>
     {loading&&options.length>0&&<p className="loading" role="status"><LoaderCircle size={16} className="spin"/> Checking remaining extensions… You can play now.</p>}
     {loading&&!options.length?<div className="source-loading" role="status"><LoaderCircle size={22} className="spin"/><div><strong>Finding available sources</strong><p>Checking your installed extensions…</p></div></div>:options.length&&!open?<button type="button" className="sources-toggle" aria-expanded="false" onClick={()=>setExpanded(true)}><span><strong>{options.length} {options.length===1?'source':'sources'}</strong> in {qualities.length} {qualities.length===1?'quality':'qualities'}</span><span>Choose quality and source <ChevronDown size={16}/></span></button>:options.length?<>
       <div className="source-toolbar"><label>Quality<div className="source-select"><MonitorPlay size={18}/><select aria-label="Stream quality" value={quality} onChange={e=>setChosen(e.target.value as Quality)}>{qualities.map(q=><option key={q} value={q}>{qualityLabel(q)} · {options.filter(o=>o.quality===q).length} {options.filter(o=>o.quality===q).length===1?'source':'sources'}</option>)}</select><ChevronDown size={16}/></div></label><label>Sort by<div className="source-select"><select aria-label="Sort stream sources" value={sort} onChange={e=>setSort(e.target.value)}><option value="seeders">Most seeders</option><option value="size">Smallest file</option></select><ChevronDown size={16}/></div></label></div>
@@ -52,6 +58,6 @@ export default function StreamPicker({streams,loading,error,automatic,onPlay,onR
         </article>;
       })}</div><p className="source-note">{sources.some(o=>o.stream.infoHash)?((isWebOS||mobileEngine)?'More seeders can help playback start faster. Video buffers in the TV’s bounded memory cache. ':'More seeders can help playback start faster. Torrent sources buffer locally. Public-source track checks connect to peers and read file headers. '):''}{sources.some(o=>o.codec==='HEVC'||o.codec==='AV1')?'HEVC and AV1 require a compatible browser and device.':''}</p>
     </>:engine.state==='ready'&&(loading||!error)?<div className="stream-empty"><Puzzle size={28}/><h4>No sources available yet</h4><p>Try refreshing, or enable a playback extension.</p><button className="button secondary" onClick={onManage}>Manage extensions <ArrowUpRight size={16}/></button></div>:null}
-    {error&&engine.state==='ready'&&<p className="error" role="alert">{error}</p>}
+    {error&&engine.state==='ready'&&<p className="error" role="alert">{error}</p>}</>}
   </section>;
 }

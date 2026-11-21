@@ -129,11 +129,20 @@ export function needsMetadata(meta:Meta, now = Date.now()) {
   if (meta.id.startsWith('kitsu:') && meta.type !== 'movie' && !meta.seasonIds && !meta.metadataError) return true;
   return !meta.metadataFetchedAt || now - meta.metadataFetchedAt >= (meta.metadataPartial ? 60*1000 : meta.metadataError ? 10*60*1000 : 6*60*60*1000);
 }
-export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSignal): Promise<Meta> {
+// onPartial receives an anime's opened season before its other seasons are known, so its sources can be
+// searched early. It is marked metadataPartial and must not be cached or saved.
+export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSignal, onPartial?:(partial:Meta)=>void): Promise<Meta> {
   if (meta.id.startsWith('open:')) return {...meta,metadataFetchedAt:Date.now(),metadataError:undefined};
   const sources = migrateAnimeSource(addons).filter(a => !a.builtin && supports(a,'meta',meta.type,meta.id)).sort((a,b) => Number(b.url === meta.sourceUrl)-Number(a.url === meta.sourceUrl));
   const controller=new AbortController();
   const requestSignal=signal?AbortSignal.any([signal,controller.signal]):controller.signal;
+  const merge=(loaded:Meta,source:Addon):Meta=>{
+    const knownVideos=new Map(meta.videos?.map(video=>[video.id,video]));
+    const videos=Array.isArray(loaded.videos)?loaded.videos.map(video=>{const known=knownVideos.get(video.id);const merged={...known,...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined&&value!==null)),id:video.id};if(!validRelease(video.released)&&validRelease(known?.released))merged.released=known!.released;return merged;}):meta.videos;
+    // A merged anime is always the same title, whichever season's card opened it.
+    return {...meta,...loaded,id:loaded.seasonIds?.includes(meta.id)?loaded.id:meta.id,type:meta.type,category:meta.category ?? (source.manifest.id === kitsu.manifest.id ? 'anime' : undefined),sourceUrl:source.url,videos,metadataFetchedAt:Date.now(),metadataError:undefined,metadataPartial:loaded.metadataPartial===true};
+  };
+  let settled=false;
   try {
     // Give the original provider a short head start, then let a healthy fallback
     // answer without waiting for the first provider's full network timeout.
@@ -143,14 +152,13 @@ export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSigna
         const timer=setTimeout(()=>{requestSignal.removeEventListener('abort',cancel);resolve();},index*300);
         if(requestSignal.aborted)cancel();else requestSignal.addEventListener('abort',cancel,{once:true});
       });
+      const partial=onPartial&&((loaded:Meta)=>{if(!settled&&!requestSignal.aborted)onPartial({...merge(loaded,source),metadataPartial:true});});
       const result = source.manifest.id === kitsu.manifest.id
-        ? {meta:await kitsuSeries(meta.id,requestSignal)}
+        ? {meta:await kitsuSeries(meta.id,requestSignal,undefined,partial)}
         : await getJson<{meta:Meta}>(resourceUrl(source.url,'meta',meta.type,meta.id),requestSignal);
       if (!result.meta || typeof result.meta.id !== 'string' || typeof result.meta.name !== 'string') throw new Error('Invalid metadata response.');
-      const knownVideos=new Map(meta.videos?.map(video=>[video.id,video]));
-      const videos=Array.isArray(result.meta.videos)?result.meta.videos.map(video=>{const known=knownVideos.get(video.id);const merged={...known,...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined&&value!==null)),id:video.id};if(!validRelease(video.released)&&validRelease(known?.released))merged.released=known!.released;return merged;}):meta.videos;
-      // A merged anime is always the same title, whichever season's card opened it.
-      return {...meta,...result.meta,id:result.meta.seasonIds?.includes(meta.id)?result.meta.id:meta.id,type:meta.type,category:meta.category ?? (source.manifest.id === kitsu.manifest.id ? 'anime' : undefined),sourceUrl:source.url,videos,metadataFetchedAt:Date.now(),metadataError:undefined,metadataPartial:result.meta.metadataPartial===true};
+      settled=true;
+      return merge(result.meta,source);
     }));
   }catch{if(signal?.aborted)throw new DOMException('Aborted','AbortError');}
   finally{controller.abort();}
