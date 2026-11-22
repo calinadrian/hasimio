@@ -1,6 +1,6 @@
 /* Progress: a cinematic overview of everything watched. Neutral greys and white only;
    colour comes from the artwork. Sizes follow the page's own width (container queries). */
-.progress-page{--progress-surface:#191919;--progress-inset:#252525;--progress-hover:#2e2e2e;width:100%;max-width:1440px;container-type:inline-size}
+.progress-page{--progress-surface:#191919;--progress-inset:#252525;--progress-hover:#2e2e2e;width:100%;container-type:inline-size}
 .progress-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
 .progress-header>.section-intro{margin:0}
 .progress-header .tvtime-import{display:contents}
@@ -8,7 +8,7 @@
 
 /* ---------- Hero: time watched over the last title's artwork ---------- */
 .progress-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:flex-end;min-height:360px;margin-bottom:44px;border-radius:24px;background:#111}
-.progress-hero-art{position:absolute;inset:0 0 0 28%;z-index:-1}
+.progress-hero-art{position:absolute;inset:0 0 0 auto;width:72%;max-width:1180px;z-index:-1}
 .progress-hero-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 30%}
 .progress-hero-art::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#111 0%,#111111e0 16%,#11111199 42%,#11111133 72%,#11111100 100%),linear-gradient(0deg,#111 0%,#111111b3 22%,#11111100 60%)}
 .progress-hero-content{width:100%;display:flex;flex-direction:column;gap:30px;padding:44px 40px 36px}
@@ -36,8 +36,9 @@
 
 /* ---------- Up next: wide artwork cards ---------- */
 .progress-upnext{margin-bottom:44px}
-.progress-upnext-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
-.progress-upnext-grid>:nth-child(n+5){animation:progress-reveal .25s ease both}
+/* Progress.tsx sets --upnext-cols from the page width (2 to 6), so one row is exactly what fits. */
+.progress-upnext-grid{display:grid;grid-template-columns:repeat(var(--upnext-cols,4),minmax(0,1fr));gap:20px}
+.progress-upnext-card.is-revealed{animation:progress-reveal .25s ease both}
 @keyframes progress-reveal{from{opacity:0;transform:translateY(6px)}}
 .progress-upnext-card{position:relative;isolation:isolate;display:block;aspect-ratio:16/9;min-width:0;padding:0;overflow:hidden;border-radius:16px;background:#1c1c1c;color:#fff;text-align:left}
 .progress-upnext-art{position:absolute;inset:0;z-index:-1;display:grid;place-items:center;color:#4a4a4a}
@@ -167,18 +168,21 @@
 .progress-sort .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* ---------- Narrower pages ---------- */
+/* Wide windows: the heatmap and hero art keep a readable size while genres take the rest. */
+@container(min-width:1700px){
+  .progress-insights{grid-template-columns:minmax(0,1180px) minmax(320px,1fr)}
+  .progress-insights.is-single .progress-activity-panel{max-width:1180px}
+}
 @container(max-width:1150px){
-  .progress-upnext-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .progress-insights{grid-template-columns:minmax(0,1fr)}
   .progress-genres ol{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));column-gap:28px}
   .progress-stat-lead strong{font-size:72px}
 }
 @container(max-width:860px){
-  .progress-hero-art{inset:0}
+  .progress-hero-art{inset:0;width:auto;max-width:none}
   .progress-hero-art::after{background:linear-gradient(0deg,#111 0%,#111111d9 45%,#11111166 75%,#11111126 100%)}
   .progress-hero-content{padding:120px 28px 28px}
   .progress-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .progress-upnext-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .progress-recent{grid-template-columns:minmax(0,1fr)}
 }
 @container(max-width:560px){

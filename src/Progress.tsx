@@ -70,9 +70,9 @@ function Hero({summary,stats}:{summary:ProgressSummary;stats:{label:string;value
   </section>;
 }
 
-function UpNextCard({item,onOpen}:{item:UpNext;onOpen:(meta:Meta)=>void}){
+function UpNextCard({item,revealed,onOpen}:{item:UpNext;revealed:boolean;onOpen:(meta:Meta)=>void}){
   const status=item.resume!==undefined?<><b>Resume {item.label}</b> · {item.resume}% watched</>:item.airs?<><b>{item.label}</b> · airs {longDate(item.airs)}</>:<><b>{item.fresh?'New':'Next'}: {item.label}</b>{item.video.title&&!/^Episode #?[\d.]+$/i.test(item.video.title)?` · ${item.video.title}`:''}</>;
-  return <button type="button" className={'progress-upnext-card'+(item.airs?' is-upcoming':'')} onClick={()=>onOpen(item.meta)}>
+  return <button type="button" className={'progress-upnext-card'+(item.airs?' is-upcoming':'')+(revealed?' is-revealed':'')} onClick={()=>onOpen(item.meta)}>
     <span className="progress-upnext-art" aria-hidden="true"><Film size={28}/><ArtImage sources={[...backdropSources(item.meta),...posterSources(item.meta)]}/></span>
     <span className="progress-upnext-play" aria-hidden="true"><Play size={18} fill="currentColor"/></span>
     <span className="progress-upnext-text">
@@ -83,14 +83,16 @@ function UpNextCard({item,onOpen}:{item:UpNext;onOpen:(meta:Meta)=>void}){
   </button>;
 }
 
-/** One row of cards, as many as fit (the CSS columns), with the rest behind Show all. */
+/** One row of cards, as many as fit, with the rest behind Show all. */
 function UpNextSection({items,onOpen}:{items:UpNext[];onOpen:(meta:Meta)=>void}){
   const {ref,width}=useWidth<HTMLElement>();
-  const perRow=!width||width>1150?4:width>860?3:2;
+  const perRow=!width?4:width>=2200?6:width>=1700?5:width>1150?4:width>860?3:2;
+  // One card short of a full row widens the cards instead of leaving a hole at the end.
+  const columns=items.length<perRow?Math.max(items.length,perRow-1):perRow;
   const [all,setAll]=useState(false);
   return <section className="progress-upnext" aria-label="Up next" ref={ref}>
     <div className="progress-section-heading"><h2>Up next <span>{items.length}</span></h2>{items.length>perRow&&<button type="button" className="progress-more" aria-expanded={all} onClick={()=>setAll(!all)}>{all?'Show less':`Show all ${items.length}`}</button>}</div>
-    <div className="progress-upnext-grid">{(all?items:items.slice(0,perRow)).map(item=><UpNextCard key={item.meta.type+':'+item.meta.id} item={item} onOpen={onOpen}/>)}</div>
+    <div className="progress-upnext-grid" style={{'--upnext-cols':columns} as CSSProperties}>{(all?items:items.slice(0,perRow)).map((item,index)=><UpNextCard key={item.meta.type+':'+item.meta.id} item={item} revealed={index>=perRow} onOpen={onOpen}/>)}</div>
   </section>;
 }
 
