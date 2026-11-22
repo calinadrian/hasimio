@@ -16,3 +16,33 @@
 .poster-card .poster-tag{position:absolute;top:8px;left:8px;z-index:2;display:flex;align-items:center;max-width:calc(100% - 44px);height:22px;padding:0 8px;border-radius:11px;background:#141414d9;color:#f2f2f2;font-size:11px;font-weight:700;line-height:22px;white-space:nowrap;overflow:hidden}
 .poster-card .poster-tag>svg{flex:none;margin-right:4px}
 .poster-card .saved-mark{top:8px;right:8px;z-index:2;width:22px;height:22px;box-shadow:0 1px 4px #0008}
+
+/* Card sizes (card-size.ts): how many posters fit across a shelf or grid.
+   Medium is the original layout. Phones and TVs set their own sizes. */
+:root{--cards:5;--card-gap:24px;--wide-cards:3.35;--wide-gaps:3}
+@media(min-width:1600px){:root{--cards:6;--wide-cards:4.35;--wide-gaps:4}}
+@media(max-width:1150px){:root{--cards:4;--wide-cards:2.4;--wide-gaps:2}}
+@media(max-width:760px){:root{--cards:2;--card-gap:20px}}
+@media(max-width:440px){:root{--card-gap:16px}}
+:root[data-card-size=small]{--cards:7;--card-gap:18px;--wide-cards:4.35;--wide-gaps:4}
+@media(min-width:1600px){:root[data-card-size=small]{--cards:8;--wide-cards:5.35;--wide-gaps:5}}
+@media(max-width:1150px){:root[data-card-size=small]{--cards:5;--wide-cards:3.35;--wide-gaps:3}}
+@media(max-width:760px){:root[data-card-size=small]{--cards:3;--card-gap:14px}}
+:root[data-card-size=large]{--cards:4;--wide-cards:2.4;--wide-gaps:2}
+@media(min-width:1600px){:root[data-card-size=large]{--cards:5;--wide-cards:3.35;--wide-gaps:3}}
+@media(max-width:1150px){:root[data-card-size=large]{--cards:3;--wide-cards:1.6;--wide-gaps:1}}
+@media(max-width:760px){:root[data-card-size=large]{--cards:2}}
+/* Smaller cards get a slightly smaller title and info line so they still fit one line each. */
+:root[data-card-size=small] .poster-card>strong{margin-top:8px;font-size:14px}
+:root[data-card-size=small] .poster-card>.poster-meta{font-size:12px}
+:root[data-card-size=small] .poster-card .poster-tag{top:6px;left:6px;height:20px;padding:0 7px;font-size:10px;line-height:20px}
+:root[data-card-size=small] .poster-card .saved-mark{top:6px;right:6px;width:20px;height:20px}
+:root[data-card-size=large] .poster-card>strong{font-size:17px}
+
+/* Card size switch, beside the page filters. */
+.card-size{display:flex;flex:none;gap:2px;padding:3px;border-radius:12px;background:#252525}
+.card-size>button{display:grid;place-items:center;width:40px;height:38px;padding:0;border:0;border-radius:9px;background:transparent;color:#9a9a9a}
+.card-size>button:hover:not([aria-pressed=true]){background:#333;color:#eee}
+.card-size>button[aria-pressed=true]{background:#494949;color:#fff}
+.card-size>button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:440px){.card-size{display:none}}

@@ -85,25 +85,18 @@
 .top-nav-layout .row-heading h3{color:#d9d9d9}
 
 /* ---------- Rows: Continue watching (wide) and Top 10 (ranked) ---------- */
-.poster-row.wide-row{grid-auto-columns:calc((100% - 72px)/3.35)}
+/* Column counts come from the card size (poster.css). */
+.poster-row.wide-row{grid-auto-columns:calc((100% - var(--wide-gaps)*var(--card-gap))/var(--wide-cards))}
 .wide-card .poster-image{aspect-ratio:16/9;border-radius:8px}
 .wide-card .poster-image img{object-position:50% 22%}
 .wide-card.is-watching .poster-image::before{height:40%}
-.poster-row.ranked-row{grid-auto-columns:calc((100% - 96px)/5*1.32)}
+.poster-row.ranked-row{grid-auto-columns:calc((100% - (var(--cards) - 1)*var(--card-gap))/var(--cards)*1.32)}
 .poster-card.ranked{position:relative;isolation:isolate;padding-left:25%;container-type:inline-size}
 .poster-card.ranked>strong,.poster-card.ranked>.poster-meta{display:none}
 .poster-card.ranked .poster-image{z-index:1}
 /* Outlined, not filled: a large white number would be the brightest thing on screen. */
 .poster-card.ranked>.rank-number{position:absolute;left:0;bottom:-.06em;z-index:0;display:block;min-height:0;font:800 clamp(110px,10vw,220px)/.8 Manrope,sans-serif;font-size:130cqw;letter-spacing:-.08em;color:#000;-webkit-text-stroke:3px #555;pointer-events:none;user-select:none}
 .poster-card.ranked:hover>.rank-number{-webkit-text-stroke-color:#777}
-@media(min-width:1600px){
-  .poster-row.wide-row{grid-auto-columns:calc((100% - 96px)/4.35)}
-  .poster-row.ranked-row{grid-auto-columns:calc((100% - 120px)/6*1.32)}
-}
-@media(max-width:1150px){
-  .poster-row.wide-row{grid-auto-columns:calc((100% - 48px)/2.4)}
-  .poster-row.ranked-row{grid-auto-columns:calc((100% - 72px)/4*1.32)}
-}
 
 /* ---------- Hover cards (HoverPreview.tsx) ---------- */
 .hover-card{position:fixed;z-index:40;overflow:hidden;background:#141414;border-radius:8px;box-shadow:0 18px 50px #000000d9;transform-origin:50% 35%;animation:hover-card-in .2s ease-out}
