@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {execFile,spawn} from 'node:child_process';
 import {promisify} from 'node:util';
-import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {mkdir,readFile,rm,writeFile} from 'node:fs/promises';
 import {createServer} from 'node:http';
 import {once} from 'node:events';
 import path from 'node:path';
@@ -15,6 +15,8 @@ const require=createRequire(import.meta.url);
 const folder=path.resolve('.cache/player-smoke');
 const nativePointer=process.argv.includes('--native-pointer');
 await mkdir(folder,{recursive:true});
+// A fresh profile each run: saved settings (automatic subtitles off, another language) change what the player shows.
+await rm(path.join(folder,'profile'),{recursive:true,force:true});
 const cursorScript=path.join(folder,'cursor.ps1');
 if(nativePointer)await writeFile(cursorScript,`param([int]$x,[int]$y)
 Add-Type -TypeDefinition 'using System.Runtime.InteropServices; public class PlayerCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y); }'
@@ -50,18 +52,20 @@ try{
   media.listen(0,'127.0.0.1');await once(media,'listening');
   const source=`http://127.0.0.1:${media.address().port}`;
   await writeFile(path.join(folder,'index.html'),'<html><body style="margin:0"><div id="root"></div><script type="module" src="./fixture.tsx"></script></body></html>');
+  // Like TorrentPlayer, the fixture passes a subtitle selection, so the attached track shows in any language.
   await writeFile(path.join(folder,'fixture.tsx'),`
     import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
-    import Player from '/src/Player';import '/src/styles.css';
-    function Fixture(){const [sub,setSub]=useState(true),[language,setLanguage]=useState('eng'),[changing,setChanging]=useState(false);return <dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><button id="changing-sub" onClick={()=>setChanging(true)}>Changing subtitles</button><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt'+(changing?'?changing=1':''),label:'Test',language}:undefined}}/></dialog>;}createRoot(document.getElementById('root')).render(<Fixture/>);
+    import Player from '/src/Player';import {useSubtitleSelection} from '/src/subtitle-selection';import '/src/styles.css';
+    function Fixture(){const selection=useSubtitleSelection(),[sub,setSub]=useState(true),[language,setLanguage]=useState('eng'),[changing,setChanging]=useState(false);return <dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><button id="changing-sub" onClick={()=>setChanging(true)}>Changing subtitles</button><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} subtitleSelection={selection} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt'+(changing?'?changing=1':''),label:'Test',language}:undefined}}/></dialog>;}createRoot(document.getElementById('root')).render(<Fixture/>);
   `);
-  vite=await createViteServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,strictPort:false}});
+  vite=await createViteServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,strictPort:false,watch:{ignored:['**/.cache/player-smoke/profile/**']}}});
   await vite.listen();
   const url=`http://127.0.0.1:${vite.httpServer.address().port}/.cache/player-smoke/index.html`;
   const runner=path.join(folder,'electron.cjs');
   await writeFile(runner,`
     const {app,BrowserWindow,screen}=require('electron');const assert=require('node:assert/strict');
     app.commandLine.appendSwitch('autoplay-policy','no-user-gesture-required');
+    app.setPath('userData',${JSON.stringify(path.join(folder,'profile'))});
     const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     app.whenReady().then(async()=>{const win=new BrowserWindow({show:false,width:1280,height:820,webPreferences:{backgroundThrottling:false,preload:${JSON.stringify(path.resolve('electron/preload.cjs'))}}});
       let cursor={x:0,y:0},pointerMessages=0;
@@ -189,7 +193,7 @@ try{
         console.log('PASS: Fullscreen controls wake across repeated cycles through the desktop bridge.'+(nativePointer?'':' They stay hidden with a still cursor.'));
         console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, displays/toggles the newest subtitle, and replaces all old cues across repeated English/Spanish switches.');
         app.exit(0);
-      }catch(error){console.error(error);console.error('pointerMessages='+pointerMessages+', cursor='+JSON.stringify(screen.getCursorScreenPoint()));if(nativePointer)await moveCursor(originalCursor);console.error(await js('JSON.stringify({body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
+      }catch(error){console.error(error);console.error('pointerMessages='+pointerMessages+', cursor='+JSON.stringify(screen.getCursorScreenPoint()));if(nativePointer)await moveCursor(originalCursor);console.error(await js('JSON.stringify({storage:Object.fromEntries(Object.entries(localStorage).filter(([key])=>/setting|subtitle|caption|player|preference/i.test(key)).map(([key,value])=>[key,value.slice(0,300)])),body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
     });
   `);
   const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;

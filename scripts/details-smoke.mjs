@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,rm,writeFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {createServer as httpServer} from 'node:http';
 import path from 'node:path';
@@ -10,12 +10,15 @@ import {createServer} from 'vite';
 import react from '@vitejs/plugin-react';
 const require=createRequire(import.meta.url),folder=path.resolve('.cache/details-smoke');
 await mkdir(folder,{recursive:true});
+await rm(path.join(folder,'profile'),{recursive:true,force:true});
 const show={id:'perf:show',type:'series',name:'Slow metadata fixture',videos:[{id:'perf:show:1:1',season:1,episode:1},{id:'perf:show:1:2',season:1,episode:2}]};
+// Progress needs a title the app has never fetched; the first one's episode list is remembered after opening it.
+const other={id:'perf:other',type:'series',name:'Unknown totals fixture',videos:[{id:'perf:other:1:1',season:1,episode:1},{id:'perf:other:1:2',season:1,episode:2}]};
 let metadataRequests=0,streamRequests=0;
 const service=httpServer((req,res)=>{
   res.setHeader('Access-Control-Allow-Origin','*');res.setHeader('Content-Type','application/json');
   if(req.url==='/stats')return res.end(JSON.stringify({metadataRequests,streamRequests}));
-  if(req.url.includes('/meta/')){metadataRequests++;return setTimeout(()=>res.end(JSON.stringify({meta:show})),2500);}
+  if(req.url.includes('/meta/')){metadataRequests++;const meta=/perf(?::|%3A)other/i.test(req.url)?other:show;return setTimeout(()=>res.end(JSON.stringify({meta})),2500);}
   if(req.url.includes('/stream/')){streamRequests++;return res.end(JSON.stringify({streams:[{name:'Fast fixture 1080p',url:'https://example.com/test.mp4'}]}));}
   res.end('{}');
 });
@@ -24,13 +27,13 @@ const fixture=`http://127.0.0.1:${service.address().port}`;
 const addon={url:fixture+'/manifest.json',enabled:true,manifest:{id:'perf',name:'Performance fixture',version:'1',resources:['meta','stream'],types:['series'],idPrefixes:['perf:'],catalogs:[]}};
 const vite=await createServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,watch:{ignored:['**/.cache/**']}}});
 await vite.listen();
-async function run({url,fixture,show,addon,profile}){
+async function run({url,fixture,show,other,addon,profile}){
   const {app,BrowserWindow}=require('electron'),assert=require('node:assert/strict');
   app.setPath('userData',profile);
   await app.whenReady();
   const win=new BrowserWindow({show:false,width:1280,height:900,webPreferences:{backgroundThrottling:false}});
   const js=s=>win.webContents.executeJavaScript(s,true);
-  const wait=async s=>{for(let i=0;i<120;i++){if(await js(s))return;await new Promise(r=>setTimeout(r,25));}throw Error('Timed out: '+s);};
+  const wait=async(s,tries=120)=>{for(let i=0;i<tries;i++){if(await js(s))return;await new Promise(r=>setTimeout(r,25));}throw Error('Timed out: '+s);};
   const click=async s=>{await js(`(${s}).click()`);await new Promise(r=>setTimeout(r,50));};
   try{
     await win.loadURL(url);
@@ -56,8 +59,8 @@ async function run({url,fixture,show,addon,profile}){
     await wait('!!document.querySelector(".episode-select")');
     assert.equal((await (await fetch(fixture+'/stats')).json()).metadataRequests,stats.metadataRequests,'Reopening must reuse fresh metadata');
     await click('document.querySelector(".close-dialog")');
-    const preview={...show,videos:undefined,metadataFetchedAt:1};
-    const history={'series:perf:show:1:1':{position:1,duration:1,updatedAt:Date.now(),completed:true,manual:true,titleKey:'series:perf:show',videoId:'perf:show:1:1'}};
+    const preview={...other,videos:undefined,metadataFetchedAt:1};
+    const history={'series:perf:other:1:1':{position:1,duration:1,updatedAt:Date.now(),completed:true,manual:true,titleKey:'series:perf:other',videoId:'perf:other:1:1'}};
     await js(`localStorage.setItem('hasimio:library',${JSON.stringify(JSON.stringify([preview]))});localStorage.setItem('hasimio:playback-progress:v1',${JSON.stringify(JSON.stringify(history))});window.dispatchEvent(new Event('hasimio:remote-data'));window.dispatchEvent(new Event('hasimio:playback-progress'));`);
     await click('document.querySelector(\'.nav-item[aria-label="Progress"]\')');
     await wait('!!document.querySelector(".progress-unknown")');
@@ -70,16 +73,19 @@ async function run({url,fixture,show,addon,profile}){
     await win.reload();
     await wait('!!document.querySelector(\'.nav-item[aria-label="Progress"]\')');
     await click('document.querySelector(\'.nav-item[aria-label="Progress"]\')');
-    await wait('document.querySelector(".progress-row strong")?.textContent==="Slow metadata fixture"');
+    const hydrating=Date.now();
+    // The fixture holds metadata back for 2.5s, so allow longer than the default wait.
+    await wait('document.querySelector(".progress-row strong")?.textContent==="Unknown totals fixture"',400);
+    console.log(`Hydrated after reload in ${Date.now()-hydrating}ms.`);
     assert.match(await js('document.querySelector(".progress-row-text small").textContent'),/1 of 2/);
     assert.equal(await js('JSON.parse(localStorage.getItem("hasimio:library")).length'),0,'Progress lookup must not add titles to the library');
-    assert.ok(await js('JSON.parse(localStorage.getItem("hasimio:progress-metadata:v1")).some(m=>m.id==="perf:show")'),'Progress title metadata must survive reloads');
+    assert.ok(await js('JSON.parse(localStorage.getItem("hasimio:progress-metadata:v1")).some(m=>m.id==="perf:other")'),'Progress title metadata must survive reloads');
     console.log('PASS: Synced watch history hydrates and displays a title absent from library/catalogs, without changing library membership.');
     app.exit(0);
-  }catch(error){console.error(error);console.error(await js('document.querySelector(".detail-dialog")?.textContent'));console.error(await(await fetch(fixture+'/stats')).json());app.exit(1);}
+  }catch(error){console.error(error);console.error(await js('JSON.stringify({dialog:document.querySelector(".detail-dialog")?.innerText.slice(0,600),page:document.body.innerText.slice(0,1500)})'));console.error(await(await fetch(fixture+'/stats')).json());app.exit(1);}
 }
 const runner=path.join(folder,'electron.cjs');
-await writeFile(runner,`(${run.toString()})(${JSON.stringify({url:vite.resolvedUrls.local[0],fixture,show,addon,profile:path.join(folder,'profile')})})`);
+await writeFile(runner,`(${run.toString()})(${JSON.stringify({url:vite.resolvedUrls.local[0],fixture,show,other,addon,profile:path.join(folder,'profile')})})`);
 try{
   const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
   const child=spawn(require('electron'),[runner],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});

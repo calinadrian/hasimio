@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,rm,writeFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import path from 'node:path';
 import {createServer} from 'vite';
@@ -10,6 +10,7 @@ import react from '@vitejs/plugin-react';
 
 const require=createRequire(import.meta.url),folder=path.resolve('.cache/poster-smoke');
 await mkdir(folder,{recursive:true});
+await rm(path.join(folder,'profile'),{recursive:true,force:true});
 await writeFile(path.join(folder,'fixture.tsx'),`
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -57,8 +58,10 @@ async function run({url,folder}){
     assert.ok(!requests.some(url=>url.includes('/tt3/')),'Healthy primary must not request backup');
     assert.equal(requests.filter(url=>url.includes('/tt4/')).length,1,'Exhausted sources must stop retrying');
     assert.equal(await js('document.querySelectorAll(".poster-playback-track").length'),1,'Only unfinished playback shows a progress bar');
-    assert.equal(await js('document.querySelectorAll(".poster-watched").length'),1,'Finished titles show a compact badge');
-    assert.equal(await js('document.querySelector(".poster-playback small").textContent'),'10:00 left');
+    assert.equal(await js('document.querySelectorAll(".poster-tag").length'),1,'Finished titles show a compact tag');
+    assert.equal(await js('document.querySelector(".poster-tag").textContent'),'Watched');
+    assert.equal(await js('document.querySelector(".poster-meta.is-progress b").textContent'),'S1 E3');
+    assert.match(await js('document.querySelector(".poster-meta.is-progress").textContent'),/10m left$/);
     const painted=()=>js('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
     await painted();
     await fs.writeFile(folder+'/desktop.png',(await win.webContents.capturePage()).toPNG());
