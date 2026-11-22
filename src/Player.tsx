@@ -7,6 +7,7 @@ import {type Stream,safeHttp} from './media';
 import {languageName,parseVtt,sameLanguage} from './playback-tracks';
 import {CaptionOverlay,CaptionStyleControls,OnlineSubtitles,SubtitleTimingControls,loadOnlineSubtitle,subtitleFile,useOnlineSubtitles,type CaptionSettings,type Frame} from './Captions';
 import {useSubtitleSelection,type SubtitleFile,type SubtitleSelection} from './subtitle-selection';
+import {automaticCandidates} from './online-subtitle-order';
 import {playbackTime,seekPosition,timelineDuration,preparedHlsConfig,PROGRESS_SAVE_INTERVAL} from './player-utils';
 import {resumePosition,saveProgress} from './playback-progress';
 import {playerSettings,savePlayerSettings} from './preferences';
@@ -205,7 +206,7 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   useEffect(()=>{if(choice){autoOnline.current='';setAutomaticSubtitle(undefined);}},[choice]);
   useEffect(()=>{if(stream.subtitleTrack)setAutomaticSubtitle(undefined);},[stream.subtitleTrack?.url]);
   useEffect(()=>{if(!needsOnline||autoOnline.current===autoSubtitleKey||online.search.state==='idle'||online.search.state==='loading')return;autoOnline.current=autoSubtitleKey;
-    const options=online.search.results.filter(item=>sameLanguage(item.language,captions.subtitleLanguage)).slice(0,5);if(!options.length)return;
+    const options=automaticCandidates(online.search.results,captions.subtitleLanguage);if(!options.length)return;
     let live=true;
     async function load(){for(const item of options){try{const file=await loadOnlineSubtitle(item);if(!live)return;setAutomaticSubtitle({...file,online:item.id,selectionKey:autoSubtitleKey});setNotice(`${languageName(item.language)} subtitles loaded from ${item.provider||'OpenSubtitles'}. Change them in Subtitles (C).`);return;}catch{if(!live)return;}}if(live)setSubtitleError('No matching subtitle version could be loaded. Choose another version in Subtitles.');}
     void load();return()=>{live=false;};
@@ -243,7 +244,7 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
           if(negligible(result)){setAutoSync({id:timingId,state:'fits',release:reference.release,matched:result.matched});return;}
           changeTiming({speed:result.speed,delay:result.delay});
           setAutoSync({id:timingId,state:'synced',release:reference.release,matched:result.matched});
-          setNotice('Subtitles synced to this video automatically. Fine-tune with CH ▲ / CH ▼ if needed.');
+          setNotice(`Subtitles synced to this video automatically. Fine-tune with ${isWebOS?'CH ▲ / CH ▼':'[ and ]'} if needed.`);
           return;
         }catch{/* Try the next reference. */}
       }

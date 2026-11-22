@@ -4,6 +4,7 @@ import {DRIFT_CHOICES,FINE_STEP,NO_TIMING,TIMING_STEP,describeDelay,nudgeTiming,
 import {captionColors,captionEdges,captionFonts,captionPresets,defaultSettings,type CaptionEdge,type CaptionFont,type CaptionStyle,type PlayerSettings} from './preferences';
 import {captionLines,languageName,parseVtt,sameLanguage,srtToVtt} from './playback-tracks';
 import type {SubtitleFile} from './subtitle-selection';
+import {SUBTITLE_SOURCES,sourceNames} from './online-subtitle-order';
 import {engineUrl} from './engine';
 
 export type CaptionSettings=Pick<PlayerSettings,'captionSize'|'captionDelay'|'captionPosition'|'subtitleLanguage'|'autoSubtitles'>&CaptionStyle;
@@ -131,7 +132,7 @@ export function OnlineSubtitles({search,retry,language,active,auto,onAuto,onLang
   const others=languages.filter(item=>!QUICK_SUBTITLE_LANGUAGES.some(quickItem=>sameLanguage(quickItem.code,item.code))&&item.count>0);
   const ranked=search.results.some(item=>item.match>0);
   return <div className="caption-online caption-remote">
-    <div className="caption-section-heading"><h4>Language</h4><span>OpenSubtitles · Subtitrari-noi.ro</span></div>
+    <div className="caption-section-heading"><h4>Language</h4><span>{search.state==='ready'?sourceNames(search.results,language):SUBTITLE_SOURCES}</span></div>
     <div className="caption-languages" role="radiogroup" aria-label="Subtitle language">
       {QUICK_SUBTITLE_LANGUAGES.map(item=>{const on=sameLanguage(item.code,language),count=search.results.filter(result=>sameLanguage(result.language,item.code)).length;
         return <button key={item.code} type="button" role="radio" aria-checked={on} className={`caption-choice ${on?'selected':''}`} onClick={()=>{if(!on){onLanguage(item.code);setShown(6);}}}>{on&&<Check size={16}/>}{item.label}{search.state==='ready'&&(on||count>0)&&<small>{count}</small>}</button>;})}

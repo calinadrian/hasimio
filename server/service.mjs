@@ -27,6 +27,7 @@ import {createSubtitleJob,subtitleStatus} from './subtitles.mjs';
 import {createCastController} from './cast.mjs';
 import {createOnlineSubtitleService} from './online-subtitles.mjs';
 import {createRomanianSubtitles} from './romanian-subtitles.mjs';
+import {createAddic7ed,createSubsRo,createYify} from './subtitle-sources.mjs';
 import {readRarSubtitles} from './rar-subtitles.mjs';
 import {createInspectionScheduler} from './inspection-scheduler.mjs';
 import {inspectionStream} from './inspection-stream.mjs';
@@ -43,7 +44,7 @@ const sweepCache=()=>swept??=Promise.all([cacheRoot,audioRoot].map(dir=>rm(dir,{
 export function createMediaService({clientFactory,inspectionClientFactory,fetchImpl=fetch,allowedOrigins=parseOrigins(process.env.HASIMIO_ALLOWED_ORIGINS),titles=createTitleIndex({dir:cacheDir('titles')}),lan=false,castMediaOrigins,pieceCache=pieceCacheBytes()}={}) {
   let clientPromise;let inspectionClientPromise;const scheduleInspection=createInspectionScheduler();let shuttingDown=false;const inspectionCache=new Map();
   const sessions=new Map();const searches=new Map();
-  const onlineSubtitles=createOnlineSubtitleService({fetchImpl,romanian:createRomanianSubtitles({fetchImpl,extractRar:readRarSubtitles})});
+  const onlineSubtitles=createOnlineSubtitleService({fetchImpl,romanian:createRomanianSubtitles({fetchImpl,extractRar:readRarSubtitles}),sources:[createSubsRo({fetchImpl,extractRar:readRarSubtitles}),createYify({fetchImpl}),createAddic7ed({fetchImpl})]});
   // Created on first use so engines that never cast do not open discovery sockets or TLS connections.
   let castController;
   const cast=()=>castController??=createCastController({fetchImpl,mediaOrigins:castMediaOrigins});
@@ -236,7 +237,7 @@ export function createMediaService({clientFactory,inspectionClientFactory,fetchI
         const id=url.searchParams.get('id')??'',filename=(url.searchParams.get('filename')??'').slice(0,300);
         try{return json(res,200,await onlineSubtitles.search(id,filename,url.searchParams.get('language')??''));}catch(e){return json(res,502,{error:e instanceof Error?e.message:'Online subtitles are unavailable.'});}
       }
-      const onlineSubtitle=/^\/api\/subtitles\/files\/(\d{1,12}|noi-\d{1,12}(?:-\d{1,3}-\d{1,4})?)$/.exec(url.pathname);
+      const onlineSubtitle=/^\/api\/subtitles\/files\/(\d{1,12}|noi-\d{1,12}(?:-\d{1,3}-\d{1,4})?|subsro-(?:ro|en)-\d{1,12}(?:-\d{1,3}-\d{1,4})?|yify-(?:ro|en)-[a-z0-9-]{1,200}|a7-[A-Za-z0-9]{6,40})$/.exec(url.pathname);
       if(req.method==='GET'&&onlineSubtitle){
         try{const text=await onlineSubtitles.download(onlineSubtitle[1]);res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'private, max-age=86400','X-Content-Type-Options':'nosniff'});return res.end(text);}catch(e){return json(res,502,{error:e instanceof Error?e.message:'This subtitle could not be downloaded.'});}
       }

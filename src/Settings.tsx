@@ -65,7 +65,7 @@ export default function Settings(){
       <h2>Subtitles</h2>
       <label className="settings-field">Preferred subtitle language<select value={settings.subtitleLanguage} onChange={event=>update({subtitleLanguage:event.target.value,autoSubtitles:true})}>{languages.map(code=><option key={code} value={code}>{languageName(code)}</option>)}</select></label>
       <label className="settings-toggle"><input type="checkbox" checked={settings.autoSubtitles} onChange={event=>update({autoSubtitles:event.target.checked})}/>Automatically load my preferred subtitles</label>
-      <p>A matching subtitle track is selected when playback starts. If the video has no matching track, Hasimio looks for online subtitles. Romanian searches also include Subtitrari-noi.ro, with no account or API key. Availability and timing depend on the title and video version. You can change the selection in the player.</p>
+      <p>A matching subtitle track is selected when playback starts. If the video has no matching track, Hasimio looks for online subtitles. Romanian and English searches also include subs.ro, YIFY Subtitles and Addic7ed (Romanian also Subtitrari-noi.ro), with no account or API key. If one version fails to load, the next site is tried. Availability and timing depend on the title and video version. You can change the selection in the player.</p>
       <p className="settings-saved">Saved automatically for this profile.</p>
     </div>
     <div className="settings-card">

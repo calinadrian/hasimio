@@ -73,16 +73,31 @@ export async function downloadOnlineSubtitle(file,fetchImpl=fetch){
   return new TextDecoder('utf-8').decode(bytes);
 }
 
-// A failed provider must not hide subtitles from the other provider.
-export function createOnlineSubtitleService({romanian,fetchImpl=fetch}={}){
+const SOURCE_LANGUAGE={ro:'ro',ron:'ro',rum:'ro',en:'en',eng:'en'};
+const EXTRA_SOURCE_DEADLINE=10000;
+function withDeadline(promise,ms,message){
+  let timer;
+  return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error(message)),ms);})]).finally(()=>clearTimeout(timer));
+}
+// A failed provider must not hide subtitles from the others. `sources` are the extra Romanian and
+// English sites (subtitle-sources.mjs); each answers only for the languages it lists.
+export function createOnlineSubtitleService({romanian,sources=[],fetchImpl=fetch}={}){
   async function search(id,filename,language=''){
+    const wanted=SOURCE_LANGUAGE[String(language).toLowerCase()];
     const providers=[{name:'OpenSubtitles',search:()=>searchOnlineSubtitles(id,filename,fetchImpl)}];
-    if(romanian&&['ro','ron','rum'].includes(language.toLowerCase()))providers.push({name:'Subtitrari-noi.ro',search:()=>romanian.search(id,filename)});
+    if(romanian&&wanted==='ro')providers.push({name:'Subtitrari-noi.ro',search:()=>romanian.search(id,filename)});
+    // One deadline per extra source, however many requests it chains, so a slow site cannot hold up the list.
+    for(const source of sources)if(wanted&&source.languages.includes(wanted))providers.push({name:source.name,search:()=>withDeadline(source.search(id,filename,wanted),EXTRA_SOURCE_DEADLINE,source.name+' took too long to answer.')});
     const results=await Promise.allSettled(providers.map(provider=>provider.search()));
-    const subtitles=results.flatMap((result,index)=>result.status==='fulfilled'?result.value.subtitles.map(item=>({...item,provider:providers[index].name})):[]);
+    const subtitles=results.flatMap((result,index)=>result.status==='fulfilled'?result.value.subtitles.map(item=>({...item,provider:item.provider??providers[index].name})):[]);
     const warnings=results.flatMap(result=>result.status==='rejected'?[result.reason instanceof Error?result.reason.message:'A subtitle source is unavailable.']:[]);
     if(results.every(result=>result.status==='rejected'))throw Error(warnings.join(' '));
     return {subtitles:subtitles.sort((a,b)=>b.match-a.match),warnings};
   }
-  return {search,download:id=>id.startsWith('noi-')?romanian.download(id):downloadOnlineSubtitle(id,fetchImpl)};
+  function download(id){
+    if(id.startsWith('noi-'))return romanian.download(id);
+    const source=sources.find(item=>id.startsWith(item.prefix));
+    return source?source.download(id):downloadOnlineSubtitle(id,fetchImpl);
+  }
+  return {search,download};
 }
