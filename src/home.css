@@ -14,9 +14,15 @@
 :root .top-nav .nav-item{min-height:40px;padding:8px;border-radius:8px;background:none;color:#9a9a9a;font-size:clamp(14px,.9vw,16px);font-weight:500;white-space:nowrap}
 :root .top-nav .nav-item:hover{background:none;color:#dcdcdc}
 :root .top-nav .nav-item.active{background:none;color:#e6e6e6;font-weight:650}
-.top-nav-layout .search{margin-left:auto;flex:0 1 340px;min-width:150px;min-height:40px;padding:7px 13px;background:#0e0e0e;border-color:#2c2c2c;color:#8a8a8a}
-.top-nav-layout .search input::placeholder{color:#8a8a8a}
-.top-nav-layout .search kbd{border-color:#333;color:#777}
+.top-nav-layout .search{margin-left:auto;flex:0 1 340px;min-width:150px;height:40px;min-height:0;gap:10px;padding:0 7px 0 13px;border-radius:10px;background:#161616;border:1px solid #2a2a2a;color:#9a9a9a;cursor:text;transition:background-color .2s,border-color .2s,color .2s}
+.top-nav-layout .search:hover{background:#1c1c1c;border-color:#363636}
+.top-nav-layout .search:focus-within{background:#1c1c1c;border-color:#5a5a5a;outline:none;color:#e6e6e6}
+.top-nav-layout .search input{height:100%;padding:0;font-size:14px;color:#ededed}
+.top-nav-layout .search input::placeholder{color:#8a8a8a;opacity:1}
+.top-nav-layout .search button{display:grid;place-items:center;width:26px;height:26px;border-radius:6px;color:inherit}
+.top-nav-layout .search button:hover{background:#ffffff14}
+.top-nav-layout .search kbd{display:grid;place-items:center;flex:none;min-width:22px;height:22px;padding:0 6px;border:1px solid #ffffff1f;border-radius:5px;background:#ffffff0d;color:#9a9a9a;font:500 12px/1 'DM Sans',sans-serif}
+.top-nav-layout .search:focus-within kbd{display:none}
 
 /* Profile menu: pages visited now and then, sync, profiles and the version. */
 .profile-menu{position:relative;flex:none}
@@ -41,7 +47,12 @@
 /* The top bar lies over the artwork, clear until the page scrolls. */
 .has-billboard .topbar{margin-bottom:calc(var(--topbar)*-1)}
 .has-billboard .topbar.over-art{background:linear-gradient(180deg,#000000bf,#00000000)}
-.has-billboard .topbar.over-art .search{background:#00000059;border-color:#ffffff24}
+/* Over artwork: dark frosted glass, so the field stays legible on bright frames. */
+.has-billboard .topbar.over-art .search{background:#0c0c0c99;border-color:#ffffff1a;color:#ffffffb3;-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%)}
+.has-billboard .topbar.over-art .search:hover{background:#0c0c0cb3;border-color:#ffffff2e}
+.has-billboard .topbar.over-art .search:focus-within{background:#0c0c0ccc;border-color:#ffffff59;color:#fff}
+.has-billboard .topbar.over-art .search input::placeholder{color:#ffffffa6}
+.has-billboard .topbar.over-art .search kbd{border-color:#ffffff2e;background:#ffffff14;color:#ffffffb3}
 .hero.billboard{position:relative;isolation:isolate;height:56.25vw;max-height:82vh;min-height:520px;margin:0;border-radius:0;overflow:hidden;background:#000}
 .billboard .hero-backdrop{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;z-index:-3;opacity:0;transition:opacity .7s}
 .billboard .hero-backdrop.loaded{opacity:1}
