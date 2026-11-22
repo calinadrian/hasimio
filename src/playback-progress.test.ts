@@ -199,4 +199,10 @@ describe('persistent playback progress',()=>{
     const released={...show,videos:show.videos.map(video=>video.season===2?{...video,released:'2020-01-01'}:video)};
     expect(continueWatching(playbackHistory(),[released])).toEqual([released]);
   });
+  it('counts an announced season without dates as not out yet',()=>{
+    const show={id:'tt11',type:'series',name:'Announced',videos:[{id:'tt11:1:1',season:1,episode:1,released:'2020-01-01'},{id:'tt11:2:1',season:2,episode:1}]};
+    setWatched([{key:'series:tt11:1:1',titleKey:'series:tt11',videoId:'tt11:1:1'}]);
+    expect(continueWatching(playbackHistory(),[show])).toEqual([]);
+    expect(titleProgress(show,playbackHistory())?.status).toBe('Caught up');
+  });
 });

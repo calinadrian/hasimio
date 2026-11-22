@@ -29,6 +29,20 @@ describe('episode navigation',()=>{
     expect(adjacentEpisodes(undefined,'s1e1')).toEqual({});
     expect(adjacentEpisodes(show)).toEqual({});
   });
+  it('offers the next episode only once it is out',()=>{
+    const now=Date.UTC(2026,10,23,12),day=86_400_000;
+    const airing:Meta={id:'tt2',type:'series',name:'Airing',videos:[
+      {id:'e1',season:1,episode:1,released:new Date(now-14*day).toISOString()},
+      {id:'e2',season:1,episode:2,released:new Date(now-7*day).toISOString()},
+      {id:'e3',season:1,episode:3,released:new Date(now+3*day).toISOString()},
+      {id:'s2',season:2,episode:1},
+    ]};
+    expect(adjacentEpisodes(airing,'e1',now).next?.id).toBe('e2');
+    // Airs in three days, and a season announced without dates: nothing to play next.
+    expect(adjacentEpisodes(airing,'e2',now)).toEqual({previous:airing.videos![0],next:undefined});
+    expect(adjacentEpisodes(airing,'e3',now+4*day).next).toBeUndefined();
+    expect(adjacentEpisodes(airing,'e2',now+4*day).next?.id).toBe('e3');
+  });
   it('ignores videos that are not episodes',()=>{
     const meta:Meta={...show,videos:[{id:'trailer'},{id:'s1e1',season:1,episode:1}]};
     expect(orderedEpisodes(meta).map(video=>video.id)).toEqual(['s1e1']);

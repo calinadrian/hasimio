@@ -167,6 +167,22 @@ describe('progress summary',()=>{
       expect(summary.series).toHaveLength(2);
     });
 
+    it('leaves announced episodes without a date out of Up next',()=>{
+      // Season 1 is out and watched; season 2 is listed but has no air date yet.
+      const announced=series('tt601','Announced',2,{videos:[
+        {id:'tt601:1:1',season:1,episode:1,released:new Date(now-30*DAY).toISOString()},
+        {id:'tt601:1:2',season:1,episode:2,released:new Date(now-20*DAY).toISOString()},
+        {id:'tt601:2:1',season:2,episode:1},{id:'tt601:2:2',season:2,episode:2},
+      ]});
+      // A bare year is not a date either.
+      const yearOnly=series('tt602','Next year',2);
+      yearOnly.videos![0].released=new Date(now-9*DAY).toISOString();yearOnly.videos![1].released='2099';
+      const history:ProgressMap={...watched('tt601:1:1',at(2)),...watched('tt601:1:2',at(1)),...watched('tt602:1:1',at(1)),...watched('tt600:1:1',at(1))};
+      const summary=progressSummary(history,[announced,yearOnly,series('tt600','No dates anywhere',3)]);
+      expect(summary.upNext.map(item=>[item.meta.name,item.label,!!item.airs])).toEqual([['No dates anywhere','S1 · E2',false]]);
+      expect(summary.series).toHaveLength(3);
+    });
+
     it('leaves out series whose history matches none of the listed episodes',()=>{
       // Watched under other episode ids (another catalog), so the first episode would be a guess.
       const summary=progressSummary({...watched('tt500:2:7',at(1)),...watched('tt501:1:1',at(1))},[series('tt500','Other ids',3),series('tt501','Matched',3)]);

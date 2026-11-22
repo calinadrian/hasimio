@@ -1,4 +1,4 @@
-import type {Meta,Video} from './media';
+import {releasedEpisodes,type Meta,type Video} from './media';
 
 export type EpisodeAction={label:string;title?:string;thumbnail?:string;onPlay:()=>void};
 
@@ -11,10 +11,13 @@ export function orderedEpisodes(meta:Meta):Video[] {
     .sort((a,b)=>seasonRank(a.season)-seasonRank(b.season)||(a.episode??0)-(b.episode??0));
 }
 
-export function adjacentEpisodes(meta:Meta|undefined,videoId?:string):{previous?:Video;next?:Video} {
+// The next episode is offered only once it is out; one still to air has nothing to play yet.
+export function adjacentEpisodes(meta:Meta|undefined,videoId?:string,now=Date.now()):{previous?:Video;next?:Video} {
   if(!meta||!videoId)return {};
   const episodes=orderedEpisodes(meta),index=episodes.findIndex(video=>video.id===videoId);
-  return index<0?{}:{previous:episodes[index-1],next:episodes[index+1]};
+  if(index<0)return {};
+  const following=episodes[index+1];
+  return {previous:episodes[index-1],next:following&&releasedEpisodes(episodes,now).includes(following)?following:undefined};
 }
 
 export function nextEpisode(meta:Meta|undefined,videoId?:string):Video|undefined {

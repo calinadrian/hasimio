@@ -87,8 +87,8 @@ function UpNextCard({item,revealed,onOpen}:{item:UpNext;revealed:boolean;onOpen:
 function UpNextSection({items,onOpen}:{items:UpNext[];onOpen:(meta:Meta)=>void}){
   const {ref,width}=useWidth<HTMLElement>();
   const perRow=!width?4:width>=2200?6:width>=1700?5:width>1150?4:width>860?3:2;
-  // One card short of a full row widens the cards instead of leaving a hole at the end.
-  const columns=items.length<perRow?Math.max(items.length,perRow-1):perRow;
+  // Up to two cards short of a full row widens the cards instead of leaving a hole at the end.
+  const columns=items.length<perRow?Math.max(items.length,perRow-2,2):perRow;
   const [all,setAll]=useState(false);
   return <section className="progress-upnext" aria-label="Up next" ref={ref}>
     <div className="progress-section-heading"><h2>Up next <span>{items.length}</span></h2>{items.length>perRow&&<button type="button" className="progress-more" aria-expanded={all} onClick={()=>setAll(!all)}>{all?'Show less':`Show all ${items.length}`}</button>}</div>

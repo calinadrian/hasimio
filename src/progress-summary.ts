@@ -1,4 +1,4 @@
-import {seasonShortName,type Meta,type Video} from './media';
+import {releaseTime,releasedEpisodes,seasonShortName,type Meta,type Video} from './media';
 import {episodeOrder,progressKey,type ProgressMap} from './playback-progress';
 import {runtimeSeconds} from './watch-time';
 
@@ -111,6 +111,7 @@ export function progressSummary(history:ProgressMap,titles:Meta[]):ProgressSumma
     if(finished||!total)continue;
     // An episode left part way through comes first; otherwise the one after the furthest watched.
     const ordered=[...episodes].sort(episodeOrder);
+    const out=new Set(releasedEpisodes(ordered,now));
     // Only while it is the latest thing watched in the series.
     let next=group.playing&&group.playing.updatedAt>=group.lastUpdated?ordered.find(video=>video.id===group.playing!.videoId&&!group.watched.has(video.id)):undefined;
     if(!next){
@@ -120,12 +121,15 @@ export function progressSummary(history:ProgressMap,titles:Meta[]):ProgressSumma
       next=ordered[furthest+1];
     }
     if(!next)continue;
-    const released=next.released?Date.parse(next.released):NaN,airs=released>now?released:undefined;
+    const resuming=next.id===group.playing?.videoId,released=releaseTime(next.released);
+    // An announced episode without a date has nothing to watch or count down to yet.
+    if(!resuming&&released===undefined&&!out.has(next))continue;
+    const airs=released!==undefined&&released>now?released:undefined;
     // Up next covers series watched lately, plus any whose next episode came out since you last
     // watched or airs soon. Long-paused series stay in the full list without crowding it.
-    const fresh=released<=now&&released>group.lastUpdated&&released>now-UP_NEXT_NEW_MS;
+    const fresh=released!==undefined&&released<=now&&released>group.lastUpdated&&released>now-UP_NEXT_NEW_MS;
     if(group.lastUpdated<now-UP_NEXT_RECENT_MS&&!fresh&&!(airs&&airs<now+UP_NEXT_SOON_MS))continue;
-    upNext.push({...item,video:next,label:`${next.season!=null?`${seasonShortName(next)} · `:''}E${next.episode}`,resume:next.id===group.playing?.videoId?group.playing.percent:undefined,airs,fresh:fresh||undefined});
+    upNext.push({...item,video:next,label:`${next.season!=null?`${seasonShortName(next)} · `:''}E${next.episode}`,resume:resuming?group.playing!.percent:undefined,airs,fresh:fresh||undefined});
   }
   series.sort((a,b)=>b.lastUpdated-a.lastUpdated);movies.sort((a,b)=>b.lastUpdated-a.lastUpdated);
   // Still to air goes last, soonest first.

@@ -71,6 +71,31 @@ export function validRelease(value?: string): boolean {
   // A year alone is not a release date. Never invent January 1 for unknown dates.
   return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}(T|$)/.test(value) && Number.isFinite(Date.parse(value));
 }
+/** When something comes out, or undefined without a real date. A date without a time starts at local midnight. */
+export function releaseTime(value?: string): number | undefined {
+  if (!validRelease(value)) return undefined;
+  if (value!.includes('T')) return Date.parse(value!);
+  const [y, m, d] = value!.split('-').map(Number);
+  return new Date(y, m - 1, d).getTime();
+}
+/**
+ * The episodes already out, from a series' episodes in watching order. An undated episode after a dated one
+ * is announced but not scheduled, unless a later regular episode is already out (a gap in the data). Undated
+ * episodes before any dated one come from sources that leave dates out, so they count as out.
+ */
+export function releasedEpisodes(ordered: Video[], now = Date.now()): Video[] {
+  const times = ordered.map(video => releaseTime(video.released)), laterOut: boolean[] = [];
+  for (let i = ordered.length - 1, seen = false; i >= 0; i--) {
+    laterOut[i] = seen;
+    if (times[i] !== undefined && times[i]! <= now && ordered[i].season !== 0) seen = true;
+  }
+  let datedBefore = false;
+  return ordered.filter((_, i) => {
+    const time = times[i], out = time !== undefined ? time <= now : !datedBefore || laterOut[i];
+    if (time !== undefined) datedBefore = true;
+    return out;
+  });
+}
 // Date-only releases count whole days in local time; timed releases count down to the minute.
 export function releaseCountdown(released: string, now = Date.now()): string | undefined {
   if (!validRelease(released)) return undefined;

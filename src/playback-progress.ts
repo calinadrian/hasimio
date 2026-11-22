@@ -1,5 +1,5 @@
 import {profileStorage,storageKey as scopedStorageKey} from './profile-storage';
-import {seasonShortName,validRelease,type Meta,type Video} from './media';
+import {releasedEpisodes,seasonShortName,type Meta,type Video} from './media';
 const storageKey='hasimio:playback-progress:v1';
 const progressEvent='hasimio:playback-progress';
 // Saving the history rewrites all of it, which is megabytes for a long history. While a video plays, its
@@ -203,7 +203,7 @@ export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefi
     const all=(meta.videos??[]).filter(v=>v.episode!=null).sort(episodeOrder);
     const regular=all.filter(v=>v.season!==0);
     const episodes=regular.length?regular:all;
-    const available=episodes.filter(v=>!validRelease(v.released)||Date.parse(v.released!)<=Date.now());
+    const available=releasedEpisodes(episodes);
     const watched=(video:Video)=>!!history[progressKey(meta.type,video.id)]?.completed;
     const completed=available.filter(watched);
     const current=all.find(v=>v.id===latest.videoId);
@@ -248,8 +248,7 @@ export function continueWatching(history:ProgressMap,metas:Meta[],limit=20):Meta
         // only when its metadata identifies another available, unwatched episode.
         const episodes=meta.videos?.filter(video=>video.episode!=null)??[];
         const regular=episodes.filter(video=>video.season!==0);
-        const remaining=(regular.length?regular:episodes).some(video=>
-          (!validRelease(video.released)||Date.parse(video.released!)<=Date.now())&&
+        const remaining=releasedEpisodes([...(regular.length?regular:episodes)].sort(episodeOrder)).some(video=>
           !history[progressKey(meta.type,video.id)]?.completed);
         if(!entries.some(([,entry])=>entry.completed)||!remaining)continue;
       }
