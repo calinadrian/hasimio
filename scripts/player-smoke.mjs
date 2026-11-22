@@ -10,6 +10,7 @@ import {createRequire} from 'node:module';
 import {createServer as createViteServer} from 'vite';
 import react from '@vitejs/plugin-react';
 import ffmpeg from 'ffmpeg-static';
+import {strToU8,zipSync} from 'fflate';
 
 const require=createRequire(import.meta.url);
 const folder=path.resolve('.cache/player-smoke');
@@ -17,6 +18,25 @@ const nativePointer=process.argv.includes('--native-pointer');
 await mkdir(folder,{recursive:true});
 // A fresh profile each run: saved settings (automatic subtitles off, another language) change what the player shows.
 await rm(path.join(folder,'profile'),{recursive:true,force:true});
+
+// Online subtitles go through the real engine routes and site parsers; only the websites are stand-ins.
+// OpenSubtitles has English only (as it often does for Romanian), Subtitrari-noi.ro cannot be reached,
+// subs.ro's closest version is rate-limited, and YIFY Subtitles answers.
+process.env.HASIMIO_CACHE_DIR=path.join(folder,'engine-cache');
+const {createMediaService}=await import('../server/service.mjs');
+const onlineFile='The.Shawshank.Redemption.1994.720p.BluRay.x264-YIFY.mp4',yifySlug='the-shawshank-redemption-1994-romanian-yify-77',siteRequests=[];
+async function subtitleSites(url,options={}){
+  url=String(url);siteRequests.push(url);
+  const reply=(body,{status=200,type='text/html'}={})=>new Response(body,{status,headers:{'content-type':type}});
+  if(url==='https://opensubtitles-v3.strem.io/subtitles/movie/tt0111161.json')return reply(JSON.stringify({subtitles:[{url:'https://subs5.strem.io/en/download/subencoding-stremio-utf8/src-api/file/101',lang:'eng',subtitleFileName:onlineFile.replace('.mp4','.srt')}]}),{type:'application/json'});
+  if(url.startsWith('https://www.subtitrari-noi.ro/'))throw new TypeError('fetch failed');
+  if(url==='https://subs.ro/subtitrari/imdbid/0111161')return reply('<div class="group" data-subtitle-result="true" data-subtitle-id="501" data-imdb-id="0111161" data-language="ro"><h3 data-field="title"><a href="https://subs.ro/subtitrare/the-shawshank-redemption/501" class="link" title="Subtitrare The Shawshank Redemption 1994 720p BluRay x264-YIFY">The Shawshank Redemption</a></h3><div data-field="comment-text">720p BluRay</div></div>');
+  if(url==='https://subs.ro/subtitrare/descarca/subtitrare/501')return reply('',{status:429});
+  if(url==='https://yifysubtitles.ch/movie-imdb/tt0111161')return reply(`<table><tr data-id="1"><td><span class="label">3</span></td><td><span class="sub-lang">Romanian</span></td><td><a href="/subtitles/${yifySlug}"><span class="text-muted">subtitle</span> The Shawshank Redemption</a></td></tr></table>`);
+  if(url===`https://yifysubtitles.ch/subtitle/${yifySlug}.zip`&&options.headers?.Referer===`https://yifysubtitles.ch/subtitles/${yifySlug}`)return reply(zipSync({'Shawshank.RO.srt':strToU8('1\n00:00:00,500 --> 00:00:39,000\nSalut din YIFY\n')}),{type:'application/zip'});
+  return reply('',{status:404});
+}
+const engine=createMediaService({fetchImpl:subtitleSites,titles:{close:async()=>{}},allowedOrigins:new Set(),pieceCache:0});
 const cursorScript=path.join(folder,'cursor.ps1');
 if(nativePointer)await writeFile(cursorScript,`param([int]$x,[int]$y)
 Add-Type -TypeDefinition 'using System.Runtime.InteropServices; public class PlayerCursor { [DllImport("user32.dll")] public static extern bool SetCursorPos(int x,int y); }'
@@ -58,9 +78,18 @@ try{
     import Player from '/src/Player';import {useSubtitleSelection} from '/src/subtitle-selection';import '/src/styles.css';
     function Fixture(){const selection=useSubtitleSelection(),[sub,setSub]=useState(true),[language,setLanguage]=useState('eng'),[changing,setChanging]=useState(false);return <dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><button id="changing-sub" onClick={()=>setChanging(true)}>Changing subtitles</button><button id="switch-sub" onClick={()=>setLanguage(v=>v==='eng'?'spa':'eng')}>Switch language</button><button id="toggle-sub" onClick={()=>setSub(v=>!v)}>Toggle test subtitle</button><Player title="Generated movie" preparedStream durationHint={40} onClose={()=>{}} subtitleSelection={selection} stream={{url:'${source}/movie.m3u8',subtitleTrack:sub?{url:'${source}/captions-'+language+'.vtt'+(changing?'?changing=1':''),label:'Test',language}:undefined}}/></dialog>;}createRoot(document.getElementById('root')).render(<Fixture/>);
   `);
-  vite=await createViteServer({configFile:false,plugins:[react()],server:{host:'127.0.0.1',port:0,strictPort:false,watch:{ignored:['**/.cache/player-smoke/profile/**']}}});
+  // A movie with no subtitles of its own while Romanian is wanted: the player looks online by itself.
+  await writeFile(path.join(folder,'online.html'),'<html><body style="margin:0"><div id="root"></div><script type="module" src="./online.tsx"></script></body></html>');
+  await writeFile(path.join(folder,'online.tsx'),`
+    import React from 'react';import {createRoot} from 'react-dom/client';
+    import Player from '/src/Player';import '/src/styles.css';
+    createRoot(document.getElementById('root')).render(<dialog className="detail-dialog playback-dialog" ref={node=>{if(node&&!node.open)node.showModal();}}><Player title="Online subtitles movie" videoId="tt0111161" preparedStream durationHint={40} onClose={()=>{}} stream={{url:'${source}/movie.m3u8',filename:${JSON.stringify(onlineFile)}}}/></dialog>);
+  `);
+  const engineRoutes={name:'hasimio-engine-subtitles',configureServer(server){server.middlewares.use((req,res,next)=>req.url?.startsWith('/api/subtitles/')?engine.handle(req,res,next):next());}};
+  vite=await createViteServer({configFile:false,plugins:[react(),engineRoutes],server:{host:'127.0.0.1',port:0,strictPort:false,watch:{ignored:['**/.cache/player-smoke/profile/**','**/.cache/player-smoke/engine-cache/**']}}});
   await vite.listen();
   const url=`http://127.0.0.1:${vite.httpServer.address().port}/.cache/player-smoke/index.html`;
+  const onlineUrl=`http://127.0.0.1:${vite.httpServer.address().port}/.cache/player-smoke/online.html`;
   const runner=path.join(folder,'electron.cjs');
   await writeFile(runner,`
     const {app,BrowserWindow,screen}=require('electron');const assert=require('node:assert/strict');
@@ -192,6 +221,15 @@ try{
         require('node:fs').writeFileSync(${JSON.stringify(path.join(folder,'player.png'))},(await win.webContents.capturePage()).toPNG());
         console.log('PASS: Fullscreen controls wake across repeated cycles through the desktop bridge.'+(nativePointer?'':' They stay hidden with a still cursor.'));
         console.log('PASS: Electron playback starts at zero, keeps a stable full timeline, preserves pause as the playlist grows, commits one seek per drag, supports keyboard seeking, displays/toggles the newest subtitle, and replaces all old cues across repeated English/Spanish switches.');
+        // Online subtitles: Romanian is wanted and the movie has none, so the player searches by itself and
+        // moves past the rate-limited closest version to the next site.
+        await js('localStorage.setItem("hasimio:settings",JSON.stringify({...JSON.parse(localStorage.getItem("hasimio:settings")||"{}"),subtitleLanguage:"rum",autoSubtitles:true}))');
+        await win.loadURL(${JSON.stringify(onlineUrl)});
+        await until('document.querySelector(".cinema-notice")?.textContent.includes("subtitles loaded from YIFY Subtitles")');
+        await until('document.querySelector(".cinema-caption")?.textContent==="Salut din YIFY"');
+        await js('Array.from(document.querySelectorAll("button")).find(button=>button.getAttribute("aria-label")==="Subtitle options").click()');
+        await until('document.body.innerText.includes("subs.ro · YIFY Subtitles")');
+        console.log('PASS: With no Romanian subtitles in the movie or on OpenSubtitles, the player searched subs.ro and YIFY through the engine, moved past the rate-limited closest version and showed the YIFY subtitle.');
         app.exit(0);
       }catch(error){console.error(error);console.error('pointerMessages='+pointerMessages+', cursor='+JSON.stringify(screen.getCursorScreenPoint()));if(nativePointer)await moveCursor(originalCursor);console.error(await js('JSON.stringify({storage:Object.fromEntries(Object.entries(localStorage).filter(([key])=>/setting|subtitle|caption|player|preference/i.test(key)).map(([key,value])=>[key,value.slice(0,300)])),body:document.body.innerText,video:(()=>{const v=document.querySelector("video");return v?{src:v.currentSrc,ready:v.readyState,paused:v.paused,time:v.currentTime,error:v.error?.message}:null})()})'));app.exit(1);}
     });
@@ -199,7 +237,13 @@ try{
   const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;
   const child=spawn(require('electron'),[runner],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
   child.stdout.pipe(process.stdout);child.stderr.pipe(process.stderr);
-  const watchdog=setTimeout(()=>child.kill(),60000);
+  const watchdog=setTimeout(()=>child.kill(),90000);
   const [code]=await once(child,'exit');clearTimeout(watchdog);
   assert.equal(code,0,'Electron player smoke test failed');
-}finally{await vite?.close();media.closeAllConnections();await new Promise(resolve=>media.close(resolve));}
+  const subsRo=siteRequests.indexOf('https://subs.ro/subtitrare/descarca/subtitrare/501'),yify=siteRequests.indexOf(`https://yifysubtitles.ch/subtitle/${yifySlug}.zip`);
+  assert.ok(subsRo>=0&&yify>subsRo,'Automatic loading must try the closest version first, then the next site');
+  // Automatic sync may then read the English version cut for this exact release as a timing reference.
+  const english=siteRequests.indexOf('https://subs5.strem.io/en/download/subencoding-stremio-utf8/src-api/file/101');
+  assert.ok(english===-1||english>yify,'An English version may only be read after the Romanian one, as a timing reference');
+  console.log('PASS: The rate-limited subs.ro version was tried before YIFY; English was only read afterwards as a timing reference.');
+}finally{await vite?.close();await engine.close();media.closeAllConnections();await new Promise(resolve=>media.close(resolve));}
