@@ -37,7 +37,7 @@ const Settings = React.lazy(() => import('./Settings'));
 const SyncDevices = React.lazy(() => import('./SyncDevices'));
 import './shell.css';
 import Player from './Player';
-import {canonicalHistory,progressKey,subscribeProgress,progressSnapshot,playbackHistory,titleProgress,continueWatching,savedProgress,setWatched,restoreProgress,episodesBefore,nextEpisodeToWatch,type WatchTarget} from './playback-progress';
+import {canonicalHistory,upgradeCreditsBookmarks,progressKey,subscribeProgress,progressSnapshot,playbackHistory,titleProgress,continueWatching,savedProgress,setWatched,restoreProgress,episodesBefore,nextEpisodeToWatch,type WatchTarget} from './playback-progress';
 import {rankSources,usableSource} from './stream-options';
 import {subscribeTrackChanges,trackRevision} from './playback-tracks';
 import {useQuickTrackInspection} from './source-inspection';
@@ -71,7 +71,7 @@ export default function App() {
   const preferences=usePlayerSettings();
   const progressVersion=useSyncExternalStore(subscribeProgress,progressSnapshot);
   const storedHistory=useMemo(()=>playbackHistory(progressVersion),[progressVersion]);
-  useEffect(()=>{deviceSync.start();},[]);
+  useEffect(()=>{upgradeCreditsBookmarks();deviceSync.start();},[]);
   useEffect(()=>{if(!isWebOS)return;const frame=requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('nav button.active')?.focus({preventScroll:true}));return()=>cancelAnimationFrame(frame);},[]);
   const [actor,setActor]=useState<Person>();
   function openActor(person:Person){closeDetail();setActor(person);setCollectionKey(undefined);setBrowseRow(undefined);setPage('Actor');setQuery('');window.scrollTo({top:0,behavior:'instant'});}

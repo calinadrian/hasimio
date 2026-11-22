@@ -11,7 +11,7 @@ import {playbackTime,seekPosition,timelineDuration,preparedHlsConfig,PROGRESS_SA
 import {resumePosition,saveProgress} from './playback-progress';
 import {playerSettings,savePlayerSettings} from './preferences';
 import {useChromecast} from './casting';
-import {fetchSkipSegments,introSegmentAt,upNextStart,type SkipSegments} from './skip-segments';
+import {fetchSkipSegments,introSegmentAt,upNextStart,watchedFrom,type SkipSegments} from './skip-segments';
 import type {EpisodeAction} from './next-episode';
 import './player.css';
 import PlaybackLoading from './PlaybackLoading';
@@ -106,7 +106,7 @@ export default function Player({headerTracks,startup,episodeLabel,progressKey,ti
   const online=useOnlineSubtitles(videoId,videoFilename,panel==='subtitles'||panel==='timing'||!!localSubtitle?.online||(needsOnline&&autoOnline.current!==autoSubtitleKey),captions.subtitleLanguage);
   function reveal(){const now=performance.now();hideAt.current=now+(isWebOS?4000:2500);if(now-lastActivity.current>150){lastActivity.current=now;setVisible(true);setActivity(value=>value+1);}}
   function openPanel(next:Panel,button:HTMLButtonElement){trigger.current=button;setPanel(previous=>previous===next?undefined:next);reveal();}
-  function persist(force=false,leaving=false){if(!progressKey||!latestProgress.current||(!force&&Date.now()-lastSave.current<PROGRESS_SAVE_INTERVAL))return;const p=latestProgress.current;if(leaving&&episodeLabel&&p.duration>0&&p.position>=upNextStart(latestSkipSegments.current,p.duration))completionRequested.current=true;saveProgress(progressKey,p.position,p.duration,{completed:p.completed||completionRequested.current,titleKey,videoId,episodeLabel,live:!force});lastSave.current=Date.now();}
+  function persist(force=false,leaving=false){if(!progressKey||!latestProgress.current||(!force&&Date.now()-lastSave.current<PROGRESS_SAVE_INTERVAL))return;const p=latestProgress.current;if(leaving&&p.duration>0&&p.position>=watchedFrom(latestSkipSegments.current,p.duration))completionRequested.current=true;saveProgress(progressKey,p.position,p.duration,{completed:p.completed||completionRequested.current,titleKey,videoId,episodeLabel,live:!force});lastSave.current=Date.now();}
   function switchEpisode(target?:EpisodeAction,completed=false){
     if(!target)return;
     sync();

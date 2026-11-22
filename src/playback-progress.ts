@@ -89,6 +89,22 @@ function persistHistory(all:StoredProgress) {
   dropLivePosition();
   if(typeof window!=='undefined')window.dispatchEvent(new Event(progressEvent));
 }
+// Without a credits marker, the last 10% (at most 8 minutes) is treated as end credits.
+export const endCreditsFrom=(duration:number)=>duration-Math.min(duration*0.1,480);
+// Bookmarks left in the end credits before that counted as watched. Runs at startup and only writes
+// when something changed, so the upgrade also reaches synced devices. Short clips are left alone.
+export function upgradeCreditsBookmarks() {
+  try{
+    const all=readProgress(progressSnapshot(),true);let changed=false;
+    for(const [key,p] of Object.entries(all)){
+      if(typeof p==='number'||p.completed||p.manual||p.position<=0||p.duration<120||p.position<endCreditsFrom(p.duration))continue;
+      all[key]={...p,completed:true};changed=true;
+    }
+    if(changed)persistHistory(all);
+    return changed;
+  }catch{return false;}
+}
+
 // Marking watched does not invent a runtime; keep a known one so resuming still starts at the beginning.
 export function setWatched(targets:WatchTarget[],watched=true) {
   if(!targets.length)return;

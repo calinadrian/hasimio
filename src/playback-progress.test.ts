@@ -1,5 +1,5 @@
 import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
-import {lastPlayedEpisode,progressKey,resumePosition,savedProgress,saveProgress,titleProgress,playbackHistory,subscribeProgress,continueWatching,setWatched,restoreProgress,episodesBefore,nextEpisodeToWatch} from './playback-progress';
+import {lastPlayedEpisode,progressKey,resumePosition,savedProgress,saveProgress,titleProgress,playbackHistory,subscribeProgress,continueWatching,setWatched,restoreProgress,episodesBefore,nextEpisodeToWatch,upgradeCreditsBookmarks} from './playback-progress';
 
 let data:Map<string,string>;
 beforeEach(()=>{
@@ -9,6 +9,16 @@ beforeEach(()=>{
 afterEach(()=>{vi.unstubAllGlobals();vi.restoreAllMocks();});
 
 describe('persistent playback progress',()=>{
+  it('upgrades bookmarks left in the end credits to watched, once',()=>{
+    saveProgress('movie:tt1',6800,7200);saveProgress('movie:tt2',6000,7200);
+    saveProgress('series:tt3:1:1',1350,1440,{titleKey:'series:tt3',videoId:'tt3:1:1'});saveProgress('movie:tt4',55,60);
+    const before=savedProgress('movie:tt1')!.updatedAt;
+    expect(upgradeCreditsBookmarks()).toBe(true);
+    expect(savedProgress('movie:tt1')).toMatchObject({completed:true,position:6800,updatedAt:before});
+    expect(savedProgress('series:tt3:1:1')).toMatchObject({completed:true,titleKey:'series:tt3'});
+    expect(savedProgress('movie:tt2')!.completed).toBe(false);expect(savedProgress('movie:tt4')!.completed).toBe(false);
+    expect(upgradeCreditsBookmarks()).toBe(false);
+  });
   it('keeps the playing position in its own small store and folds it into the history later',()=>{
     vi.stubGlobal('window',new EventTarget());
     const main='hasimio:playback-progress:v1',live='hasimio:playback-progress:live';

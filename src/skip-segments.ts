@@ -1,4 +1,5 @@
 import {engineUrl} from './engine';
+import {endCreditsFrom} from './playback-progress';
 
 export type SkipSegment={start:number;end?:number};
 export type SkipSegments={provider?:string;intro:SkipSegment[];recap:SkipSegment[];credits:SkipSegment[];preview:SkipSegment[]};
@@ -34,6 +35,11 @@ export function creditsStart(segments:SkipSegments|undefined,duration:number):nu
   if(!Number.isFinite(duration)||duration<=0)return;
   const starts=(segments?.credits??[]).map(segment=>segment.start).filter(start=>Number.isFinite(start)&&start>=duration*0.5&&start<duration-1);
   return starts.length?Math.min(...starts):undefined;
+}
+
+// Leaving from here counts as watched: the credits marker when known, otherwise the end-credits fallback.
+export function watchedFrom(segments:SkipSegments|undefined,duration:number):number {
+  return creditsStart(segments,duration)??endCreditsFrom(duration);
 }
 
 export function upNextStart(segments:SkipSegments|undefined,duration:number):number {

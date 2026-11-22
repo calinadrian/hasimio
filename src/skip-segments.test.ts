@@ -1,5 +1,5 @@
 import {describe,it,expect,vi} from 'vitest';
-import {creditsStart,fetchSkipSegments,introSegmentAt,parseSkipSegments,upNextStart} from './skip-segments';
+import {creditsStart,fetchSkipSegments,introSegmentAt,parseSkipSegments,upNextStart,watchedFrom} from './skip-segments';
 
 const segments=parseSkipSegments({
   provider:'TheIntroDB',
@@ -8,6 +8,11 @@ const segments=parseSkipSegments({
 })!;
 
 describe('skip segments',()=>{
+  it('counts leaving during the credits as watched',()=>{
+    expect(watchedFrom(segments,2400)).toBe(1400);
+    expect(watchedFrom(undefined,1440)).toBe(1296);
+    expect(watchedFrom(undefined,7200)).toBe(6720);
+  });
   it('parses normalized timestamp arrays',()=>{
     expect(segments).toEqual({provider:'TheIntroDB',intro:[{start:20,end:80}],recap:[],credits:[{start:1400}],preview:[]});
     expect(parseSkipSegments({intro:[],credits:[]})).toBeUndefined();
