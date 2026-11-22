@@ -378,7 +378,8 @@ export default function App() {
     return recent.length ? [{title:'New this week',key:'new-this-week',source:'In your library',items:recent}] : [];
   },[query,page,library,cardMetadata,continueItems]);
   const topRow = query.trim() && page !== 'Library' ? [{title:'Top results',key:'top',source:'Best matches',items:topResults(catalogs,query)}].filter(row => row.items.length > 1) : [];
-  // Top 10: the first page of the popular movies catalog, ranked as it comes.
+  // Top 10: the first page of the popular movies catalog, ranked as it comes. Hasimio Titles ranks
+  // recent movies by the votes they gained since its previous weekly index (title-index.mjs).
   const popularMovies = page === 'Discover' && !query.trim() && filter === 'All' && genre === 'All genres' ? popularRow(catalogs,'movie') : undefined;
   const topTenItems = popularMovies ? shelfTitles(popularMovies.items).filter(m => m.type === 'movie').slice(0,10) : [];
   const topTenRow = topTenItems.length === 10 ? [{title:'Top 10 movies',key:'top-10',items:topTenItems}] : [];

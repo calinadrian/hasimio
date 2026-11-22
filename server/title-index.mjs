@@ -24,9 +24,15 @@ export const MIN_VOTES=1000;
 export const MIN_SERIES_VOTES=25;
 const NEW_SERIES_VOTES=100;
 // Raise when the build changes what an index contains, so existing installations rebuild.
-const INDEX_VERSION='2';
+const INDEX_VERSION='3';
 const PAGE=50;
-const REFRESH_MS=7*24*60*60*1000;
+const DAY_MS=24*60*60*1000;
+const REFRESH_MS=7*DAY_MS;
+// Popular compares vote counts with an index at least this old (see previousVotes).
+const TREND_MIN_MS=3*DAY_MS;
+// Titles with fewer votes can climb Popular on a burst of ratings from a small audience (a fan
+// campaign, say), so they follow the titles that have them.
+const TREND_VOTES=10000;
 const searchAndSkip=[{name:'search'},{name:'skip'}];
 export const titleIndexManifest={
   id:'org.hasimio.titles',name:'Hasimio Titles',version:'1.1.0',
@@ -67,13 +73,35 @@ const rows=datasetRows;
 // `search` keeps them in one column so indexes from older versions stay readable until they rebuild.
 const searchText=(...names)=>[...new Set(names.filter(Boolean).map(normalize))].join('|');
 
+// The vote counts Popular measures gains against: those of the index being replaced, from any
+// version. A rebuild within days of that one (a new index version, say) would see almost no
+// gains, so it keeps that index's own comparison instead. Undefined without a usable index.
+function previousVotes(file, now) {
+  if (!file) return undefined;
+  let db;
+  try {
+    db=new DatabaseSync(file,{readOnly:true});
+    const info=key=>Number(db.prepare('SELECT value FROM info WHERE key=?').get(key)?.value);
+    const builtAt=info('builtAt'),since=info('trendSince');
+    if (!Number.isFinite(builtAt)) return undefined;
+    const carry=now-builtAt < TREND_MIN_MS && Number.isFinite(since);
+    const votes=new Map();
+    for (const row of db.prepare(`SELECT id,${carry ? 'previous' : 'votes'} AS n FROM titles`).all()) if (Number.isSafeInteger(row.n)) votes.set(row.id,row.n);
+    return {votes,since:carry ? since : builtAt};
+  } catch { return undefined; }
+  finally { db?.close(); }
+}
+
 // Builds a fresh index into `file`. Movies need MIN_VOTES ratings and series MIN_SERIES_VOTES,
-// except listed Romanian series; adult titles are skipped.
-export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},romanian=romanianSeriesIds}={}) {
+// except listed Romanian series; adult titles are skipped. `previous` is the index this one
+// replaces: each title keeps its vote count from there, so Popular can rank what is being
+// watched now (votes gained since) rather than what has gathered the most votes over the years.
+export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},romanian=romanianSeriesIds,previous,now=Date.now}={}) {
+  const baseline=previousVotes(previous,now());
   const db=new DatabaseSync(file);
   try {
     db.exec(`PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;
-      CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT NOT NULL,name TEXT NOT NULL,search TEXT NOT NULL,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER NOT NULL,alias TEXT) WITHOUT ROWID;
+      CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT NOT NULL,name TEXT NOT NULL,search TEXT NOT NULL,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER NOT NULL,alias TEXT,previous INTEGER) WITHOUT ROWID;
       CREATE TABLE episodes(id TEXT PRIMARY KEY,parent TEXT NOT NULL,season INTEGER NOT NULL,episode INTEGER NOT NULL,name TEXT,runtime INTEGER) WITHOUT ROWID;
       CREATE TABLE info(key TEXT PRIMARY KEY,value TEXT);`);
     onStep('Downloading ratings');
@@ -88,7 +116,7 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},rom
       if (ratings.has(parent) && s != null && e != null) addEpisode.run(id,parent,s,e);
     }
     onStep('Downloading titles');
-    const addTitle=db.prepare('INSERT OR IGNORE INTO titles VALUES(?,?,?,?,?,?,?,?,?,?,?)');
+    const addTitle=db.prepare('INSERT OR IGNORE INTO titles VALUES(?,?,?,?,?,?,?,?,?,?,?,?)');
     const nameEpisode=db.prepare('UPDATE episodes SET name=?,runtime=? WHERE id=?');
     for await (const [id,kind,primary,originalTitle,adult,start,end,runtime,genres] of rows('title.basics.tsv.gz',fetchImpl,signal)) {
       if (kind === 'tvEpisode') { nameEpisode.run(field(primary)??null,count(runtime)??null,id); continue; }
@@ -97,10 +125,12 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},rom
       if (!type || !rated || adult === '1' || !field(primary) || (type === 'movie' && rated[1] < MIN_VOTES)) continue;
       // Romanian shows keep their Romanian name, so Băieți de oraș is not listed as City Boys.
       const original=field(originalTitle),name=romanian.has(id) && original ? original : primary,alias=[primary,original].find(other=>other && other !== name);
-      addTitle.run(id,type,name,searchText(name,alias),count(start) ?? null,count(end) ?? null,count(runtime) ?? null,field(genres) ?? null,rated[0],rated[1],alias ?? null);
+      // A title missing from the previous index had too few votes to be listed, or did not exist yet.
+      addTitle.run(id,type,name,searchText(name,alias),count(start) ?? null,count(end) ?? null,count(runtime) ?? null,field(genres) ?? null,rated[0],rated[1],alias ?? null,baseline?.votes.get(id) ?? null);
     }
     db.exec('DELETE FROM episodes WHERE parent NOT IN (SELECT id FROM titles)');
-    db.prepare('INSERT INTO info VALUES(?,?),(?,?)').run('builtAt',String(Date.now()),'version',INDEX_VERSION);
+    db.prepare('INSERT INTO info VALUES(?,?),(?,?)').run('builtAt',String(now()),'version',INDEX_VERSION);
+    if (baseline) db.prepare('INSERT INTO info VALUES(?,?)').run('trendSince',String(baseline.since));
     db.exec('COMMIT;CREATE INDEX titles_rank ON titles(type,votes);CREATE INDEX episodes_parent ON episodes(parent)');
     return db.prepare('SELECT COUNT(*) AS n FROM titles').get().n;
   } finally { db.close(); }
@@ -265,7 +295,7 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
       await mkdir(dir,{recursive:true});await removeStaleTemps(file);
       const temp=`${file}.${process.pid}.${Date.now()}.tmp`;
       try {
-        await buildIndex(temp,{fetchImpl,signal:controller.signal,romanian:new Set(romanian.map(show=>show.id)),onStep:step=>{status={state:'building',step};}});
+        await buildIndex(temp,{fetchImpl,signal:controller.signal,romanian:new Set(romanian.map(show=>show.id)),previous:file,now,onStep:step=>{status={state:'building',step};}});
         db?.close();db=undefined;
         await rename(temp,file);
         status={state:'ready'};
@@ -317,7 +347,13 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
       const wordStarts=words.map(()=>"instr(' '||replace(search,'|',' '),' '||?)>0").join(' AND ');
       found=index.prepare(`SELECT * FROM titles WHERE type=? AND ${clauses} ORDER BY (instr('|'||replace(search,' ','')||'|','|'||?||'|')>0) DESC,(${wordStarts}) DESC,votes DESC LIMIT ? OFFSET ?`).all(type,...words,words.join(''),...words,PAGE,skip);
     }
-    else if (id === 'popular') found=index.prepare('SELECT * FROM titles WHERE type=? AND start>=? ORDER BY votes DESC LIMIT ? OFFSET ?').all(type,new Date(now()).getFullYear()-2,PAGE,skip);
+    // Recent titles that gained the most votes since the previous index, so the list (and the Top 10
+    // built from it) follows what people watch now. A first index has nothing to compare with yet,
+    // and lists the most rated.
+    else if (id === 'popular') {
+      const trending=index.prepare("SELECT 1 FROM info WHERE key='trendSince'").get();
+      found=index.prepare(`SELECT * FROM titles WHERE type=? AND start>=? ORDER BY ${trending ? `votes>=${TREND_VOTES} DESC,votes-coalesce(previous,0) DESC,` : ''}votes DESC,id LIMIT ? OFFSET ?`).all(type,new Date(now()).getFullYear()-2,PAGE,skip);
+    }
     // IMDb only gives a start year, so this year's shows come first, most rated first.
     else if (id === 'new') { const year=new Date(now()).getFullYear(); found=index.prepare('SELECT * FROM titles WHERE type=? AND start BETWEEN ? AND ? AND votes>=? ORDER BY start DESC,votes DESC LIMIT ? OFFSET ?').all(type,year-1,year,NEW_SERIES_VOTES,PAGE,skip); }
     else if (id === 'romanian') found=index.prepare('SELECT * FROM titles WHERE type=? AND id IN (SELECT value FROM json_each(?)) ORDER BY votes DESC,start DESC LIMIT ? OFFSET ?').all(type,JSON.stringify(romanian.map(show=>show.id)),PAGE,skip);

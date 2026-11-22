@@ -107,6 +107,55 @@ describe('Hasimio title index',()=>{
     expect((await restarted.catalog('movie','popular')).metas.map(m=>m.id)).toEqual(['tt1']);
     await vi.waitFor(()=>expect(fetchImpl.mock.calls.some(([url])=>String(url).startsWith('https://datasets.imdbws.com/'))).toBe(true));
   });
+  it('ranks popular titles by the votes they gained since the previous index',async()=>{
+    const DAY=86_400_000;
+    dir=await mkdtemp(path.join(tmpdir(),'hasimio-titles-'));
+    let clock=Date.parse('2026-10-01T00:00:00Z'),votes;
+    const basics=tsv(['tconst','titleType','primaryTitle','originalTitle','isAdult','startYear','endYear','runtimeMinutes','genres'],
+      ['tt1','movie','Big Hit','Big Hit','0','2025','\\N','120','Action'],['tt2','movie','New Release','New Release','0','2026','\\N','110','Drama'],
+      ['tt3','movie','Sleeper','Sleeper','0','2026','\\N','100','Horror'],['tt4','movie','Classic','Classic','0','1999','\\N','130','Drama'],
+      ['tt5','movie','Fan Favourite','Fan Favourite','0','2026','\\N','95','Drama']);
+    const files={'title.basics.tsv.gz':basics,'title.episode.tsv.gz':tsv(['tconst','parentTconst','seasonNumber','episodeNumber'])};
+    const fetchImpl=async url=>{
+      const href=String(url),name=href.split('/').at(-1);
+      if(!href.startsWith('https://datasets.imdbws.com/'))return new Response('',{status:404});
+      return new Response(name==='title.ratings.tsv.gz'?tsv(['tconst','averageRating','numVotes'],...Object.entries(votes).map(([id,n])=>[id,'7.0',String(n)])):files[name]);
+    };
+    const popular=async titles=>(await titles.catalog('movie','popular')).metas.map(m=>m.id);
+    const restart=()=>{open=createTitleIndex({dir,fetchImpl,now:()=>clock});return open;};
+    votes={tt1:500000,tt2:20000,tt3:5000,tt4:900000};
+    let titles=restart();await titles.refresh();
+    // With nothing to compare with yet, the most rated recent titles come first.
+    expect(await popular(titles)).toEqual(['tt1','tt2','tt3']);
+
+    // A week later the new release gained the most votes (40000), then tt3 (7000) and tt1 (5000).
+    // tt5, new to the index, gained 9900 but from a small audience, so it follows. The classic
+    // stays out, being old.
+    clock+=7*DAY;votes={tt1:505000,tt2:60000,tt3:12000,tt4:990000,tt5:9900};
+    await titles.refresh();
+    expect(await popular(titles)).toEqual(['tt2','tt3','tt1','tt5']);
+    // Other lists keep their order.
+    expect((await titles.catalog('movie','top-rated')).metas.map(m=>m.id)).toEqual(['tt4','tt1','tt2']);
+
+    // A rebuild a day later (a new index version, say) still compares with the week-old index:
+    // since then tt2 gained 41000, tt3 25000 and tt1 11000. Against yesterday's, tt3 would lead.
+    clock+=DAY;votes={tt1:511000,tt2:61000,tt3:30000,tt4:990000,tt5:9950};
+    await titles.refresh();
+    expect(await popular(titles)).toEqual(['tt2','tt3','tt1','tt5']);
+    await titles.close();
+
+    // An index from before this ranking (no previous counts) keeps serving by votes while it is
+    // replaced, and the replacement compares with its counts; tt5 now has enough votes to rank.
+    const {DatabaseSync}=await import('node:sqlite');
+    const db=new DatabaseSync(path.join(dir,'titles.db'));
+    db.exec("ALTER TABLE titles DROP COLUMN previous;DELETE FROM info WHERE key='trendSince';UPDATE info SET value='2' WHERE key='version'");db.close();
+    clock+=2*DAY;votes={tt1:521000,tt2:62000,tt3:35000,tt4:990000,tt5:12000};
+    titles=restart();
+    expect(await popular(titles)).toEqual(['tt1','tt2','tt3','tt5']);
+    await titles.refresh();
+    expect(titles.status()).toEqual({state:'ready'});
+    expect(await popular(titles)).toEqual(['tt1','tt3','tt5','tt2']);
+  },15000);
   it('falls back to IMDb episodes when TVmaze does not know a series',async()=>{
     const {titles}=await index();await titles.refresh();
     const {meta}=await titles.meta('series','tt3');
