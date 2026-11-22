@@ -87,7 +87,7 @@ app.whenReady().then(async()=>{
  await click('document.querySelector(\'.nav-item[aria-label="Progress"]\')');
  await wait('document.querySelectorAll(".progress-stat").length===6');
  const stats=await js('[...document.querySelectorAll(".progress-stat strong")].map(e=>e.textContent)');
- assert.deepEqual(stats,['6','1','1','1','0','6h']);
+ assert.deepEqual(stats,['6h','6','1','1','1','0']);
  assert.equal(await js('document.querySelectorAll(".progress-search").length'),0,'Progress must use the header search without a duplicate field');
  await js('(()=>{const input=document.querySelector(".search input");input.focus();Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,"no matching title");input.dispatchEvent(new Event("input",{bubbles:true}));})()');
  await wait('document.querySelectorAll(".progress-row").length===0');
@@ -114,6 +114,7 @@ app.whenReady().then(async()=>{
  await win.reload();
  await wait('!!document.querySelector(\'.nav-item[aria-label="Progress"]\')');
  await click('document.querySelector(\'.nav-item[aria-label="Progress"]\')');
+ await wait('document.querySelectorAll(".progress-stat").length===6');
  assert.deepEqual(await js('[...document.querySelectorAll(".progress-stat strong")].map(e=>e.textContent)'),stats);
  await click('document.querySelector(\'.nav-item[aria-label="Library"]\')');
  assert.equal(await js('[...document.querySelectorAll(".row-heading h3")].some(e=>e.textContent==="Continue watching")'),false,'Fully watched titles must leave Continue watching');

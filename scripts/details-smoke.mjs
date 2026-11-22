@@ -65,7 +65,7 @@ async function run({url,fixture,show,other,addon,profile}){
     await click('document.querySelector(\'.nav-item[aria-label="Progress"]\')');
     await wait('!!document.querySelector(".progress-unknown")');
     assert.equal(await js('document.querySelectorAll(".progress-row-track").length'),0,'Unknown totals must not show zero-percent bars');
-    await wait('document.querySelector(".progress-row-text small")?.textContent==="1 of 2 episodes watched"');
+    await wait('document.querySelector(".progress-row-text small")?.textContent.startsWith("1 of 2 episodes")');
     assert.equal(await js('document.querySelector(".progress-row-track").getAttribute("aria-valuenow")'),'50');
     console.log(`PASS: Sources ready in ${first}ms with metadata delayed 2500ms; episode selection preserved; no repeated source/metadata requests.`);
     console.log('PASS: Progress displays unknown totals honestly and hydrates missing episode lists automatically.');

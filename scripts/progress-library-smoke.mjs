@@ -47,16 +47,19 @@ async function run({url,folder}){
   const click=async selector=>{await js(`document.querySelector(${JSON.stringify(selector)}).click()`);await js('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
   const search=async text=>{await js(`(()=>{const input=document.querySelector('[aria-label="Search tracked titles"]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,${JSON.stringify(text)});input.dispatchEvent(new Event('input',{bubbles:true}));})()`);};
   const painted=()=>js('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+  const columns=selector=>js(`getComputedStyle(document.querySelector(${JSON.stringify(selector)})).gridTemplateColumns.split(' ').length`);
   try{
     await win.loadURL(url+'progress-test');
-    await wait('document.querySelectorAll(".progress-row").length===8');
-    assert.equal(await js('document.querySelectorAll(".progress-movie").length'),6);
+    // Pages hold two full rows of posters: six columns at this width.
+    await wait('document.querySelectorAll(".progress-row").length===12');
+    assert.equal(await columns('.progress-list'),6);
+    assert.equal(await js('document.querySelectorAll(".progress-movie").length'),12);
     assert.equal(await js('document.querySelector(".progress-activity").open'),false);
     assert.match(await js('document.querySelector(".count-label").textContent'),/160 titles/);
     await click('[aria-label="Next series page"]');
-    assert.match(await js('document.querySelector(".progress-row strong").textContent'),/012/);
+    assert.match(await js('document.querySelector(".progress-row strong").textContent'),/017/);
     await click('[aria-label="Next movies page"]');
-    assert.match(await js('document.querySelector(".progress-movie strong").textContent'),/07/);
+    assert.match(await js('document.querySelector(".progress-movie strong").textContent'),/13/);
     await search('Fixture 120');
     await wait('document.querySelectorAll(".progress-row").length===1');
     assert.match(await js('document.querySelector(".progress-row strong").textContent'),/120/);
@@ -80,8 +83,11 @@ async function run({url,folder}){
     assert.match(await js('document.querySelector(".progress-row strong").textContent'),/^All Her Fault/);
     await painted();await fs.writeFile(folder+'/desktop.png',(await win.webContents.capturePage()).toPNG());
     win.setContentSize(2560,1350);await painted();
-    assert.equal(await js('(()=>{const rows=document.querySelectorAll(".progress-row");return Math.abs(rows[0].getBoundingClientRect().top-rows[1].getBoundingClientRect().top)<2})()'),true,'Wide lists should use two compact columns');
-    assert.equal(await js('(()=>{const row=document.querySelector(".progress-row");return row.querySelector(".progress-row-state").getBoundingClientRect().left-row.querySelector(".progress-row-track").getBoundingClientRect().right<180})()'),true,'Status should stay close to its progress bar');
+    const wide=await columns('.progress-list');
+    assert.ok(wide>6,'Wide windows should fit more posters per row');
+    await wait(`document.querySelectorAll(".progress-row").length===${wide*2}`);
+    assert.equal(await js(`(()=>{const rows=[...document.querySelectorAll(".progress-row")].slice(0,${wide});return rows.every(row=>Math.abs(row.getBoundingClientRect().top-rows[0].getBoundingClientRect().top)<2)})()`),true,'The first page row should be full');
+    assert.equal(await js('(()=>{const poster=document.querySelector(".progress-row .progress-poster").getBoundingClientRect(),bar=document.querySelector(".progress-row .progress-row-track").getBoundingClientRect();return bar.left>=poster.left&&bar.right<=poster.right&&poster.bottom-bar.bottom<16})()'),true,'The progress bar should sit along the bottom of the poster');
     await fs.writeFile(folder+'/wide.png',(await win.webContents.capturePage({x:0,y:0,width:1490,height:1250})).toPNG());
     await click('.progress-activity summary');
     assert.equal(await js('document.querySelector(".progress-activity").open'),true);
@@ -92,7 +98,7 @@ async function run({url,folder}){
     await js('window.renderProgress(true)');
     await wait('document.querySelectorAll(".progress-row").length===1');
     assert.equal(await js('document.querySelectorAll(".progress-pagination").length'),0,'Shrinking data must clamp the page');
-    console.log('PASS: 160 tracked titles; bounded rows, independent pagination, search/reset, status filters, sorting, title opening, collapsed activity, shrinking data and mobile overflow.');
+    console.log('PASS: 160 tracked titles; two-row poster pages, independent pagination, search/reset, status filters, sorting, title opening, collapsed activity, shrinking data and mobile overflow.');
     app.exit(0);
   }catch(error){console.error(error);app.exit(1);}
 }
