@@ -10,7 +10,7 @@
 .top-nav-layout .topbar-brand{display:flex;align-items:center;gap:9px;flex:none;color:#a6a6a6;text-decoration:none;font:700 clamp(20px,1.3vw,24px)/1 Manrope,sans-serif;letter-spacing:-.02em}
 .top-nav-layout .topbar-brand .brand-symbol{width:28px;height:28px;margin:0;border-radius:7px;background:#a6a6a6;color:#000}
 .top-nav-layout .topbar-brand .brand-symbol svg{width:15px;height:15px;margin-left:2px}
-.top-nav{display:flex;flex-direction:row;align-items:center;gap:clamp(2px,.7vw,12px);margin:0;flex:0 1 auto;min-width:0}
+.top-nav{display:flex;flex-direction:row;align-items:center;gap:clamp(2px,.7vw,12px);margin:0;flex:none}
 :root .top-nav .nav-item{min-height:40px;padding:8px;border-radius:8px;background:none;color:#9a9a9a;font-size:clamp(14px,.9vw,16px);font-weight:500;white-space:nowrap}
 :root .top-nav .nav-item:hover{background:none;color:#dcdcdc}
 :root .top-nav .nav-item.active{background:none;color:#e6e6e6;font-weight:650}
