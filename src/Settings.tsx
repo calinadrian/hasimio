@@ -1,4 +1,4 @@
-import {playerSettings,savePlayerSettings,preferredQualities,type PreferredQuality,type PlayerSettings} from './preferences';
+import {playerSettings,savePlayerSettings,preferredQualities,preferredQualityFor,qualityKeys,type PreferredQuality,type PlayerSettings} from './preferences';
 import {languageName,subtitleLanguages} from './playback-tracks';
 import {usePlayerSettings} from './use-player-settings';
 import {currentProfile,requestProfilePicker} from './profile-storage';
@@ -57,8 +57,8 @@ export default function Settings(){
     <div className="settings-card">
       <h2>Playback</h2>
       <label className="settings-field">Preferred audio language<select value={settings.audioLanguage} onChange={event=>update({audioLanguage:event.target.value})}><option value="">Source default</option>{languages.map(code=><option key={code} value={code}>{languageName(code)}</option>)}</select></label>
-      <label className="settings-field">Preferred quality<select value={settings.preferredQuality} onChange={event=>update({preferredQuality:event.target.value as PreferredQuality})}>{preferredQualities.map(quality=><option key={quality} value={quality}>{quality==='Auto'?'Auto (1080p preferred)':quality==='2K'?'2K · 1440p':quality==='4K'?'4K · 2160p':quality}</option>)}</select></label>
-      <p>Automatic playback prefers known matches for your audio and subtitle languages, then uses your quality preference. You can choose a different source for each video.</p>
+      {(['movie','series','anime'] as const).map(kind=><label key={kind} className="settings-field">{kind==='movie'?'Movie quality':kind==='series'?'Series quality':'Anime quality'}<select value={preferredQualityFor(settings,kind)} onChange={event=>update({[qualityKeys[kind]]:event.target.value as PreferredQuality})}>{preferredQualities.map(quality=><option key={quality} value={quality}>{quality==='Auto'?'Auto (1080p preferred)':quality==='2K'?'2K · 1440p':quality==='4K'?'4K · 2160p':quality}</option>)}</select></label>)}
+      <p>Automatic playback prefers known matches for your audio and subtitle languages and instantly available debrid sources, then the quality you picked for movies, series or anime. If that quality isn’t found, the closest lower one is used. You can choose a different source for each video.</p>
     </div>
     <DebridSettings/>
     <div className="settings-card">

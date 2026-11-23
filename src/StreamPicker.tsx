@@ -9,13 +9,14 @@ import {describeStream,availableQualities,defaultQuality,formatSize,sortSources,
 import {sourceTrackInfo,subscribeTrackChanges,trackRevision,trackSourceKey} from './playback-tracks';
 import {isWebOS} from './webos/platform';
 import {usePlayerSettings} from './use-player-settings';
+import {preferredQualityFor,type QualityKind} from './preferences';
 const mobileEngine=import.meta.env.VITE_ANDROID==='true';
 
 const qualityLabel=(q:Quality)=>q==='2K'?'2K · 1440p':q==='4K'?'4K · 2160p':q==='Other'?'Original / unspecified':q;
 // episodes: a series whose episode list is still loading, failed to load, or lists nothing yet. Sources are
 // searched per episode, so until there is one the panel says why instead of "No sources available yet".
 export type EpisodeWait='loading'|'failed'|'none';
-export default function StreamPicker({streams,loading,error,automatic,onPlay,onRetry,onManage,videoId,episodes}:{videoId:string;streams:Stream[];loading:boolean;error:string;automatic?:boolean;onPlay:(stream:Stream)=>void;onRetry:()=>void;onManage:()=>void;episodes?:EpisodeWait}) {
+export default function StreamPicker({streams,loading,error,automatic,onPlay,onRetry,onManage,videoId,episodes,kind='movie'}:{videoId:string;kind?:QualityKind;streams:Stream[];loading:boolean;error:string;automatic?:boolean;onPlay:(stream:Stream)=>void;onRetry:()=>void;onManage:()=>void;episodes?:EpisodeWait}) {
   const preferences=usePlayerSettings();
   const [checks,setChecks]=useState<Record<string,string>>({});const [checkAttempt,setCheckAttempt]=useState(0);useSyncExternalStore(subscribeTrackChanges,trackRevision);
   const [chosen,setChosen]=useState<Quality>();const [expanded,setExpanded]=useState(false);const [sort,setSort]=useState('seeders');
@@ -23,7 +24,7 @@ export default function StreamPicker({streams,loading,error,automatic,onPlay,onR
   // Sources from the engine failed while it was missing; fetch them again once it appears.
   useEffect(()=>{const before=engineSeen.current;engineSeen.current=engine.state;if(engine.state==='ready'&&(before==='missing'||before==='outdated'))onRetry();},[engine.state,onRetry]);
   const options=streams.map(describeStream),qualities=availableQualities(options);
-  const quality=chosen&&qualities.includes(chosen)?chosen:defaultQuality(qualities,preferences.preferredQuality);
+  const quality=chosen&&qualities.includes(chosen)?chosen:defaultQuality(qualities,preferredQualityFor(preferences,kind));
   const sources=sortSources(options.filter(o=>o.quality===quality),sort);
   // Merged rows (the same release from several sources) count every source that listed them.
   const providers=[...new Set(sources.flatMap(o=>[o.provider,...(o.stream.alsoFrom??[])]))];

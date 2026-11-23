@@ -24,7 +24,7 @@ import {DRIFT_EVERY,driftSpot,nextPauseStageIn,pauseStage,type PauseStage} from 
 
 type Panel='audio'|'subtitles'|'timing'|'download'|'cast'|'settings';
 type Props={headerTracks?:HeaderTracks;startup?:PlaybackStartup;episodeLabel?:string;progressKey?:string;titleKey?:string;videoId?:string;durationHint?:number;preparedStream?:boolean;timeOffset?:number;onSeek?:(time:number)=>void;stream:Stream;title?:string;onClose:()=>void;onRecoverAudio?:()=>void;panels?:{audio?:ReactNode;subtitles?:ReactNode};subtitleSelection?:SubtitleSelection;embeddedSubtitleLanguages?:string[];download?:{url:string;filename:string};status?:ReactNode;loading?:ReactNode;backdrop?:string;description?:string;onSources?:()=>void;onNearEnd?:()=>void;previous?:EpisodeAction;next?:EpisodeAction};
-const captionSettings=():CaptionSettings=>{const {volume:_v,muted:_m,rate:_r,autoPlayNext:_a,preferredQuality:_q,audioLanguage:_audio,...captions}=playerSettings();return captions;};
+const captionSettings=():CaptionSettings=>{const {volume:_v,muted:_m,rate:_r,autoPlayNext:_a,preferredQuality:_q,movieQuality:_mq,seriesQuality:_sq,animeQuality:_aq,audioLanguage:_audio,...captions}=playerSettings();return captions;};
 type DesktopPointer={onPlayerPointer?:(listener:(point?:{x:number;y:number})=>void)=>()=>void};
 const desktopPointer=(globalThis as {hasimioDesktop?:DesktopPointer}).hasimioDesktop;
 const panelNames:Record<Panel,string>={audio:'Audio & dubs',subtitles:'Subtitles',timing:'Subtitle timing',download:'Download',cast:'Cast to TV',settings:'Playback settings'};

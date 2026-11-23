@@ -17,10 +17,10 @@ export const captionPresets:{id:string;label:string;style:CaptionStyle}[]=[
   {id:'film',label:'Film serif',style:{captionFont:'serif',captionColor:'#fff8e7',captionBackground:0,captionEdge:'shadow',captionBold:false}},
 ];
 export const captionColors=['#ffffff','#fff8e7','#ffe14d','#7fe3ff','#a8ff9e','#ffb3c7'];
-export type PlayerSettings={volume:number;muted:boolean;rate:number;captionSize:number;captionDelay:number;captionPosition:number;audioLanguage:string;subtitleLanguage:string;autoSubtitles:boolean;autoPlayNext:boolean;preferredQuality:PreferredQuality}&CaptionStyle;
+export type PlayerSettings={volume:number;muted:boolean;rate:number;captionSize:number;captionDelay:number;captionPosition:number;audioLanguage:string;subtitleLanguage:string;autoSubtitles:boolean;autoPlayNext:boolean;preferredQuality:PreferredQuality;movieQuality?:PreferredQuality;seriesQuality?:PreferredQuality;animeQuality?:PreferredQuality}&CaptionStyle;
 export const defaultSettings:PlayerSettings={volume:0.8,muted:false,rate:1,captionSize:100,captionDelay:0,captionPosition:8,audioLanguage:'',subtitleLanguage:'eng',autoSubtitles:true,autoPlayNext:true,preferredQuality:'Auto',...captionPresets[0].style};
 export function validSetting(key:string,value:unknown){
-  if(key==='preferredQuality')return typeof value==='string'&&preferredQualities.includes(value as PreferredQuality);
+  if(key==='preferredQuality'||key==='movieQuality'||key==='seriesQuality'||key==='animeQuality')return typeof value==='string'&&preferredQualities.includes(value as PreferredQuality);
   if(key==='muted'||key==='captionBold'||key==='autoSubtitles'||key==='autoPlayNext')return typeof value==='boolean';
   if(key==='captionFont')return typeof value==='string'&&Object.hasOwn(captionFonts,value);
   if(key==='captionEdge')return typeof value==='string'&&Object.hasOwn(captionEdges,value);
@@ -31,3 +31,10 @@ export function validSetting(key:string,value:unknown){
 }
 export function playerSettings():PlayerSettings{try{const data=JSON.parse(profileStorage.getItem(settingsKey)??'{}');return {...defaultSettings,...Object.fromEntries(Object.entries(data).filter(([key,value])=>validSetting(key,value)))};}catch{return {...defaultSettings};}}
 export function savePlayerSettings(settings:PlayerSettings){try{const text=JSON.stringify(settings);if(profileStorage.getItem(settingsKey)===text)return;profileStorage.setItem(settingsKey,text);window.dispatchEvent(new Event('hasimio:local-data'));window.dispatchEvent(new Event('hasimio:settings'));}catch{/* Playback continues with session settings. */}}
+// Quality can differ per kind of title (a 4K movie, 1080p series, 720p anime). A kind without its own choice
+// uses preferredQuality, which is also what older profiles saved.
+export type QualityKind='movie'|'series'|'anime';
+export const qualityKeys={movie:'movieQuality',series:'seriesQuality',anime:'animeQuality'} as const;
+/** Same grouping as the cards' Movie / Series / Anime label. */
+export function qualityKind(meta:{type?:string;category?:string}|undefined):QualityKind{return meta?.category==='anime'||meta?.type==='anime'?'anime':meta?.type==='series'?'series':'movie';}
+export function preferredQualityFor(settings:Pick<PlayerSettings,'preferredQuality'|'movieQuality'|'seriesQuality'|'animeQuality'>,kind:QualityKind):PreferredQuality{return settings[qualityKeys[kind]]??settings.preferredQuality;}
