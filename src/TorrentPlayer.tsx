@@ -15,6 +15,7 @@ import PlaybackLoading from './PlaybackLoading';
 import {debridInfoHash,debridName} from './debrid';
 
 import {type MediaTrack,audioAction,defaultAudioTrack,trackLabel,saveTrackSummary,sameLanguage,preferredTrack} from './playback-tracks';
+const STALL_MS=30000;
 type Session={duration?:number;id:string;state:'buffering'|'ready'|'error';error?:string;files:{index:number;name:string;length:number}[];selected?:number;numPeers:number;downloadSpeed:number;downloaded:number;progress:number;mediaUrl?:string;audioTracks?:MediaTrack[];subtitleTracks?:MediaTrack[];subtitle?:{track:number;state:'preparing'|'ready'|'error';error?:string;url:string};audio?:{state:'preparing'|'ready'|'error';track:number;start?:number;offset?:number;error?:string;mediaUrl?:string}};
 async function request(url:string,options?:RequestInit):Promise<Session>{const response=await fetch(engineUrl(url),options);if(!response.headers.get('content-type')?.includes('application/json'))throw new Error('Hasimio Engine is unavailable. Start it on this PC (npm run engine), or keep Hasimio running with npm run dev or npm run preview.');const result=await response.json();if(!response.ok)throw new Error(result.error || 'The local streaming service did not respond.');return result;}
 type Props={startup?:PlaybackStartup;stream:Stream;videoId:string;onClose:()=>void;title?:string;progressKey?:string;titleKey?:string;episodeLabel?:string;previous?:EpisodeAction;next?:EpisodeAction;backdrop?:string;description?:string;onSources?:()=>void;onNearEnd?:()=>void};
@@ -77,6 +78,17 @@ function DesktopTorrentPlayer({startup,stream,videoId,onClose,title,progressKey,
   async function retryAudio(){if(!session)return;try{await request(`/api/torrents/${session.id}/audio`,{method:'DELETE'});setSession(previous=>previous?{...previous,audio:undefined}:previous);setAudioAttempt(n=>n+1);}catch(e){setAudioFailure({track,message:e instanceof Error?e.message:'Could not restart audio conversion.'});}}
   async function choose(index:number){if(!session)return;setChoosing(true);try{const updated=await request(`/api/torrents/${session.id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileIndex:index})});setSeekStart(resumePosition(progressKey));automaticFile.current=false;setTrack(undefined);setDefaultAudioFallback(false);setSession(updated);}catch(e){setError(e instanceof Error?e.message:'Could not select that video.');}finally{setChoosing(false);}}
   const audioProblem=compatible?(audioError||(session?.audio?.track===track&&(session.audio.start??0)===seekStart?session.audio.error:undefined)):undefined;
+  // A swarm that never sends data leaves no error behind, only "Connecting…" forever. Before the first frame,
+  // no new bytes for STALL_MS counts as a failure, so the next ranked source takes over.
+  const stall=useRef({bytes:-1,at:0});
+  const stalled=!!startup&&!!stream.infoHash&&!error&&!!session&&session.state!=='error'&&session.progress<1&&!(session.state==='ready'&&session.selected==null);
+  useEffect(()=>{
+    if(!stalled){stall.current={bytes:-1,at:0};return;}
+    const bytes=session?.downloaded??0;
+    if(bytes!==stall.current.bytes)stall.current={bytes,at:Date.now()};
+    const timer=setTimeout(()=>setError(`No video data arrived from this source in ${STALL_MS/1000} seconds.`),Math.max(0,stall.current.at+STALL_MS-Date.now()));
+    return()=>clearTimeout(timer);
+  },[stalled,session?.downloaded]);
   useEffect(()=>{
     if(error||(audioProblem&&!automaticAudioFailed))startup?.failed();
   },[error,audioProblem,automaticAudioFailed,startup]);
@@ -116,7 +128,7 @@ function DesktopTorrentPlayer({startup,stream,videoId,onClose,title,progressKey,
   }
   // Connecting: the start screen (artwork, title, a thin bar) rather than peer counts.
   if(!error&&!(session?.state==='ready'&&session.selected==null)){
-    const stage=!session?.numPeers?{cap:45,message:'Connecting…'}:{cap:62,message:'Getting the video ready…'};
+    const stage=!session?.numPeers?{cap:45,message:startup?.switched?'Trying another source…':'Connecting…'}:{cap:62,message:'Getting the video ready…'};
     return <PlaybackLoading progressKey={videoId} title={title||stream.name||'Video'} detail={episodeLabel} backdrop={backdrop} cap={stage.cap} message={stage.message} onChoose={onSources} onCancel={onClose}/>;
   }
   return <div className="torrent-buffering"><div className="player-bar"><strong>{stream.name || 'Torrent stream'}</strong><button className="icon-button" onClick={onClose} aria-label="Stop torrent playback"><X/></button></div><div className="buffering-body">{error?<><FileVideo size={40}/><h2>Couldn’t start this stream</h2><p role="alert">{error}</p><div className="hero-actions"><button className="button primary" onClick={()=>setAttempt(n=>n+1)}><RefreshCw size={17}/> Retry</button><button className="button secondary" onClick={onSources??onClose}>Choose another source</button></div></>:session?.state==='ready'&&session.selected==null?<><FileVideo size={40}/><h2>Choose the video file</h2><p>This torrent contains several videos. Select the episode you want to play.</p><div className="torrent-files">{session.files.map(file=><button key={file.index} className="button secondary" onClick={()=>choose(file.index)} disabled={choosing}><Play size={16}/>{file.name}</button>)}</div></>:<><LoaderCircle className="spin" size={40}/><h2>Connecting to torrent peers</h2><p>Fetching video information. This can take a moment, especially with fewer seeders.</p><span>{session?.numPeers ?? 0} peers connected</span><button className="button secondary" onClick={onClose}>Cancel and choose another source</button></>}<small>Torrent playback shares data with peers and exposes your IP to them. Temporary downloads are removed when playback stops. MP4/H.264 has the broadest browser support; other codecs may not play.</small></div></div>;

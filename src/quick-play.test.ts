@@ -44,11 +44,12 @@ describe('automatic source recovery',()=>{
     const alternative={...first,fileIdx:4};
     expect(recoverPlayback(attempt,[first,alternative]).stream).toBe(alternative);
   });
-  it('keeps manual choices, playing sources and the normal error when no alternative is available',()=>{
+  it('moves on from a hand-picked source that fails before playing',()=>{
+    expect(recoverPlayback({kind:'manual',stream:first},[first,backup])).toMatchObject({stream:backup,kind:'fallback'});
+  });
+  it('keeps playing sources and the normal error when no alternative is available',()=>{
     expect(recoverPlayback(attempt,[first])).toBe(attempt);
-    for(const kind of ['manual','started'] as const){
-      const current={kind,stream:first};
-      expect(recoverPlayback(current,[backup])).toBe(current);
-    }
+    const current={kind:'started' as const,stream:first};
+    expect(recoverPlayback(current,[backup])).toBe(current);
   });
 });

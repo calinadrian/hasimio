@@ -204,8 +204,9 @@ export default function App() {
   // Capture the attempt in each callback. Late media events from a closed player
   // or a previous episode cannot start another source.
   const startup=useMemo<PlaybackStartup|undefined>(()=>{
-    if(playback?.kind!=='automatic'&&playback?.kind!=='fallback')return;
+    if(!playback||playback.kind==='started')return;
     return {
+      switched:playback.kind==='fallback',
       started:()=>setPlayback(current=>current===playback?{...current,kind:'started'}:current),
       failed:()=>setPlayback(current=>current===playback?recoverPlayback(current,rankedSources):current),
     };
