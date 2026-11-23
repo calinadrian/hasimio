@@ -31,3 +31,5 @@ export function readStoredJson<T>(text:string):T{
   if(text.length>limit)throw Error('Saved data exceeds the supported size.');
   return readJsonBytes<T>(Uint8Array.from(atob(text.slice(4)),value=>value.charCodeAt(0)));
 }
+/** The JSON text behind a storedJson value; any other text is returned as it is. */
+export function unpackText(text:string){return text.startsWith('gz1:')?JSON.stringify(readStoredJson<unknown>(text)):text;}

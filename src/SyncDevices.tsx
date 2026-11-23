@@ -72,7 +72,7 @@ export default function SyncDevices(){
       {connectionOptions}
     </section>:<>
       <section className="sync-connection"><div><span className={'sync-state sync-state-'+state.state}/><div><h2>{state.state==='ready'&&!state.pending?'Up to date':state.state==='revoked'?'Connection needs attention':state.state==='offline'?(firstTransfer?'Connected, first sync incomplete':'Sync paused'):(firstTransfer?'Connected, syncing data':'Syncing changes…')}</h2><p>{state.identity?.name}</p>{state.lastSynced&&<small>Last synced {new Date(state.lastSynced).toLocaleString()}</small>}{state.pending&&<p><small>Changes pending sync</small></p>}</div></div>{state.state!=='revoked'&&<button className="button quiet" disabled={busy} onClick={()=>void action(()=>deviceSync.sync())}><RefreshCw size={16} className={checkingTransfer?'spin':undefined}/> Sync now</button>}</section>
-      {state.error&&<p className="sync-status-message" role="status">{state.error} Your library and progress are saved here.</p>}
+      {state.error&&<p className="sync-status-message" role="status">{state.error} Your existing library and progress are kept here.</p>}
       {(state.state==='offline'||state.state==='revoked')&&<button className="button secondary" disabled={busy} onClick={replaceConnection}>Set up another sync connection</button>}
       {state.state!=='revoked'&&<>
         {showRecovery&&state.identity?.recoveryToken&&<div className="sync-backup-prompt"><div><strong>Keep a way back in.</strong><p>Save a recovery key in case you lose access to your devices.</p></div><button className="button secondary" onClick={downloadRecovery}><Download size={16}/> Save recovery key</button><button className="sync-text-action" onClick={()=>setShowRecovery(false)}>Later</button></div>}

@@ -1,3 +1,4 @@
+import {storedJson,unpackText} from './compact-json';
 export type Profile={id:string;name:string;color:number;createdAt:number};
 const registryKey='hasimio:profiles:v1';
 export const profileLimit=8;
@@ -56,8 +57,47 @@ export function selectProfile(id:string){
 }
 export function storageKey(key:string){return !active||active.id==='default'?key:'hasimio:profile:'+active.id+':'+key.replace(/^hasimio:/,'');}
 export function logicalStorageKey(key:string){return key.replace(/^hasimio:profile:[a-f\d]{32}:/,'hasimio:');}
+// A browser gives every profile together about five million characters. Only once that runs out, these large JSON
+// values are stored compressed (gz1:), and stay compressed afterwards; devices with room keep the plain format.
+const compressible=['hasimio:library','hasimio:playback-progress:v1','hasimio:addons','hasimio:progress-metadata:v1','hasimio:verified-tracks'];
+const disposable=['hasimio:progress-metadata:v1','hasimio:verified-tracks'];
+const isPacked=(text:string|null)=>!!text?.startsWith('gz1:');
+const isFull=(error:unknown)=>['QuotaExceededError','NS_ERROR_DOM_QUOTA_REACHED'].includes((error as {name?:string})?.name??'');
+function storedKeys(names:string[]){
+  const keys:string[]=[];
+  for(let index=0;index<localStorage.length;index++){const key=localStorage.key(index);if(key&&names.includes(logicalStorageKey(key)))keys.push(key);}
+  return keys;
+}
+function pack(text:string){try{const packed=storedJson(JSON.parse(text));return packed.length<text.length?packed:text;}catch{return text;}}
+function tryWrite(key:string,text:string){try{localStorage.setItem(key,text);return true;}catch(error){if(!isFull(error))throw error;return false;}}
+function write(key:string,value:string){
+  const shrink=compressible.includes(logicalStorageKey(key));
+  const keepPacked=shrink&&isPacked(localStorage.getItem(key));
+  if(tryWrite(key,keepPacked?pack(value):value))return;
+  // Lossless first: compress what every profile already stores, then this value.
+  for(const other of storedKeys(compressible)){
+    if(other===key)continue;
+    const text=localStorage.getItem(other)!;
+    if(!isPacked(text)){const packed=pack(text);if(packed!==text)tryWrite(other,packed);}
+  }
+  const text=shrink?pack(value):value;
+  if(tryWrite(key,text))return;
+  // These caches can be fetched again. Library, progress and pairing are never removed to make room.
+  for(const other of storedKeys(disposable))if(other!==key)localStorage.removeItem(other);
+  if(tryWrite(key,text))return;
+  throw Error('Hasimio has used all the storage this browser allows one site, so the newest changes could not be saved here. Removing a profile you no longer use on this device makes room.');
+}
+// Compressed values are read far more often than they change.
+const unpacked=new Map<string,{raw:string;text:string}>();
+function readKey(key:string){
+  const raw=localStorage.getItem(key);
+  if(!isPacked(raw)||!compressible.includes(logicalStorageKey(key))){unpacked.delete(key);return raw;}
+  const known=unpacked.get(key);if(known?.raw===raw)return known!.text;
+  let text;try{text=unpackText(raw!);}catch{return raw;}
+  unpacked.set(key,{raw:raw!,text});return text;
+}
 export const profileStorage={
-  getItem:(key:string)=>localStorage.getItem(storageKey(key)),
-  setItem:(key:string,value:string)=>localStorage.setItem(storageKey(key),value),
+  getItem:(key:string)=>readKey(storageKey(key)),
+  setItem:(key:string,value:string)=>write(storageKey(key),value),
   removeItem:(key:string)=>localStorage.removeItem(storageKey(key)),
 };
