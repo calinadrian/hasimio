@@ -2,6 +2,7 @@ import {type Stream,safeHttp} from './media';
 import {playerSettings,type PlayerSettings,type PreferredQuality} from './preferences';
 import {detectQuality,detectCodec,detectRelease,parseSize,QUALITY_ORDER,type Quality} from '../shared/stream-info.mjs';
 import {languageMatch,preferredTrack,verifiedTracks} from './playback-tracks';
+import {releaseAudio} from './release-languages';
 export type StreamOption={stream:Stream;quality:Quality;provider:string;release?:string;codec?:string;seeders?:number;sizeBytes?:number;filename:string;detail:string};
 export function describeStream(stream:Stream):StreamOption {
   const text=`${stream.name ?? ''}\n${stream.title ?? ''}\n${stream.filename ?? ''}`;
@@ -31,6 +32,28 @@ export function sourceLanguageMatches(stream:Stream,videoId:string,preferences:S
     : undefined;
   return {audio:audio?languageMatch(audio.language,preferences.audioLanguage):0,subtitles:subtitles?languageMatch(subtitles.language,preferences.subtitleLanguage):0};
 }
+/**
+ * How likely a source plays in the preferred audio language: 2 or 1 for a checked track (exact or regional
+ * match), 1 when the release name lists it, 0.5 for a multi-audio release, 0 when nothing is known (an untagged
+ * release is usually the original audio), and -1 when the checked tracks or the release name show other
+ * languages only.
+ */
+export function audioScore(stream:Stream,videoId:string,language:string){
+  if(!language)return 0;
+  const tracks=verifiedTracks(stream,videoId)?.audio;
+  if(tracks?.length){
+    const best=Math.max(...tracks.map(track=>languageMatch(track.language,language)));
+    if(best>0)return best;
+    // Untagged tracks ("und") could be anything.
+    return tracks.every(track=>!/^(?:und|)$/i.test(track.language?.trim()??''))?-1:0;
+  }
+  const release=releaseAudio(`${stream.name??''}
+${stream.title??''}
+${stream.filename??''}`);
+  if(release.languages.some(code=>languageMatch(code,language)>0))return 1;
+  if(release.multi)return 0.5;
+  return release.languages.length?-1:0;
+}
 export function usableSource(stream:Stream){
   // A debrid file the service does not hold yet would first have to download there.
   if(stream.debrid==='uncached')return false;
@@ -48,9 +71,10 @@ function qualityOrder(options:StreamOption[],preferred:PreferredQuality){
 export function rankSources(streams:Stream[],preferences:SourcePreferences,videoId:string){
   const options=streams.filter(stream=>stream.infoHash||safeHttp(stream.url)).map(describeStream);
   const quality=qualityOrder(options,preferences.preferredQuality);
-  return options.map(option=>({option,usable:usableSource(option.stream),matches:sourceLanguageMatches(option.stream,videoId,preferences)}))
-    // Files a debrid service already holds start at once, with no peers to find.
-    .sort((a,b)=>Number(b.usable)-Number(a.usable)||Number(b.option.stream.debrid==='cached')-Number(a.option.stream.debrid==='cached')||b.matches.audio-a.matches.audio||b.matches.subtitles-a.matches.subtitles||
+  return options.map(option=>({option,usable:usableSource(option.stream),audio:audioScore(option.stream,videoId,preferences.audioLanguage),matches:sourceLanguageMatches(option.stream,videoId,preferences)}))
+    // The preferred audio language comes first, then files a debrid service already holds (they start at once,
+    // with no peers to find). Sources in another language stay available, after every likely match.
+    .sort((a,b)=>Number(b.usable)-Number(a.usable)||b.audio-a.audio||Number(b.option.stream.debrid==='cached')-Number(a.option.stream.debrid==='cached')||b.matches.subtitles-a.matches.subtitles||
       quality.indexOf(a.option.quality)-quality.indexOf(b.option.quality)||(b.option.seeders??-1)-(a.option.seeders??-1))
     .map(({option})=>option.stream);
 }

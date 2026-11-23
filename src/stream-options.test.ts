@@ -3,6 +3,7 @@ import {describe,it,expect} from 'vitest';
 import {describeStream,availableQualities,defaultQuality,sortSources,bestSource} from './stream-options';
 import {detectQuality} from '../shared/stream-info.mjs';
 import {torrentResults} from '../server/piratebay.mjs';
+import {releaseAudio} from './release-languages';
 describe('quality-first stream selection',()=>{
   it('distinguishes 720p, 1080p, 1440p and 2160p without advertising unavailable tiers',()=>{
     const options=['Film.720p.x264','Film.1080p.x265','Film.2160p.HEVC'].map(title=>describeStream({title}));
@@ -54,5 +55,43 @@ describe('preferred playback languages',()=>{
     expect(bestSource([higher,lower],{...preferences,autoSubtitles:false},videoId)).toBe(higher);
     saveTrackSummary(lower.infoHash,videoId,[],[{...subtitles,supported:false}]);
     expect(bestSource([higher,lower],preferences,videoId)).toBe(higher);
+  });
+});
+
+describe('preferred audio from release names',()=>{
+  const english={audioLanguage:'eng',subtitleLanguage:'eng',autoSubtitles:false,preferredQuality:'1080p'} as const;
+  const hash=(n:number)=>String(n).repeat(40);
+  it('reads Torrentio flags and scene tags',()=>{
+    expect(releaseAudio('Film.2024.1080p\n👤 50 💾 2 GB ⚙️ ThePirateBay\n🇮🇹').languages).toEqual(['it']);
+    expect(releaseAudio('Film.2024.iTALiAN.1080p.WEB').languages).toEqual(['it']);
+    expect(releaseAudio('Film.2024.1080p.iTA-ENG.WEB').languages.sort()).toEqual(['en','it']);
+    expect(releaseAudio('Film.2024.1080p.WEB.ENG.SUBS').languages).toEqual([]);
+    expect(releaseAudio('Film.2024.MULTi.1080p').multi).toBe(true);
+    expect(releaseAudio('Film.2024.1080p.Multi.Subs').multi).toBe(false);
+    expect(releaseAudio('Film.2024.1080p.WEB-DL.x264').languages).toEqual([]);
+  });
+  it('plays a likely English release before a better-seeded dub, and the dub when nothing else exists',()=>{
+    const italian={infoHash:hash(5),title:'Film.2024.iTALiAN.1080p.WEB',quality:'1080p',seeders:900};
+    const french={infoHash:hash(6),title:'Film 2024 1080p\n🇫🇷',quality:'1080p',seeders:500};
+    const plain={infoHash:hash(7),title:'Film.2024.1080p.WEB-DL',quality:'1080p',seeders:20};
+    const tagged={infoHash:hash(8),title:'Film.2024.720p.ENG',quality:'720p',seeders:3};
+    expect(bestSource([italian,french,plain],english,'tt-audio')).toBe(plain);
+    expect(bestSource([italian,french,plain,tagged],english,'tt-audio')).toBe(tagged);
+    expect(bestSource([italian,french],english,'tt-audio')).toBe(italian);
+    expect(bestSource([italian,plain],{...english,audioLanguage:''},'tt-audio')).toBe(italian);
+  });
+  it('puts the preferred language before an instantly available debrid file in another language',()=>{
+    const cachedItalian={url:'https://example.com/a.mkv',title:'Film.2024.iTALiAN.1080p',quality:'1080p',debrid:'cached' as const};
+    const plain={infoHash:hash(9),title:'Film.2024.1080p.WEB-DL',quality:'1080p',seeders:20};
+    expect(bestSource([cachedItalian,plain],english,'tt-audio')).toBe(plain);
+    expect(bestSource([cachedItalian,{...plain,title:'Film.2024.FRENCH.1080p'}],english,'tt-audio')).toBe(cachedItalian);
+  });
+  it('trusts checked tracks over the release name',()=>{
+    const videoId='tt-audio-checked';
+    const named={infoHash:hash(1),title:'Film.2024.1080p.WEB',quality:'1080p',seeders:90};
+    const dubbed={infoHash:hash(2),title:'Film.2024.1080p.WEB',quality:'1080p',seeders:10};
+    saveTrackSummary(named.infoHash,videoId,[{index:0,language:'ita',codec:'aac',default:true}],[]);
+    saveTrackSummary(dubbed.infoHash,videoId,[{index:0,language:'ita',codec:'aac',default:true},{index:1,language:'eng',codec:'aac',default:false}],[]);
+    expect(bestSource([named,dubbed],english,videoId)).toBe(dubbed);
   });
 });
