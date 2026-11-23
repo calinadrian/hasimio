@@ -115,7 +115,7 @@
 @media(max-height:500px) and (orientation:landscape) and (max-width:650px){.cinema-skip{display:none}}
 
 /* Subtitles: drawn over the visible picture and sized from it, so they scale with the player. */
-.cinema-captions{position:absolute;z-index:3;pointer-events:none;line-height:1.28;letter-spacing:.005em;font-kerning:normal;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+.cinema-captions{position:absolute;z-index:4;pointer-events:none;line-height:1.28;letter-spacing:.005em;font-kerning:normal;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
 .cinema-caption-group{position:absolute;left:4%;right:4%;display:flex;flex-direction:column;align-items:center;gap:.25em;transition:bottom .22s ease,top .22s ease}
 .cinema-caption{margin:0;max-width:100%;text-align:center;text-wrap:balance;overflow-wrap:anywhere;border-radius:.16em;padding:.06em .38em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .cinema-caption-line{display:block}

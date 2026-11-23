@@ -46,3 +46,19 @@
 .card-size>button[aria-pressed=true]{background:#494949;color:#fff}
 .card-size>button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 @media(max-width:440px){.card-size{display:none}}
+
+/* Title card for titles without artwork (and while artwork loads). It sits under
+   the image, so a poster that arrives simply covers it. Sizes follow the card's
+   width, so the same card reads well as a poster and as a wide frame. */
+.poster-image{container-type:inline-size}
+.poster-fallback{position:absolute;inset:0;z-index:-1;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:9cqw 8cqw 10cqw;overflow:hidden;border-radius:inherit;
+  background:
+    radial-gradient(120% 70% at 0% 0%,hsl(var(--tint) 32% 30% / .9),transparent 62%),
+    radial-gradient(90% 60% at 100% 100%,hsl(calc(var(--tint) + 24) 26% 20% / .8),transparent 70%),
+    linear-gradient(165deg,hsl(var(--tint) 16% 17%),hsl(var(--tint) 12% 8%));
+  box-shadow:inset 0 0 0 1px #ffffff0f}
+.poster-fallback::after{content:'';position:absolute;inset:auto -20% -30% auto;width:70%;aspect-ratio:1;border-radius:50%;border:1px solid hsl(var(--tint) 30% 70% / .08);box-shadow:0 0 0 14cqw hsl(var(--tint) 30% 70% / .025);pointer-events:none}
+.poster-fallback-kind{position:relative;font:700 clamp(9px,5.4cqw,12px)/1.2 'DM Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:hsl(var(--tint) 20% 78% / .75)}
+.poster-fallback-title{position:relative;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden;overflow-wrap:anywhere;text-wrap:balance;font:800 clamp(17px,14cqw,34px)/1.04 Manrope,sans-serif;letter-spacing:-.025em;color:#f2f2f2;text-shadow:0 2px 18px #0006}
+.wide-card .poster-fallback{padding:7cqw 6cqw}
+.wide-card .poster-fallback-title{font-size:clamp(18px,8cqw,34px);-webkit-line-clamp:2}

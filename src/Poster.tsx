@@ -1,4 +1,5 @@
-import {Check,Film,Play} from 'lucide-react';
+import type React from 'react';
+import {Check,Play} from 'lucide-react';
 import {type Meta,safeHttp} from './media';
 import PosterImage,{ArtImage} from './PosterImage';
 import {backdropSources,posterSources} from './poster-artwork';
@@ -26,6 +27,22 @@ export function finishedTag(status:string){
 }
 export function mediaKind(meta:Meta){return meta.category==='anime'||meta.type==='anime'?'Anime':meta.type==='series'?'Series':'Movie';}
 
+// Muted tints for generated title cards. Blues and cyans stay out, as in the rest of the app.
+const tints=[8,22,34,46,62,96,132,152,276,298,322,340];
+/** A stable tint per title, so a card keeps its look between visits. */
+export function fallbackTint(meta:Pick<Meta,'id'|'name'>){
+  let hash=0;for(const char of meta.id||meta.name)hash=(hash*31+char.charCodeAt(0))|0;
+  return tints[Math.abs(hash)%tints.length];
+}
+/** Shown under the artwork: a designed title card when a title has no poster, or while it loads. */
+function TitleCard({meta}:{meta:Meta}){
+  const year=meta.releaseInfo?.match(/\d{4}/)?.[0];
+  return <span className="poster-fallback" style={{'--tint':fallbackTint(meta)} as React.CSSProperties} aria-hidden="true">
+    <span className="poster-fallback-kind">{mediaKind(meta)}{year&&<> · {year}</>}</span>
+    <span className="poster-fallback-title">{meta.name}</span>
+  </span>;
+}
+
 function ProgressTrack({meta,progress}:{meta:Meta;progress:CardProgress}){
   return <span className="poster-playback-track" role="progressbar" aria-label={`${meta.name}${progress.episode?` ${progress.episode}`:''} playback progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} aria-valuetext={`${playbackTime(progress.position)} of ${playbackTime(progress.duration)}`}><span style={{width:`${Math.max(3,progress.percent)}%`}}/></span>;
 }
@@ -46,7 +63,7 @@ export default function Poster({meta,onClick,saved,progress,rank}:{meta:Meta;onC
     {rank!==undefined&&<span className="rank-number" aria-hidden="true">{rank}</span>}
     <div className="poster-image">
       <PosterImage meta={meta}/>
-      <Film className="poster-placeholder" aria-hidden="true"/>
+      <TitleCard meta={meta}/>
       {saved&&<span className="saved-mark" title="In your library" aria-hidden="true"><Check size={13} strokeWidth={3}/></span>}
       <span className="poster-open" aria-hidden="true"><Play size={28} fill="currentColor" aria-hidden="true"/></span>
       {progress?.completed&&<span className="poster-tag" title={status}><Check size={12} strokeWidth={3}/>{finishedTag(status)}</span>}
@@ -71,7 +88,7 @@ export function WideCard({meta,onClick,progress,still}:{meta:Meta;onClick:()=>vo
   return <button ref={element=>{if(element)posterTitles.set(element,meta);}} className={'poster-card wide-card'+(watching?' is-watching':'')} aria-label={[meta.name,mediaKind(meta),progress?status:''].filter(Boolean).join(', ')} onClick={onClick}>
     <div className="poster-image">
       <ArtImage sources={sources}/>
-      <Film className="poster-placeholder" aria-hidden="true"/>
+      <TitleCard meta={meta}/>
       <span className="poster-open" aria-hidden="true"><Play size={26} fill="currentColor" aria-hidden="true"/></span>
       {watching&&<ProgressTrack meta={meta} progress={progress}/>}
     </div>
