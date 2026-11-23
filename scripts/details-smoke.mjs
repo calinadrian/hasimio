@@ -36,9 +36,9 @@ async function run({url,fixture,show,other,addon,profile}){
   const wait=async(s,tries=120)=>{for(let i=0;i<tries;i++){if(await js(s))return;await new Promise(r=>setTimeout(r,25));}throw Error('Timed out: '+s);};
   const click=async s=>{await js(`(${s}).click()`);await new Promise(r=>setTimeout(r,50));};
   try{
-    await win.loadURL(url);
+    await win.loadURL(new URL('/favicon.png',url).href);
     await js(`localStorage.clear();localStorage.setItem('hasimio:library',${JSON.stringify(JSON.stringify([{...show,metadataFetchedAt:1}]))});localStorage.setItem('hasimio:addons',${JSON.stringify(JSON.stringify([addon]))});`);
-    await win.reload();
+    await win.loadURL(url);
     await wait('!!document.querySelector(\'.nav-item[aria-label="Library"]\')');
     await click('document.querySelector(\'.nav-item[aria-label="Library"]\')');
     await wait('!!document.querySelector(".poster-card")');

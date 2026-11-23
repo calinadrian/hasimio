@@ -31,9 +31,9 @@ async function run({url,profile,shots,live}){
     await wait(`performance.getEntriesByType('resource').some(entry=>entry.name.includes('/api/live-tv/${channel}/${server}/index.m3u8'))`);
   };
   try{
-    await win.loadURL(url);
+    await win.loadURL(new URL('/favicon.png',url).href);
     await js(`localStorage.clear();localStorage.setItem('hasimio:addons','[]');localStorage.setItem('hasimio:settings','{"muted":true}');`);
-    await win.reload();
+    await win.loadURL(url);
     await wait('!!document.querySelector(\'.nav-item[aria-label="Live TV"]\')');
     await click('document.querySelector(\'.nav-item[aria-label="Live TV"]\')');
     // The Live TV page loads on demand.

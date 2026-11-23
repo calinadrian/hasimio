@@ -32,10 +32,10 @@ async function run({url,folder}){
   const wait=async s=>{for(let i=0;i<180;i++){if(await js(s))return;await new Promise(r=>setTimeout(r,40));}throw Error('Timed out: '+s);};
   const click=async s=>{await js(`(${s}).click()`);await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');};
   try{
-    await win.loadURL(url);
+    await win.loadURL(new URL('/favicon.png',url).href);
     const addon={url:url+'fixture/manifest.json',enabled:true,manifest:{id:'fixture.discover',name:'Browse fixture',version:'1',resources:['catalog'],types:['movie'],catalogs:[{id:'popular',type:'movie',name:'Popular movies',extra:[{name:'skip'}]}]}};
     await js(`localStorage.clear();localStorage.setItem('hasimio:addons',${JSON.stringify(JSON.stringify([addon]))});`);
-    await win.reload();
+    await win.loadURL(url);
     await wait('document.querySelectorAll(".media-shelf .poster-card").length>=12');
     assert.equal(await js('document.querySelectorAll(".load-more").length'),0);
     await click('document.querySelector(".shelf-heading-button")');

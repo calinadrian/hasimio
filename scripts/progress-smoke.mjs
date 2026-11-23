@@ -23,9 +23,9 @@ app.whenReady().then(async()=>{
  const wait=async(s)=>{for(let i=0;i<100;i++){if(await js(s))return;await new Promise(r=>setTimeout(r,50));}throw Error('Timed out: '+s);};
  const click=async(s)=>{await js('('+s+').click()');await new Promise(r=>setTimeout(r,80));};
  try{
- await win.loadURL(${JSON.stringify(url)});
+ await win.loadURL(${JSON.stringify(new URL('/favicon.png',url).href)});
  await js(${JSON.stringify("localStorage.clear();localStorage.setItem('hasimio:library',JSON.stringify([\n {id:'open:progress-show',type:'series',name:'Smoke Test Series',runtime:'45 min',videos:Array.from({length:6},(_,i)=>({id:'open:progress-show:'+i,season:i<5?1:2,episode:i<5?i+1:1,title:'Episode '+(i+1)}))},\n {id:'open:progress-film',type:'movie',name:'Smoke Test Movie',runtime:'90 min'}]));")});
- await win.reload();
+ await win.loadURL(${JSON.stringify(url)});
  await wait('!!document.querySelector(\'.nav-item[aria-label="Library"]\')');
  await click('document.querySelector(\'.nav-item[aria-label="Library"]\')');
  await wait('[...document.querySelectorAll(".poster-card")].some(e=>e.textContent.includes("Smoke Test Series"))');

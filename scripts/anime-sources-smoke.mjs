@@ -79,9 +79,9 @@ async function run({url,fixture,addons,library,flags,profile}){
   const picker='document.querySelector(".stream-picker")';
   const stats=async()=>(await fetch(fixture+'/stats')).json();
   try{
-    await win.loadURL(url);
+    await win.loadURL(new URL('/favicon.png',url).href);
     await js(`localStorage.clear();localStorage.setItem('hasimio:library',${JSON.stringify(JSON.stringify(library))});localStorage.setItem('hasimio:addons',${JSON.stringify(JSON.stringify(addons))});${JSON.stringify(flags)}.forEach(flag=>localStorage.setItem(flag,'done'));`);
-    await win.reload();
+    await win.loadURL(url);
     await wait('!!document.querySelector(\'.nav-item[aria-label="Library"]\')');
     await click('document.querySelector(\'.nav-item[aria-label="Library"]\')');
     await wait(`!!${card('Fixture Anime')}`);

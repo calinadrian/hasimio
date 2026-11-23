@@ -25,9 +25,9 @@ async function run({url,folder}){
   const wait=async s=>{for(let i=0;i<160;i++){if(await js(s))return;await new Promise(r=>setTimeout(r,40));}throw Error('Timed out: '+s);};
   const click=async s=>{await js(`(${s}).click()`);await js('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');};
   try{
-    await win.loadURL(url);
+    await win.loadURL(new URL('/favicon.png',url).href);
     await js(`localStorage.clear();localStorage.setItem('hasimio:library',JSON.stringify([{id:'tt0903747',type:'series',name:'Breaking Bad',metadataFetchedAt:Date.now(),videos:[{id:'tt0903747:1:1',season:1,episode:1}]}]));`);
-    await win.reload();await wait('!!document.querySelector(\'.nav-item[aria-label="Library"]\')');
+    await win.loadURL(url);await wait('!!document.querySelector(\'.nav-item[aria-label="Library"]\')');
     await click('document.querySelector(\'.nav-item[aria-label="Library"]\')');await wait('!!document.querySelector(".poster-card")');
     await click('document.querySelector(".poster-card")');await wait('document.querySelectorAll(".person-button").length===2');
     assert.match(await js('document.querySelector(".people-section").textContent'),/Walter White/);
