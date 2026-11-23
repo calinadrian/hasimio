@@ -111,7 +111,7 @@ export function progressSummary(history:ProgressMap,titles:Meta[]):ProgressSumma
     if(finished||!total)continue;
     // An episode left part way through comes first; otherwise the one after the furthest watched.
     const ordered=[...episodes].sort(episodeOrder);
-    const out=new Set(releasedEpisodes(ordered,now));
+    const out=new Set(releasedEpisodes(ordered,now,group.meta.metadataPartial));
     // Only while it is the latest thing watched in the series.
     let next=group.playing&&group.playing.updatedAt>=group.lastUpdated?ordered.find(video=>video.id===group.playing!.videoId&&!group.watched.has(video.id)):undefined;
     if(!next){

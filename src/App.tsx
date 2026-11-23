@@ -10,7 +10,7 @@ import { Compass, Library, CalendarDays, Puzzle, Search, Play, Plus, Check, Chev
 import { type Meta, type Addon, type Stream, demo, openFilms, getJson, manifestUrl, validateManifest, resourceUrl, supports, demoStreams, safeHttp, datedVideos, nextRelease, episodeLabel } from './media';
 import {groupAnimeSeries, imdbAnimeCandidate, mergeImdbAnime, sameTitle, updateTitle} from './anime-series';
 import {cachedHomeRows,cachedRow,mergeRows,storeHomeRows} from './home-cache';
-import {removeBundledTitle, topResults, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, findImdbAnime, kitsu, loadCatalog, loadMetadata, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
+import {removeBundledTitle, topResults, defaultAddons, migrateAnimeSource, addDefaultCatalogs, updatePlaybackAddon, type CatalogRow, catalogSelection, findImdbAnime, kitsu, loadCatalog, loadMetadata, completeMetadata, loadMetadataQueue, needsMetadata, titles, replaceCinemeta, sourceMigrations} from './catalogs';
 import {defaultEpisode} from './media';
 import PosterImage from './PosterImage';
 import {backdropSources,posterSources,useImage} from './poster-artwork';
@@ -128,8 +128,7 @@ export default function App() {
     const queue = library.filter(meta => calendarRefresh > (meta.metadataFetchedAt ?? 0) || needsMetadata(meta) || (meta.metadataError && addons.some(a => supports(a,'meta',meta.type,meta.id))));
     setCalendarLoading(queue.length > 0);
     // Bound concurrency so restoring a large library does not flood metadata providers.
-    async function worker() { while (queue.length && live) { const meta = queue.shift()!; try { const updated = await loadMetadata(meta,addons,controller.signal); if (live) setLibrary(previous => updateTitle(previous.map(m => m.id === meta.id && m.type === meta.type ? updated : m),updated)); } catch { if (controller.signal.aborted) return; } } }
-    Promise.all(Array.from({length:Math.min(3,queue.length)},worker)).then(() => {if (live) setCalendarLoading(false);});
+    void loadMetadataQueue(queue,addons,controller.signal,(updated,meta) => { if (live) setLibrary(previous => updateTitle(previous.map(m => m.id === meta.id && m.type === meta.type ? updated : m),updated)); }).then(() => {if (live) setCalendarLoading(false);});
     return () => {live=false;controller.abort();};
     // Metadata writes do not restart synchronization; changes to membership do.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -272,9 +271,7 @@ export default function App() {
       const chosen=nextEpisodeToWatch(early,history)??defaultEpisode(early)?.id;
       setEpisode(current=>{if(current)return current;provisionalEpisode.current=chosen;return chosen;});
     };
-    try{
-      const updated=await loadMetadata(initial,addons,controller.signal,partial);
-      if(request!==detailRequest.current)return;
+    const apply=(updated:Meta,first:boolean)=>{
       if(!updated.metadataError){
         detailCache.current.delete(cacheKey);detailCache.current.set(cacheKey,updated);
         if(detailCache.current.size>(isWebOS||isAndroidArm32?10:50))detailCache.current.delete(detailCache.current.keys().next().value!);
@@ -282,8 +279,19 @@ export default function App() {
       setSelected(updated);
       setEpisode(current=>current&&current!==provisionalEpisode.current&&updated.videos?.some(v=>v.id===current)?current:nextEpisodeToWatch(updated,history)??defaultEpisode(updated)?.id);
       // The episode to resume is known only now that the episode list arrived.
-      if(play&&!known){const chosen=nextEpisodeToWatch(updated,history)??defaultEpisode(updated)?.id;if(chosen)setQuickPlay(chosen);}
+      if(first&&play&&!known){const chosen=nextEpisodeToWatch(updated,history)??defaultEpisode(updated)?.id;if(chosen)setQuickPlay(chosen);}
       setLibrary(previous=>updateTitle(previous.map(m=>m.id===meta.id&&m.type===meta.type?updated:m),updated));
+    };
+    try{
+      const updated=await loadMetadata(initial,addons,controller.signal,partial);
+      if(request!==detailRequest.current)return;
+      apply(updated,true);
+      // A quick, undated episode list: the page is usable now, and the dated list replaces it when it arrives.
+      if(updated.metadataPartial){
+        setDetailLoading(false);
+        const complete=await completeMetadata(updated,addons,controller.signal);
+        if(request===detailRequest.current&&!complete.metadataPartial&&!complete.metadataError)apply(complete,false);
+      }
     }catch(error){if(!controller.signal.aborted)notify(error instanceof Error?error.message:'Could not load details. Try again.');}
     finally{if(request===detailRequest.current)setDetailLoading(false);}
   }
@@ -348,7 +356,8 @@ export default function App() {
   },[library,query,libraryStatus,librarySort,cardMetadata,history]);
   const localRows = page === 'Library' ? [{title:'Your collection',items:libraryItems}] : [...(!loading && !catalogs.length && filter !== 'Anime' ? [{title:'Starter picks · Offline selection',items:demo.filter(m => !query.trim() || m.name.toLowerCase().includes(query.trim().toLowerCase()))}] : []),...(addons.some(a => a.builtin && a.enabled) && !query.trim() ? [{title:'Open Cinema · Ready to play',items:openFilms}] : [])];
   const progressLookupKey=JSON.stringify([...new Set(Object.entries(history).map(([key,p])=>p.titleKey??key))].sort());
-  const progressKnownKey=JSON.stringify([...new Set(knownTitles.map(meta=>progressKey(meta.type,meta.id)))].sort());
+  // Only tracked titles matter here; catalog rows arriving on screen must not restart the batch and re-ask the same titles.
+  const progressKnownKey=useMemo(()=>{const tracked=new Set<string>(JSON.parse(progressLookupKey));return JSON.stringify([...new Set(knownTitles.map(meta=>progressKey(meta.type,meta.id)).filter(key=>tracked.has(key)))].sort());},[knownTitles,progressLookupKey]);
   useEffect(()=>{
     const controller=new AbortController();let live=true;
     const force=progressRefreshApplied.current!==progressRefresh;progressRefreshApplied.current=progressRefresh;
@@ -360,11 +369,7 @@ export default function App() {
       !runtimeSeconds(meta.runtime)&&!runtimeSeconds(meta.videos?.find(video=>video.id===p.videoId||progressKey(meta.type,video.id)===entryKey)?.runtime));
     const queue=[...known].filter(([key,meta])=>tracked.has(key)&&(force||(page==='Progress'&&needsRuntime(key,meta))||(meta.type!=='movie'&&!meta.videos?.length)||needsMetadata(meta))).map(([,meta])=>meta);
     setProgressLoading(queue.length>0);
-    async function worker(){while(queue.length&&live){const meta=queue.shift()!;try{
-      const updated=await loadMetadata(meta,addons,controller.signal);
-      if(live)setProgressMetadata(previous=>[...previous.filter(item=>!sameTitle(item,updated)),updated]);
-    }catch{if(controller.signal.aborted)return;}}}
-    void Promise.all(Array.from({length:Math.min(3,queue.length)},worker)).then(()=>{if(live)setProgressLoading(false);});
+    void loadMetadataQueue(queue,addons,controller.signal,updated=>{if(live)setProgressMetadata(previous=>[...previous.filter(item=>!sameTitle(item,updated)),updated]);}).then(()=>{if(live)setProgressLoading(false);});
     return()=>{live=false;controller.abort();};
     // Metadata writes do not restart this batch; identity changes and explicit retries do.
     // eslint-disable-next-line react-hooks/exhaustive-deps

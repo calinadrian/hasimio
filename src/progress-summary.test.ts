@@ -181,6 +181,9 @@ describe('progress summary',()=>{
       const summary=progressSummary(history,[announced,yearOnly,series('tt600','No dates anywhere',3)]);
       expect(summary.upNext.map(item=>[item.meta.name,item.label,!!item.airs])).toEqual([['No dates anywhere','S1 · E2',false]]);
       expect(summary.series).toHaveLength(3);
+      // While dates are still loading (a partial list over a dated copy), the new season is not called announced.
+      const loading=progressSummary(history,[{...announced,metadataPartial:true}]);
+      expect(loading.upNext.map(item=>[item.meta.name,item.label])).toEqual([['Announced','S2 · E1']]);
     });
 
     it('leaves out series whose history matches none of the listed episodes',()=>{

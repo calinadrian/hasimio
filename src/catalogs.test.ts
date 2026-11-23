@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
-import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, needsMetadata, topResults} from './catalogs';
+import {addDefaultCatalogs, migrateAnimeSource, defaultAddons, kitsu, cinemeta, catalogSelection, loadCatalog, loadMetadata, completeMetadata, loadMetadataQueue, needsMetadata, topResults} from './catalogs';
 import {calendarEvents, nextRelease, releaseCountdown, defaultEpisode, episodeLabel, supports, type Meta} from './media';
 import {pirateBay,updatePlaybackAddon,titles,replaceCinemeta,yts,addYtsSource,eztv,addEztvSource,torrentDownloads,addTorrentDownloadsSource,torrentClaw,addTorrentClawSource,torrentio,comet,addStremioSource,sourceMigrations,ext} from './catalogs';
 import {torrentClawManifest} from '../shared/torrentclaw-manifest.mjs';
@@ -140,6 +140,61 @@ describe('automatic library release hydration', () => {
     expect(meta.videos?.[0].released).toBe('2026-11-02');
     expect(needsMetadata(meta,meta.metadataFetchedAt!+59000)).toBe(false);
     expect(needsMetadata(meta,meta.metadataFetchedAt!+60000)).toBe(true);
+  });
+  it('keeps known episode names when a partial list has placeholders',async()=>{
+    vi.stubGlobal('fetch',vi.fn(async()=>new Response(JSON.stringify({meta:{id:'tt558',type:'series',name:'Show',metadataPartial:true,videos:[{id:'tt558:1:1',season:1,episode:1,title:'Episode #1.1'},{id:'tt558:1:2',season:1,episode:2,title:'Episode #1.2'}]}}))));
+    const meta=await loadMetadata({id:'tt558',type:'series',name:'Show',videos:[{id:'tt558:1:1',season:1,episode:1,title:'Pilot'}]},[titles]);
+    expect(meta.videos?.map(video=>video.title)).toEqual(['Pilot','Episode #1.2']);
+  });
+  it('asks again until the dated episode list replaces a partial one',async()=>{
+    vi.useFakeTimers();
+    try{
+      const partial:Meta={id:'tt559',type:'series',name:'Show',metadataPartial:true,videos:[{id:'tt559:1:1',season:1,episode:1}]};
+      const answers=[partial,{...partial,metadataPartial:false,videos:[{id:'tt559:1:1',season:1,episode:1,released:'2026-11-02T02:00:00.000Z'}]}];
+      const load=vi.fn(async()=>answers.shift()!);
+      const pending=completeMetadata(partial,[titles],undefined,{load});
+      await vi.advanceTimersByTimeAsync(1500);
+      expect(load).toHaveBeenCalledTimes(1);
+      await vi.advanceTimersByTimeAsync(1500);
+      const complete=await pending;
+      expect(load).toHaveBeenCalledTimes(2);
+      expect(complete.metadataPartial).toBe(false);
+      expect(complete.videos?.[0].released).toBe('2026-11-02T02:00:00.000Z');
+      // TVmaze stays unavailable: give up after a few tries and keep the partial list.
+      const stuck=vi.fn(async()=>partial);
+      const giveUp=completeMetadata(partial,[titles],undefined,{load:stuck,attempts:3});
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect((await giveUp).metadataPartial).toBe(true);
+      expect(stuck).toHaveBeenCalledTimes(3);
+      // A complete answer is returned as it is, and closing the page stops the waiting.
+      expect(await completeMetadata({...partial,metadataPartial:false},[titles],undefined,{load:stuck})).toMatchObject({metadataPartial:false});
+      const controller=new AbortController();
+      const closed=expect(completeMetadata(partial,[titles],controller.signal,{load:stuck})).rejects.toMatchObject({name:'AbortError'});
+      controller.abort();await closed;
+      expect(stuck).toHaveBeenCalledTimes(3);
+    }finally{vi.useRealTimers();}
+  });
+  it('saves each first answer at once and asks again for partial ones after the rest',async()=>{
+    vi.useFakeTimers();
+    try{
+      const show=(id:string,extra:Partial<Meta>={}):Meta=>({id,type:'series',name:id,...extra});
+      const calls:string[]=[];
+      // tt1 stays partial once, tt2 always answers fully.
+      const load=vi.fn(async(meta:Meta)=>{calls.push(meta.id);const n=calls.filter(id=>id===meta.id).length;return show(meta.id,{metadataPartial:meta.id==='tt1'&&n===1,metadataFetchedAt:n});});
+      const loaded:[string,boolean][]=[];
+      const done=loadMetadataQueue([show('tt1'),show('tt2')],[titles],new AbortController().signal,(updated,original)=>{expect(original.id).toBe(updated.id);loaded.push([updated.id,!!updated.metadataPartial]);},{workers:1,load});
+      await vi.advanceTimersByTimeAsync(0);
+      // tt2 is not held up while tt1 waits for its dates.
+      expect(loaded).toEqual([['tt1',true],['tt2',false]]);
+      await vi.advanceTimersByTimeAsync(1500);await done;
+      expect(loaded).toEqual([['tt1',true],['tt2',false],['tt1',false]]);
+      expect(calls).toEqual(['tt1','tt2','tt1']);
+      // A title that stays partial is asked for at most `retries` more times.
+      const stuck=vi.fn(async(meta:Meta)=>show(meta.id,{metadataPartial:true}));
+      const finished=loadMetadataQueue([show('tt3')],[titles],new AbortController().signal,()=>{},{load:stuck,retries:2});
+      await vi.advanceTimersByTimeAsync(10_000);await finished;
+      expect(stuck).toHaveBeenCalledTimes(3);
+    }finally{vi.useRealTimers();}
   });
   it('uses a fast fallback after 300ms instead of waiting for a stalled metadata provider',async()=>{
     vi.useFakeTimers();

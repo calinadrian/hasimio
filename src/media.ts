@@ -81,9 +81,11 @@ export function releaseTime(value?: string): number | undefined {
 /**
  * The episodes already out, from a series' episodes in watching order. An undated episode after a dated one
  * is announced but not scheduled, unless a later regular episode is already out (a gap in the data). Undated
- * episodes before any dated one come from sources that leave dates out, so they count as out.
+ * episodes before any dated one come from sources that leave dates out, so they count as out. While a list is
+ * partial (`datesPending`, dates still loading), an undated episode says nothing and counts as out too.
  */
-export function releasedEpisodes(ordered: Video[], now = Date.now()): Video[] {
+export function releasedEpisodes(ordered: Video[], now = Date.now(), datesPending = false): Video[] {
+  if (datesPending) return ordered.filter(video => { const time = releaseTime(video.released); return time === undefined || time <= now; });
   const times = ordered.map(video => releaseTime(video.released)), laterOut: boolean[] = [];
   for (let i = ordered.length - 1, seen = false; i >= 0; i--) {
     laterOut[i] = seen;

@@ -17,7 +17,7 @@ export function adjacentEpisodes(meta:Meta|undefined,videoId?:string,now=Date.no
   const episodes=orderedEpisodes(meta),index=episodes.findIndex(video=>video.id===videoId);
   if(index<0)return {};
   const following=episodes[index+1];
-  return {previous:episodes[index-1],next:following&&releasedEpisodes(episodes,now).includes(following)?following:undefined};
+  return {previous:episodes[index-1],next:following&&releasedEpisodes(episodes,now,meta.metadataPartial).includes(following)?following:undefined};
 }
 
 export function nextEpisode(meta:Meta|undefined,videoId?:string):Video|undefined {

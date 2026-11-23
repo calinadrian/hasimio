@@ -203,7 +203,7 @@ export function titleProgress(meta:Meta,history:ProgressMap):CardProgress|undefi
     const all=(meta.videos??[]).filter(v=>v.episode!=null).sort(episodeOrder);
     const regular=all.filter(v=>v.season!==0);
     const episodes=regular.length?regular:all;
-    const available=releasedEpisodes(episodes);
+    const available=releasedEpisodes(episodes,Date.now(),meta.metadataPartial);
     const watched=(video:Video)=>!!history[progressKey(meta.type,video.id)]?.completed;
     const completed=available.filter(watched);
     const current=all.find(v=>v.id===latest.videoId);
@@ -248,7 +248,7 @@ export function continueWatching(history:ProgressMap,metas:Meta[],limit=20):Meta
         // only when its metadata identifies another available, unwatched episode.
         const episodes=meta.videos?.filter(video=>video.episode!=null)??[];
         const regular=episodes.filter(video=>video.season!==0);
-        const remaining=releasedEpisodes([...(regular.length?regular:episodes)].sort(episodeOrder)).some(video=>
+        const remaining=releasedEpisodes([...(regular.length?regular:episodes)].sort(episodeOrder),Date.now(),meta.metadataPartial).some(video=>
           !history[progressKey(meta.type,video.id)]?.completed);
         if(!entries.some(([,entry])=>entry.completed)||!remaining)continue;
       }

@@ -33,4 +33,9 @@ describe('episode releases', () => {
     expect(ids(releasedEpisodes([episode('a', 1, 1), episode('b', 2, 1, at(5))], now))).toEqual(['a']);
     expect(ids(releasedEpisodes([episode('a', 1, 1, at(-9)), episode('b', 1, 2), episode('c', 1, 3, at(-2)), episode('d', 1, 4)], now))).toEqual(['a', 'b', 'c']);
   });
+  it('counts undated episodes as out while dates are still loading, but never dated ones still to come', () => {
+    const mixed = [episode('a', 1, 1, at(-20)), episode('b', 2, 1), episode('c', 2, 2, at(3))];
+    expect(ids(releasedEpisodes(mixed, now))).toEqual(['a']);
+    expect(ids(releasedEpisodes(mixed, now, true))).toEqual(['a', 'b']);
+  });
 });

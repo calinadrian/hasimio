@@ -138,7 +138,10 @@ export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSigna
   const requestSignal=signal?AbortSignal.any([signal,controller.signal]):controller.signal;
   const merge=(loaded:Meta,source:Addon):Meta=>{
     const knownVideos=new Map(meta.videos?.map(video=>[video.id,video]));
-    const videos=Array.isArray(loaded.videos)?loaded.videos.map(video=>{const known=knownVideos.get(video.id);const merged={...known,...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined&&value!==null)),id:video.id};if(!validRelease(video.released)&&validRelease(known?.released))merged.released=known!.released;return merged;}):meta.videos;
+    const videos=Array.isArray(loaded.videos)?loaded.videos.map(video=>{const known=knownVideos.get(video.id);const merged={...known,...Object.fromEntries(Object.entries(video).filter(([,value])=>value!==undefined&&value!==null)),id:video.id};if(!validRelease(video.released)&&validRelease(known?.released))merged.released=known!.released;
+      // A partial list carries IMDb's placeholder names ("Episode #23.7"); keep names already known.
+      if(loaded.metadataPartial===true&&known?.title)merged.title=known.title;
+      return merged;}):meta.videos;
     // A merged anime is always the same title, whichever season's card opened it.
     return {...meta,...loaded,id:loaded.seasonIds?.includes(meta.id)?loaded.id:meta.id,type:meta.type,category:meta.category ?? (source.manifest.id === kitsu.manifest.id ? 'anime' : undefined),sourceUrl:source.url,videos,metadataFetchedAt:Date.now(),metadataError:undefined,metadataPartial:loaded.metadataPartial===true};
   };
@@ -163,4 +166,42 @@ export async function loadMetadata(meta:Meta, addons:Addon[], signal?:AbortSigna
   }catch{if(signal?.aborted)throw new DOMException('Aborted','AbortError');}
   finally{controller.abort();}
   return {...meta,metadataFetchedAt:Date.now(),metadataError:sources.length ? 'Release information could not be updated. Retry refresh.' : 'Enable a matching metadata extension to load release dates.'};
+}
+const pause=(ms:number,signal?:AbortSignal)=>new Promise<void>((resolve,reject)=>{
+  if(signal?.aborted){reject(new DOMException('Aborted','AbortError'));return;}
+  const timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve();},ms);
+  const cancel=()=>{clearTimeout(timer);reject(new DOMException('Aborted','AbortError'));};
+  signal?.addEventListener('abort',cancel,{once:true});
+});
+/**
+ * When TVmaze is slow, Hasimio Titles answers within about a second with IMDb's episode list, which has no air
+ * dates and placeholder names, marked partial, and keeps fetching TVmaze. Ask again a few times so the dated list
+ * replaces it. Returns the last answer, which may still be partial when TVmaze stays unavailable.
+ */
+export async function completeMetadata(meta:Meta,addons:Addon[],signal?:AbortSignal,{attempts=4,delay=1500,load=loadMetadata}:{attempts?:number;delay?:number;load?:typeof loadMetadata}={}):Promise<Meta>{
+  let current=meta;
+  for(let attempt=0;current.metadataPartial&&!current.metadataError&&attempt<attempts;attempt++){
+    await pause(delay,signal);
+    current=await load(current,addons,signal);
+  }
+  return current;
+}
+/**
+ * Loads titles a few at a time, handing each answer to onLoaded at once. A partial answer goes to the back of the
+ * queue and is asked for again (after a short pause) up to `retries` times, so slow TVmaze dates never hold up the rest.
+ */
+export async function loadMetadataQueue(metas:Meta[],addons:Addon[],signal:AbortSignal,onLoaded:(updated:Meta,original:Meta)=>void,{workers=3,retries=3,delay=1500,load=loadMetadata}:{workers?:number;retries?:number;delay?:number;load?:typeof loadMetadata}={}):Promise<void>{
+  const queue=metas.map(meta=>({meta,original:meta,tries:0}));
+  async function worker(){
+    while(queue.length&&!signal.aborted){
+      const item=queue.shift()!;
+      try{
+        const updated=item.tries?await completeMetadata(item.meta,addons,signal,{attempts:1,delay,load}):await load(item.meta,addons,signal);
+        if(signal.aborted)return;
+        onLoaded(updated,item.original);
+        if(updated.metadataPartial&&!updated.metadataError&&item.tries<retries)queue.push({meta:updated,original:item.original,tries:item.tries+1});
+      }catch{if(signal.aborted)return;}
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(workers,queue.length)},worker));
 }
