@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react';
 import {ArrowUpRight,ChevronDown,ExternalLink,HardDrive,ListVideo,LoaderCircle,MonitorPlay,Play,Puzzle,RefreshCw,Users} from 'lucide-react';
 import {type Stream,safeHttp} from './media';
-import {inspectionWorkers,inspectStreamTracks} from './source-inspection';
+import {EngineUnreachableError,inspectionWorkers,inspectStreamTracks} from './source-inspection';
 import {EnginePanel,useEngine} from './EngineStatus';
 import {type Quality} from '../shared/stream-info.mjs';
 import {describeStream,availableQualities,defaultQuality,formatSize,sortSources,sourceLanguageMatches} from './stream-options';
@@ -12,6 +12,8 @@ import {usePlayerSettings} from './use-player-settings';
 import {preferredQualityFor,type QualityKind} from './preferences';
 const mobileEngine=import.meta.env.VITE_ANDROID==='true';
 
+const SOURCE_PAGE=20;
+const AUTO_CHECKS=8;
 const qualityLabel=(q:Quality)=>q==='2K'?'2K · 1440p':q==='4K'?'4K · 2160p':q==='Other'?'Original / unspecified':q;
 // episodes: a series whose episode list is still loading, failed to load, or lists nothing yet. Sources are
 // searched per episode, so until there is one the panel says why instead of "No sources available yet".
@@ -28,19 +30,31 @@ export default function StreamPicker({streams,loading,error,automatic,onPlay,onR
   const sources=sortSources(options.filter(o=>o.quality===quality),sort);
   // Merged rows (the same release from several sources) count every source that listed them.
   const providers=[...new Set(sources.flatMap(o=>[o.provider,...(o.stream.alsoFrom??[])]))];
-  // One-click Play covers the usual case, so the full list waits behind a disclosure unless something needs attention.
-  const open=expanded||!options.length||!!error;
-  const sourceHashes=JSON.stringify(sources.map(o=>trackSourceKey(o.stream,videoId)));
+  // One-click Play covers the usual case, so the full list waits behind a disclosure. A partial failure (one
+  // extension down while others answered) is shown as a note instead of forcing the list open.
+  const open=expanded||!options.length;
+  // Long lists show a page at a time; only the best few seeded sources are checked automatically, the rest on request.
+  const [visible,setVisible]=useState(SOURCE_PAGE);const [requested,setRequested]=useState<Set<string>>(()=>new Set());const [engineDown,setEngineDown]=useState(false);
+  useEffect(()=>{setVisible(SOURCE_PAGE);},[quality,sort,videoId]);
+  const shown=sources.slice(0,visible);
+  const autoChecked=new Set(shown.filter(o=>o.stream.infoHash&&o.seeders!==0).slice(0,AUTO_CHECKS).map(o=>trackSourceKey(o.stream,videoId)));
+  const queued=(stream:Stream)=>{const hash=trackSourceKey(stream,videoId);return !!hash&&(autoChecked.has(hash)||requested.has(hash));};
+  const sourceHashes=JSON.stringify(shown.filter(o=>queued(o.stream)).map(o=>trackSourceKey(o.stream,videoId)));
   useEffect(()=>{let live=true;const controller=new AbortController();
     // Checks connect to peers, so they wait until the source list is actually on screen.
     if(!open||automatic)return;
-    const pending=[...new Map(sources.filter(o=>o.stream.infoHash).map(o=>[trackSourceKey(o.stream,videoId),o])).values()];
+    const pending=[...new Map(shown.filter(o=>o.stream.infoHash&&queued(o.stream)).map(o=>[trackSourceKey(o.stream,videoId),o])).values()];
     async function checkSources(){while(live){const option=pending.shift();if(!option)return;const stream=option.stream,hash=trackSourceKey(stream,videoId);if(!live)return;if(!hash||sourceTrackInfo(stream,videoId).verified)continue;
       setChecks(previous=>({...previous,[hash]:'Checking audio and subtitles…'}));
-      try{await inspectStreamTracks(stream,videoId,controller.signal);if(live)setChecks(previous=>({...previous,[hash]:''}));}catch(e){if(!live)return;setChecks(previous=>({...previous,[hash]:e instanceof Error?e.message:'Could not inspect this source.'}));}
+      try{await inspectStreamTracks(stream,videoId,controller.signal);if(live)setChecks(previous=>({...previous,[hash]:''}));}catch(e){if(!live)return;
+        // The engine is gone: stop here and say so once, instead of failing every source in turn.
+        if(e instanceof EngineUnreachableError){live=false;controller.abort();setEngineDown(true);setChecks(previous=>Object.fromEntries(Object.entries({...previous,[hash]:''}).map(([key,value])=>[key,value==='Checking audio and subtitles…'?'':value])));return;}
+        setChecks(previous=>({...previous,[hash]:e instanceof Error?e.message:'Could not inspect this source.'}));}
     }}
+    setEngineDown(false);
     if(engine.state==='ready')void Promise.all(Array.from({length:inspectionWorkers},checkSources));return()=>{live=false;controller.abort();};
   },[sourceHashes,videoId,quality,checkAttempt,engine.state,open,automatic]);
+  const checkSource=(stream:Stream)=>{const hash=trackSourceKey(stream,videoId);if(hash)setRequested(previous=>new Set(previous).add(hash));};
   return <section className="stream-picker" aria-label="Playback sources">
     <div className="stream-picker-heading"><div><h3>Sources</h3>{open&&!loading&&!episodes&&<p>{(isWebOS||mobileEngine)?'Audio and subtitles are checked one source at a time for MKV and WebM files.':'Pick a quality, then a source. Audio and subtitle tracks are checked automatically.'}</p>}</div><button className="icon-button" aria-label={episodes?'Reload the episode list':'Refresh stream sources'} onClick={onRetry} disabled={loading||episodes==='loading'}><RefreshCw size={18} className={loading||episodes==='loading'?'spin':''}/></button></div>
     {engine.state!=='ready'&&<EnginePanel engine={engine}/>}
@@ -48,18 +62,20 @@ export default function StreamPicker({streams,loading,error,automatic,onPlay,onR
     :episodes==='failed'?<div className="stream-empty"><ListVideo size={28}/><h4>The episode list could not be loaded</h4><p>Sources are searched per episode. Check your connection, then try again.</p><button className="button secondary" onClick={onRetry}><RefreshCw size={16}/> Try again</button></div>
     :episodes==='none'?<div className="stream-empty"><ListVideo size={28}/><h4>No episodes are listed yet</h4><p>Sources can be searched once an episode is listed.</p></div>:<>
     {loading&&options.length>0&&<p className="loading" role="status"><LoaderCircle size={16} className="spin"/> Checking remaining extensions… You can play now.</p>}
+    {error&&options.length>0&&engine.state==='ready'&&<p className="source-partial-error" role="status">{error}</p>}
     {loading&&!options.length?<div className="source-loading" role="status"><LoaderCircle size={22} className="spin"/><div><strong>Finding available sources</strong><p>Checking your installed extensions…</p></div></div>:options.length&&!open?<button type="button" className="sources-toggle" aria-expanded="false" onClick={()=>setExpanded(true)}><span><strong>{options.length} {options.length===1?'source':'sources'}</strong> in {qualities.length} {qualities.length===1?'quality':'qualities'}</span><span>Choose quality and source <ChevronDown size={16}/></span></button>:options.length?<>
       <div className="source-toolbar"><label>Quality<div className="source-select"><MonitorPlay size={18}/><select aria-label="Stream quality" value={quality} onChange={e=>setChosen(e.target.value as Quality)}>{qualities.map(q=><option key={q} value={q}>{qualityLabel(q)} · {options.filter(o=>o.quality===q).length} {options.filter(o=>o.quality===q).length===1?'source':'sources'}</option>)}</select><ChevronDown size={16}/></div></label><label>Sort by<div className="source-select"><select aria-label="Sort stream sources" value={sort} onChange={e=>setSort(e.target.value)}><option value="seeders">Most seeders</option><option value="size">Smallest file</option></select><ChevronDown size={16}/></div></label></div>
       <div className="source-results-summary"><strong>{qualityLabel(quality)}</strong><span>{sources.length} {sources.length===1?'source':'sources'}{providers.length===1?` from ${providers[0]}`:''}</span></div>
-      <div className="quality-source-list">{sources.map((option,index)=>{
+      {engineDown&&<div className="source-engine-down" role="alert"><p>Couldn’t reach Hasimio Engine, so audio and subtitle checks stopped. You can still play a source.</p><button type="button" className="button secondary" onClick={()=>setCheckAttempt(n=>n+1)}><RefreshCw size={15}/> Retry checks</button></div>}
+      <div className="quality-source-list">{shown.map((option,index)=>{
         const info=sourceTrackInfo(option.stream,videoId),matches=sourceLanguageMatches(option.stream,videoId,preferences);
         const stream=option.stream,check=checks[trackSourceKey(stream,videoId)],direct=safeHttp(stream.url),external=safeHttp(stream.externalUrl)||(stream.ytId?`https://www.youtube.com/watch?v=${encodeURIComponent(stream.ytId)}`:undefined);
         return <article className="quality-source" key={`${stream.infoHash||stream.url||stream.externalUrl||stream.ytId||option.filename}:${index}`}>
-          <div className="source-information"><div className="source-title">{providers.length>1&&<strong>{option.provider}</strong>}{stream.alsoFrom?.length?<small className="source-also" title={`Also listed by ${stream.alsoFrom.join(", ")}`}>also on {stream.alsoFrom.join(", ")}</small>:null}{option.release&&<span>{option.release}</span>}{option.codec&&<span className={option.codec==='HEVC'?'codec-note':''}>{option.codec}</span>}</div><div className="source-facts"><span><HardDrive size={14}/>{formatSize(option.sizeBytes)}</span>{option.seeders!=null&&<span className={option.seeders>0?'seeders-available':'seeders-empty'}><Users size={14}/>{option.seeders.toLocaleString()} {option.seeders===1?'seeder':'seeders'}</span>}{!stream.infoHash&&<span>Direct video</span>}</div><div className="source-track-info" title={info.detail}>{info.verified?<><span className="source-language"><strong>Audio:</strong> {info.audioNames.join(', ')||'None'} <small>({info.audioCount} {info.audioCount===1?'track':'tracks'})</small></span><span className="source-language"><strong>Subtitles:</strong> {info.subtitleNames.join(', ')||'None'} <small>({info.subtitleCount} {info.subtitleCount===1?'track':'tracks'})</small></span><small>Checked in file{matches.audio?' · Preferred audio':''}{matches.subtitles?' · Preferred subtitles':''}</small></>:stream.infoHash?<span role="status">{!check||check==='Checking audio and subtitles…'?<><LoaderCircle size={14} className="spin"/>{check||'Queued for track check…'}</>:<>{check} <button type="button" className="track-retry" onClick={()=>setCheckAttempt(n=>n+1)}>Retry track check</button></>}</span>:<span>{matches.subtitles?'Preferred subtitles included':'Track details are available in the video player.'}</span>}</div><details className="release-details"><summary>Release details</summary><p>{option.detail}</p>{info.verified&&<p>{info.detail||'No embedded audio or subtitle tracks.'}</p>}</details></div>
+          <div className="source-information"><div className="source-title">{providers.length>1&&<strong>{option.provider}</strong>}{stream.alsoFrom?.length?<small className="source-also" title={`Also listed by ${stream.alsoFrom.join(", ")}`}>also on {stream.alsoFrom.join(", ")}</small>:null}{option.release&&<span>{option.release}</span>}{option.codec&&<span className={option.codec==='HEVC'?'codec-note':''}>{option.codec}</span>}</div><div className="source-facts"><span><HardDrive size={14}/>{formatSize(option.sizeBytes)}</span>{option.seeders!=null&&<span className={option.seeders>0?'seeders-available':'seeders-empty'}><Users size={14}/>{option.seeders.toLocaleString()} {option.seeders===1?'seeder':'seeders'}</span>}{!stream.infoHash&&<span>Direct video</span>}</div><div className="source-track-info" title={info.detail}>{info.verified?<><span className="source-language"><strong>Audio:</strong> {info.audioNames.join(', ')||'None'} <small>({info.audioCount} {info.audioCount===1?'track':'tracks'})</small></span><span className="source-language"><strong>Subtitles:</strong> {info.subtitleNames.join(', ')||'None'} <small>({info.subtitleCount} {info.subtitleCount===1?'track':'tracks'})</small></span><small>Checked in file{matches.audio?' · Preferred audio':''}{matches.subtitles?' · Preferred subtitles':''}</small></>:stream.infoHash&&!check&&(!queued(stream)||engineDown)?<span><button type="button" className="track-retry" onClick={()=>{checkSource(stream);setCheckAttempt(n=>n+1);}}>Check audio and subtitles</button></span>:stream.infoHash?<span role="status">{!check||check==='Checking audio and subtitles…'?<><LoaderCircle size={14} className="spin"/>{check||'Queued for track check…'}</>:<>{check} <button type="button" className="track-retry" onClick={()=>setCheckAttempt(n=>n+1)}>Retry track check</button></>}</span>:<span>{matches.subtitles?'Preferred subtitles included':'Track details are available in the video player.'}</span>}</div><details className="release-details"><summary>Release details</summary><p>{option.detail}</p>{info.verified&&<p>{info.detail||'No embedded audio or subtitle tracks.'}</p>}</details></div>
           {direct||stream.infoHash?<button className="button secondary source-play" aria-label={`Play ${option.provider} ${quality} source ${index+1}`} onClick={()=>onPlay(stream)}><Play size={16} fill="currentColor"/> Play</button>:external?<a className="button secondary source-play" href={external} target="_blank" rel="noreferrer">Open <ExternalLink size={14}/></a>:<span className="count-label">Unavailable</span>}
         </article>;
-      })}</div><p className="source-note">{sources.some(o=>o.stream.infoHash)?((isWebOS||mobileEngine)?'More seeders can help playback start faster. Video buffers in the TV’s bounded memory cache. ':'More seeders can help playback start faster. Torrent sources buffer locally. Public-source track checks connect to peers and read file headers. '):''}{sources.some(o=>o.codec==='HEVC'||o.codec==='AV1')?'HEVC and AV1 require a compatible browser and device.':''}</p>
+      })}</div>{sources.length>shown.length&&<button type="button" className="button secondary source-more" onClick={()=>setVisible(count=>count+SOURCE_PAGE)}>Show {Math.min(SOURCE_PAGE,sources.length-shown.length)} more of {sources.length-shown.length}</button>}<p className="source-note">{sources.some(o=>o.stream.infoHash)?((isWebOS||mobileEngine)?'More seeders can help playback start faster. Video buffers in the TV’s bounded memory cache. ':'More seeders can help playback start faster. Torrent sources buffer locally. Public-source track checks connect to peers and read file headers. '):''}{sources.some(o=>o.codec==='HEVC'||o.codec==='AV1')?'HEVC and AV1 require a compatible browser and device.':''}</p>
     </>:engine.state==='ready'&&(loading||!error)?<div className="stream-empty"><Puzzle size={28}/><h4>No sources available yet</h4><p>Try refreshing, or enable a playback extension.</p><button className="button secondary" onClick={onManage}>Manage extensions <ArrowUpRight size={16}/></button></div>:null}
-    {error&&engine.state==='ready'&&<p className="error" role="alert">{error}</p>}</>}
+    {error&&!options.length&&engine.state==='ready'&&<p className="error" role="alert">{error}</p>}</>}
   </section>;
 }

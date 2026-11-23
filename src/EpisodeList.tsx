@@ -4,6 +4,9 @@ import {type Meta,type Video,episodeLabel,releaseCountdown,validRelease} from '.
 import {episodesBefore,progressKey,type ProgressMap} from './playback-progress';
 
 const visibleEpisodes=10;
+const safeStill=(url:string|undefined)=>url&&/^https:\/\//i.test(url)?url:undefined;
+const episodeSynopsis=(video:Video)=>{const text=(video.overview||video.description||'').trim();return text.length>8?text:undefined;};
+const runtimeLabel=(runtime:Video['runtime'])=>{const minutes=typeof runtime==='number'?runtime:Number.parseInt(String(runtime??''),10);return Number.isFinite(minutes)&&minutes>0?`${minutes} min`:undefined;};
 const defaultSeasonName=(season:number|undefined)=>season==null?'Episodes':season===0?'Specials':`Season ${season}`;
 export default function EpisodeList({meta,episode,history,onSelect,onToggleWatched,onMarkPrevious,onMarkAll,onMarkAllUnwatched,onMarkSeason}:{meta:Meta;episode?:string;history:ProgressMap;onSelect:(id:string)=>void;onToggleWatched:(id:string,watched:boolean)=>void;onMarkPrevious:(id:string)=>void;onMarkAll:()=>void;onMarkAllUnwatched:()=>void;onMarkSeason:(season:number|undefined,watched:boolean)=>void}){
   const episodes=meta.videos?.filter(v=>v.episode!=null)??[];
@@ -25,6 +28,8 @@ export default function EpisodeList({meta,episode,history,onSelect,onToggleWatch
   // Long seasons show the first episodes and expand in place, so the dialog keeps a single scroll area.
   const selectedIndex=inSeason.findIndex(v=>v.id===episode),expanded=showAll||selectedIndex>=visibleEpisodes;
   const shown=expanded?inSeason:inSeason.slice(0,visibleEpisodes);
+  // Stills only when the season has them, so a season without artwork doesn't show a column of empty boxes.
+  const withStills=inSeason.some(v=>safeStill(v.thumbnail));
   const selectedVideo=episodes.find(v=>v.id===episode);
   // Earlier episodes follow the same order as the list, across every season before this one.
   const previous=episode?episodesBefore(meta,episode):[];
@@ -43,11 +48,11 @@ export default function EpisodeList({meta,episode,history,onSelect,onToggleWatch
   return <section className="episode-list" aria-label="Episodes">
     <div className="episode-list-heading"><h3>Episodes</h3>{seasons.length>1&&seasons.length<=6&&<div className="season-tabs" role="group" aria-label="Season">{seasons.map(s=><button key={s??'none'} type="button" aria-pressed={s===season} title={`${count(s)} ${count(s)===1?'episode':'episodes'}`} onClick={()=>setSeason(s)}>{seasonName(s)}</button>)}</div>}{seasons.length>6&&<select aria-label="Season" value={season??''} onChange={e=>setSeason(e.target.value===''?undefined:Number(e.target.value))}>{seasons.map(s=><option key={s??'none'} value={s??''}>{seasonName(s)} ({count(s)} {count(s)===1?'episode':'episodes'})</option>)}</select>}</div>
     <div className="episode-bulk-controls">
-      <div className="episode-bulk episode-bulk-scope" role="group" aria-label="All seasons watch status"><span className="episode-bulk-label"><strong>All seasons</strong><small>{watchedCount(episodes)} of {episodes.length} watched</small></span><div className="episode-bulk-actions"><button type="button" aria-label="Mark all episodes as watched" title={allWatched?'Every episode is already watched':undefined} disabled={allWatched} onClick={()=>{onMarkAll();setPrompt(undefined);}}><Check size={15}/>Mark watched</button><button type="button" aria-label="Mark all episodes as unwatched" title={allUnwatched?'No episodes are watched yet':undefined} disabled={allUnwatched} onClick={()=>{onMarkAllUnwatched();setPrompt(undefined);}}><Undo2 size={15}/>Mark unwatched</button></div></div>
+      {seasons.length>1&&<div className="episode-bulk episode-bulk-scope" role="group" aria-label="All seasons watch status"><span className="episode-bulk-label"><strong>All seasons</strong><small>{watchedCount(episodes)} of {episodes.length} watched</small></span><div className="episode-bulk-actions"><button type="button" aria-label="Mark all episodes as watched" title={allWatched?'Every episode is already watched':undefined} disabled={allWatched} onClick={()=>{onMarkAll();setPrompt(undefined);}}><Check size={15}/>Mark watched</button><button type="button" aria-label="Mark all episodes as unwatched" title={allUnwatched?'No episodes are watched yet':undefined} disabled={allUnwatched} onClick={()=>{onMarkAllUnwatched();setPrompt(undefined);}}><Undo2 size={15}/>Mark unwatched</button></div></div>}
       <div className="episode-bulk episode-bulk-scope" role="group" aria-label={`${seasonName(season)} watch status`}><span className="episode-bulk-label"><strong>{seasonName(season)}</strong><small>{watchedCount(inSeason)} of {inSeason.length} watched</small></span><div className="episode-bulk-actions"><button type="button" aria-label={`Mark ${seasonName(season)} as watched`} title={seasonWatched?'Every episode in this season is already watched':undefined} disabled={seasonWatched} onClick={()=>{onMarkSeason(season,true);setPrompt(undefined);}}><Check size={15}/>Mark watched</button><button type="button" aria-label={`Mark ${seasonName(season)} as unwatched`} title={seasonUnwatched?'No episodes in this season are watched yet':undefined} disabled={seasonUnwatched} onClick={()=>{onMarkSeason(season,false);setPrompt(undefined);}}><Undo2 size={15}/>Mark unwatched</button></div></div>
     </div>
     {promptVideo&&promptCount>0?<div className="episode-bulk episode-prompt" role="group" aria-label="Mark earlier episodes as watched"><span role="status"><strong>{promptCount}</strong> earlier {promptCount===1?'episode is':'episodes are'} not watched. Mark {promptCount===1?'it':'them'} as watched too?</span><div className="episode-prompt-actions"><button type="button" className="primary" onClick={()=>markPrevious(promptVideo.id)}>Mark {promptCount===1?'it':'them'}</button><button type="button" onClick={()=>setPrompt(undefined)}>Not now</button></div></div>:selectedVideo&&unmarked>0?<div className="episode-bulk"><span><strong>{unmarked}</strong> earlier {unmarked===1?'episode':'episodes'} not watched</span><button type="button" aria-label={`Mark ${unmarked} earlier ${unmarked===1?'episode':'episodes'} as watched`} title={`Mark every episode before ${episodeLabel(meta,selectedVideo)} as watched`} onClick={()=>markPrevious(selectedVideo.id)}>Mark previous as watched</button></div>:null}
-    <ol>{shown.map(v=>{
+    <ol className={withStills?"with-stills":undefined}>{shown.map(v=>{
       const progress=history[progressKey(meta.type,v.id)],countdown=!progress?.completed&&v.released?releaseCountdown(v.released,now):undefined;
       // The air time only matters until the episode is out; after that the date is enough.
       const upcoming=validRelease(v.released)&&Date.parse(v.released!)>now;
@@ -57,7 +62,8 @@ export default function EpisodeList({meta,episode,history,onSelect,onToggleWatch
       return <li key={v.id} className={v.id===episode?'is-current':''}>
         <button type="button" className="episode-select" aria-current={v.id===episode} onClick={()=>onSelect(v.id)}>
           <span className="episode-number">{v.episode}</span>
-          <span className="episode-text"><strong>{v.title||v.name||`Episode ${v.episode}`}</strong><small>{date}{countdown&&<em className="episode-countdown" title="Time until release"><Clock size={12}/>{countdown}</em>}</small></span>
+          {withStills&&<span className="episode-still" aria-hidden="true">{safeStill(v.thumbnail)&&<img src={safeStill(v.thumbnail)} alt="" loading="lazy" decoding="async" onError={event=>{event.currentTarget.remove();}}/>}</span>}
+          <span className="episode-text"><strong>{v.title||v.name||`Episode ${v.episode}`}</strong><small>{date}{runtimeLabel(v.runtime)&&<span>{runtimeLabel(v.runtime)}</span>}{countdown&&<em className="episode-countdown" title="Time until release"><Clock size={12}/>{countdown}</em>}</small>{episodeSynopsis(v)&&<span className="episode-synopsis">{episodeSynopsis(v)}</span>}</span>
           {!watched&&percent>0&&<span className="episode-progress" role="progressbar" aria-label="Playback progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}><span style={{width:`${percent}%`}}/></span>}
         </button>
         <button type="button" className="episode-toggle" aria-pressed={watched} aria-label={`Mark ${label} as ${watched?'unwatched':'watched'}`} title={watched?'Mark as unwatched':'Mark as watched'} onClick={()=>changeWatched(v,!watched)}><Check size={16}/></button>

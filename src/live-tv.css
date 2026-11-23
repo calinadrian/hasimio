@@ -82,3 +82,4 @@
 .live-tv-fullscreen{position:absolute;z-index:1;top:12px;right:12px;min-width:44px;min-height:44px}
 .live-tv-android-player.live-tv-expanded{position:fixed;z-index:10000;background:#000}
 .hasimio-android-tv .live-tv-fullscreen:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.live-tv-more{height:1px;list-style:none}

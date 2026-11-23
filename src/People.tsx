@@ -74,7 +74,9 @@ export function TitleCast({meta,onSelect}:{meta:Meta;onSelect:(person:Person)=>v
 }
 function Cast({id,onSelect}:{id:string;onSelect:(person:Person)=>void}){
   const {data,error,loading,refresh}=usePeople('title/'+id+'/cast');
-  return <section className="people-section" aria-label="Cast"><PeopleList heading="Cast" people={data?.cast??[]} onSelect={onSelect}/><Status loading={loading} error={error} onRetry={()=>void refresh()}/>{data&&!data.cast?.length&&<p className="people-status">No cast credits are available for this title.</p>}</section>;
+  // A title without credits simply has no Cast section, rather than one that says so.
+  if(data&&!data.cast?.length&&!error&&!loading)return null;
+  return <section className="people-section" aria-label="Cast"><PeopleList heading="Cast" people={data?.cast??[]} onSelect={onSelect}/><Status loading={loading} error={error} onRetry={()=>void refresh()}/></section>;
 }
 export function ActorTitles({person,onBack,onOpen,saved}:{person:Person;onBack:()=>void;onOpen:(meta:Meta)=>void;saved:(meta:Meta)=>boolean}){
   const [type,setType]=useState(''),[items,setItems]=useState<Meta[]>([]),[hasMore,setHasMore]=useState(false);

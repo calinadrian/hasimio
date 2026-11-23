@@ -80,6 +80,8 @@ export default function Settings(){
         <div><dt><kbd>←</kbd> / <kbd>→</kbd></dt><dd>Seek 10 seconds in player, or move across shelves &amp; calendar days</dd></div>
         <div><dt><kbd>M</kbd></dt><dd>Mute or unmute player</dd></div>
         <div><dt><kbd>F</kbd></dt><dd>Toggle fullscreen</dd></div>
+        <div><dt><kbd>C</kbd></dt><dd>Open subtitle options in player</dd></div>
+        <div><dt><kbd>P</kbd> / <kbd>N</kbd></dt><dd>Previous or next episode in player</dd></div>
         <div><dt><kbd>Esc</kbd></dt><dd>Close dialogs or menus</dd></div>
       </dl>
       <p className="settings-saved">Hasimio v{appVersion}</p>

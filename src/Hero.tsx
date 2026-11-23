@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {Check,Info,Play,Plus} from 'lucide-react';
 import {type Meta} from './media';
 import {type CardProgress} from './playback-progress';
-import {backdropSources,firstImage,logoSource,posterSources,probeImage,useImage} from './poster-artwork';
+import {backdropSources,firstImage,logoBrightness,logoSource,posterSources,probeImage,useImage} from './poster-artwork';
 import {posterTitles} from './poster-registry';
 import {shortEpisode,timeLeft} from './Poster';
 import {useHomeIdle} from './home-idle';
@@ -20,6 +20,9 @@ const ARTWORK_WAIT_MS=1200;
 // The title's name stays hidden this long while its logo loads, so the name
 // does not flash before the logo replaces it.
 const LOGO_WAIT_MS=1200;
+// Logos darker than this (average of the brightest channel, 0–1) are replaced by the title's name. A navy logo
+// scores about 0.41 and a black one 0.01; ordinary white, gold or red logos score 0.6 or more.
+const DARK_LOGO=0.45;
 
 /**
  * Discover's billboard: one title's artwork across the top of the home, its
@@ -71,7 +74,12 @@ export default function Hero({featured,progressOf,label,saved,onPlay,onInfo,onTo
   const logo=useImage(logoUrl?[logoUrl]:[]);
   const [logoWaited,setLogoWaited]=useState(false);
   useEffect(()=>{setLogoWaited(false);const timer=setTimeout(()=>setLogoWaited(true),LOGO_WAIT_MS);return()=>clearTimeout(timer);},[logoUrl]);
-  const title=logo.src?' has-logo':logo.settled||logoWaited?'':' title-pending';
+  // A dark logo (navy on black, say) is unreadable over the artwork, so the title's name stands in for it.
+  const [logoLight,setLogoLight]=useState<Record<string,boolean>>({});
+  useEffect(()=>{const src=logo.src;if(!src||src in logoLight)return;let live=true;void logoBrightness(src).then(value=>{if(live)setLogoLight(previous=>({...previous,[src]:value===undefined||value>=DARK_LOGO}));});return()=>{live=false;};},[logo.src,logoLight]);
+  const logoReady=logo.src?logoLight[logo.src]:undefined;
+  const showLogo=!!logo.src&&logoReady===true;
+  const title=showLogo?' has-logo':(logo.src&&logoReady===undefined&&!logoWaited)||(!logo.src&&!logo.settled&&!logoWaited)?' title-pending':'';
   const episode=watching?shortEpisode(progress!.episode):undefined;
   const kicker=watching?`Continue watching${episode?` · ${episode}`:''}`:label(shown);
   const inLibrary=saved(featured);
@@ -81,7 +89,7 @@ export default function Hero({featured,progressOf,label,saved,onPlay,onInfo,onTo
     <div className="hero-shade"/>
     <div className="hero-content">
       <span className="hero-kicker">{kicker}</span>
-      <div className={'hero-title'+title}>{logo.src&&<img key={logo.src} className="hero-logo" src={logo.src} alt=""/>}<h1 className={shown.name.length>6?'long':''}>{shown.name}</h1></div>
+      <div className={'hero-title'+title}>{showLogo&&<img key={logo.src} className="hero-logo" src={logo.src} alt=""/>}<h1 className={shown.name.length>6?'long':''}>{shown.name}</h1></div>
       <div className="hero-meta">{shown.imdbRating&&<span className="rating">★ {shown.imdbRating}</span>}{shown.releaseInfo&&<span>{shown.releaseInfo}</span>}{shown.runtime&&<span>{shown.runtime}</span>}{shown.genres?.slice(0,2).map(genre=><span key={genre}>{genre}</span>)}</div>
       {shown.description&&<p>{synopsis(shown.description)}</p>}
       <div className="hero-actions">

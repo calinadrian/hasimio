@@ -7,6 +7,8 @@ import {saveTrackSummary,trackSourceKey,verifiedTracks,type MediaTrack} from './
 
 export const deviceTrackChecks=isWebOS||import.meta.env.VITE_ANDROID==='true';
 export const inspectionWorkers=deviceTrackChecks?1:INSPECTION_CONCURRENCY;
+// The engine itself could not be reached: every other check would fail the same way.
+export class EngineUnreachableError extends Error{}
 export async function inspectStreamTracks(stream:Stream,videoId:string,signal:AbortSignal){
   if(!stream.infoHash)return;
   // A dropped connection surfaces as the browser's bare "Failed to fetch"; say what actually failed.
@@ -16,7 +18,7 @@ export async function inspectStreamTracks(stream:Stream,videoId:string,signal:Ab
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({infoHash:stream.infoHash,fileIdx:stream.fileIdx,videoId}),signal,
     });
-  }catch(error){if(signal.aborted)throw error;throw Error('Couldn’t reach Hasimio Engine.');}
+  }catch(error){if(signal.aborted)throw error;throw new EngineUnreachableError('Couldn’t reach Hasimio Engine.');}
   const info=await response.json().catch(()=>({error:'Hasimio Engine sent an unreadable answer.'}));
   if(!response.ok)throw Error(info.error||'Track inspection failed.');
   if(!Array.isArray(info.audioTracks)||!Array.isArray(info.subtitleTracks)||!Number.isInteger(info.fileIndex))throw Error('Track information was incomplete.');

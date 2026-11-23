@@ -49,6 +49,35 @@ export function probeImage(url:string):Promise<boolean>{
   return probe;
 }
 
+// Average brightness (0–1, brightest colour channel) of a logo's visible pixels, so a dark logo is never
+// drawn over dark artwork. Undefined when it can't be measured (no CORS, failed load).
+const brightness=new Map<string,Promise<number|undefined>>();
+export function logoBrightness(url:string):Promise<number|undefined>{
+  let measure=brightness.get(url);
+  if(!measure){
+    measure=new Promise<number|undefined>(resolve=>{
+      const image=new Image();image.crossOrigin='anonymous';
+      const timer=setTimeout(()=>resolve(undefined),PROBE_TIMEOUT_MS);
+      image.onerror=()=>{clearTimeout(timer);resolve(undefined);};
+      image.onload=()=>{
+        clearTimeout(timer);
+        try{
+          const width=64,height=Math.max(1,Math.round(64*image.naturalHeight/Math.max(1,image.naturalWidth)));
+          const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+          const context=canvas.getContext('2d',{willReadFrequently:true});if(!context)return resolve(undefined);
+          context.drawImage(image,0,0,width,height);
+          const data=context.getImageData(0,0,width,height).data;let sum=0,weight=0;
+          for(let i=0;i<data.length;i+=4){const alpha=data[i+3]/255;if(alpha<.2)continue;sum+=alpha*Math.max(data[i],data[i+1],data[i+2])/255;weight+=alpha;}
+          resolve(weight?sum/weight:undefined);
+        }catch{resolve(undefined);}
+      };
+      image.src=url;
+    });
+    brightness.set(url,measure);
+  }
+  return measure;
+}
+
 /** The first source that loads, or undefined when none does. */
 export async function firstImage(sources:string[]):Promise<string|undefined>{
   for(const source of sources)if(await probeImage(source))return source;

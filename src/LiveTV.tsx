@@ -1,5 +1,5 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {ChevronLeft,ChevronRight,LoaderCircle,Play,RefreshCw,Search,SlidersHorizontal,Square,Star,Tv} from 'lucide-react';
+import {LoaderCircle,Play,RefreshCw,Search,SlidersHorizontal,Square,Star,Tv} from 'lucide-react';
 import {liveChannels,type LiveChannel} from './live-tv';
 import {engineUrl} from './engine';
 import LiveVideo from './LiveVideo';
@@ -48,9 +48,12 @@ export default function LiveTV(){
     const result=channels.filter(channel=>(collection==='all'||(collection==='top'?channel.provider==='IPTV-org'&&liveTvTopRank(channel.name)!==undefined:favorites.includes(channel.id)))&&(source==='all'||channel.provider===source)&&(!group||channel.group===group)&&(!query.trim()||(channel.name+' '+(channel.group||'')).toLowerCase().includes(query.trim().toLowerCase())));
     return collection==='top'?result.sort((a,b)=>liveTvTopRank(a.name)!-liveTvTopRank(b.name)!):result;
   },[channels,source,group,query,collection,favorites]);
+  // One scrolling list: more channels are added as its end comes into view, so the guide never pages.
   const pageSize=60,pageCount=Math.max(1,Math.ceil(filtered.length/pageSize)),currentPage=Math.min(channelPage,pageCount-1);
-  const visible=filtered.slice(currentPage*pageSize,(currentPage+1)*pageSize);
+  const visible=filtered.slice(0,(currentPage+1)*pageSize);
   useEffect(()=>setChannelPage(0),[collection,source,group,query]);
+  const moreRef=useRef<HTMLLIElement>(null);
+  useEffect(()=>{const sentinel=moreRef.current;if(!sentinel)return;const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))setChannelPage(page=>page+1);},{rootMargin:'0px 0px 400px 0px'});observer.observe(sentinel);return()=>observer.disconnect();},[currentPage,pageCount,collection,source,group,query]);
   function chooseCollection(value:typeof collection){setCollection(value);setSource('all');setGroup('');setQuery('');setChannelPage(0);}
   return <section className="live-tv-page">
     <div className="live-tv-intro"><div><h1>Live TV</h1></div><span className="live-tv-total"><Tv size={15}/>{channels.length.toLocaleString()} channels</span></div>
@@ -74,7 +77,7 @@ export default function LiveTV(){
         </div>
         {loading&&<p className="live-tv-catalog-status" role="status"><LoaderCircle size={15} className="spin"/>Loading channels…</p>}
         {error&&<div className="live-tv-catalog-status" role="status">{error}<button className="button secondary" onClick={()=>setReload(value=>value+1)}>Retry</button></div>}
-        <ul className="live-tv-channel-list" key={currentPage+':'+collection+':'+query+':'+source+':'+group}>
+        <ul className="live-tv-channel-list" key={collection+':'+query+':'+source+':'+group}>
           {visible.map(channel=>{const rank=topRank(channel),active=selected.id===channel.id,isFavorite=favorites.includes(channel.id);return <li key={channel.id} className={active?'is-selected':''}>
             <button className="live-tv-channel-select" aria-pressed={active} onClick={()=>setSelected(channel)}>
               <span className="live-tv-channel-monogram" aria-hidden="true">{collection==='top'&&rank?'#'+rank:channel.name.replace(/[^a-z0-9 ]/gi,'').split(' ').filter(Boolean).slice(0,2).map(word=>word[0]).join('')}</span>
@@ -82,9 +85,10 @@ export default function LiveTV(){
             </button>
             <button className="live-tv-row-star" aria-pressed={isFavorite} aria-label={(isFavorite?'Remove '+channel.name+' from':'Add '+channel.name+' to')+' favorites'} title={isFavorite?'Remove from favorites':'Add to favorites'} onClick={()=>toggleFavorite(channel.id)}><Star size={16} fill={isFavorite?'currentColor':'none'}/></button>
           </li>;})}
+          {currentPage<pageCount-1&&<li className="live-tv-more" ref={moreRef} aria-hidden="true"/>}
         </ul>
         {!filtered.length&&!loading&&<div className="live-tv-empty"><Star size={25}/><strong>{collection==='favorites'&&favoriteCount===0?'Your favorites go here':'No channels found'}</strong><p>{collection==='favorites'&&favoriteCount===0?'Tap the star beside any channel to keep it close.':'Try another search or clear your filters.'}</p><button onClick={()=>chooseCollection('all')}>Browse all channels</button></div>}
-        <div className="live-tv-list-footer"><span>{filtered.length?`${currentPage*pageSize+1}–${Math.min((currentPage+1)*pageSize,filtered.length)} of ${filtered.length.toLocaleString()}`:'0 channels'}</span><div><button aria-label="Previous channels" disabled={currentPage===0} onClick={()=>setChannelPage(currentPage-1)}><ChevronLeft size={18}/></button><button aria-label="Next channels" disabled={currentPage===pageCount-1} onClick={()=>setChannelPage(currentPage+1)}><ChevronRight size={18}/></button></div></div>
+        <div className="live-tv-list-footer"><span>{filtered.length?`${visible.length.toLocaleString()} of ${filtered.length.toLocaleString()} channels`:'0 channels'}</span></div>
       </aside>
       <ChannelPlayer key={selected.id} channel={selected} favorite={favorites.includes(selected.id)} topRank={topRank(selected)} onFavorite={()=>toggleFavorite(selected.id)}/>
     </div>

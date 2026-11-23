@@ -2,7 +2,7 @@ import {profileStorage} from './profile-storage';
 export const preferredQualities=['Auto','SD','720p','1080p','2K','4K'] as const;
 export type PreferredQuality=typeof preferredQualities[number];
 export const settingsKey='hasimio:settings';
-export const captionFonts={sans:{label:'Modern sans',family:"'DM Sans',system-ui,sans-serif"},display:{label:'Bold display',family:"Manrope,'DM Sans',sans-serif"},rounded:{label:'Rounded',family:"ui-rounded,'SF Pro Rounded','Nunito','Arial Rounded MT Bold',system-ui,sans-serif"},serif:{label:'Serif',family:"Georgia,'Times New Roman',serif"},mono:{label:'Typewriter',family:"ui-monospace,Consolas,'Courier New',monospace"}} as const;
+export const captionFonts={sans:{label:'Modern sans',family:"'DM Sans Variable','DM Sans',system-ui,sans-serif"},display:{label:'Bold display',family:"'Manrope Variable',Manrope,'DM Sans Variable','DM Sans',sans-serif"},rounded:{label:'Rounded',family:"ui-rounded,'SF Pro Rounded','Nunito','Arial Rounded MT Bold',system-ui,sans-serif"},serif:{label:'Serif',family:"Georgia,'Times New Roman',serif"},mono:{label:'Typewriter',family:"ui-monospace,Consolas,'Courier New',monospace"}} as const;
 export const captionEdges={none:'None',shadow:'Drop shadow',soft:'Soft glow',outline:'Outline',raised:'Raised',depressed:'Depressed'} as const;
 export type CaptionFont=keyof typeof captionFonts;export type CaptionEdge=keyof typeof captionEdges;
 export type CaptionStyle={captionFont:CaptionFont;captionColor:string;captionBackground:number;captionEdge:CaptionEdge;captionBold:boolean};
