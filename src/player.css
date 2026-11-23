@@ -1,3 +1,4 @@
+:root:has(dialog.playback-dialog[open]){overflow:hidden}
 .detail-dialog.playback-dialog{width:min(1440px,calc(100vw - 48px));max-width:none;padding:0;overflow:hidden;max-height:calc(100dvh - 32px);background:#000000}
 .detail-dialog.playback-dialog>.close-dialog{display:none}
 .cinema-player{--player-ink:#ededed;--player-muted:#bcbcbc;--player-accent:#e0e0e0;position:relative;isolation:isolate;width:100%;aspect-ratio:16/9;min-height:min(420px,calc(100dvh - 32px));max-height:calc(100dvh - 32px);overflow:hidden;background:#000000;color:var(--player-ink);font:16px/1.5 'DM Sans Variable','DM Sans',sans-serif;border-radius:8px;outline-offset:-3px}
