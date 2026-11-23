@@ -33,9 +33,10 @@ mac:
   category: public.app-category.entertainment
   icon: resources/icon.png
   artifactName: Hasimio-${version}-mac-${arch}.${ext}
-# One click, per user, no admin rights; Hasimio opens when it's done (same as SaveMe).
+# The user picks the folder; per user, no admin rights. build/installer.nsh checks the choice. Updates stay silent.
 nsis:
-  oneClick: true
+  oneClick: false
+  allowToChangeInstallationDirectory: true
   perMachine: false
   runAfterFinish: true
   artifactName: Hasimio-Setup-${version}.${ext}
