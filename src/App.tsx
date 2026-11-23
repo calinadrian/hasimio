@@ -383,6 +383,8 @@ export default function App() {
   const popularMovies = page === 'Discover' && !query.trim() && filter === 'All' && genre === 'All genres' ? popularRow(catalogs,'movie') : undefined;
   const topTenItems = popularMovies ? shelfTitles(popularMovies.items).filter(m => m.type === 'movie').slice(0,10) : [];
   const topTenRow = topTenItems.length === 10 ? [{title:'Top 10 movies',key:'top-10',items:topTenItems}] : [];
+  // The popular movies shelf would otherwise open with the same ten posters; it continues after them.
+  const topTenKeys = new Set(topTenRow.length ? topTenItems.map(m => m.type+':'+m.id) : []);
   const allRows:{title:string;items:Meta[];key?:string;source?:string;hasMore?:boolean}[] = page === 'Library' ? [...continueRow,...localRows] : [...continueRow,...newThisWeekRow,...topTenRow,...topRow,...catalogs,...localRows];
   const collectionRow=page==='Discover'?allRows.find(row=>(row.key||row.title)===collectionKey):undefined;
   const rows=collectionRow?[collectionRow]:allRows;
@@ -492,7 +494,8 @@ export default function App() {
       {page==='Discover'&&query.trim()&&<ActorSearch query={query.trim()} onSelect={openActor}/>}
       {rows.map(row => {
         // Top 10 keeps its ranking: the billboard's title stays in it.
-        const ranked = row.key === 'top-10', items = ranked ? row.items : filtered(row.items);
+        const ranked = row.key === 'top-10', afterTopTen = row === popularMovies && !collectionRow;
+        const items = ranked ? row.items : filtered(row.items).filter(m => !afterTopTen || !topTenKeys.has(m.type+':'+m.id));
         if (!items.length) return null;
         const wrap = !!(collectionRow || (page === 'Library' && row.key !== 'continue') || query), wide = row.key === 'continue' && !wrap;
         const choose = (meta:Meta) => {setBrowseRow(row.key||row.title);void open(meta,undefined,row.key==='continue');};

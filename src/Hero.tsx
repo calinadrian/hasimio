@@ -8,6 +8,7 @@ import {shortEpisode} from './Poster';
 import {useHomeIdle} from './home-idle';
 import {isWebOS} from './webos/platform';
 import {isAndroidTV} from './android/platform';
+import {synopsis} from './synopsis';
 
 type Props={featured:Meta;progressOf:(meta:Meta)=>CardProgress|undefined;label:(meta:Meta)=>string;saved:(meta:Meta)=>boolean;onPlay:(meta:Meta)=>void;onInfo:(meta:Meta)=>void;onToggleSave:(meta:Meta)=>void};
 
@@ -82,7 +83,7 @@ export default function Hero({featured,progressOf,label,saved,onPlay,onInfo,onTo
       <span className="hero-kicker">{kicker}</span>
       <div className={'hero-title'+title}>{logo.src&&<img key={logo.src} className="hero-logo" src={logo.src} alt=""/>}<h1 className={shown.name.length>6?'long':''}>{shown.name}</h1></div>
       <div className="hero-meta">{shown.imdbRating&&<span className="rating">★ {shown.imdbRating}</span>}{shown.releaseInfo&&<span>{shown.releaseInfo}</span>}{shown.runtime&&<span>{shown.runtime}</span>}{shown.genres?.slice(0,2).map(genre=><span key={genre}>{genre}</span>)}</div>
-      {shown.description&&<p>{shown.description}</p>}
+      {shown.description&&<p>{synopsis(shown.description)}</p>}
       <div className="hero-actions">
         <button className="button primary" onClick={()=>onPlay(featured)}><Play size={19} fill="currentColor"/> {resume?'Resume':'Play'}</button>
         <button className="button secondary" onClick={()=>onInfo(featured)}><Info size={19}/> More info</button>
