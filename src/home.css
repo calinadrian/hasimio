@@ -55,6 +55,9 @@
 .billboard .hero-meta{gap:6px 14px;margin-bottom:12px;color:#b3b3b3;font-size:clamp(14px,1.05vw,17px)}
 .hero.billboard p{max-width:none;margin:0 0 24px;color:#c9c9c9;font-size:clamp(15px,1.12vw,19px);line-height:1.45;-webkit-line-clamp:3;text-shadow:0 1px 3px #00000080}
 .billboard .hero-actions{gap:12px}
+.billboard .hero-resume{display:flex;align-items:center;gap:12px;margin-top:16px;color:#b3b3b3;font-size:14px;font-weight:600}
+.billboard .hero-resume-track{width:clamp(120px,12vw,200px);height:4px;border-radius:2px;background:#ffffff33;overflow:hidden}
+.billboard .hero-resume-track>span{display:block;height:100%;background:#e6e6e6}
 :root .billboard .hero-actions .button{height:clamp(42px,3vw,52px);min-height:0;padding:0 clamp(18px,1.9vw,30px);gap:10px;border-radius:6px;font-size:clamp(15px,1.12vw,19px)}
 :root .billboard .hero-actions .button.primary{background:#f0f0f0;color:#000}
 :root .billboard .hero-actions .button.primary:hover{background:#d4d4d4}
@@ -145,7 +148,7 @@ html.home-idle-off .hero-backdrop,html.home-idle-off .hero-keyart{visibility:hid
   .hero.billboard h1,.hero.billboard h1.long{font-size:28px;margin-bottom:10px}
   .billboard .hero-meta{justify-content:center;font-size:13px}
   .hero.billboard p{margin-bottom:16px;font-size:14px}
-  .billboard .hero-actions{justify-content:center}
+  .billboard .hero-actions,.billboard .hero-resume{justify-content:center}
   :root .billboard .hero-actions .button{flex:1;height:46px;padding:0 12px;font-size:15px}
   :root .billboard .hero-actions .hero-save{flex:none;width:46px}
   .page-content.after-billboard{margin-top:0;padding-top:8px}

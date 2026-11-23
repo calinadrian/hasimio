@@ -4,7 +4,7 @@ import {type Meta} from './media';
 import {type CardProgress} from './playback-progress';
 import {backdropSources,firstImage,logoSource,posterSources,probeImage,useImage} from './poster-artwork';
 import {posterTitles} from './poster-registry';
-import {shortEpisode} from './Poster';
+import {shortEpisode,timeLeft} from './Poster';
 import {useHomeIdle} from './home-idle';
 import {isWebOS} from './webos/platform';
 import {isAndroidTV} from './android/platform';
@@ -89,8 +89,10 @@ export default function Hero({featured,progressOf,label,saved,onPlay,onInfo,onTo
         <button className="button secondary" onClick={()=>onInfo(featured)}><Info size={19}/> More info</button>
         <button className={`button secondary hero-save${inLibrary?' is-saved':''}`} aria-label={inLibrary?`Remove ${featured.name} from your library`:`Add ${featured.name} to your library`} title={inLibrary?'In your library':'Add to library'} onClick={()=>onToggleSave(featured)}>{inLibrary?<Check size={19}/>:<Plus size={19}/>}</button>
       </div>
+      {/* Computer and phone: a short bar under the buttons. Along the hero's bottom edge it would cut through the rows below. */}
+      {watching&&!isWebOS&&<div className="hero-resume"><span className="hero-resume-track" aria-hidden="true"><span style={{width:`${Math.max(3,progress!.percent)}%`}}/></span>{timeLeft(progress!.duration-progress!.position)}</div>}
     </div>
-    {watching&&<div className="hero-progress" aria-hidden="true"><span style={{width:`${progress!.percent}%`}}/></div>}
+    {watching&&isWebOS&&<div className="hero-progress" aria-hidden="true"><span style={{width:`${progress!.percent}%`}}/></div>}
     {idle.stage!=='none'&&<div className="home-idle-layer" aria-hidden="true"><span className="home-idle-mark" style={{left:`${6+idle.spot[0]*64}%`,top:`${8+idle.spot[1]*78}%`}}><Play size={14} fill="currentColor"/>hasimio</span></div>}
   </section>;
 }
