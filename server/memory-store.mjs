@@ -1,5 +1,4 @@
-// Torrent pieces for playback, kept in a bounded amount of memory instead of on disk. Converted audio already
-// writes the video to disk once as segments; storing every downloaded piece as well wrote each movie twice.
+// Torrent pieces for playback share a bounded memory store. Converted output has its own rolling buffer.
 // The oldest pieces make room for new ones. WebTorrent is told a dropped piece is missing again, so a later
 // read downloads it once more instead of waiting for data that is gone.
 const MiB=1024*1024;

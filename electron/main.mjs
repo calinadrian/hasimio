@@ -17,6 +17,8 @@ const icon=path.join(app.getAppPath(),'resources','icon.png');
 let win;let pictureInPicture;let engine;let origin;let quitting=false;let engineStopped=false;
 
 app.setName('Hasimio');
+// Keep the existing profile and its saved data while disabling Chromium's HTTP disk cache.
+app.commandLine.appendSwitch('disable-http-cache');
 if(process.platform==='win32')app.setAppUserModelId(APP_ID);
 const primary=app.requestSingleInstanceLock();
 

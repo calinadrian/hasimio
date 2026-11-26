@@ -79,6 +79,7 @@ try {
   }
   const pieces=await bytesOnDisk(cacheDir('torrents'));console.log(`DISK: ${pieces} bytes of torrent pieces on disk for a ${source.length} byte file (${diskTest?'disk store':'memory store'}).`);
   if(diskTest)assert.ok(pieces>0,'The disk store must still write pieces.');else assert.equal(pieces,0,'The memory store must not write torrent pieces to disk.');
+  if(audioTest){const converted=await bytesOnDisk(audioRoot);assert.equal(converted,0,'Playing converted audio and subtitles must create zero media bytes on disk.');console.log('DISK: '+converted+' bytes of converted video, audio and embedded subtitles during playback.');}
   response=await fetch(`${base}/api/torrents/${id}`,{method:'DELETE'});assert.equal(response.status,200);
   assert.equal((await fetch(`${base}/api/torrents/${id}`)).status,404);
   if(audioTest)assert.equal(await access(path.join(audioRoot,id,'0','1')).then(()=>false,()=>true),true,'Converted segments must be removed on stop.');

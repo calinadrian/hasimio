@@ -1,7 +1,7 @@
 import {DatabaseSync} from 'node:sqlite';
 import {mkdir,rename,rm,stat} from 'node:fs/promises';
 import path from 'node:path';
-import {removeStaleTemps} from './paths.mjs';
+import {removeStaleTemps,INDEX_BUILD_PRAGMAS} from './paths.mjs';
 import {datasetRows,normalize,titleMeta} from './title-index.mjs';
 
 const fields=['id','type','name','search','start','end','runtime','genres','rating','votes'];
@@ -10,11 +10,11 @@ export async function buildPeopleIndex(file,{titleRows,fetchImpl=fetch,signal,on
   const titles=await titleRows(),ids=new Set(titles.map(t=>t.id)),people=new Set();
   const db=new DatabaseSync(file);
   try{
-    db.exec(`PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;
+    db.exec(`${INDEX_BUILD_PRAGMAS}BEGIN;
       CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT,name TEXT,search TEXT,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER) WITHOUT ROWID;
       CREATE TABLE people(id TEXT PRIMARY KEY,name TEXT,search TEXT) WITHOUT ROWID;
       CREATE TABLE credits(title TEXT,person TEXT,ordering INTEGER,role TEXT,PRIMARY KEY(title,person)) WITHOUT ROWID;
-      CREATE TABLE info(built INTEGER);BEGIN;`);
+      CREATE TABLE info(built INTEGER);`);
     const addTitle=db.prepare('INSERT INTO titles VALUES(?,?,?,?,?,?,?,?,?,?)');
     for(const title of titles)addTitle.run(...fields.map(key=>title[key]??null));
     const add=db.prepare('INSERT OR IGNORE INTO credits VALUES(?,?,?,?)');
@@ -27,13 +27,15 @@ export async function buildPeopleIndex(file,{titleRows,fetchImpl=fetch,signal,on
     onStep('Downloading actor names');
     const addPerson=db.prepare('INSERT OR IGNORE INTO people VALUES(?,?,?)');
     for await(const [id,name] of datasetRows('name.basics.tsv.gz',fetchImpl,signal))if(people.has(id)&&name&&name!=='\\N')addPerson.run(id,name,normalize(name));
-    db.exec('DELETE FROM credits WHERE person NOT IN (SELECT id FROM people);CREATE INDEX credits_person ON credits(person);COMMIT;');
+    db.exec('DELETE FROM credits WHERE person NOT IN (SELECT id FROM people);CREATE INDEX credits_person ON credits(person);');
     db.prepare('INSERT INTO info VALUES(?)').run(Date.now());
+    db.exec('COMMIT');
     return db.prepare('SELECT COUNT(*) AS n FROM people').get().n;
   }finally{db.close();}
 }
 export function createPeopleIndex({dir,titleRows,fetchImpl=fetch}){
   const file=path.join(dir,'people.db'),controller=new AbortController();
+  const cleanup=removeStaleTemps(file);
   let db,building,closed=false,status={state:'idle'};
   async function refresh(){
     if(closed)return;
@@ -41,7 +43,7 @@ export function createPeopleIndex({dir,titleRows,fetchImpl=fetch}){
     building=(async()=>{
       const temp=file+'.'+process.pid+'.tmp';
       try{
-        await mkdir(dir,{recursive:true});await removeStaleTemps(file);status={state:'building',step:'Preparing title list'};
+        await cleanup;await mkdir(dir,{recursive:true});status={state:'building',step:'Preparing title list'};
         await buildPeopleIndex(temp,{titleRows,fetchImpl,signal:controller.signal,onStep:step=>{status={state:'building',step};}});
         db?.close();db=undefined;await rename(temp,file);status={state:'ready'};
       }catch(error){status={state:'error',error:error.message};await rm(temp,{force:true}).catch(()=>{});}

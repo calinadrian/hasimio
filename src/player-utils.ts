@@ -11,8 +11,8 @@ export function seekPosition(target:number,start:number,end:number){
 // and leaving the player save at once, so only a crash can lose up to this much.
 export const PROGRESS_SAVE_INTERVAL=10000;
 
-// Prepared movies use growing EVENT playlists but must never chase their live edge.
-export const preparedHlsConfig={startPosition:0,lowLatencyMode:false,liveSyncDurationCount:Number.MAX_SAFE_INTEGER,liveMaxLatencyDurationCount:Infinity,maxLiveSyncPlaybackRate:1};
+// Keep prepared movies near the playhead and preserve their position while paused.
+export const preparedHlsConfig={startPosition:0,lowLatencyMode:false,maxBufferLength:20,maxMaxBufferLength:30,backBufferLength:30,liveSyncDurationCount:Number.MAX_SAFE_INTEGER,liveMaxLatencyDurationCount:Infinity,maxLiveSyncPlaybackRate:1};
 export function timelineDuration(mediaDuration:number,hint?:number,seekableEnd=0){
   if(hint!==undefined&&Number.isFinite(hint)&&hint>0)return hint;
   return Number.isFinite(mediaDuration)&&mediaDuration>0?mediaDuration:Number.isFinite(seekableEnd)?seekableEnd:0;

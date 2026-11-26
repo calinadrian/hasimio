@@ -24,6 +24,27 @@ async function index(tvmaze=()=>new Response('',{status:404})) {
 }
 
 describe('Hasimio title index',()=>{
+  it('backs off automatic rebuilds after an interrupted download and retries on the next request after the delay',async()=>{
+    dir=await mkdtemp(path.join(tmpdir(),'hasimio-titles-'));
+    let clock=Date.parse('2026-10-01T00:00:00Z'),fail=false;
+    const fetchImpl=vi.fn(async url=>{
+      const name=String(url).split('/').at(-1);
+      return fail&&name==='title.basics.tsv.gz'?new Response('',{status:503}):new Response(datasets[name]);
+    });
+    const titles=open=createTitleIndex({dir,fetchImpl,now:()=>clock});
+    await titles.refresh();
+    clock+=8*86400000;fail=true;
+    await titles.refresh();expect(titles.status().state).toBe('error');
+    const requests=fetchImpl.mock.calls.length;
+    expect((await titles.title('tt1')).name).toBe('Amélie');
+    expect((await titles.title('tt2')).name).toBe('Old Film');
+    await new Promise(resolve=>setImmediate(resolve));
+    expect(fetchImpl.mock.calls.length).toBe(requests);
+    clock+=5*60000;fail=false;
+    expect((await titles.title('tt1')).name).toBe('Amélie');
+    await vi.waitFor(()=>expect(titles.status().state).toBe('ready'));
+    expect(fetchImpl.mock.calls.length).toBe(requests+3);
+  });
   it('finds an unindexed new show online and retains details and source lookup data after restart',async()=>{
     const show={id:900,externals:{imdb:'tt900'},name:'Brand New Show',premiered:'2026-10-28',runtime:45,genres:['Drama'],image:{original:'https://static.tvmaze.com/new.jpg'},summary:'<p>Just released.</p>'};
     const {titles}=await index(href=>new Response(JSON.stringify(href.includes('/search/shows?')?[{show},{show}]:href.includes('/episodes')?[{season:1,number:1,name:'Premiere',airdate:'2026-10-28'}]:show)));

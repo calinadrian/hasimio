@@ -9,7 +9,7 @@ import {Readable} from 'node:stream';
 import {mkdir,rename,rm,stat} from 'node:fs/promises';
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
-import {removeStaleTemps,CACHE_PRAGMAS} from './paths.mjs';
+import {removeStaleTemps,CACHE_PRAGMAS,INDEX_BUILD_PRAGMAS,writeCacheBatch} from './paths.mjs';
 import {romanianSeries,romanianSeriesIds,romanianCatalog} from '../shared/romanian-series.mjs';
 
 export const datasetBase='https://datasets.imdbws.com';
@@ -100,7 +100,7 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},rom
   const baseline=previousVotes(previous,now());
   const db=new DatabaseSync(file);
   try {
-    db.exec(`PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;
+    db.exec(`${INDEX_BUILD_PRAGMAS}BEGIN;
       CREATE TABLE titles(id TEXT PRIMARY KEY,type TEXT NOT NULL,name TEXT NOT NULL,search TEXT NOT NULL,start INTEGER,end INTEGER,runtime INTEGER,genres TEXT,rating REAL,votes INTEGER NOT NULL,alias TEXT,previous INTEGER) WITHOUT ROWID;
       CREATE TABLE episodes(id TEXT PRIMARY KEY,parent TEXT NOT NULL,season INTEGER NOT NULL,episode INTEGER NOT NULL,name TEXT,runtime INTEGER) WITHOUT ROWID;
       CREATE TABLE info(key TEXT PRIMARY KEY,value TEXT);`);
@@ -108,7 +108,6 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},rom
     const ratings=new Map();
     for await (const [id,rating,votes] of rows('title.ratings.tsv.gz',fetchImpl,signal)) { const n=count(votes); if (n >= MIN_SERIES_VOTES || romanian.has(id)) ratings.set(id,[Number(rating),n]); }
     for (const id of romanian) if (!ratings.has(id)) ratings.set(id,[null,0]);
-    db.exec('BEGIN');
     onStep('Downloading episode lists');
     const addEpisode=db.prepare('INSERT OR IGNORE INTO episodes(id,parent,season,episode) VALUES(?,?,?,?)');
     for await (const [id,parent,season,episode] of rows('title.episode.tsv.gz',fetchImpl,signal)) {
@@ -131,7 +130,7 @@ export async function buildIndex(file, {fetchImpl=fetch,signal,onStep=()=>{},rom
     db.exec('DELETE FROM episodes WHERE parent NOT IN (SELECT id FROM titles)');
     db.prepare('INSERT INTO info VALUES(?,?),(?,?)').run('builtAt',String(now()),'version',INDEX_VERSION);
     if (baseline) db.prepare('INSERT INTO info VALUES(?,?)').run('trendSince',String(baseline.since));
-    db.exec('COMMIT;CREATE INDEX titles_rank ON titles(type,votes);CREATE INDEX episodes_parent ON episodes(parent)');
+    db.exec('CREATE INDEX titles_rank ON titles(type,votes);CREATE INDEX episodes_parent ON episodes(parent);COMMIT');
     return db.prepare('SELECT COUNT(*) AS n FROM titles').get().n;
   } finally { db.close(); }
 }
@@ -155,7 +154,8 @@ export function tvmazeEpisodes(imdb, episodes) {
 
 export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=romanianSeries}={}) {
   const file=path.join(dir,'titles.db');
-  let db,building,status={state:'idle'},closed=false;
+  const cleanup=removeStaleTemps(file);
+  let db,building,status={state:'idle'},closed=false,retryAfter=0;
   const artPending=new Map(),controller=new AbortController();
   const seriesMetadata=new Map(),seriesPending=new Map(),searchPending=new Map(),searchCache=new Map();
   let lastRequest=0,artDb;
@@ -208,7 +208,11 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     return cached && cached.expires > now() ? {value:cached.value ? JSON.parse(cached.value) : undefined} : undefined;
   }
   function saveArt(imdb, value, missingDays) {
-    if (!closed) artCache().prepare('INSERT OR REPLACE INTO art VALUES(?,?,?)').run(imdb,value ? JSON.stringify(value) : null,now()+(value ? 30 : missingDays)*24*60*60*1000);
+    if (closed) return;
+    const checkedAt=now();
+    artCache().prepare(`INSERT INTO art VALUES(?,?,?) ON CONFLICT(imdb) DO UPDATE SET
+      value=excluded.value,expires=excluded.expires WHERE art.value IS NOT excluded.value OR art.expires<=?`)
+      .run(imdb,value ? JSON.stringify(value) : null,checkedAt+(value ? 30 : missingDays)*DAY_MS,checkedAt);
   }
   // Keep newly discovered shows outside the weekly IMDb database, so they remain
   // available to saved library entries and source lookups after a restart/rebuild.
@@ -218,7 +222,8 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     const row={id,type:'series',name:show.name,start:date(show.premiered)?Number(show.premiered.slice(0,4)):null,
       end:date(show.ended)?Number(show.ended.slice(0,4)):null,runtime:count(show.averageRuntime ?? show.runtime)??null,
       genres:Array.isArray(show.genres)?show.genres.filter(g=>typeof g==='string').join(','):null,rating:null,votes:0};
-    artCache().prepare('INSERT OR REPLACE INTO online_series VALUES(?,?)').run(id,JSON.stringify(row));
+    artCache().prepare(`INSERT INTO online_series VALUES(?,?) ON CONFLICT(id) DO UPDATE SET
+      value=excluded.value WHERE online_series.value IS NOT excluded.value`).run(id,JSON.stringify(row));
     saveArt(id,{tvmaze:show.id,poster:image(show.image?.original ?? show.image?.medium),description:plainText(show.summary)},7);
     return row;
   }
@@ -228,7 +233,8 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     if(searchPending.has(key))return searchPending.get(key);
     const pending=tvmaze(`/search/shows?q=${encodeURIComponent(query)}`,'high').then(results=>{
       if(!Array.isArray(results))throw new Error('TVmaze returned invalid search results.');
-      const rows=results.map(result=>rememberShow(result?.show)).filter(Boolean);
+      const rows=!closed&&results.length?writeCacheBatch(artCache(),()=>
+        results.map(result=>rememberShow(result?.show)).filter(Boolean)): [];
       searchCache.delete(key);searchCache.set(key,{rows,expires:now()+5*60*1000});
       if(searchCache.size>100)searchCache.delete(searchCache.keys().next().value);
       return rows;
@@ -272,7 +278,10 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     const result=new Map(),missing=[];
     for (const id of ids) { const cached=cachedArt(id); if (cached) result.set(id,cached.value); else if (!artPending.has(id)) missing.push(id); }
     if (missing.length) {
-      const batch=lookupMovies(missing).then(found=>{for (const [id,value] of found) saveArt(id,value,3);return found;});
+      const batch=lookupMovies(missing).then(found=>{
+        if(!closed)writeCacheBatch(artCache(),()=>{for(const [id,value] of found)saveArt(id,value,3);});
+        return found;
+      });
       for (const id of missing) artPending.set(id,{promise:batch.then(found=>found.get(id)).finally(()=>artPending.delete(id))});
     }
     await Promise.all(ids.filter(id=>!result.has(id)).map(id=>artPending.get(id)?.promise.then(value=>result.set(id,value),()=>{})));
@@ -292,14 +301,18 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
   }
   function refresh() {
     building??=(async()=>{
-      await mkdir(dir,{recursive:true});await removeStaleTemps(file);
       const temp=`${file}.${process.pid}.${Date.now()}.tmp`;
       try {
+        await cleanup;await mkdir(dir,{recursive:true});
         await buildIndex(temp,{fetchImpl,signal:controller.signal,romanian:new Set(romanian.map(show=>show.id)),previous:file,now,onStep:step=>{status={state:'building',step};}});
         db?.close();db=undefined;
         await rename(temp,file);
-        status={state:'ready'};
-      } catch (error) { status={state:'error',error:error.message}; await rm(temp,{force:true}); }
+        status={state:'ready'};retryAfter=0;
+      } catch (error) {
+        status={state:'error',error:error.message};
+        retryAfter=now()+5*60*1000;
+        await rm(temp,{force:true}).catch(()=>{});
+      }
       finally { building=undefined; }
     })();
     return building;
@@ -310,10 +323,10 @@ export function createTitleIndex({dir,fetchImpl=fetch,now=Date.now,romanian=roma
     if (current) {
       const info=key=>current.prepare('SELECT value FROM info WHERE key=?').get(key)?.value;
       // An outdated index keeps serving while its replacement builds in the background.
-      if (!(now()-Number(info('builtAt')) < REFRESH_MS) || info('version') !== INDEX_VERSION) void refresh();
+      if (now()>=retryAfter && (!(now()-Number(info('builtAt')) < REFRESH_MS) || info('version') !== INDEX_VERSION)) void refresh();
       return current;
     }
-    void refresh();
+    if (now()>=retryAfter) void refresh();
     const error=new Error(status.state === 'error'
       ? `Hasimio could not build its title index: ${status.error}`
       : `Building Hasimio’s title index for the first time (${status.step ?? 'starting'}, about 250 MB of IMDb data). Catalogs appear in a few minutes.`);

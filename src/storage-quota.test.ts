@@ -23,6 +23,21 @@ test('stores plainly while there is room',()=>{
   const text=JSON.stringify(library('a',50));profileStorage.setItem('hasimio:library',text);
   expect(data.get('hasimio:library')).toBe(text);
 });
+test('stores large verified-track caches compactly across profiles and skips identical writes',()=>{
+  const key='hasimio:profile:'+'c'.repeat(32)+':verified-tracks:v2';
+  const text=JSON.stringify(Object.fromEntries(Array.from({length:100},(_,i)=>[
+    JSON.stringify(['d'.repeat(40),'tt12345:1:'+i,0]),{fileIndex:0,audio:[
+      {index:0,language:'jpn',title:'Japanese original',codec:'ac3',default:true},
+      {index:1,language:'eng',title:'English dub',codec:'ac3',default:false}],
+    subtitles:[{index:0,language:'eng',title:'English subtitles',codec:'subrip',default:true,supported:true}]}])));
+  const writes=vi.spyOn(localStorage,'setItem');
+  profileStorage.setItem(key,text);
+  expect(data.get(key)?.startsWith('gz1:')).toBe(true);
+  expect(data.get(key)!.length).toBeLessThan(text.length/2);
+  expect(profileStorage.getItem(key)).toBe(text);
+  profileStorage.setItem(key,text);
+  expect(writes).toHaveBeenCalledTimes(1);
+});
 test('a first sync finishes when the library exceeds the quota, and nothing looks deleted',()=>{
   const other='hasimio:profile:'+'b'.repeat(32)+':library',otherText=JSON.stringify(library('b',600));data.set(other,otherText);
   const titles=slim('a',4500);

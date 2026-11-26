@@ -1,7 +1,7 @@
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
-import {CACHE_PRAGMAS} from './paths.mjs';
+import {CACHE_PRAGMAS,writeCacheBatch} from './paths.mjs';
 
 const headers={'User-Agent':'Hasimio (https://github.com/calinadrian/hasimio)',Accept:'application/json'};
 const plain=value=>String(value??'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').trim().slice(0,400);
@@ -42,6 +42,17 @@ export async function lookupActorPhotos(ids,{fetchImpl=fetch,signal}={}){
 export function createActorPhotos({dir,fetchImpl=fetch,now=Date.now}){
   let db;const controller=new AbortController(),pending=new Map();let closed=false;
   function cache(){if(!db){mkdirSync(dir,{recursive:true});db=new DatabaseSync(path.join(dir,'photos.db'));db.exec(CACHE_PRAGMAS+'CREATE TABLE IF NOT EXISTS photos(id TEXT PRIMARY KEY,value TEXT,expires INTEGER) WITHOUT ROWID');}return db;}
+  function saveBatch(ids,found,failed=false){
+    if(closed)return;
+    const index=cache(),checkedAt=now();
+    const put=index.prepare('INSERT OR REPLACE INTO photos VALUES(?,?,?)');
+    writeCacheBatch(index,()=>{
+      for(const id of ids){
+        const photo=found[id],lifetime=failed?5*60000:(photo?30:7)*86400000;
+        put.run(id,photo?JSON.stringify(photo):null,checkedAt+lifetime);
+      }
+    });
+  }
   async function photos(ids){
     ids=[...new Set(ids)];if(ids.length>30||!ids.length||ids.some(id=>!/^nm\d+$/.test(id)))throw Object.assign(Error('Invalid actor photo IDs.'),{status:400});
     if(closed)return {photos:{}};
@@ -49,11 +60,11 @@ export function createActorPhotos({dir,fetchImpl=fetch,now=Date.now}){
     for(const id of ids){const row=cache().prepare('SELECT value,expires FROM photos WHERE id=?').get(id);if(row&&row.expires>now()){if(row.value)result[id]=JSON.parse(row.value);}else if(!pending.has(id))missing.push(id);}
     if(missing.length){
       const batch=lookupActorPhotos(missing,{fetchImpl,signal:controller.signal}).then(found=>{
-        if(!closed)for(const id of missing)cache().prepare('INSERT OR REPLACE INTO photos VALUES(?,?,?)').run(id,found[id]?JSON.stringify(found[id]):null,now()+(found[id]?30:7)*86400000);
+        saveBatch(missing,found);
         return found;
       }).catch(()=>{
         // Transient failures retry soon, without hammering the source on every render.
-        if(!closed)for(const id of missing)cache().prepare('INSERT OR REPLACE INTO photos VALUES(?,?,?)').run(id,null,now()+5*60000);
+        saveBatch(missing,{},true);
         return {};
       });
       for(const id of missing)pending.set(id,batch.then(found=>found[id]).finally(()=>pending.delete(id)));

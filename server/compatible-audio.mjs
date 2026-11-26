@@ -1,8 +1,8 @@
 import {spawn,execFile} from 'node:child_process';
-import {mkdir,readFile,rm,access,readdir} from 'node:fs/promises';
-import path from 'node:path';
+import {access} from 'node:fs/promises';
 import {randomBytes} from 'node:crypto';
-import {ffmpegPath,inputGuard} from './ffmpeg.mjs';
+import {ffmpegPath,inputGuard,stopFfmpeg} from './ffmpeg.mjs';
+import {createHlsOutput,HLS_WINDOW} from './hls-output.mjs';
 import {cacheDir} from './paths.mjs';
 
 export const audioRoot=cacheDir('compatible-audio');
@@ -54,36 +54,57 @@ export function keyframeTime(input,start,signal) {
     });
   });
 }
-// FFmpeg copies the whole video into segments on disk. Unthrottled it does so as fast as the torrent downloads,
-// writing the entire movie even when playback stops after a few minutes. Instead it converts the first minute at
-// once, so playback starts and seeks quickly, and then runs at twice the playback speed: always ahead, never far.
+
+// Read quickly at startup, then pace the source. The output window applies a
+// separate hard limit to read-ahead even if the viewer pauses indefinitely.
 export const CONVERSION_BURST_SECONDS=60,CONVERSION_SPEED=2;
-export function audioArguments(input,folder,hevc=false,track=0,start=0) {
+export function audioArguments(input,outputUrl,hevc=false,track=0,start=0) {
   if(!Number.isInteger(track)||track<0)throw new Error('Invalid audio track.');
   if(!Number.isFinite(start)||start<0)throw new Error('Invalid seek position.');
-  // Copied video retains keyframe preroll. Keep the same audio preroll instead
-  // of trimming only the transcoded track to the requested seek position.
-  return ['-hide_banner','-nostdin','-loglevel','warning','-y',...inputGuard,...(start?['-ss',String(start),'-noaccurate_seek']:[]),'-readrate',String(CONVERSION_SPEED),'-readrate_initial_burst',String(CONVERSION_BURST_SECONDS),'-i',input,'-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),'-c:a','aac','-ac','2','-ar','48000','-af','aresample=async=1','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero','-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size','0','-hls_playlist_type','event','-hls_flags','independent_segments','-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',path.join(folder,'segment-%06d.m4s'),path.join(folder,'main.m3u8')];
+  // Preserve keyframe preroll in both tracks so input seeking keeps them in sync.
+  return ['-hide_banner','-nostdin','-loglevel','warning',...inputGuard,
+    ...(start?['-ss',String(start),'-noaccurate_seek']:[]),
+    '-readrate',String(CONVERSION_SPEED),'-readrate_initial_burst',String(CONVERSION_BURST_SECONDS),'-i',input,
+    '-map','0:v:0','-map',`0:a:${track}`,'-c:v','copy',...(hevc?['-tag:v','hvc1']:[]),
+    '-c:a','aac','-ac','2','-ar','48000','-af','aresample=async=1','-b:a','192k','-sn','-dn','-avoid_negative_ts','make_zero',
+    '-f','hls','-hls_segment_type','fmp4','-hls_time','4','-hls_list_size',String(HLS_WINDOW),'-hls_flags','independent_segments',
+    '-hls_fmp4_init_filename','init.mp4','-hls_segment_filename',outputUrl+'segment-%06d.m4s','-method','PUT','-http_persistent','1',outputUrl+'main.m3u8'];
 }
 export async function createAudioJob(id,index,input,filename='',track=0,start=0) {
   if(!/^[a-f\d]{36}$/.test(id)||!Number.isInteger(index)||index<0)throw new Error('Invalid audio session.');
   await access(ffmpegPath);
-  const folder=path.join(audioRoot,id,String(index),String(track));await mkdir(folder,{recursive:true});
   const offset=start?await keyframeTime(input,start):0;
-  const job={folder,index,start,offset,generation:randomBytes(8).toString('hex'),state:'preparing',error:undefined,child:undefined,closed:false,stopping:false,log:'',timer:undefined};
-  async function check() {try {const playlist=await readFile(path.join(folder,'main.m3u8'),'utf8');if(playlist.includes('#EXTINF:')){await access(path.join(folder,'init.mp4'));job.state='ready';clearInterval(job.timer);}}catch{/* FFmpeg has not produced the first segment yet. */}}
-  job.track=track;
-  const child=spawn(ffmpegPath,audioArguments(input,folder,/\bhevc\b|[xh][ ._-]?265/i.test(filename),track,start),{cwd:folder,windowsHide:true,stdio:['ignore','ignore','pipe']});job.child=child;
-  child.stderr.on('data',data=>{job.log=(job.log+data.toString()).slice(-6000);});
-  child.on('error',error=>{job.state='error';job.error=`Audio conversion could not start: ${error.message}`;clearInterval(job.timer);});
-  child.on('close',async code=>{job.closed=true;clearInterval(job.timer);if(job.stopping)return;await check();if(code!==0||job.state!=='ready'){job.state='error';job.error=/matches no streams/i.test(job.log)?'This file has no audio track to convert.':'Could not prepare compatible audio. Try another source.';if(process.env.HASIMIO_AUDIO_DEBUG==='1')console.error({code,files:await readdir(folder),log:job.log.replaceAll(input,'[local video]')});}});
-  job.timer=setInterval(check,500);job.timer.unref();return job;
+  const job={index,start,offset,track,generation:randomBytes(8).toString('hex'),state:'preparing',closed:false,stopping:false,log:''};
+  function fail(message){
+    if(job.stopping||job.state==='error')return;
+    job.state='error';job.error=message;
+  }
+  const output=await createHlsOutput(
+    ()=>{if(job.state==='preparing')job.state='ready';},
+    error=>{fail(error.message);job.output?.dispose();job.child?.kill();}
+  );
+  job.output=output;
+  try{
+    const args=audioArguments(input,output.url,/\bhevc\b|[xh][ ._-]?265/i.test(filename),track,start);
+    const child=spawn(ffmpegPath,args,{windowsHide:true,stdio:['ignore','ignore','pipe']});
+    job.child=child;
+    child.stderr.on('data',data=>{job.log=(job.log+data.toString()).slice(-6000);});
+    child.on('error',error=>{fail('Audio conversion could not start: '+error.message);});
+    child.on('close',code=>{
+      job.closed=true;
+      if(job.stopping)return;
+      if(code===0){output.writerExited();return;}
+      output.dispose();
+      fail(/matches no streams/i.test(job.log)?'This file has no audio track to convert.':'Could not prepare compatible audio. Try another source.');
+      if(process.env.HASIMIO_AUDIO_DEBUG==='1')console.error({code,log:job.log.replaceAll(input,'[local video]').replaceAll(output.url,'[local output]/')});
+    });
+    return job;
+  }catch(error){output.dispose();throw error;}
 }
 export async function stopAudioJob(job) {
-  if(!job)return;job.stopping=true;clearInterval(job.timer);
-  if(!job.closed&&job.child){await new Promise(resolve=>{const timer=setTimeout(resolve,3000);job.child.once('close',()=>{clearTimeout(timer);resolve();});job.child.kill();});}
-  const target=path.resolve(job.folder),root=path.resolve(audioRoot)+path.sep;
-  if(!target.startsWith(root))throw new Error('Refusing audio cleanup outside the audio cache.');
-  await rm(target,{recursive:true,force:true,maxRetries:3,retryDelay:200});
+  if(!job)return;
+  job.stopping=true;
+  job.output.dispose();
+  await stopFfmpeg(job);
 }
-export function audioStatus(job,id) {return job?{state:job.state,track:job.track,start:job.start,offset:job.offset,error:job.error,mediaUrl:job.state==='ready'?`/api/torrents/${id}/audio/main.m3u8?track=${job.track}&job=${job.generation}`:undefined}:undefined;}
+export function audioStatus(job,id) {return job?{state:job.state,track:job.track,attempt:job.attempt??0,start:job.start,offset:job.offset,error:job.error,mediaUrl:job.state==='ready'?`/api/torrents/${id}/audio/main.m3u8?track=${job.track}&job=${job.generation}`:undefined}:undefined;}

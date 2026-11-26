@@ -16,11 +16,33 @@ export async function removeStaleTemps(file,{olderThan=60*60*1000,now=Date.now()
   const dir=path.dirname(file),prefix=path.basename(file)+'.';
   let names;try {names=await readdir(dir);}catch {return;}
   for(const name of names){
-    if(!name.startsWith(prefix)||!/\.tmp(?:-journal)?$/.test(name))continue;
+    if(!name.startsWith(prefix))continue;
+    const match=/^(\d+)(?:\.\d+)?\.tmp(?:-journal)?$/.exec(name.slice(prefix.length));
+    if(!match)continue;
     const target=path.join(dir,name);
-    try {if(now-(await stat(target)).mtimeMs>olderThan)await rm(target,{force:true});}catch {/* In use or already gone. */}
+    try {
+      if(now-(await stat(target)).mtimeMs<=olderThan)continue;
+      try {process.kill(Number(match[1]),0);continue;}catch(error){if(error.code!=='ESRCH')continue;}
+      await rm(target,{force:true});
+    }catch {/* In use or already gone. */}
   }
 }
 // Small caches written one row at a time. The default journal creates, syncs and deletes a file for every row;
 // a write-ahead log appends instead and syncs only at checkpoints. A crash can lose the newest rows, never the file.
 export const CACHE_PRAGMAS='PRAGMA journal_mode=WAL;PRAGMA synchronous=NORMAL;';
+
+// Rebuilds write an unpublished file and rename it after it closes. A larger page
+// cache lets the episode and cast passes update dirty pages before SQLite spills them.
+export const INDEX_BUILD_PRAGMAS='PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA cache_size=-32768;';
+
+export function writeCacheBatch(db,write) {
+  db.exec('BEGIN');
+  try {
+    const result=write();
+    db.exec('COMMIT');
+    return result;
+  } catch(error) {
+    if(db.isTransaction)db.exec('ROLLBACK');
+    throw error;
+  }
+}

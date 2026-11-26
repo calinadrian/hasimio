@@ -5,3 +5,12 @@ export const ffmpegPath=ffmpegStatic?.replace(/app\.asar([\\/])/,'app.asar.unpac
 // Torrent files are untrusted: FFmpeg may read them only over the engine's own HTTP route, and only as real video
 // containers. Without this a file named .mkv that is really a playlist or script could make FFmpeg open other URLs or local files.
 export const inputGuard=['-protocol_whitelist','http,tcp','-format_whitelist','matroska,webm,mov,mp4,avi'];
+
+export async function stopFfmpeg(job) {
+  if(job.closed||!job.child)return;
+  await new Promise(resolve=>{
+    const force=setTimeout(()=>job.child.kill('SIGKILL'),3000);
+    job.child.once('close',()=>{clearTimeout(force);resolve();});
+    job.child.kill();
+  });
+}

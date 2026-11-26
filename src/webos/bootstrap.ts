@@ -6,7 +6,7 @@ import dialogPolyfill from 'dialog-polyfill';
 import 'dialog-polyfill/dist/dialog-polyfill.css';
 import {bridge} from './platform';
 import {startTelemetry} from './telemetry';
-import {logicalStorageKey} from '../profile-storage';
+import {disposableProfileKeys,logicalStorageKey} from '../profile-storage';
 import {pickTarget,type Direction} from './spatial';
 import './tv.css';
 
@@ -348,14 +348,13 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){document.q
 
 // Two MiB for disposable persisted metadata. Library, progress and pairing
 // credentials are never evicted to make room for caches.
-const disposable=['hasimio:progress-metadata:v1','hasimio:verified-tracks'];
 const setItem=Storage.prototype.setItem;
 Storage.prototype.setItem=function(key,value){
-  if(this===localStorage&&disposable.includes(logicalStorageKey(String(key)))&&new Blob([String(value)]).size>1024*1024)return;
+  if(this===localStorage&&disposableProfileKeys.includes(logicalStorageKey(String(key)))&&new Blob([String(value)]).size>1024*1024)return;
   try{setItem.call(this,key,value);}catch(error){
     if(this!==localStorage)throw error;
     const cachedKeys:string[]=[];
-    for(let index=0;index<localStorage.length;index++){const item=localStorage.key(index);if(item&&item!==key&&disposable.includes(logicalStorageKey(item)))cachedKeys.push(item);}
+    for(let index=0;index<localStorage.length;index++){const item=localStorage.key(index);if(item&&item!==key&&disposableProfileKeys.includes(logicalStorageKey(item)))cachedKeys.push(item);}
     cachedKeys.forEach(item=>localStorage.removeItem(item));
     try{setItem.call(this,key,value);}catch(retry){window.dispatchEvent(new Event('hasimio:storage-full'));throw retry;}
   }

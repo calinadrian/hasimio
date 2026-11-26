@@ -57,10 +57,10 @@ export function selectProfile(id:string){
 }
 export function storageKey(key:string){return !active||active.id==='default'?key:'hasimio:profile:'+active.id+':'+key.replace(/^hasimio:/,'');}
 export function logicalStorageKey(key:string){return key.replace(/^hasimio:profile:[a-f\d]{32}:/,'hasimio:');}
-// A browser gives every profile together about five million characters. Only once that runs out, these large JSON
-// values are stored compressed (gz1:), and stay compressed afterwards; devices with room keep the plain format.
-const compressible=['hasimio:library','hasimio:playback-progress:v1','hasimio:addons','hasimio:progress-metadata:v1','hasimio:verified-tracks'];
-const disposable=['hasimio:progress-metadata:v1','hasimio:verified-tracks'];
+// Large refetchable caches are rewritten as titles and tracks are discovered. Store them
+// compactly. User data keeps its plain format until the browser reaches its storage quota.
+export const disposableProfileKeys=['hasimio:progress-metadata:v1','hasimio:verified-tracks','hasimio:verified-tracks:v2'];
+const compressible=['hasimio:library','hasimio:playback-progress:v1','hasimio:addons',...disposableProfileKeys];
 const isPacked=(text:string|null)=>!!text?.startsWith('gz1:');
 const isFull=(error:unknown)=>['QuotaExceededError','NS_ERROR_DOM_QUOTA_REACHED'].includes((error as {name?:string})?.name??'');
 function storedKeys(names:string[]){
@@ -71,8 +71,10 @@ function storedKeys(names:string[]){
 function pack(text:string){try{const packed=storedJson(JSON.parse(text));return packed.length<text.length?packed:text;}catch{return text;}}
 function tryWrite(key:string,text:string){try{localStorage.setItem(key,text);return true;}catch(error){if(!isFull(error))throw error;return false;}}
 function write(key:string,value:string){
-  const shrink=compressible.includes(logicalStorageKey(key));
-  const keepPacked=shrink&&isPacked(localStorage.getItem(key));
+  const name=logicalStorageKey(key),shrink=compressible.includes(name);
+  const cached=disposableProfileKeys.includes(name);
+  if(cached&&readKey(key)===value)return;
+  const keepPacked=(shrink&&isPacked(localStorage.getItem(key)))||(cached&&value.length>=32768);
   if(tryWrite(key,keepPacked?pack(value):value))return;
   // Lossless first: compress what every profile already stores, then this value.
   for(const other of storedKeys(compressible)){
@@ -83,7 +85,7 @@ function write(key:string,value:string){
   const text=shrink?pack(value):value;
   if(tryWrite(key,text))return;
   // These caches can be fetched again. Library, progress and pairing are never removed to make room.
-  for(const other of storedKeys(disposable))if(other!==key)localStorage.removeItem(other);
+  for(const other of storedKeys(disposableProfileKeys))if(other!==key)localStorage.removeItem(other);
   if(tryWrite(key,text))return;
   throw Error('Hasimio has used all the storage this browser allows one site, so the newest changes could not be saved here. Removing a profile you no longer use on this device makes room.');
 }
